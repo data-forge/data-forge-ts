@@ -1,22 +1,31 @@
-import { ArrayIterator }  from './iterators/array-iterator';
+import { ArrayIterable }  from './iterables/array-iterable';
 
 export interface ISeries extends Iterable<any> {
 
-    [Symbol.iterator](): any;
+    asPairs(): ISeries;
 
+    asValues(): ISeries;
 }
 
 export class Series implements ISeries {
 
-    values: any[];
+    values: Iterable<any>;
 
     constructor(config?: any) {
-        if (config) {
-            this.values = config as any[];
+        if (config) { //todo: if is array!
+            this.values = new ArrayIterable(config); //todo: need to include the index!
         }        
     }
 
     [Symbol.iterator](): Iterator<any> {
-        return new ArrayIterator(this.values);
+        return this.values[Symbol.iterator]();
+    }
+
+    asPairs(): ISeries {
+        throw "todo";
+    }
+
+    asValues(): ISeries {
+        throw "todo";
     }
 }
