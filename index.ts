@@ -1,16 +1,9 @@
 
 import * as moment from 'moment';
+import { Series } from './lib/series';
 
-export class ExampleClass {
+var series = new Series([10, 20, 30]);
 
-    test(): void {
-        console.log("Test: " + moment().format('YYYY-DD-MM'));
-    }
-
-    returnsTrue(): boolean {
-        return true;
-    }
-
+for (let x of series) {
+    console.log(x);
 }
-
-//TODO: Code for your reusable code module goes here.
