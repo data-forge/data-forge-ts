@@ -1,0 +1,39 @@
+{
+  "name": "data-forge-ts",
+  "version": "1.0.0",
+  "description": "TypeScript implementation of DataForge.",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf build/*",
+    "build": "tsc",
+    "clean-build": "rm -rf build/* && tsc",
+    "build:watch": "tsc --watch",
+    "clean-build:watch": "rm -rf build/* && tsc --watch",
+    "test": "ts-mocha test/**/*.ts",
+    "test:watch": "ts-mocha test/**/*.ts --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/data-forge/data-forge-ts.git"
+  },
+  "keywords": [],
+  "author": "ashley@codecapers.com.au",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/data-forge/data-forge-ts/issues"
+  },
+  "homepage": "https://github.com/data-forge/data-forge-ts#readme",
+  "dependencies": {
+    "moment": "2.18.1"
+  },
+  "devDependencies": {
+    "@types/chai": "4.0.4",
+    "@types/mocha": "2.2.43",
+    "@types/node": "8.0.28",
+    "chai": "4.1.2",
+    "mocha": "3.5.3",
+    "ts-node": "3.3.0",
+    "typescript": "2.5.2"
+  }
+}
