@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
-    "moment": "2.18.1"
+    "moment": "2.18.1",
+    "sugar": "2.0.4"
   },
   "devDependencies": {
     "@types/chai": "4.0.4",
