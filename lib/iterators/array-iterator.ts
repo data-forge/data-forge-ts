@@ -1,3 +1,6 @@
+//
+// An iterator that iterates the elements of an array.
+//
 
 export class ArrayIterator<T> implements Iterator<T> {
 

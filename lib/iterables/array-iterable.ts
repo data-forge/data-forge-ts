@@ -1,3 +1,6 @@
+//
+// An iterable that iterates the elements of an array.
+//
 
 import { ArrayIterator } from '../iterators/array-iterator';
 
