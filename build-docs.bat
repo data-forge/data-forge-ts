@@ -1,0 +1,1 @@
+    typedoc --excludePrivate --mode file --out docs --name Data-Forge --readme README.MD --target ES5 .\lib
