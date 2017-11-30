@@ -4,6 +4,13 @@ import { MultiIterable }  from './iterables/multi-iterable';
 import * as Sugar from 'sugar';
 
 /**
+ * Interface that represents an index for a Series.
+ */
+export interface IIndex extends ISeries {
+
+}
+
+/**
  * Interface that represents a series of indexed values.
  */
 export interface ISeries extends Iterable<any> {
@@ -12,6 +19,11 @@ export interface ISeries extends Iterable<any> {
      * Get an iterator to enumerate the values of the series.
      */
     [Symbol.iterator](): Iterator<any>;
+
+    /**
+     * Get the index for the series.
+     */
+    getIndex (): IIndex;
 
     /**
     * Extract values from the series as an array.
@@ -109,6 +121,13 @@ export class Series implements ISeries {
     }
 
     /**
+     * Get the index for the series.
+     */
+    getIndex (): IIndex {
+        return new Index({ values: this.index });
+    }
+
+    /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     * 
@@ -134,6 +153,17 @@ export class Series implements ISeries {
             pairs.push(pair);
         }
         return pairs;
+    }
+
+}
+
+/**
+ * Class that represents an index for a Series.
+ */
+export class Index extends Series implements IIndex {
+
+    constructor(config?: any) {
+        super(config);
     }
 
 }

@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai';
 import 'mocha';
-import { Series } from '../lib/series';
+import { Index, Series } from '../lib/series';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {
@@ -146,5 +146,33 @@ describe('Series', () => {
         
     });
 
+    it ('can get index from series', () => {
 
+        var series = new Series({
+            values: [10, 20, 30],
+            index: [100, 200, 300]
+        });
+
+        expect(series.getIndex().toArray()).to.eql([
+            100,
+            200,
+            300,
+        ]);
+
+    });
+
+    it('can create series with index from another index', () => {
+
+        var series = new Series({
+            values: [10, 20, 30],
+            index: new Index([100, 200, 300])
+        });
+
+        expect(series.toPairs()).to.eql([
+            [100, 10],
+            [200, 20],
+            [300, 30],
+        ]);
+        
+    });
 });
