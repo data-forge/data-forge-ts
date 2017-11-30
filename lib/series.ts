@@ -1,16 +1,18 @@
 import { ArrayIterable }  from './iterables/array-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
-import { IDataFrame } from './dataframe';
 import * as Sugar from 'sugar';
 
+/**
+ * Interface that represents a series of indexed values.
+ */
 export interface ISeries extends Iterable<any> {
 
     /**
      * Get an iterator to enumerate the values of the series.
      */
     [Symbol.iterator](): Iterator<any>;
-    
+
     /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
@@ -28,6 +30,9 @@ export interface ISeries extends Iterable<any> {
     toPairs (): (any[])[];
 }
 
+/**
+ * Class that represents a series of indexed values.
+ */
 export class Series implements ISeries {
 
     private index: Iterable<any>
@@ -43,19 +48,32 @@ export class Series implements ISeries {
         this.pairs = new MultiIterable([this.index, this.values]);
     }
 
+    private initIterable(input: any, fieldName: string): Iterable<any> {
+        if (Sugar.Object.isArray(input)) {
+            return new ArrayIterable(input);
+        }
+        else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
+            // Assume it's an iterable.
+            return input;
+        }
+        else {
+            throw new Error("Expected '" + fieldName + "' field of Series config object to be an array of values or an iterable of values.");
+        }
+    };
+
     //
     // Initialise the Series from a config object.
     //
     private initFromConfig(config: any): void {
-        if (config.index && Sugar.Object.isArray(config.index)) {
-            this.index = new ArrayIterable(config.index);
+        if (config.index) {
+            this.index = this.initIterable(config.index, 'index');
         }
         else {
             this.index = new CountIterable();
         }
 
-        if (config.values && Sugar.Object.isArray(config.values)) {
-            this.values = new ArrayIterable(config.values);
+        if (config.values) {
+            this.values = this.initIterable(config.values, 'values');
         }
         else {
             this.values = new ArrayIterable([]);

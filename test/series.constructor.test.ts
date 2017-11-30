@@ -1,6 +1,7 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import { Series } from '../lib/series';
+import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {
 
@@ -43,6 +44,21 @@ describe('Series', () => {
 
     });
 
+    it('create series with values iterable', () => {
+        var series = new Series({ values: new ArrayIterable([10, 20, 30]) });
+        expect(series.toArray()).to.eql([10, 20, 30]);        
+    });
+
+    it('passing something other than an array or iterable for values is an error', () => {
+
+        expect(() => new Series({ values: 3 })).to.throw();
+    })
+
+    //todo: create series with values iterable in config
+    //todo create series from values array and index iterable
+    // create series from values iterable and index iterable
+    //tod: 
+
     it('index is set by default when values are passed in by array', () => {
         var series = new Series([10, 20, 30]);
 
@@ -77,6 +93,42 @@ describe('Series', () => {
             [200, 20],
             [300, 30],
         ]);
+    });
+
+    it('can create series with values array and index iterable', () => {
+
+        var series = new Series({
+            values: [10, 20, 30],
+            index: new ArrayIterable([100, 200, 300])
+        });
+
+        expect(series.toPairs()).to.eql([
+            [100, 10],
+            [200, 20],
+            [300, 30],
+        ]);
+
+    });
+
+    it('can create series with values iterable and index iterable', () => {
+
+        var series = new Series({
+            values: new ArrayIterable([10, 20, 30]),
+            index: new ArrayIterable([100, 200, 300])
+        });
+
+        expect(series.toPairs()).to.eql([
+            [100, 10],
+            [200, 20],
+            [300, 30],
+        ]);
+
+    });
+
+    it('passing something other than an array or iterable for index is an error', () => {
+
+        expect(() => new Series({ values: [10, 20, 30], index: 3 })).to.throw();
+        
     });
 
 });
