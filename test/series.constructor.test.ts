@@ -128,7 +128,23 @@ describe('Series', () => {
     it('passing something other than an array or iterable for index is an error', () => {
 
         expect(() => new Series({ values: [10, 20, 30], index: 3 })).to.throw();
+
+    });
+
+    it('can create series with index from another series', () => {
+
+        var series = new Series({
+            values: [10, 20, 30],
+            index: new Series([100, 200, 300])
+        });
+
+        expect(series.toPairs()).to.eql([
+            [100, 10],
+            [200, 20],
+            [300, 30],
+        ]);
         
     });
+
 
 });
