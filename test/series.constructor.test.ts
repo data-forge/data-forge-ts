@@ -1,6 +1,7 @@
 import { assert, expect } from 'chai';
 import 'mocha';
-import { Index, Series } from '../lib/series';
+import { Index } from '../lib/index';
+import { Series } from '../lib/series';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {

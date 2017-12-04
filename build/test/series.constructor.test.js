@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var chai_1 = require("chai");
 require("mocha");
+var index_1 = require("../lib/index");
 var series_1 = require("../lib/series");
 var array_iterable_1 = require("../lib/iterables/array-iterable");
 describe('Series', function () {
@@ -116,7 +117,7 @@ describe('Series', function () {
     it('can create series with index from another index', function () {
         var series = new series_1.Series({
             values: [10, 20, 30],
-            index: new series_1.Index([100, 200, 300])
+            index: new index_1.Index([100, 200, 300])
         });
         chai_1.expect(series.toPairs()).to.eql([
             [100, 10],
