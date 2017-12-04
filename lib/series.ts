@@ -2,13 +2,8 @@ import { ArrayIterable }  from './iterables/array-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import * as Sugar from 'sugar';
+import { IIndex, Index } from './index';
 
-/**
- * Interface that represents an index for a Series.
- */
-export interface IIndex extends ISeries {
-
-}
 
 /**
  * Interface that represents a series of indexed values.
@@ -157,13 +152,3 @@ export class Series implements ISeries {
 
 }
 
-/**
- * Class that represents an index for a Series.
- */
-export class Index extends Series implements IIndex {
-
-    constructor(config?: any) {
-        super(config);
-    }
-
-}
