@@ -58,5 +58,4 @@ typings/
 .env
 
 *.bak
-build/
 docs/
