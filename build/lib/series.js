@@ -132,6 +132,16 @@ var Series = /** @class */ (function () {
     };
     ;
     /**
+     * Resets the index of the series back to the default zero-based sequential integer index.
+     *
+     * @returns Returns a new series with the index reset to the default zero-based index.
+     */
+    Series.prototype.resetIndex = function () {
+        return new Series({
+            values: this.values // Just strip the index.
+        });
+    };
+    /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     *

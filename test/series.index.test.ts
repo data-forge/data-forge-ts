@@ -27,4 +27,14 @@ describe('Series', () => {
         expect(newSeries.getIndex().toArray()).to.eql([11, 22, 33]);
     });
 
+    it('can reset index', () => {
+        
+        var series = new Series({
+            values:  [10, 20, 30],
+            index: [11, 22, 33],
+        });
+        var newSeries = series.resetIndex();
+        expect(newSeries.toPairs()).to.eql([[0, 10], [1, 20], [2, 30]]);
+    });
+
 });

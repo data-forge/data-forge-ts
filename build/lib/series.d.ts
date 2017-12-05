@@ -20,6 +20,12 @@ export interface ISeries extends Iterable<any> {
      */
     withIndex(newIndex: any): ISeries;
     /**
+     * Resets the index of the series back to the default zero-based sequential integer index.
+     *
+     * @returns Returns a new series with the index reset to the default zero-based index.
+     */
+    resetIndex(): ISeries;
+    /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     *
@@ -93,6 +99,12 @@ export declare class Series implements ISeries {
      * @returns Returns a new series or dataframe with the specified index attached.
      */
     withIndex(newIndex: any): ISeries;
+    /**
+     * Resets the index of the series back to the default zero-based sequential integer index.
+     *
+     * @returns Returns a new series with the index reset to the default zero-based index.
+     */
+    resetIndex(): ISeries;
     /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.

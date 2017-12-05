@@ -33,6 +33,13 @@ export interface ISeries extends Iterable<any> {
     withIndex (newIndex: any): ISeries;
 
     /**
+     * Resets the index of the series back to the default zero-based sequential integer index.
+     * 
+     * @returns Returns a new series with the index reset to the default zero-based index. 
+     */
+    resetIndex (): ISeries;
+
+    /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     * 
@@ -165,7 +172,6 @@ export class Series implements ISeries {
         else {
             this.initFromArray([]);
         }
-
     }
 
     /**
@@ -202,6 +208,17 @@ export class Series implements ISeries {
         });
     };
 
+    /**
+     * Resets the index of the series back to the default zero-based sequential integer index.
+     * 
+     * @returns Returns a new series with the index reset to the default zero-based index. 
+     */
+    resetIndex (): ISeries {
+        return new Series({
+            values: this.values // Just strip the index.
+        });
+    }
+    
     /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
