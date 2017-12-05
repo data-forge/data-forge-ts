@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
+    "easy-table": "1.1.0",
     "moment": "2.18.1",
     "sugar": "2.0.4"
   },
