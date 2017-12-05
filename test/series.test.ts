@@ -19,4 +19,26 @@ describe('Series', () => {
         expect(result.toPairs()).to.eql([[2, 3], [3, 4], [4, 5]]);
     });
     
+	it('can bake series', function () {
+
+		var series = new Series({
+            values: [10, 20],
+            index: [1, 2],
+        });
+		var baked = series.bake();
+
+		expect(baked).not.to.equal(series);
+	});
+
+	it('baking a baked series returns same', function () {
+
+		var series = new Series({
+            values: [10, 20],
+            index: [1, 2],
+        });
+        var baked = series.bake();
+        var rebaked = baked.bake();
+
+		expect(rebaked).to.equal(baked);
+	});
 });

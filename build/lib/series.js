@@ -33,6 +33,10 @@ var Series = /** @class */ (function () {
      *      pairs: Optional iterable of pairs (index and value) that the series contains.
      */
     function Series(config) {
+        //
+        // Records if a series is baked into memory.
+        //
+        this.isBaked = false;
         if (config) {
             if (Sugar.Object.isArray(config)) {
                 this.initFromArray(config);
@@ -94,6 +98,7 @@ var Series = /** @class */ (function () {
         else {
             this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
         }
+        this.isBaked = config.baked;
     };
     /**
      * Get an iterator to enumerate the values of the series.
@@ -187,6 +192,22 @@ var Series = /** @class */ (function () {
             table.newRow();
         });
         return table.toString();
+    };
+    ;
+    /**
+     * Forces lazy evaluation to complete and 'bakes' the series into memory.
+     *
+     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.
+     */
+    Series.prototype.bake = function () {
+        if (this.isBaked) {
+            // Already baked.
+            return this;
+        }
+        return new Series({
+            pairs: new array_iterable_1.ArrayIterable(this.toPairs()),
+            baked: true,
+        });
     };
     ;
     return Series;

@@ -37,6 +37,29 @@ export interface ISeries extends Iterable<any> {
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.  
      */
     toPairs (): (any[])[];
+
+    /**
+     * Skip a number of values in the series.
+     *
+     * @param numValues - Number of values to skip.     * 
+     * @returns Returns a new series or dataframe with the specified number of values skipped. 
+     */
+    skip (numValues: number): ISeries;
+
+    /** 
+     * Format the series for display as a string.
+     * This forces lazy evaluation to complete.
+     * 
+     * @returns Generates and returns a string representation of the series or dataframe.
+     */
+    toString (): string;
+
+    /**
+     * Forces lazy evaluation to complete and 'bakes' the series into memory.
+     * 
+     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.  
+     */
+    bake (): ISeries;
 }
 
 /**
@@ -47,6 +70,11 @@ export class Series implements ISeries {
     private index: Iterable<any>
     private values: Iterable<any>;
     private pairs: Iterable<any>;
+
+    //
+    // Records if a series is baked into memory.
+    //
+    private isBaked: boolean = false;
 
     //
     // Initialise this Series from an array.
@@ -101,6 +129,8 @@ export class Series implements ISeries {
         else {
             this.pairs = new MultiIterable([this.index, this.values]);
         }
+
+        this.isBaked = config.baked;
     }
 
     /**
@@ -125,6 +155,7 @@ export class Series implements ISeries {
         else {
             this.initFromArray([]);
         }
+
     }
 
     /**
@@ -205,6 +236,24 @@ export class Series implements ISeries {
         });
 
         return table.toString();
+    };
+
+    /**
+     * Forces lazy evaluation to complete and 'bakes' the series into memory.
+     * 
+     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.  
+     */
+    bake (): ISeries {
+
+        if (this.isBaked) {
+            // Already baked.
+            return this;
+        }
+
+        return new Series({
+            pairs: new ArrayIterable(this.toPairs()),
+            baked: true,
+        });
     };
 }
 

@@ -25,6 +25,26 @@ export interface ISeries extends Iterable<any> {
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.
      */
     toPairs(): (any[])[];
+    /**
+     * Skip a number of values in the series.
+     *
+     * @param numValues - Number of values to skip.     *
+     * @returns Returns a new series or dataframe with the specified number of values skipped.
+     */
+    skip(numValues: number): ISeries;
+    /**
+     * Format the series for display as a string.
+     * This forces lazy evaluation to complete.
+     *
+     * @returns Generates and returns a string representation of the series or dataframe.
+     */
+    toString(): string;
+    /**
+     * Forces lazy evaluation to complete and 'bakes' the series into memory.
+     *
+     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.
+     */
+    bake(): ISeries;
 }
 /**
  * Class that represents a series of indexed values.
@@ -33,6 +53,7 @@ export declare class Series implements ISeries {
     private index;
     private values;
     private pairs;
+    private isBaked;
     private initFromArray(arr);
     private initIterable(input, fieldName);
     private initFromConfig(config);
@@ -85,4 +106,10 @@ export declare class Series implements ISeries {
      * @returns Generates and returns a string representation of the series or dataframe.
      */
     toString(): string;
+    /**
+     * Forces lazy evaluation to complete and 'bakes' the series into memory.
+     *
+     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.
+     */
+    bake(): ISeries;
 }

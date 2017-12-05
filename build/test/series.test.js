@@ -14,5 +14,22 @@ describe('Series', function () {
         chai_1.expect(result.getIndex().toArray()).to.eql([2, 3, 4]);
         chai_1.expect(result.toPairs()).to.eql([[2, 3], [3, 4], [4, 5]]);
     });
+    it('can bake series', function () {
+        var series = new series_1.Series({
+            values: [10, 20],
+            index: [1, 2],
+        });
+        var baked = series.bake();
+        chai_1.expect(baked).not.to.equal(series);
+    });
+    it('baking a baked series returns same', function () {
+        var series = new series_1.Series({
+            values: [10, 20],
+            index: [1, 2],
+        });
+        var baked = series.bake();
+        var rebaked = baked.bake();
+        chai_1.expect(rebaked).to.equal(baked);
+    });
 });
 //# sourceMappingURL=series.test.js.map
