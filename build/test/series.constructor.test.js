@@ -5,7 +5,7 @@ require("mocha");
 var index_1 = require("../lib/index");
 var series_1 = require("../lib/series");
 var array_iterable_1 = require("../lib/iterables/array-iterable");
-describe('Series', function () {
+describe('Series constructor', function () {
     it('create series from array of values', function () {
         chai_1.expect(new series_1.Series([10, 20, 30]).toArray()).to.eql([10, 20, 30]);
     });
@@ -125,9 +125,9 @@ describe('Series', function () {
             [300, 30],
         ]);
     });
-    it('can create series from pairs iterable', function () {
+    it('can create series from pairs', function () {
         var series = new series_1.Series({
-            iterable: new array_iterable_1.ArrayIterable([
+            pairs: new array_iterable_1.ArrayIterable([
                 [100, 10],
                 [200, 20],
                 [300, 30],
@@ -135,6 +135,54 @@ describe('Series', function () {
         });
         chai_1.expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
         chai_1.expect(series.toArray()).to.eql([10, 20, 30]);
+    });
+    it('can create series from values and pairs', function () {
+        var series = new series_1.Series({
+            values: new array_iterable_1.ArrayIterable([
+                5, 4, 6,
+            ]),
+            pairs: new array_iterable_1.ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],
+            ]),
+        });
+        chai_1.expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
+        chai_1.expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
+        chai_1.expect(series.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
+    });
+    it('can create series from index and pairs', function () {
+        var series = new series_1.Series({
+            index: new array_iterable_1.ArrayIterable([
+                15, 16, 17 // Trick. Separate index values.
+            ]),
+            pairs: new array_iterable_1.ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],
+            ]),
+        });
+        chai_1.expect(series.getIndex().toArray()).to.eql([15, 16, 17]); // Different values!
+        chai_1.expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
+        chai_1.expect(series.toArray()).to.eql([10, 20, 30]);
+    });
+    it('can create series from values, index and pairs', function () {
+        var series = new series_1.Series({
+            values: new array_iterable_1.ArrayIterable([
+                5, 4, 6,
+            ]),
+            index: new array_iterable_1.ArrayIterable([
+                15, 16, 17 // Trick. Separate index values.
+            ]),
+            pairs: new array_iterable_1.ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],
+            ]),
+        });
+        chai_1.expect(series.getIndex().toArray()).to.eql([15, 16, 17]); // Different values!
+        chai_1.expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
+        chai_1.expect(series.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
     });
 });
 //# sourceMappingURL=series.constructor.test.js.map

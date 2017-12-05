@@ -63,24 +63,28 @@ var Series = /** @class */ (function () {
     // Initialise the Series from a config object.
     //
     Series.prototype.initFromConfig = function (config) {
-        if (config.iterable) {
-            this.index = new extract_element_iterable_1.ExtractElementIterable(config.iterable, 0);
-            this.values = new extract_element_iterable_1.ExtractElementIterable(config.iterable, 1);
-            this.pairs = config.iterable;
+        if (config.index) {
+            this.index = this.initIterable(config.index, 'index');
+        }
+        else if (config.pairs) {
+            this.index = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 0);
         }
         else {
-            if (config.index) {
-                this.index = this.initIterable(config.index, 'index');
-            }
-            else {
-                this.index = new count_iterable_1.CountIterable();
-            }
-            if (config.values) {
-                this.values = this.initIterable(config.values, 'values');
-            }
-            else {
-                this.values = new array_iterable_1.ArrayIterable([]);
-            }
+            this.index = new count_iterable_1.CountIterable();
+        }
+        if (config.values) {
+            this.values = this.initIterable(config.values, 'values');
+        }
+        else if (config.pairs) {
+            this.values = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 1);
+        }
+        else {
+            this.values = new array_iterable_1.ArrayIterable([]);
+        }
+        if (config.pairs) {
+            this.pairs = config.pairs;
+        }
+        else {
             this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
         }
     };
@@ -143,6 +147,15 @@ var Series = /** @class */ (function () {
         }
         return pairs;
         var e_2, _c;
+    };
+    /**
+     * Skip a number of values in the series.
+     *
+     * @param numRows - Number of values to skip.     *
+     * @returns Returns a new series or dataframe with the specified number of values skipped.
+     */
+    Series.prototype.skip = function (numRows) {
+        return new Series({});
     };
     return Series;
 }());

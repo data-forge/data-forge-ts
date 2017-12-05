@@ -4,7 +4,7 @@ import { Index } from '../lib/index';
 import { Series } from '../lib/series';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
-describe('Series', () => {
+describe('Series constructor', () => {
 
     it('create series from array of values', ()  => {
         
@@ -177,10 +177,10 @@ describe('Series', () => {
         
     });
 
-    it('can create series from pairs iterable', () => {
+    it('can create series from pairs', () => {
 
         var series = new Series({ 
-            iterable: new ArrayIterable([
+            pairs: new ArrayIterable([
                 [100, 10],
                 [200, 20],
                 [300, 30],                
@@ -189,5 +189,62 @@ describe('Series', () => {
 
         expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
         expect(series.toArray()).to.eql([10, 20, 30]);
+    });
+
+    it('can create series from values and pairs', () => {
+
+        var series = new Series({ 
+            values: new ArrayIterable([
+                5, 4, 6, // Bit of a trick here, using different values to the pairs.
+            ]),
+            pairs: new ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],                
+            ]),
+        });
+
+        expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
+        expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
+        expect(series.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
+    });
+
+    it('can create series from index and pairs', () => {
+
+        var series = new Series({ 
+            index: new ArrayIterable([
+                15, 16, 17 // Trick. Separate index values.
+            ]),
+            pairs: new ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],                
+            ]),
+        });
+
+        expect(series.getIndex().toArray()).to.eql([15, 16, 17]); // Different values!
+        expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
+        expect(series.toArray()).to.eql([10, 20, 30]);
+    });
+
+    it('can create series from values, index and pairs', () => {
+
+        var series = new Series({ 
+            values: new ArrayIterable([
+                5, 4, 6, // Bit of a trick here, using different values to the pairs.
+            ]),
+            index: new ArrayIterable([
+                15, 16, 17 // Trick. Separate index values.
+            ]),
+            pairs: new ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],                
+            ]),
+        });
+
+        expect(series.getIndex().toArray()).to.eql([15, 16, 17]); // Different values!
+        expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
+        expect(series.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
     });
 });

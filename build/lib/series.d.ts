@@ -64,4 +64,11 @@ export declare class Series implements ISeries {
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.
      */
     toPairs(): (any[])[];
+    /**
+     * Skip a number of values in the series.
+     *
+     * @param numRows - Number of values to skip.     *
+     * @returns Returns a new series or dataframe with the specified number of values skipped.
+     */
+    skip(numRows: number): ISeries;
 }

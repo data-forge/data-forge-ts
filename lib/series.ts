@@ -74,26 +74,30 @@ export class Series implements ISeries {
     //
     private initFromConfig(config: any): void {
 
-        if (config.iterable) {
-            this.index = new ExtractElementIterable(config.iterable, 0);
-            this.values = new ExtractElementIterable(config.iterable, 1);
-            this.pairs = config.iterable;
+        if (config.index) {
+            this.index = this.initIterable(config.index, 'index');
+        }
+        else if (config.pairs) {
+            this.index = new ExtractElementIterable(config.pairs, 0);
         }
         else {
-            if (config.index) {
-                this.index = this.initIterable(config.index, 'index');
-            }
-            else {
-                this.index = new CountIterable();
-            }
+            this.index = new CountIterable();
+        }
 
-            if (config.values) {
-                this.values = this.initIterable(config.values, 'values');
-            }
-            else {
-                this.values = new ArrayIterable([]);
-            }
+        if (config.values) {
+            this.values = this.initIterable(config.values, 'values');
+        }
+        else if (config.pairs) {
+            this.values = new ExtractElementIterable(config.pairs, 1);
+        }
+        else {
+            this.values = new ArrayIterable([]);
+        }
 
+        if (config.pairs) {
+            this.pairs = config.pairs;
+        }
+        else {
             this.pairs = new MultiIterable([this.index, this.values]);
         }
     }
