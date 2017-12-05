@@ -176,4 +176,18 @@ describe('Series', () => {
         ]);
         
     });
+
+    it('can create series from pairs iterable', () => {
+
+        var series = new Series({ 
+            iterable: new ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],                
+            ]),
+        });
+
+        expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
+        expect(series.toArray()).to.eql([10, 20, 30]);
+    });
 });

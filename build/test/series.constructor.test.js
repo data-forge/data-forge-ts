@@ -125,5 +125,16 @@ describe('Series', function () {
             [300, 30],
         ]);
     });
+    it('can create series from pairs iterable', function () {
+        var series = new series_1.Series({
+            iterable: new array_iterable_1.ArrayIterable([
+                [100, 10],
+                [200, 20],
+                [300, 30],
+            ]),
+        });
+        chai_1.expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
+        chai_1.expect(series.toArray()).to.eql([10, 20, 30]);
+    });
 });
 //# sourceMappingURL=series.constructor.test.js.map

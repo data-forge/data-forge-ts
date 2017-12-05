@@ -15,6 +15,7 @@ var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
+var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
 /**
  * Class that represents a series of indexed values.
  */
@@ -62,19 +63,26 @@ var Series = /** @class */ (function () {
     // Initialise the Series from a config object.
     //
     Series.prototype.initFromConfig = function (config) {
-        if (config.index) {
-            this.index = this.initIterable(config.index, 'index');
+        if (config.iterable) {
+            this.index = new extract_element_iterable_1.ExtractElementIterable(config.iterable, 0);
+            this.values = new extract_element_iterable_1.ExtractElementIterable(config.iterable, 1);
+            this.pairs = config.iterable;
         }
         else {
-            this.index = new count_iterable_1.CountIterable();
+            if (config.index) {
+                this.index = this.initIterable(config.index, 'index');
+            }
+            else {
+                this.index = new count_iterable_1.CountIterable();
+            }
+            if (config.values) {
+                this.values = this.initIterable(config.values, 'values');
+            }
+            else {
+                this.values = new array_iterable_1.ArrayIterable([]);
+            }
+            this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
         }
-        if (config.values) {
-            this.values = this.initIterable(config.values, 'values');
-        }
-        else {
-            this.values = new array_iterable_1.ArrayIterable([]);
-        }
-        this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
     };
     /**
      * Get an iterator to enumerate the values of the series.

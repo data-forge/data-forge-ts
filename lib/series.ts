@@ -3,6 +3,7 @@ import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
+import { ExtractElementIterable } from './iterables/extract-element-iterable';
 
 
 /**
@@ -72,21 +73,29 @@ export class Series implements ISeries {
     // Initialise the Series from a config object.
     //
     private initFromConfig(config: any): void {
-        if (config.index) {
-            this.index = this.initIterable(config.index, 'index');
+
+        if (config.iterable) {
+            this.index = new ExtractElementIterable(config.iterable, 0);
+            this.values = new ExtractElementIterable(config.iterable, 1);
+            this.pairs = config.iterable;
         }
         else {
-            this.index = new CountIterable();
-        }
+            if (config.index) {
+                this.index = this.initIterable(config.index, 'index');
+            }
+            else {
+                this.index = new CountIterable();
+            }
 
-        if (config.values) {
-            this.values = this.initIterable(config.values, 'values');
-        }
-        else {
-            this.values = new ArrayIterable([]);
-        }
+            if (config.values) {
+                this.values = this.initIterable(config.values, 'values');
+            }
+            else {
+                this.values = new ArrayIterable([]);
+            }
 
-        this.pairs = new MultiIterable([this.index, this.values]);
+            this.pairs = new MultiIterable([this.index, this.values]);
+        }
     }
 
     /**
