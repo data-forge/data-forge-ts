@@ -18,6 +18,7 @@ var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
 var skip_iterable_1 = require("./iterables/skip-iterable");
 var Table = require('easy-table');
+var chai_1 = require("chai");
 /**
  * Class that represents a series of indexed values.
  */
@@ -113,6 +114,23 @@ var Series = /** @class */ (function () {
     Series.prototype.getIndex = function () {
         return new index_1.Index({ values: this.index });
     };
+    /**
+     * Apply a new index to the Series.
+     *
+     * @param newIndex The new index to apply to the Series.
+     *
+     * @returns Returns a new series or dataframe with the specified index attached.
+     */
+    Series.prototype.withIndex = function (newIndex) {
+        if (!Sugar.Object.isArray(newIndex)) {
+            chai_1.assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'Series.withIndex' to be an array, Series or Index.");
+        }
+        return new Series({
+            values: this.values,
+            index: newIndex,
+        });
+    };
+    ;
     /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.

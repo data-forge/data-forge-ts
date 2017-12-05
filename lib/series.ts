@@ -6,6 +6,7 @@ import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 var Table = require('easy-table');
+import { assert } from 'chai';
 
 /**
  * Interface that represents a series of indexed values.
@@ -21,6 +22,15 @@ export interface ISeries extends Iterable<any> {
      * Get the index for the series.
      */
     getIndex (): IIndex;
+
+    /**
+     * Apply a new index to the Series.
+     * 
+     * @param newIndex The new index to apply to the Series.
+     * 
+     * @returns Returns a new series or dataframe with the specified index attached.
+     */
+    withIndex (newIndex: any): ISeries;
 
     /**
     * Extract values from the series as an array.
@@ -172,6 +182,25 @@ export class Series implements ISeries {
     getIndex (): IIndex {
         return new Index({ values: this.index });
     }
+
+    /**
+     * Apply a new index to the Series.
+     * 
+     * @param newIndex The new index to apply to the Series.
+     * 
+     * @returns Returns a new series or dataframe with the specified index attached.
+     */
+    withIndex (newIndex: any): ISeries {
+
+        if (!Sugar.Object.isArray(newIndex)) {
+            assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'Series.withIndex' to be an array, Series or Index.");
+        }
+
+        return new Series({
+            values: this.values,
+            index: newIndex,
+        });
+    };
 
     /**
     * Extract values from the series as an array.

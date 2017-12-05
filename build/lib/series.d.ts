@@ -12,6 +12,14 @@ export interface ISeries extends Iterable<any> {
      */
     getIndex(): IIndex;
     /**
+     * Apply a new index to the Series.
+     *
+     * @param newIndex The new index to apply to the Series.
+     *
+     * @returns Returns a new series or dataframe with the specified index attached.
+     */
+    withIndex(newIndex: any): ISeries;
+    /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     *
@@ -77,6 +85,14 @@ export declare class Series implements ISeries {
      * Get the index for the series.
      */
     getIndex(): IIndex;
+    /**
+     * Apply a new index to the Series.
+     *
+     * @param newIndex The new index to apply to the Series.
+     *
+     * @returns Returns a new series or dataframe with the specified index attached.
+     */
+    withIndex(newIndex: any): ISeries;
     /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
