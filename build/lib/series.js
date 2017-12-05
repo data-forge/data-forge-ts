@@ -16,6 +16,7 @@ var multi_iterable_1 = require("./iterables/multi-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
+var skip_iterable_1 = require("./iterables/skip-iterable");
 /**
  * Class that represents a series of indexed values.
  */
@@ -151,11 +152,15 @@ var Series = /** @class */ (function () {
     /**
      * Skip a number of values in the series.
      *
-     * @param numRows - Number of values to skip.     *
+     * @param numValues - Number of values to skip.     *
      * @returns Returns a new series or dataframe with the specified number of values skipped.
      */
-    Series.prototype.skip = function (numRows) {
-        return new Series({});
+    Series.prototype.skip = function (numValues) {
+        return new Series({
+            values: new skip_iterable_1.SkipIterable(this.values, numValues),
+            index: new skip_iterable_1.SkipIterable(this.index, numValues),
+            pairs: new skip_iterable_1.SkipIterable(this.pairs, numValues),
+        });
     };
     return Series;
 }());

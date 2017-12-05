@@ -4,6 +4,7 @@ import { MultiIterable }  from './iterables/multi-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
+import { SkipIterable } from './iterables/skip-iterable';
 
 
 /**
@@ -163,5 +164,18 @@ export class Series implements ISeries {
         return pairs;
     }
 
+    /**
+     * Skip a number of values in the series.
+     *
+     * @param numValues - Number of values to skip.     * 
+     * @returns Returns a new series or dataframe with the specified number of values skipped. 
+     */
+    skip (numValues: number): ISeries {
+        return new Series({
+            values: new SkipIterable(this.values, numValues),
+            index: new SkipIterable(this.index, numValues),
+            pairs: new SkipIterable(this.pairs, numValues),
+        });
+    }
 }
 

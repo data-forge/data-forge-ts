@@ -67,8 +67,8 @@ export declare class Series implements ISeries {
     /**
      * Skip a number of values in the series.
      *
-     * @param numRows - Number of values to skip.     *
+     * @param numValues - Number of values to skip.     *
      * @returns Returns a new series or dataframe with the specified number of values skipped.
      */
-    skip(numRows: number): ISeries;
+    skip(numValues: number): ISeries;
 }
