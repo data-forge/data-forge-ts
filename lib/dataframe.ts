@@ -1,4 +1,5 @@
 import { ArrayIterable }  from './iterables/array-iterable';
+import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import * as Sugar from 'sugar';
@@ -114,8 +115,18 @@ export class DataFrame implements IDataFrame {
             this.columnNames = new ArrayIterable(Object.keys(arr[0]));
         }
         else {
-            this.columnNames = new ArrayIterable([]);
+            this.columnNames = new EmptyIterable();
         }
+    }
+
+    //
+    // Initialise an empty DataFrame.
+    //
+    private initEmpty(): void {
+        this.index = new EmptyIterable();
+        this.values = new EmptyIterable();
+        this.pairs = new EmptyIterable();
+        this.columnNames = new EmptyIterable();
     }
 
     private initIterable(input: any, fieldName: string): Iterable<any> {
@@ -155,8 +166,8 @@ export class DataFrame implements IDataFrame {
             this.columnNames = new ColumnNamesIterable(this.values);
         }
         else {
-            this.values = new ArrayIterable([]);
-            this.columnNames = new ArrayIterable([]);
+            this.values = new EmptyIterable();
+            this.columnNames = new EmptyIterable();
         }
 
         if (config.pairs) {
@@ -189,7 +200,7 @@ export class DataFrame implements IDataFrame {
             }
         }
         else {
-            this.initFromArray([]);
+            this.initEmpty();
         }
     }
 

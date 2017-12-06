@@ -69,6 +69,7 @@ export declare class Series implements ISeries {
     private pairs;
     private isBaked;
     private initFromArray(arr);
+    private initEmpty();
     private initIterable(input, fieldName);
     private initFromConfig(config);
     /**

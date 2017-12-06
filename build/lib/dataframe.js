@@ -11,6 +11,7 @@ var __values = (this && this.__values) || function (o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var array_iterable_1 = require("./iterables/array-iterable");
+var empty_iterable_1 = require("./iterables/empty-iterable");
 var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
 var Sugar = require("sugar");
@@ -48,7 +49,7 @@ var DataFrame = /** @class */ (function () {
             }
         }
         else {
-            this.initFromArray([]);
+            this.initEmpty();
         }
     }
     //
@@ -62,8 +63,17 @@ var DataFrame = /** @class */ (function () {
             this.columnNames = new array_iterable_1.ArrayIterable(Object.keys(arr[0]));
         }
         else {
-            this.columnNames = new array_iterable_1.ArrayIterable([]);
+            this.columnNames = new empty_iterable_1.EmptyIterable();
         }
+    };
+    //
+    // Initialise an empty DataFrame.
+    //
+    DataFrame.prototype.initEmpty = function () {
+        this.index = new empty_iterable_1.EmptyIterable();
+        this.values = new empty_iterable_1.EmptyIterable();
+        this.pairs = new empty_iterable_1.EmptyIterable();
+        this.columnNames = new empty_iterable_1.EmptyIterable();
     };
     DataFrame.prototype.initIterable = function (input, fieldName) {
         if (Sugar.Object.isArray(input)) {
@@ -100,8 +110,8 @@ var DataFrame = /** @class */ (function () {
             this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
         }
         else {
-            this.values = new array_iterable_1.ArrayIterable([]);
-            this.columnNames = new array_iterable_1.ArrayIterable([]);
+            this.values = new empty_iterable_1.EmptyIterable();
+            this.columnNames = new empty_iterable_1.EmptyIterable();
         }
         if (config.pairs) {
             this.pairs = config.pairs;

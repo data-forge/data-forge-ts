@@ -1,4 +1,5 @@
 import { ArrayIterable }  from './iterables/array-iterable';
+import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import * as Sugar from 'sugar';
@@ -102,6 +103,15 @@ export class Series implements ISeries {
         this.pairs = new MultiIterable([this.index, this.values]);
     }
 
+    //
+    // Initialise an empty DataFrame.
+    //
+    private initEmpty(): void {
+        this.index = new EmptyIterable();
+        this.values = new EmptyIterable();
+        this.pairs = new EmptyIterable();
+    }
+
     private initIterable(input: any, fieldName: string): Iterable<any> {
         if (Sugar.Object.isArray(input)) {
             return new ArrayIterable(input);
@@ -137,7 +147,7 @@ export class Series implements ISeries {
             this.values = new ExtractElementIterable(config.pairs, 1);
         }
         else {
-            this.values = new ArrayIterable([]);
+            this.values = new EmptyIterable();
         }
 
         if (config.pairs) {
@@ -170,7 +180,7 @@ export class Series implements ISeries {
             }
         }
         else {
-            this.initFromArray([]);
+            this.initEmpty();
         }
     }
 

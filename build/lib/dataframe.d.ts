@@ -76,6 +76,7 @@ export declare class DataFrame implements IDataFrame {
     private columnNames;
     private isBaked;
     private initFromArray(arr);
+    private initEmpty();
     private initIterable(input, fieldName);
     private initFromConfig(config);
     /**
