@@ -16,7 +16,7 @@ export interface ISeries extends Iterable<any> {
      *
      * @param newIndex The new index to apply to the Series.
      *
-     * @returns Returns a new series or dataframe with the specified index attached.
+     * @returns Returns a new series with the specified index attached.
      */
     withIndex(newIndex: any): ISeries;
     /**
@@ -96,7 +96,7 @@ export declare class Series implements ISeries {
      *
      * @param newIndex The new index to apply to the Series.
      *
-     * @returns Returns a new series or dataframe with the specified index attached.
+     * @returns Returns a new series with the specified index attached.
      */
     withIndex(newIndex: any): ISeries;
     /**
