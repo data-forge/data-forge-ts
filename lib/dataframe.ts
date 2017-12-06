@@ -8,6 +8,7 @@ import { SkipIterable } from './iterables/skip-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
 import { ISeries, Series } from './series';
+import { ColumnNamesIterable } from './iterables/column-names-iterable';
 
 /**
  * Interface that represents a dataframe.
@@ -18,6 +19,13 @@ export interface IDataFrame extends Iterable<any> {
      * Get an iterator to enumerate the values of the dataframe.
      */
     [Symbol.iterator](): Iterator<any>;
+
+    /**
+     * Get the names of the columns in the dataframe.
+     * 
+     * @returns Returns an array of the column names in the dataframe.  
+     */
+    getColumnNames (): string[];
 
     /**
      * Get the index for the dataframe.
@@ -88,6 +96,7 @@ export class DataFrame implements IDataFrame {
     private index: Iterable<any>
     private values: Iterable<any>;
     private pairs: Iterable<any>;
+    private columnNames: Iterable<string>;
 
     //
     // Records if a dataframe is baked into memory.
@@ -101,6 +110,12 @@ export class DataFrame implements IDataFrame {
         this.index = new CountIterable();
         this.values = new ArrayIterable(arr);
         this.pairs = new MultiIterable([this.index, this.values]);
+        if (arr.length > 0) {
+            this.columnNames = new ArrayIterable(Object.keys(arr[0]));
+        }
+        else {
+            this.columnNames = new ArrayIterable([]);
+        }
     }
 
     private initIterable(input: any, fieldName: string): Iterable<any> {
@@ -133,12 +148,15 @@ export class DataFrame implements IDataFrame {
 
         if (config.values) {
             this.values = this.initIterable(config.values, 'values');
+            this.columnNames = new ColumnNamesIterable(this.values);
         }
         else if (config.pairs) {
             this.values = new ExtractElementIterable(config.pairs, 1);
+            this.columnNames = new ColumnNamesIterable(this.values);
         }
         else {
             this.values = new ArrayIterable([]);
+            this.columnNames = new ArrayIterable([]);
         }
 
         if (config.pairs) {
@@ -183,6 +201,15 @@ export class DataFrame implements IDataFrame {
         return this.values[Symbol.iterator]();
     }
 
+    /**
+     * Get the names of the columns in the dataframe.
+     * 
+     * @returns Returns an array of the column names in the dataframe.  
+     */
+    getColumnNames (): string[] {
+        return Array.from(this.columnNames);
+    }
+    
     /**
      * Get the index for the dataframe.
      */

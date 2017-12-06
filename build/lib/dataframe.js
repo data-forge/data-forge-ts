@@ -19,6 +19,7 @@ var extract_element_iterable_1 = require("./iterables/extract-element-iterable")
 var skip_iterable_1 = require("./iterables/skip-iterable");
 var Table = require('easy-table');
 var chai_1 = require("chai");
+var column_names_iterable_1 = require("./iterables/column-names-iterable");
 /**
  * Class that represents a dataframe of indexed values.
  */
@@ -57,6 +58,12 @@ var DataFrame = /** @class */ (function () {
         this.index = new count_iterable_1.CountIterable();
         this.values = new array_iterable_1.ArrayIterable(arr);
         this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
+        if (arr.length > 0) {
+            this.columnNames = new array_iterable_1.ArrayIterable(Object.keys(arr[0]));
+        }
+        else {
+            this.columnNames = new array_iterable_1.ArrayIterable([]);
+        }
     };
     DataFrame.prototype.initIterable = function (input, fieldName) {
         if (Sugar.Object.isArray(input)) {
@@ -86,12 +93,15 @@ var DataFrame = /** @class */ (function () {
         }
         if (config.values) {
             this.values = this.initIterable(config.values, 'values');
+            this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
         }
         else if (config.pairs) {
             this.values = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 1);
+            this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
         }
         else {
             this.values = new array_iterable_1.ArrayIterable([]);
+            this.columnNames = new array_iterable_1.ArrayIterable([]);
         }
         if (config.pairs) {
             this.pairs = config.pairs;
@@ -107,6 +117,14 @@ var DataFrame = /** @class */ (function () {
      */
     DataFrame.prototype[Symbol.iterator] = function () {
         return this.values[Symbol.iterator]();
+    };
+    /**
+     * Get the names of the columns in the dataframe.
+     *
+     * @returns Returns an array of the column names in the dataframe.
+     */
+    DataFrame.prototype.getColumnNames = function () {
+        return Array.from(this.columnNames);
     };
     /**
      * Get the index for the dataframe.

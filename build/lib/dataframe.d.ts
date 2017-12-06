@@ -8,6 +8,12 @@ export interface IDataFrame extends Iterable<any> {
      */
     [Symbol.iterator](): Iterator<any>;
     /**
+     * Get the names of the columns in the dataframe.
+     *
+     * @returns Returns an array of the column names in the dataframe.
+     */
+    getColumnNames(): string[];
+    /**
      * Get the index for the dataframe.
      */
     getIndex(): IIndex;
@@ -67,6 +73,7 @@ export declare class DataFrame implements IDataFrame {
     private index;
     private values;
     private pairs;
+    private columnNames;
     private isBaked;
     private initFromArray(arr);
     private initIterable(input, fieldName);
@@ -87,6 +94,12 @@ export declare class DataFrame implements IDataFrame {
      * Enumerating the iterator forces lazy evaluation to complete.
      */
     [Symbol.iterator](): Iterator<any>;
+    /**
+     * Get the names of the columns in the dataframe.
+     *
+     * @returns Returns an array of the column names in the dataframe.
+     */
+    getColumnNames(): string[];
     /**
      * Get the index for the dataframe.
      */
