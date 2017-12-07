@@ -335,13 +335,17 @@ export class DataFrame implements IDataFrame {
      */
     toString (): string {
 
-        var header = ["__index__", "__value__"];
+        var columnNames = this.getColumnNames();
+        var header = ["__index__"].concat(columnNames);
         var rows = this.toPairs();
 
         var table = new Table();
         rows.forEach(function (row, rowIndex) {
-            row.forEach(function (cell, cellIndex) {
-                table.cell(header[cellIndex], cell);
+            var index = row[0];
+            var value = row[1];
+            table.cell(header[0], index);
+            columnNames.forEach((columnName, columnIndex) => {
+                table.cell(header[columnIndex+1], value[columnName]);
             });
             table.newRow();
         });
