@@ -1,5 +1,9 @@
 import { IIndex } from './index';
 /**
+ * A selector function. Transforms a value into another kind of value.
+ */
+export declare type SelectorFn = (value: any, index: number) => any;
+/**
  * Interface that represents a series of indexed values.
  */
 export interface ISeries extends Iterable<any> {
@@ -39,6 +43,14 @@ export interface ISeries extends Iterable<any> {
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.
      */
     toPairs(): (any[])[];
+    /**
+     * Generate a new series based by calling the selector function on each value.
+     *
+     * @param {function} selector - Selector function that transforms each value to create a new series or dataframe.
+     *
+     * @returns {Series|DataFrame} Returns a new series or dataframe that has been transformed by the selector function.
+     */
+    select(selector: SelectorFn): ISeries;
     /**
      * Skip a number of values in the series.
      *
@@ -121,6 +133,14 @@ export declare class Series implements ISeries {
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.
      */
     toPairs(): (any[])[];
+    /**
+     * Generate a new series based by calling the selector function on each value.
+     *
+     * @param selector - Selector function that transforms each value to create a new series.
+     *
+     * @returns Returns a new series that has been transformed by the selector function.
+     */
+    select(selector: SelectorFn): ISeries;
     /**
      * Skip a number of values in the series.
      *

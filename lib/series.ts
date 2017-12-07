@@ -2,12 +2,18 @@ import { ArrayIterable }  from './iterables/array-iterable';
 import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
+import { SelectIterable }  from './iterables/select-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
+
+/**
+ * A selector function. Transforms a value into another kind of value.
+ */
+export type SelectorFn = (value: any, index: number) => any;
 
 /**
  * Interface that represents a series of indexed values.
@@ -56,6 +62,15 @@ export interface ISeries extends Iterable<any> {
      */
     toPairs (): (any[])[];
 
+    /**
+     * Generate a new series based by calling the selector function on each value.
+     *
+     * @param {function} selector - Selector function that transforms each value to create a new series or dataframe.
+     * 
+     * @returns {Series|DataFrame} Returns a new series or dataframe that has been transformed by the selector function.
+     */
+    select (selector: SelectorFn): ISeries;
+    
     /**
      * Skip a number of values in the series.
      *
@@ -257,6 +272,22 @@ export class Series implements ISeries {
         }
         return pairs;
     }
+
+    /**
+     * Generate a new series based by calling the selector function on each value.
+     *
+     * @param selector - Selector function that transforms each value to create a new series.
+     * 
+     * @returns Returns a new series that has been transformed by the selector function.
+     */
+    select (selector: SelectorFn): ISeries {
+        assert.isFunction(selector, "Expected 'selector' parameter to 'Series.select' function to be a function.");
+
+        return new Series({
+            values: new SelectIterable(this.values, selector),
+            index: this.index,
+        });
+    };
 
     /**
      * Skip a number of values in the series.

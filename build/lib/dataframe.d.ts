@@ -1,4 +1,5 @@
 import { IIndex } from './index';
+import { SelectorFn } from './series';
 /**
  * Interface that represents a dataframe.
  */
@@ -45,6 +46,14 @@ export interface IDataFrame extends Iterable<any> {
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.
      */
     toPairs(): (any[])[];
+    /**
+     * Generate a new dataframe based by calling the selector function on each value.
+     *
+     * @param selector Selector function that transforms each value to create a new dataframe.
+     *
+     * @returns Returns a new dataframe that has been transformed by the selector function.
+     */
+    select(selector: SelectorFn): IDataFrame;
     /**
      * Skip a number of values in the dataframe.
      *
@@ -134,6 +143,14 @@ export declare class DataFrame implements IDataFrame {
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.
      */
     toPairs(): (any[])[];
+    /**
+     * Generate a new dataframe based by calling the selector function on each value.
+     *
+     * @param selector Selector function that transforms each value to create a new dataframe.
+     *
+     * @returns Returns a new dataframe that has been transformed by the selector function.
+     */
+    select(selector: SelectorFn): IDataFrame;
     /**
      * Skip a number of values in the dataframe.
      *

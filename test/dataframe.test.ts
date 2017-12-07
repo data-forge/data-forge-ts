@@ -40,5 +40,24 @@ describe('DataFrame', () => {
         var rebaked = baked.bake();
 
 		expect(rebaked).to.equal(baked);
-	});
+    });
+    
+    it('can rewrite dataframe with select', () => {
+
+        var dataframe = new DataFrame([10, 20, 30]);
+        var modified = dataframe.select(v => v * 2);
+        expect(modified.toArray()).to.eql([20, 40, 60]);
+    });
+
+    it('select ignores index', () => {
+
+        var dataframe = new DataFrame({
+            values: [10, 20, 30],
+            index: [100, 200, 300],
+        });
+        var modified = dataframe.select(v => v * 2);
+        expect(modified.toPairs()).to.eql([[100, 20], [200, 40], [300, 60]]);
+        expect(modified.getIndex().toArray()).to.eql([100, 200, 300]);
+    });
+    
 });

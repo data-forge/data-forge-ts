@@ -14,6 +14,7 @@ var array_iterable_1 = require("./iterables/array-iterable");
 var empty_iterable_1 = require("./iterables/empty-iterable");
 var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
+var select_iterable_1 = require("./iterables/select-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
@@ -218,6 +219,21 @@ var DataFrame = /** @class */ (function () {
         return pairs;
         var e_2, _c;
     };
+    /**
+     * Generate a new dataframe based by calling the selector function on each value.
+     *
+     * @param selector Selector function that transforms each value to create a new dataframe.
+     *
+     * @returns Returns a new dataframe that has been transformed by the selector function.
+     */
+    DataFrame.prototype.select = function (selector) {
+        chai_1.assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
+        return new DataFrame({
+            values: new select_iterable_1.SelectIterable(this.values, selector),
+            index: this.index,
+        });
+    };
+    ;
     /**
      * Skip a number of values in the dataframe.
      *

@@ -2,13 +2,14 @@ import { ArrayIterable }  from './iterables/array-iterable';
 import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
+import { SelectIterable }  from './iterables/select-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
-import { ISeries, Series } from './series';
+import { ISeries, Series, SelectorFn } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 
 /**
@@ -65,6 +66,15 @@ export interface IDataFrame extends Iterable<any> {
      */
     toPairs (): (any[])[];
 
+    /**
+     * Generate a new dataframe based by calling the selector function on each value.
+     *
+     * @param selector Selector function that transforms each value to create a new dataframe.
+     * 
+     * @returns Returns a new dataframe that has been transformed by the selector function.
+     */
+    select (selector: SelectorFn): IDataFrame;
+    
     /**
      * Skip a number of values in the dataframe.
      *
@@ -286,6 +296,22 @@ export class DataFrame implements IDataFrame {
         }
         return pairs;
     }
+
+    /**
+     * Generate a new dataframe based by calling the selector function on each value.
+     *
+     * @param selector Selector function that transforms each value to create a new dataframe.
+     * 
+     * @returns Returns a new dataframe that has been transformed by the selector function.
+     */
+    select (selector: SelectorFn): IDataFrame {
+        assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
+
+        return new DataFrame({
+            values: new SelectIterable(this.values, selector),
+            index: this.index,
+        });
+    };
 
     /**
      * Skip a number of values in the dataframe.

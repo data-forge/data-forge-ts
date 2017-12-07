@@ -31,5 +31,19 @@ describe('DataFrame', function () {
         var rebaked = baked.bake();
         chai_1.expect(rebaked).to.equal(baked);
     });
+    it('can rewrite dataframe with select', function () {
+        var dataframe = new dataframe_1.DataFrame([10, 20, 30]);
+        var modified = dataframe.select(function (v) { return v * 2; });
+        chai_1.expect(modified.toArray()).to.eql([20, 40, 60]);
+    });
+    it('select ignores index', function () {
+        var dataframe = new dataframe_1.DataFrame({
+            values: [10, 20, 30],
+            index: [100, 200, 300],
+        });
+        var modified = dataframe.select(function (v) { return v * 2; });
+        chai_1.expect(modified.toPairs()).to.eql([[100, 20], [200, 40], [300, 60]]);
+        chai_1.expect(modified.getIndex().toArray()).to.eql([100, 200, 300]);
+    });
 });
 //# sourceMappingURL=dataframe.test.js.map
