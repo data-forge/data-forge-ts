@@ -32,9 +32,27 @@ describe('DataFrame', function () {
         chai_1.expect(rebaked).to.equal(baked);
     });
     it('can rewrite dataframe with select', function () {
-        var dataframe = new dataframe_1.DataFrame([10, 20, 30]);
-        var modified = dataframe.select(function (v) { return v * 2; });
-        chai_1.expect(modified.toArray()).to.eql([20, 40, 60]);
+        var dataFrame = new dataframe_1.DataFrame([
+            {
+                A: 1,
+                B: 10,
+            },
+            {
+                A: 2,
+                B: 20,
+            }
+        ]);
+        var modified = dataFrame.select(function (v) { return ({ A: v.A * 2, B: v.B * 2 }); });
+        chai_1.expect(modified.toArray()).to.eql([
+            {
+                A: 2,
+                B: 20,
+            },
+            {
+                A: 4,
+                B: 40,
+            }
+        ]);
     });
     it('select ignores index', function () {
         var dataframe = new dataframe_1.DataFrame({

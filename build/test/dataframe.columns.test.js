@@ -66,5 +66,29 @@ describe('DataFrame columns', function () {
         });
         chai_1.expect(dataFrame.getColumnNames()).to.eql(["A", "B"]);
     });
+    it('select can rewrite column names', function () {
+        var dataFrame = new dataframe_1.DataFrame([
+            {
+                A: 1,
+                B: 10,
+            },
+            {
+                A: 2,
+                B: 20,
+            }
+        ]);
+        var modified = dataFrame.select(function (v) { return ({ X: v.A, Y: v.B }); });
+        chai_1.expect(modified.getColumnNames()).to.eql(["X", "Y"]);
+        chai_1.expect(modified.toArray()).to.eql([
+            {
+                X: 1,
+                Y: 10,
+            },
+            {
+                X: 2,
+                Y: 20,
+            }
+        ]);
+    });
 });
 //# sourceMappingURL=dataframe.columns.test.js.map

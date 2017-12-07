@@ -85,4 +85,31 @@ describe('DataFrame columns', () => {
         expect(dataFrame.getColumnNames()).to.eql(["A", "B"]);
     });
 
+    it('select can rewrite column names', () => {
+
+        var dataFrame = new DataFrame([
+            {
+                A: 1,
+                B: 10,
+            },
+            {
+                A: 2,
+                B: 20,
+            }
+        ]);
+
+        var modified = dataFrame.select(v => ({ X: v.A, Y: v.B }));
+        expect(modified.getColumnNames()).to.eql(["X", "Y"]);
+        expect(modified.toArray()).to.eql([
+            {
+                X: 1,
+                Y: 10,
+            },
+            {
+                X: 2,
+                Y: 20,
+            }
+        ]);
+    });
+
 });

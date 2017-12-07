@@ -44,9 +44,28 @@ describe('DataFrame', () => {
     
     it('can rewrite dataframe with select', () => {
 
-        var dataframe = new DataFrame([10, 20, 30]);
-        var modified = dataframe.select(v => v * 2);
-        expect(modified.toArray()).to.eql([20, 40, 60]);
+        var dataFrame = new DataFrame([
+            {
+                A: 1,
+                B: 10,
+            },
+            {
+                A: 2,
+                B: 20,
+            }
+        ]);
+
+        var modified = dataFrame.select(v => ({ A: v.A * 2, B: v.B * 2 }));
+        expect(modified.toArray()).to.eql([
+            {
+                A: 2,
+                B: 20,
+            },
+            {
+                A: 4,
+                B: 40,
+            }
+        ]);
     });
 
     it('select ignores index', () => {
