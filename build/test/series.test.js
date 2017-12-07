@@ -45,5 +45,46 @@ describe('Series', function () {
         chai_1.expect(modified.toPairs()).to.eql([[100, 20], [200, 40], [300, 60]]);
         chai_1.expect(modified.getIndex().toArray()).to.eql([100, 200, 300]);
     });
+    it('can inflate to dataframe', function () {
+        var series = new series_1.Series({
+            values: [10, 20],
+            index: [100, 200]
+        });
+        var dataframe = series.inflate(function (v) { return ({ V: v }); });
+        chai_1.expect(dataframe.toArray()).to.eql([
+            {
+                V: 10,
+            },
+            {
+                V: 20,
+            },
+        ]);
+        chai_1.expect(dataframe.getIndex().toArray()).to.eql([100, 200]);
+        chai_1.expect(dataframe.toPairs()).to.eql([
+            [100, { V: 10, },],
+            [200, { V: 20, },],
+        ]);
+    });
+    it('can inflate to dataframe with no selector', function () {
+        var series = new series_1.Series({
+            values: [{ V: 10 }, { V: 20 }],
+            index: [100, 200]
+        });
+        var dataframe = series.inflate();
+        chai_1.expect(dataframe.toArray()).to.eql([
+            {
+                V: 10,
+            },
+            {
+                V: 20,
+            },
+        ]);
+        chai_1.expect(dataframe.getIndex().toArray()).to.eql([100, 200]);
+        chai_1.expect(dataframe.toPairs()).to.eql([
+            [100, { V: 10, },],
+            [200, { V: 20, },],
+        ]);
+    });
+    //todo: inflate preserves index - both cases, test pairs
 });
 //# sourceMappingURL=series.test.js.map

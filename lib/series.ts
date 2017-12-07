@@ -9,6 +9,7 @@ import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
+import { IDataFrame, DataFrame } from './dataframe';
 
 /**
  * A selector function. Transforms a value into another kind of value.
@@ -342,5 +343,30 @@ export class Series implements ISeries {
             baked: true,
         });
     };
-}
 
+    /** 
+     * Inflate the series to a dataframe.
+     *
+     * @param [selector] Optional selector function that transforms each value in the series to a row in the new dataframe.
+     *
+     * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
+     */
+    inflate (selector?: SelectorFn): IDataFrame {
+
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to 'Series.inflate' function to be a function.");
+
+            return new DataFrame({
+                values: new SelectIterable(this.values, selector),
+                index: this.index,
+            });
+        }
+        else {
+            return new DataFrame({
+                values: this.values,
+                index: this.index,
+                pairs: this.pairs,
+            });
+        }
+    }
+}

@@ -1,4 +1,5 @@
 import { IIndex } from './index';
+import { IDataFrame } from './dataframe';
 /**
  * A selector function. Transforms a value into another kind of value.
  */
@@ -161,4 +162,12 @@ export declare class Series implements ISeries {
      * @returns Returns a series that has been 'baked', all lazy evaluation has completed.
      */
     bake(): ISeries;
+    /**
+     * Inflate the series to a dataframe.
+     *
+     * @param [selector] Optional selector function that transforms each value in the series to a row in the new dataframe.
+     *
+     * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
+     */
+    inflate(selector?: SelectorFn): IDataFrame;
 }
