@@ -1,13 +1,22 @@
 import { IIndex } from './index';
 import { SelectorFn } from './series';
 /**
+ * DataFrame configuration.
+ */
+export interface IDataFrameConfig<IndexT, ValueT> {
+    values?: ValueT[] | Iterable<ValueT>;
+    index?: IndexT[] | Iterable<IndexT>;
+    pairs?: Iterable<[IndexT, ValueT]>;
+    baked?: boolean;
+}
+/**
  * Interface that represents a dataframe.
  */
-export interface IDataFrame extends Iterable<any> {
+export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
     /**
      * Get an iterator to enumerate the values of the dataframe.
      */
-    [Symbol.iterator](): Iterator<any>;
+    [Symbol.iterator](): Iterator<ValueT>;
     /**
      * Get the names of the columns in the dataframe.
      *
@@ -17,7 +26,7 @@ export interface IDataFrame extends Iterable<any> {
     /**
      * Get the index for the dataframe.
      */
-    getIndex(): IIndex;
+    getIndex(): IIndex<IndexT>;
     /**
      * Apply a new index to the DataFrame.
      *
@@ -25,27 +34,27 @@ export interface IDataFrame extends Iterable<any> {
      *
      * @returns Returns a new dataframe with the specified index attached.
      */
-    withIndex(newIndex: any): IDataFrame;
+    withIndex<NewIndexT>(newIndex: NewIndexT[] | Iterable<NewIndexT>): IDataFrame<NewIndexT, ValueT>;
     /**
      * Resets the index of the dataframe back to the default zero-based sequential integer index.
      *
      * @returns Returns a new dataframe with the index reset to the default zero-based index.
      */
-    resetIndex(): IDataFrame;
+    resetIndex(): IDataFrame<number, ValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     *
     * @returns Returns an array of values contained within the dataframe.
     */
-    toArray(): any[];
+    toArray(): ValueT[];
     /**
      * Retreive the index and values from the DataFrame as an array of pairs.
      * Each pairs is [index, value].
      *
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.
      */
-    toPairs(): (any[])[];
+    toPairs(): ([IndexT, ValueT])[];
     /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
@@ -53,14 +62,14 @@ export interface IDataFrame extends Iterable<any> {
      *
      * @returns Returns a new dataframe that has been transformed by the selector function.
      */
-    select(selector: SelectorFn): IDataFrame;
+    select<ToT>(selector: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
     /**
      * Skip a number of values in the dataframe.
      *
      * @param numValues - Number of values to skip.     *
      * @returns Returns a new dataframe or dataframe with the specified number of values skipped.
      */
-    skip(numValues: number): IDataFrame;
+    skip(numValues: number): IDataFrame<IndexT, ValueT>;
     /**
      * Format the dataframe for display as a string.
      * This forces lazy evaluation to complete.
@@ -73,12 +82,12 @@ export interface IDataFrame extends Iterable<any> {
      *
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.
      */
-    bake(): IDataFrame;
+    bake(): IDataFrame<IndexT, ValueT>;
 }
 /**
  * Class that represents a dataframe of indexed values.
  */
-export declare class DataFrame implements IDataFrame {
+export declare class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
     private index;
     private values;
     private pairs;
@@ -86,7 +95,7 @@ export declare class DataFrame implements IDataFrame {
     private isBaked;
     private initFromArray(arr);
     private initEmpty();
-    private initIterable(input, fieldName);
+    private initIterable<T>(input, fieldName);
     private initFromConfig(config);
     /**
      * Create a dataframe.
@@ -98,7 +107,7 @@ export declare class DataFrame implements IDataFrame {
      *      index: Optional array or iterable of values that index the dataframe, defaults to a dataframe of integers from 1 and counting upward.
      *      pairs: Optional iterable of pairs (index and value) that the dataframe contains.
      */
-    constructor(config?: any);
+    constructor(config?: ValueT[] | IDataFrameConfig<IndexT, ValueT>);
     /**
      * Get an iterator to enumerate the values of the dataframe.
      * Enumerating the iterator forces lazy evaluation to complete.
@@ -113,7 +122,7 @@ export declare class DataFrame implements IDataFrame {
     /**
      * Get the index for the dataframe.
      */
-    getIndex(): IIndex;
+    getIndex(): IIndex<IndexT>;
     /**
      * Apply a new index to the DataFrame.
      *
@@ -121,13 +130,13 @@ export declare class DataFrame implements IDataFrame {
      *
      * @returns Returns a new dataframe or dataframe with the specified index attached.
      */
-    withIndex(newIndex: any): IDataFrame;
+    withIndex<NewIndexT>(newIndex: NewIndexT[] | Iterable<NewIndexT>): IDataFrame<NewIndexT, ValueT>;
     /**
      * Resets the index of the dataframe back to the default zero-based sequential integer index.
      *
      * @returns Returns a new dataframe with the index reset to the default zero-based index.
      */
-    resetIndex(): IDataFrame;
+    resetIndex(): IDataFrame<number, ValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
@@ -142,7 +151,7 @@ export declare class DataFrame implements IDataFrame {
      *
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.
      */
-    toPairs(): (any[])[];
+    toPairs(): ([IndexT, ValueT])[];
     /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
@@ -150,14 +159,14 @@ export declare class DataFrame implements IDataFrame {
      *
      * @returns Returns a new dataframe that has been transformed by the selector function.
      */
-    select(selector: SelectorFn): IDataFrame;
+    select<ToT>(selector: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
     /**
      * Skip a number of values in the dataframe.
      *
      * @param numValues - Number of values to skip.     *
      * @returns Returns a new dataframe or dataframe with the specified number of values skipped.
      */
-    skip(numValues: number): IDataFrame;
+    skip(numValues: number): IDataFrame<IndexT, ValueT>;
     /**
      * Format the dataframe for display as a string.
      * This forces lazy evaluation to complete.
@@ -170,5 +179,5 @@ export declare class DataFrame implements IDataFrame {
      *
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.
      */
-    bake(): IDataFrame;
+    bake(): IDataFrame<IndexT, ValueT>;
 }

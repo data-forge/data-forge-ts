@@ -22,6 +22,7 @@ var skip_iterable_1 = require("./iterables/skip-iterable");
 var Table = require('easy-table');
 var chai_1 = require("chai");
 var dataframe_1 = require("./dataframe");
+;
 /**
  * Class that represents a series of indexed values.
  */
@@ -110,7 +111,9 @@ var Series = /** @class */ (function () {
         else {
             this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
         }
-        this.isBaked = config.baked;
+        if (config.baked !== undefined) {
+            this.isBaked = config.baked;
+        }
     };
     /**
      * Get an iterator to enumerate the values of the series.
@@ -271,21 +274,12 @@ var Series = /** @class */ (function () {
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    Series.prototype.inflate = function (selector) {
-        if (selector) {
-            chai_1.assert.isFunction(selector, "Expected 'selector' parameter to 'Series.inflate' function to be a function.");
-            return new dataframe_1.DataFrame({
-                values: new select_iterable_1.SelectIterable(this.values, selector),
-                index: this.index,
-            });
-        }
-        else {
-            return new dataframe_1.DataFrame({
-                values: this.values,
-                index: this.index,
-                pairs: this.pairs,
-            });
-        }
+    Series.prototype.inflate = function () {
+        return new dataframe_1.DataFrame({
+            values: this.values,
+            index: this.index,
+            pairs: this.pairs,
+        });
     };
     return Series;
 }());

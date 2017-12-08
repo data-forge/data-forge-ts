@@ -32,6 +32,7 @@ describe('Series constructor', function () {
         chai_1.expect(series.toArray()).to.eql([10, 20, 30]);
     });
     it('passing something other than an array or iterable for values is an error', function () {
+        // This isn't possible in TypeScript, but is in JavaScript.
         chai_1.expect(function () { return new series_1.Series({ values: 3 }); }).to.throw();
     });
     //todo: create series with values iterable in config
@@ -90,6 +91,7 @@ describe('Series constructor', function () {
         ]);
     });
     it('passing something other than an array or iterable for index is an error', function () {
+        // This isn't possible in TypeScript, but is in JavaScript.
         chai_1.expect(function () { return new series_1.Series({ values: [10, 20, 30], index: 3 }); }).to.throw();
     });
     it('can create series with index from another series', function () {

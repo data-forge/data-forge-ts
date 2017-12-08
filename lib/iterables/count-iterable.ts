@@ -5,9 +5,9 @@
 
 import { CountIterator } from '../iterators/count-iterator';
 
-export class CountIterable implements Iterable<number> {
+export class CountIterable implements Iterable<any> {
 
-    [Symbol.iterator](): Iterator<number> {
+    [Symbol.iterator](): Iterator<any> {
         return new CountIterator();
     }
 }

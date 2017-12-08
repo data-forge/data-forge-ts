@@ -52,7 +52,8 @@ describe('DataFrame constructor', () => {
 
     it('passing something other than an array or iterable for values is an error', () => {
 
-        expect(() => new DataFrame({ values: 3 })).to.throw();
+        // This isn't possible in TypeScript, but is in JavaScript.
+        expect(() => new DataFrame({ values: <any>3 })).to.throw();
     })
 
     //todo: create dataframe with values iterable in config
@@ -128,7 +129,8 @@ describe('DataFrame constructor', () => {
 
     it('passing something other than an array or iterable for index is an error', () => {
 
-        expect(() => new DataFrame({ values: [10, 20, 30], index: 3 })).to.throw();
+        // This isn't possible in TypeScript, but is in JavaScript.
+        expect(() => new DataFrame({ values: [10, 20, 30], index: <any>3 })).to.throw();
 
     });
 

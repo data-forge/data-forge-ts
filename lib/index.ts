@@ -3,7 +3,7 @@ import { ISeries, Series } from './series';
 /**
  * Interface that represents an index for a Series.
  */
-export interface IIndex extends ISeries {
+export interface IIndex<IndexT> extends ISeries<number, IndexT> {
 
 }
 
@@ -12,7 +12,7 @@ export interface IIndex extends ISeries {
 /**
  * Class that represents an index for a Series.
  */
-export class Index extends Series implements IIndex {
+export class Index<IndexT> extends Series<number, IndexT> implements IIndex<IndexT> {
 
     constructor(config?: any) {
         super(config);

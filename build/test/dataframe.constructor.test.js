@@ -32,6 +32,7 @@ describe('DataFrame constructor', function () {
         chai_1.expect(dataframe.toArray()).to.eql([10, 20, 30]);
     });
     it('passing something other than an array or iterable for values is an error', function () {
+        // This isn't possible in TypeScript, but is in JavaScript.
         chai_1.expect(function () { return new dataframe_1.DataFrame({ values: 3 }); }).to.throw();
     });
     //todo: create dataframe with values iterable in config
@@ -90,6 +91,7 @@ describe('DataFrame constructor', function () {
         ]);
     });
     it('passing something other than an array or iterable for index is an error', function () {
+        // This isn't possible in TypeScript, but is in JavaScript.
         chai_1.expect(function () { return new dataframe_1.DataFrame({ values: [10, 20, 30], index: 3 }); }).to.throw();
     });
     it('can create dataframe with index from another dataframe', function () {

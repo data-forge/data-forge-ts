@@ -50,7 +50,7 @@ describe('Series', function () {
             values: [10, 20],
             index: [100, 200]
         });
-        var dataframe = series.inflate(function (v) { return ({ V: v }); });
+        var dataframe = series.select(function (v) { return ({ V: v }); }).inflate();
         chai_1.expect(dataframe.toArray()).to.eql([
             {
                 V: 10,

@@ -52,7 +52,8 @@ describe('Series constructor', () => {
 
     it('passing something other than an array or iterable for values is an error', () => {
 
-        expect(() => new Series({ values: 3 })).to.throw();
+        // This isn't possible in TypeScript, but is in JavaScript.
+        expect(() => new Series({ values: <any>3 })).to.throw();
     })
 
     //todo: create series with values iterable in config
@@ -128,7 +129,8 @@ describe('Series constructor', () => {
 
     it('passing something other than an array or iterable for index is an error', () => {
 
-        expect(() => new Series({ values: [10, 20, 30], index: 3 })).to.throw();
+        // This isn't possible in TypeScript, but is in JavaScript.
+        expect(() => new Series({ values: [10, 20, 30], index: <any>3 })).to.throw();
 
     });
 

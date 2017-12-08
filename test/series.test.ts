@@ -66,7 +66,7 @@ describe('Series', () => {
             values: [10, 20],
             index: [100, 200]
         });
-        var dataframe = series.inflate(v => ({ V: v }));
+        var dataframe = series.select(v => ({ V: v })).inflate();
         expect(dataframe.toArray()).to.eql([
             {
                 V: 10,

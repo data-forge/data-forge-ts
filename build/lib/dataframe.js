@@ -22,6 +22,7 @@ var skip_iterable_1 = require("./iterables/skip-iterable");
 var Table = require('easy-table');
 var chai_1 = require("chai");
 var column_names_iterable_1 = require("./iterables/column-names-iterable");
+;
 /**
  * Class that represents a dataframe of indexed values.
  */
@@ -120,7 +121,9 @@ var DataFrame = /** @class */ (function () {
         else {
             this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
         }
-        this.isBaked = config.baked;
+        if (config.baked !== undefined) {
+            this.isBaked = config.baked;
+        }
     };
     /**
      * Get an iterator to enumerate the values of the dataframe.
@@ -256,11 +259,11 @@ var DataFrame = /** @class */ (function () {
     DataFrame.prototype.toString = function () {
         var columnNames = this.getColumnNames();
         var header = ["__index__"].concat(columnNames);
-        var rows = this.toPairs();
+        var pairs = this.toPairs();
         var table = new Table();
-        rows.forEach(function (row, rowIndex) {
-            var index = row[0];
-            var value = row[1];
+        pairs.forEach(function (pair) {
+            var index = pair[0];
+            var value = pair[1];
             table.cell(header[0], index);
             columnNames.forEach(function (columnName, columnIndex) {
                 table.cell(header[columnIndex + 1], value[columnName]);

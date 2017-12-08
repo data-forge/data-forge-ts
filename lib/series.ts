@@ -12,24 +12,34 @@ import { assert } from 'chai';
 import { IDataFrame, DataFrame } from './dataframe';
 
 /**
+ * Series configuration.
+ */
+export interface ISeriesConfig<IndexT, ValueT> {
+    values?: ValueT[] | Iterable<ValueT>,
+    index?: IndexT[] | Iterable<IndexT>,
+    pairs?: Iterable<[IndexT, ValueT]>
+    baked?: boolean,
+};
+
+/**
  * A selector function. Transforms a value into another kind of value.
  */
-export type SelectorFn = (value: any, index: number) => any;
+export type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
 
 /**
  * Interface that represents a series of indexed values.
  */
-export interface ISeries extends Iterable<any> {
+export interface ISeries<IndexT, ValueT> extends Iterable<ValueT> {
 
     /**
      * Get an iterator to enumerate the values of the series.
      */
-    [Symbol.iterator](): Iterator<any>;
+    [Symbol.iterator](): Iterator<ValueT>;
 
     /**
      * Get the index for the series.
      */
-    getIndex (): IIndex;
+    getIndex (): IIndex<IndexT>;
 
     /**
      * Apply a new index to the Series.
@@ -38,14 +48,14 @@ export interface ISeries extends Iterable<any> {
      * 
      * @returns Returns a new series with the specified index attached.
      */
-    withIndex (newIndex: any): ISeries;
+    withIndex<NewIndexT> (newIndex: NewIndexT[] | Iterable<NewIndexT>): ISeries<NewIndexT, ValueT>;
 
     /**
      * Resets the index of the series back to the default zero-based sequential integer index.
      * 
      * @returns Returns a new series with the index reset to the default zero-based index. 
      */
-    resetIndex (): ISeries;
+    resetIndex (): ISeries<number, ValueT>;
 
     /**
     * Extract values from the series as an array.
@@ -53,7 +63,7 @@ export interface ISeries extends Iterable<any> {
     * 
     * @returns Returns an array of values contained within the series. 
     */
-    toArray (): any[];
+    toArray (): ValueT[];
 
     /**
      * Retreive the index and values from the Series as an array of pairs.
@@ -61,24 +71,24 @@ export interface ISeries extends Iterable<any> {
      * 
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.  
      */
-    toPairs (): (any[])[];
+    toPairs (): ([IndexT,ValueT])[];
 
     /**
      * Generate a new series based by calling the selector function on each value.
      *
-     * @param {function} selector - Selector function that transforms each value to create a new series or dataframe.
+     * @param selector - Selector function that transforms each value to create a new series or dataframe.
      * 
-     * @returns {Series|DataFrame} Returns a new series or dataframe that has been transformed by the selector function.
+     * @returns Returns a new series that has been transformed by the selector function.
      */
-    select (selector: SelectorFn): ISeries;
+    select<ToT> (selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ToT>;
     
     /**
      * Skip a number of values in the series.
      *
-     * @param numValues - Number of values to skip.     * 
-     * @returns Returns a new series or dataframe with the specified number of values skipped. 
+     * @param numValues Number of values to skip.
+     * @returns Returns a new series with the specified number of values skipped. 
      */
-    skip (numValues: number): ISeries;
+    skip (numValues: number): ISeries<IndexT, ValueT>;
 
     /** 
      * Format the series for display as a string.
@@ -93,17 +103,26 @@ export interface ISeries extends Iterable<any> {
      * 
      * @returns Returns a series that has been 'baked', all lazy evaluation has completed.  
      */
-    bake (): ISeries;
+    bake (): ISeries<IndexT, ValueT>;
+
+    /** 
+     * Inflate the series to a dataframe.
+     *
+     * @param [selector] Optional selector function that transforms each value in the series to a row in the new dataframe.
+     *
+     * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
+     */
+    inflate (): IDataFrame<IndexT, ValueT>;
 }
 
 /**
  * Class that represents a series of indexed values.
  */
-export class Series implements ISeries {
+export class Series<IndexT, ValueT> implements ISeries<IndexT, ValueT> {
 
-    private index: Iterable<any>
-    private values: Iterable<any>;
-    private pairs: Iterable<any>;
+    private index: Iterable<IndexT>
+    private values: Iterable<ValueT>;
+    private pairs: Iterable<[IndexT, ValueT]>;
 
     //
     // Records if a series is baked into memory.
@@ -113,7 +132,7 @@ export class Series implements ISeries {
     //
     // Initialise this Series from an array.
     //
-    private initFromArray(arr: any[]): void {
+    private initFromArray(arr: ValueT[]): void {
         this.index = new CountIterable();
         this.values = new ArrayIterable(arr);
         this.pairs = new MultiIterable([this.index, this.values]);
@@ -128,9 +147,9 @@ export class Series implements ISeries {
         this.pairs = new EmptyIterable();
     }
 
-    private initIterable(input: any, fieldName: string): Iterable<any> {
+    private initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
         if (Sugar.Object.isArray(input)) {
-            return new ArrayIterable(input);
+            return new ArrayIterable<T>(input);
         }
         else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
@@ -144,10 +163,10 @@ export class Series implements ISeries {
     //
     // Initialise the Series from a config object.
     //
-    private initFromConfig(config: any): void {
+    private initFromConfig(config: ISeriesConfig<IndexT, ValueT>): void {
 
         if (config.index) {
-            this.index = this.initIterable(config.index, 'index');
+            this.index = this.initIterable<IndexT>(config.index, 'index');
         }
         else if (config.pairs) {
             this.index = new ExtractElementIterable(config.pairs, 0);
@@ -157,7 +176,7 @@ export class Series implements ISeries {
         }
 
         if (config.values) {
-            this.values = this.initIterable(config.values, 'values');
+            this.values = this.initIterable<ValueT>(config.values, 'values');
         }
         else if (config.pairs) {
             this.values = new ExtractElementIterable(config.pairs, 1);
@@ -173,7 +192,9 @@ export class Series implements ISeries {
             this.pairs = new MultiIterable([this.index, this.values]);
         }
 
-        this.isBaked = config.baked;
+        if (config.baked !== undefined) {
+            this.isBaked = config.baked;
+        }
     }
 
     /**
@@ -186,7 +207,7 @@ export class Series implements ISeries {
      *      index: Optional array or iterable of values that index the series, defaults to a series of integers from 1 and counting upward.
      *      pairs: Optional iterable of pairs (index and value) that the series contains.
      */
-    constructor(config?: any) {
+    constructor(config?: ValueT[] | ISeriesConfig<IndexT, ValueT>) {
         if (config) {
             if (Sugar.Object.isArray(config)) {
                 this.initFromArray(config);
@@ -204,15 +225,15 @@ export class Series implements ISeries {
      * Get an iterator to enumerate the values of the series.
      * Enumerating the iterator forces lazy evaluation to complete.
      */
-    [Symbol.iterator](): Iterator<any> {
+    [Symbol.iterator](): Iterator<ValueT> {
         return this.values[Symbol.iterator]();
     }
 
     /**
      * Get the index for the series.
      */
-    getIndex (): IIndex {
-        return new Index({ values: this.index });
+    getIndex (): IIndex<IndexT> {
+        return new Index<IndexT>({ values: this.index });
     }
 
     /**
@@ -222,13 +243,13 @@ export class Series implements ISeries {
      * 
      * @returns Returns a new series with the specified index attached.
      */
-    withIndex (newIndex: any): ISeries {
+    withIndex<NewIndexT> (newIndex: IIndex<NewIndexT> | ISeries<any, NewIndexT> | NewIndexT[]): ISeries<NewIndexT, ValueT> {
 
         if (!Sugar.Object.isArray(newIndex)) {
             assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'Series.withIndex' to be an array, Series or Index.");
         }
 
-        return new Series({
+        return new Series<NewIndexT, ValueT>({
             values: this.values,
             index: newIndex,
         });
@@ -239,8 +260,8 @@ export class Series implements ISeries {
      * 
      * @returns Returns a new series with the index reset to the default zero-based index. 
      */
-    resetIndex (): ISeries {
-        return new Series({
+    resetIndex (): ISeries<number, ValueT> {
+        return new Series<number, ValueT>({
             values: this.values // Just strip the index.
         });
     }
@@ -266,8 +287,8 @@ export class Series implements ISeries {
      * 
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.  
      */
-    toPairs (): (any[])[] {
-        var pairs = [];
+    toPairs (): ([IndexT, ValueT])[] {
+        var pairs: [IndexT, ValueT][] = [];
         for (const pair of this.pairs) {
             pairs.push(pair);
         }
@@ -281,7 +302,7 @@ export class Series implements ISeries {
      * 
      * @returns Returns a new series that has been transformed by the selector function.
      */
-    select (selector: SelectorFn): ISeries {
+    select<ToT> (selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.select' function to be a function.");
 
         return new Series({
@@ -296,8 +317,8 @@ export class Series implements ISeries {
      * @param numValues - Number of values to skip.     * 
      * @returns Returns a new series or dataframe with the specified number of values skipped. 
      */
-    skip (numValues: number): ISeries {
-        return new Series({
+    skip (numValues: number): ISeries<IndexT, ValueT> {
+        return new Series<IndexT, ValueT>({
             values: new SkipIterable(this.values, numValues),
             index: new SkipIterable(this.index, numValues),
             pairs: new SkipIterable(this.pairs, numValues),
@@ -331,14 +352,14 @@ export class Series implements ISeries {
      * 
      * @returns Returns a series that has been 'baked', all lazy evaluation has completed.  
      */
-    bake (): ISeries {
+    bake (): ISeries<IndexT, ValueT> {
 
         if (this.isBaked) {
             // Already baked.
             return this;
         }
 
-        return new Series({
+        return new Series<IndexT, ValueT>({
             pairs: new ArrayIterable(this.toPairs()),
             baked: true,
         });
@@ -351,22 +372,12 @@ export class Series implements ISeries {
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    inflate (selector?: SelectorFn): IDataFrame {
+    inflate (): IDataFrame<IndexT, ValueT> {
 
-        if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to 'Series.inflate' function to be a function.");
-
-            return new DataFrame({
-                values: new SelectIterable(this.values, selector),
-                index: this.index,
-            });
-        }
-        else {
-            return new DataFrame({
-                values: this.values,
-                index: this.index,
-                pairs: this.pairs,
-            });
-        }
+        return new DataFrame<IndexT, ValueT>({
+            values: this.values,
+            index: this.index,
+            pairs: this.pairs,
+        });
     }
 }

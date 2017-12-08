@@ -1,3 +1,3 @@
-export declare class CountIterable implements Iterable<number> {
-    [Symbol.iterator](): Iterator<number>;
+export declare class CountIterable implements Iterable<any> {
+    [Symbol.iterator](): Iterator<any>;
 }
