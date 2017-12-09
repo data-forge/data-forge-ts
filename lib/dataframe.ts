@@ -18,7 +18,8 @@ import { ColumnNamesIterable } from './iterables/column-names-iterable';
 export interface IDataFrameConfig<IndexT, ValueT> {
     values?: ValueT[] | Iterable<ValueT>,
     index?: IndexT[] | Iterable<IndexT>,
-    pairs?: Iterable<[IndexT, ValueT]>
+    pairs?: Iterable<[IndexT, ValueT]>,
+    columnNames?: string[] | Iterable<string>,
     baked?: boolean,
 };
 
@@ -167,6 +168,10 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
     //
     private initFromConfig(config: IDataFrameConfig<IndexT, ValueT>): void {
 
+        if (config.columnNames) {
+            this.columnNames = this.initIterable<string>(config.columnNames, 'columnNames');
+        }
+
         if (config.index) {
             this.index = this.initIterable<IndexT>(config.index, 'index');
         }
@@ -179,15 +184,21 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
 
         if (config.values) {
             this.values = this.initIterable<ValueT>(config.values, 'values');
-            this.columnNames = new ColumnNamesIterable(this.values);
+            if (!this.columnNames) {
+                this.columnNames = new ColumnNamesIterable(this.values);
+            }
         }
         else if (config.pairs) {
             this.values = new ExtractElementIterable(config.pairs, 1);
-            this.columnNames = new ColumnNamesIterable(this.values);
+            if (!this.columnNames) {
+                this.columnNames = new ColumnNamesIterable(this.values);
+            }
         }
         else {
             this.values = new EmptyIterable();
-            this.columnNames = new EmptyIterable();
+            if (!this.columnNames) {
+                this.columnNames = new EmptyIterable();
+            }
         }
 
         if (config.pairs) {

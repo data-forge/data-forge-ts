@@ -90,5 +90,50 @@ describe('DataFrame columns', function () {
             }
         ]);
     });
+    it('can create dataframe with array of column names', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            columnNames: ["A", "B"],
+        });
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(["A", "B"]);
+    });
+    it('can create dataframe with array of column names that override the content', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            values: [
+                {
+                    A: 1,
+                    B: 10,
+                },
+            ],
+            columnNames: ["X", "Y"],
+        });
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
+    });
+    it('can create dataframe with iterable of column names that override input values', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            values: [
+                {
+                    A: 1,
+                    B: 10,
+                },
+            ],
+            columnNames: new array_iterable_1.ArrayIterable(["X", "Y"]),
+        });
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
+    });
+    it('can create dataframe with iterable of column names that override input pairs', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            pairs: [
+                [
+                    10,
+                    {
+                        A: 1,
+                        B: 10,
+                    },
+                ],
+            ],
+            columnNames: new array_iterable_1.ArrayIterable(["X", "Y"]),
+        });
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
+    });
 });
 //# sourceMappingURL=dataframe.columns.test.js.map

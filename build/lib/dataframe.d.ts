@@ -7,6 +7,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     values?: ValueT[] | Iterable<ValueT>;
     index?: IndexT[] | Iterable<IndexT>;
     pairs?: Iterable<[IndexT, ValueT]>;
+    columnNames?: string[] | Iterable<string>;
     baked?: boolean;
 }
 /**

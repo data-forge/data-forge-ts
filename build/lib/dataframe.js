@@ -94,6 +94,9 @@ var DataFrame = /** @class */ (function () {
     // Initialise the DataFrame from a config object.
     //
     DataFrame.prototype.initFromConfig = function (config) {
+        if (config.columnNames) {
+            this.columnNames = this.initIterable(config.columnNames, 'columnNames');
+        }
         if (config.index) {
             this.index = this.initIterable(config.index, 'index');
         }
@@ -105,15 +108,21 @@ var DataFrame = /** @class */ (function () {
         }
         if (config.values) {
             this.values = this.initIterable(config.values, 'values');
-            this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
+            if (!this.columnNames) {
+                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
+            }
         }
         else if (config.pairs) {
             this.values = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 1);
-            this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
+            if (!this.columnNames) {
+                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
+            }
         }
         else {
             this.values = new empty_iterable_1.EmptyIterable();
-            this.columnNames = new empty_iterable_1.EmptyIterable();
+            if (!this.columnNames) {
+                this.columnNames = new empty_iterable_1.EmptyIterable();
+            }
         }
         if (config.pairs) {
             this.pairs = config.pairs;
