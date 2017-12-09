@@ -112,4 +112,60 @@ describe('DataFrame columns', () => {
         ]);
     });
 
+    it('can create dataframe with array of column names', () => {
+
+        var dataFrame = new DataFrame({
+            columnNames: ["A", "B"],
+        });
+
+        expect(dataFrame.getColumnNames()).to.eql(["A", "B"]);
+    });
+
+    it('can create dataframe with array of column names that override the content', () => {
+
+        var dataFrame = new DataFrame({
+            values: [
+                {
+                    A: 1,
+                    B: 10,
+                },
+            ],
+            columnNames: ["X", "Y"],
+        });
+
+        expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
+    });
+
+    it('can create dataframe with iterable of column names that override input values', () => {
+
+        var dataFrame = new DataFrame({
+            values: [
+                {
+                    A: 1,
+                    B: 10,
+                },
+            ],
+            columnNames: new ArrayIterable(["X", "Y"]),
+        });
+
+        expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
+    });
+
+    it('can create dataframe with iterable of column names that override input pairs', () => {
+
+        var dataFrame = new DataFrame({
+            pairs: [
+                [
+                    10, 
+                    {
+                        A: 1,
+                        B: 10,
+                    },
+                ],
+            ],
+            columnNames: new ArrayIterable(["X", "Y"]),
+        });
+
+        expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
+    });
 });

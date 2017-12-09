@@ -2,23 +2,24 @@
 // An iterator that applies a selector function to each item.
 //
 
-export type SelectorFn = (value: any, index: number) => any;
+export type SelectorFn<ValueT, ToT> = (value: ValueT, index: number) => ToT;
 
-export class SelectIterator implements Iterator<any> {
+export class SelectIterator<ValueT, ToT> implements Iterator<ToT> {
 
-    iterator: Iterator<any>;
-    selector: SelectorFn;
+    iterator: Iterator<ValueT>;
+    selector: SelectorFn<ValueT, ToT>;
     index: number = 0;
 
-    constructor(iterator: Iterator<any>, selector: SelectorFn) {
+    constructor(iterator: Iterator<ValueT>, selector: SelectorFn<ValueT, ToT>) {
         this.iterator = iterator;
         this.selector = selector;
     }
 
-    next(): IteratorResult<any> {
+    next(): IteratorResult<ToT> {
         var result = this.iterator.next();
         if (result.done) {
-            return result;
+            // https://github.com/Microsoft/TypeScript/issues/8938
+            return ({ done: true } as IteratorResult<ToT>)  // <= explicit cast here!;
         }
 
         return {

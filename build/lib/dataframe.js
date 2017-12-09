@@ -21,6 +21,7 @@ var extract_element_iterable_1 = require("./iterables/extract-element-iterable")
 var skip_iterable_1 = require("./iterables/skip-iterable");
 var Table = require('easy-table');
 var chai_1 = require("chai");
+var series_1 = require("./series");
 var column_names_iterable_1 = require("./iterables/column-names-iterable");
 ;
 /**
@@ -180,6 +181,18 @@ var DataFrame = /** @class */ (function () {
     DataFrame.prototype.resetIndex = function () {
         return new DataFrame({
             values: this.values // Just strip the index.
+        });
+    };
+    /**
+     * Retreive a series from a column of the dataframe.
+     *
+     * @param columnName Specifies the name of the column that contains the series to retreive.
+     */
+    DataFrame.prototype.getSeries = function (columnName) {
+        chai_1.assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
+        return new series_1.Series({
+            values: new select_iterable_1.SelectIterable(this.values, function (row) { return row[columnName]; }),
+            index: this.index,
         });
     };
     /**

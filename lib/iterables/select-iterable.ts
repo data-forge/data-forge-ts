@@ -4,18 +4,18 @@
 
 import { SelectorFn, SelectIterator } from '../iterators/select-iterator';
 
-export class SelectIterable implements Iterable<any> {
+export class SelectIterable<ValueT, ToT> implements Iterable<ToT> {
 
-    iterable: Iterable<any>;
-    selector: SelectorFn;
+    iterable: Iterable<ValueT>;
+    selector: SelectorFn<ValueT, ToT>;
 
-    constructor(iterable: Iterable<any>, selector: SelectorFn) {
+    constructor(iterable: Iterable<ValueT>, selector: SelectorFn<ValueT, ToT>) {
         this.iterable = iterable;
         this.selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<any> {
+    [Symbol.iterator](): Iterator<ToT> {
         var iterator = this.iterable[Symbol.iterator]();
-        return new SelectIterator(iterator, this.selector);
+        return new SelectIterator<ValueT, ToT>(iterator, this.selector);
     }
 }

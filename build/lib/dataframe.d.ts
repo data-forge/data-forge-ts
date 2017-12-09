@@ -1,5 +1,5 @@
 import { IIndex } from './index';
-import { SelectorFn } from './series';
+import { ISeries, SelectorFn } from './series';
 /**
  * DataFrame configuration.
  */
@@ -42,6 +42,12 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
      * @returns Returns a new dataframe with the index reset to the default zero-based index.
      */
     resetIndex(): IDataFrame<number, ValueT>;
+    /**
+     * Retreive a series from a column of the dataframe.
+     *
+     * @param columnName Specifies the name of the column that contains the series to retreive.
+     */
+    getSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
@@ -138,6 +144,12 @@ export declare class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, Val
      * @returns Returns a new dataframe with the index reset to the default zero-based index.
      */
     resetIndex(): IDataFrame<number, ValueT>;
+    /**
+     * Retreive a series from a column of the dataframe.
+     *
+     * @param columnName Specifies the name of the column that contains the series to retreive.
+     */
+    getSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.

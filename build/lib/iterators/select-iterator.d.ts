@@ -1,8 +1,8 @@
-export declare type SelectorFn = (value: any, index: number) => any;
-export declare class SelectIterator implements Iterator<any> {
-    iterator: Iterator<any>;
-    selector: SelectorFn;
+export declare type SelectorFn<ValueT, ToT> = (value: ValueT, index: number) => ToT;
+export declare class SelectIterator<ValueT, ToT> implements Iterator<ToT> {
+    iterator: Iterator<ValueT>;
+    selector: SelectorFn<ValueT, ToT>;
     index: number;
-    constructor(iterator: Iterator<any>, selector: SelectorFn);
-    next(): IteratorResult<any>;
+    constructor(iterator: Iterator<ValueT>, selector: SelectorFn<ValueT, ToT>);
+    next(): IteratorResult<ToT>;
 }

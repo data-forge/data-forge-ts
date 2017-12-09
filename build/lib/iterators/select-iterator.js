@@ -12,7 +12,8 @@ var SelectIterator = /** @class */ (function () {
     SelectIterator.prototype.next = function () {
         var result = this.iterator.next();
         if (result.done) {
-            return result;
+            // https://github.com/Microsoft/TypeScript/issues/8938
+            return { done: true }; // <= explicit cast here!;
         }
         return {
             done: false,

@@ -62,6 +62,13 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
     resetIndex (): IDataFrame<number, ValueT>;
 
     /**
+     * Retreive a series from a column of the dataframe.
+     *
+     * @param columnName Specifies the name of the column that contains the series to retreive.
+     */
+    getSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT>;
+
+    /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     * 
@@ -289,6 +296,21 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
         return new DataFrame<number, ValueT>({
             values: this.values // Just strip the index.
         });
+    }
+    
+    /**
+     * Retreive a series from a column of the dataframe.
+     *
+     * @param columnName Specifies the name of the column that contains the series to retreive.
+     */
+    getSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT> {
+
+        assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
+
+        return new Series<IndexT, SeriesValueT>({
+            values: new SelectIterable<ValueT, SeriesValueT>(this.values, (row: any) => row[columnName]),
+            index: this.index,
+        });   
     }
     
     /**
