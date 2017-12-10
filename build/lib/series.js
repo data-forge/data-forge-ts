@@ -166,7 +166,9 @@ var Series = /** @class */ (function () {
         try {
             for (var _a = __values(this.values), _b = _a.next(); !_b.done; _b = _a.next()) {
                 var value = _b.value;
-                values.push(value);
+                if (value !== undefined) {
+                    values.push(value);
+                }
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -191,7 +193,9 @@ var Series = /** @class */ (function () {
         try {
             for (var _a = __values(this.pairs), _b = _a.next(); !_b.done; _b = _a.next()) {
                 var pair = _b.value;
-                pairs.push(pair);
+                if (pair[1] != undefined) {
+                    pairs.push(pair);
+                }
             }
         }
         catch (e_2_1) { e_2 = { error: e_2_1 }; }

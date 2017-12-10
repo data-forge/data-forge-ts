@@ -85,6 +85,16 @@ describe('Series', function () {
             [200, { V: 20, },],
         ]);
     });
-    //todo: inflate preserves index - both cases, test pairs
+    it('Series.toArray strips undefined values', function () {
+        var series = new series_1.Series([10, undefined, 20, undefined]);
+        chai_1.expect(series.toArray()).to.eql([10, 20]);
+    });
+    it('Series.toPairs strips undefined values', function () {
+        var series = new series_1.Series([10, undefined, 20, undefined]);
+        chai_1.expect(series.toPairs()).to.eql([
+            [0, 10],
+            [2, 20]
+        ]);
+    });
 });
 //# sourceMappingURL=series.test.js.map

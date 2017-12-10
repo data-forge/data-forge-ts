@@ -63,6 +63,12 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
      */
     toPairs(): ([IndexT, ValueT])[];
     /**
+     * Bake the data frame to an array of rows.
+     *
+     *  @returns Returns an array of rows. Each row is an array of values in column order.
+     */
+    toRows(): any[][];
+    /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
      * @param selector Selector function that transforms each value to create a new dataframe.
@@ -90,6 +96,18 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.
      */
     bake(): IDataFrame<IndexT, ValueT>;
+    /**
+     * Serialize the dataframe to JSON.
+     *
+     *  @returns Returns a JSON format string representing the dataframe.
+     */
+    toJSON(): string;
+    /**
+     * Serialize the dataframe to CSV.
+     *
+     *  @returns Returns a CSV format string representing the dataframe.
+     */
+    toCSV(): string;
 }
 /**
  * Class that represents a dataframe of indexed values.
@@ -166,6 +184,12 @@ export declare class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, Val
      */
     toPairs(): ([IndexT, ValueT])[];
     /**
+     * Bake the data frame to an array of rows.
+     *
+     *  @returns Returns an array of rows. Each row is an array of values in column order.
+     */
+    toRows(): any[][];
+    /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
      * @param selector Selector function that transforms each value to create a new dataframe.
@@ -193,4 +217,16 @@ export declare class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, Val
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.
      */
     bake(): IDataFrame<IndexT, ValueT>;
+    /**
+     * Serialize the dataframe to JSON.
+     *
+     *  @returns Returns a JSON format string representing the dataframe.
+     */
+    toJSON(): string;
+    /**
+     * Serialize the dataframe to CSV.
+     *
+     *  @returns Returns a CSV format string representing the dataframe.
+     */
+    toCSV(): string;
 }

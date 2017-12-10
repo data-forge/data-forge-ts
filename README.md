@@ -6,3 +6,10 @@ A TypeScript implementation of [Data-Forge](https://github.com/data-forge/data-f
 **Breaking changes**
 
 Series.inflate no longer takes a selector.
+
+Removed HTTP and MongoDB support.
+These have been moved to a separate plugin.
+
+Config object to fromJSON fn is no longer used.
+
+Config object to fromCSV is now only passed to Babyparse, it is no longer passed to DataFrame constructor.

@@ -23,6 +23,7 @@ var Table = require('easy-table');
 var chai_1 = require("chai");
 var series_1 = require("./series");
 var column_names_iterable_1 = require("./iterables/column-names-iterable");
+var BabyParse = require("babyparse");
 ;
 /**
  * Class that represents a dataframe of indexed values.
@@ -172,7 +173,6 @@ var DataFrame = /** @class */ (function () {
             index: newIndex,
         });
     };
-    ;
     /**
      * Resets the index of the dataframe back to the default zero-based sequential integer index.
      *
@@ -245,6 +245,34 @@ var DataFrame = /** @class */ (function () {
         var e_2, _c;
     };
     /**
+     * Bake the data frame to an array of rows.
+     *
+     *  @returns Returns an array of rows. Each row is an array of values in column order.
+     */
+    DataFrame.prototype.toRows = function () {
+        var columnNames = this.getColumnNames();
+        var rows = [];
+        try {
+            for (var _a = __values(this.values), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var value = _b.value;
+                var row = [];
+                for (var columnIndex = 0; columnIndex < columnNames.length; ++columnIndex) {
+                    row.push(value[columnNames[columnIndex]]);
+                }
+                rows.push(row);
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return rows;
+        var e_3, _c;
+    };
+    /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
      * @param selector Selector function that transforms each value to create a new dataframe.
@@ -258,7 +286,6 @@ var DataFrame = /** @class */ (function () {
             index: this.index,
         });
     };
-    ;
     /**
      * Skip a number of values in the dataframe.
      *
@@ -294,7 +321,6 @@ var DataFrame = /** @class */ (function () {
         });
         return table.toString();
     };
-    ;
     /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      *
@@ -310,7 +336,23 @@ var DataFrame = /** @class */ (function () {
             baked: true,
         });
     };
-    ;
+    /**
+     * Serialize the dataframe to JSON.
+     *
+     *  @returns Returns a JSON format string representing the dataframe.
+     */
+    DataFrame.prototype.toJSON = function () {
+        return JSON.stringify(this.toArray(), null, 4);
+    };
+    /**
+     * Serialize the dataframe to CSV.
+     *
+     *  @returns Returns a CSV format string representing the dataframe.
+     */
+    DataFrame.prototype.toCSV = function () {
+        var data = [this.getColumnNames()].concat(this.toRows());
+        return BabyParse.unparse(data);
+    };
     return DataFrame;
 }());
 exports.DataFrame = DataFrame;

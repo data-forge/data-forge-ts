@@ -7,7 +7,31 @@ var dataframe_1 = require("../lib/dataframe");
 var array_iterable_1 = require("../lib/iterables/array-iterable");
 describe('DataFrame constructor', function () {
     it('create dataframe from array of values', function () {
-        chai_1.expect(new dataframe_1.DataFrame([10, 20, 30]).toArray()).to.eql([10, 20, 30]);
+        var dataFrame = new dataframe_1.DataFrame([
+            { A: 10 },
+            { A: 20 },
+            { A: 30 },
+        ]);
+        chai_1.expect(dataFrame.toArray()).to.eql([
+            { A: 10 },
+            { A: 20 },
+            { A: 30 },
+        ]);
+    });
+    it('can get rows from dataframe', function () {
+        var dataFrame = new dataframe_1.DataFrame([
+            { A: 10, B: 100 },
+            { A: 20, B: 200 },
+            { A: 30, B: 300 },
+        ]);
+        chai_1.expect(dataFrame.toRows()).to.eql([
+            [10, 100],
+            [20, 200],
+            [30, 300],
+        ]);
+    });
+    it('empty dataframe returns empty row', function () {
+        chai_1.expect(new dataframe_1.DataFrame().toRows()).to.eql([]);
     });
     it('create dataframe from empty array', function () {
         chai_1.expect(new dataframe_1.DataFrame([]).toArray()).to.eql([]);
@@ -22,14 +46,35 @@ describe('DataFrame constructor', function () {
         chai_1.expect(new dataframe_1.DataFrame({ index: [100, 200, 300] }).toArray()).to.eql([]);
     });
     it('create dataframe from array of values in config', function () {
-        chai_1.expect(new dataframe_1.DataFrame({ values: [10, 20, 30] }).toArray()).to.eql([10, 20, 30]);
+        var dataFrame = new dataframe_1.DataFrame({
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ],
+        });
+        chai_1.expect(dataFrame.toArray()).to.eql([
+            { A: 10 },
+            { A: 20 },
+            { A: 30 },
+        ]);
     });
     it('create dataframe from empty array in config', function () {
         chai_1.expect(new dataframe_1.DataFrame({ values: [] }).toArray()).to.eql([]);
     });
     it('create dataframe with values iterable', function () {
-        var dataframe = new dataframe_1.DataFrame({ values: new array_iterable_1.ArrayIterable([10, 20, 30]) });
-        chai_1.expect(dataframe.toArray()).to.eql([10, 20, 30]);
+        var dataframe = new dataframe_1.DataFrame({
+            values: new array_iterable_1.ArrayIterable([
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ])
+        });
+        chai_1.expect(dataframe.toArray()).to.eql([
+            { A: 10 },
+            { A: 20 },
+            { A: 30 },
+        ]);
     });
     it('passing something other than an array or iterable for values is an error', function () {
         // This isn't possible in TypeScript, but is in JavaScript.
@@ -40,54 +85,74 @@ describe('DataFrame constructor', function () {
     // create dataframe from values iterable and index iterable
     //tod: 
     it('index is set by default when values are passed in by array', function () {
-        var dataframe = new dataframe_1.DataFrame([10, 20, 30]);
-        chai_1.expect(dataframe.toPairs()).to.eql([
-            [0, 10],
-            [1, 20],
-            [2, 30],
+        var dataFrame = new dataframe_1.DataFrame([
+            { A: 10 },
+            { A: 20 },
+            { A: 30 },
+        ]);
+        chai_1.expect(dataFrame.toPairs()).to.eql([
+            [0, { A: 10 }],
+            [1, { A: 20 }],
+            [2, { A: 30 }],
         ]);
     });
     it('index is set by default when values are passed in by config', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: [10, 20, 30]
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ]
         });
         chai_1.expect(dataframe.toPairs()).to.eql([
-            [0, 10],
-            [1, 20],
-            [2, 30],
+            [0, { A: 10 }],
+            [1, { A: 20 }],
+            [2, { A: 30 }],
         ]);
     });
     it('can set index via array passed to constructor', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ],
             index: [100, 200, 300]
         });
         chai_1.expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
     });
     it('can create dataframe with values array and index iterable', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ],
             index: new array_iterable_1.ArrayIterable([100, 200, 300])
         });
         chai_1.expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
     });
     it('can create dataframe with values iterable and index iterable', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: new array_iterable_1.ArrayIterable([10, 20, 30]),
+            values: new array_iterable_1.ArrayIterable([
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ]),
             index: new array_iterable_1.ArrayIterable([100, 200, 300])
         });
         chai_1.expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
     });
     it('passing something other than an array or iterable for index is an error', function () {
@@ -96,18 +161,26 @@ describe('DataFrame constructor', function () {
     });
     it('can create dataframe with index from another dataframe', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ],
             index: new dataframe_1.DataFrame([100, 200, 300])
         });
         chai_1.expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
     });
     it('can get index from dataframe', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ],
             index: [100, 200, 300]
         });
         chai_1.expect(dataframe.getIndex().toArray()).to.eql([
@@ -118,13 +191,17 @@ describe('DataFrame constructor', function () {
     });
     it('can create dataframe with index from another index', function () {
         var dataframe = new dataframe_1.DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 },
+                { A: 20 },
+                { A: 30 },
+            ],
             index: new index_1.Index([100, 200, 300])
         });
         chai_1.expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
     });
     it('can create dataframe from pairs', function () {

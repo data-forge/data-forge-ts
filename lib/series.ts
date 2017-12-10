@@ -275,7 +275,9 @@ export class Series<IndexT, ValueT> implements ISeries<IndexT, ValueT> {
     toArray (): any[] {
         var values = [];
         for (const value of this.values) {
-            values.push(value);
+            if (value !== undefined) {
+                values.push(value);
+            }
         }
         return values;
     }
@@ -290,7 +292,9 @@ export class Series<IndexT, ValueT> implements ISeries<IndexT, ValueT> {
     toPairs (): ([IndexT, ValueT])[] {
         var pairs: [IndexT, ValueT][] = [];
         for (const pair of this.pairs) {
-            pairs.push(pair);
+            if (pair[1] != undefined) {
+                pairs.push(pair);
+            }
         }
         return pairs;
     }

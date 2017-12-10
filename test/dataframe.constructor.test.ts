@@ -8,14 +8,40 @@ describe('DataFrame constructor', () => {
 
     it('create dataframe from array of values', ()  => {
         
-        expect(new DataFrame([10, 20, 30]).toArray()).to.eql([10, 20, 30]);        
+        const dataFrame = new DataFrame([
+            { A: 10 }, 
+            { A: 20 }, 
+            { A: 30 }, 
+        ]);
+        expect(dataFrame.toArray()).to.eql([
+            { A: 10 }, 
+            { A: 20 }, 
+            { A: 30 }, 
+        ]);
+    });
 
+    it('can get rows from dataframe', () => {
+
+        const dataFrame = new DataFrame([
+            { A: 10, B: 100 }, 
+            { A: 20, B: 200 }, 
+            { A: 30, B: 300 }, 
+        ]);
+        expect(dataFrame.toRows()).to.eql([
+            [10, 100],
+            [20, 200],
+            [30, 300],
+        ]);
+    });
+
+    it('empty dataframe returns empty row', () => {
+
+        expect(new DataFrame().toRows()).to.eql([]);
     });
 
     it('create dataframe from empty array', ()  => {
         
         expect(new DataFrame([]).toArray()).to.eql([]);
-
     });
 
     it('create empty dataframe using no params', ()  => {
@@ -35,8 +61,18 @@ describe('DataFrame constructor', () => {
 
     it('create dataframe from array of values in config', ()  => {
 
-        expect(new DataFrame({ values: [10, 20, 30] }).toArray()).to.eql([10, 20, 30]);        
-
+        const dataFrame = new DataFrame({
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ],
+        });
+        expect(dataFrame.toArray()).to.eql([
+            { A: 10 }, 
+            { A: 20 }, 
+            { A: 30 }, 
+        ]);
     });
     
     it('create dataframe from empty array in config', ()  => {
@@ -46,8 +82,18 @@ describe('DataFrame constructor', () => {
     });
 
     it('create dataframe with values iterable', () => {
-        var dataframe = new DataFrame({ values: new ArrayIterable([10, 20, 30]) });
-        expect(dataframe.toArray()).to.eql([10, 20, 30]);        
+        var dataframe = new DataFrame({ 
+            values: new ArrayIterable([
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ]) 
+        });
+        expect(dataframe.toArray()).to.eql([
+            { A: 10 }, 
+            { A: 20 }, 
+            { A: 30 }, 
+        ]);
     });
 
     it('passing something other than an array or iterable for values is an error', () => {
@@ -62,52 +108,69 @@ describe('DataFrame constructor', () => {
     //tod: 
 
     it('index is set by default when values are passed in by array', () => {
-        var dataframe = new DataFrame([10, 20, 30]);
 
-        expect(dataframe.toPairs()).to.eql([
-            [0, 10],
-            [1, 20],
-            [2, 30],
+        const dataFrame = new DataFrame([
+            { A: 10 }, 
+            { A: 20 }, 
+            { A: 30 }, 
+        ]);
+
+        expect(dataFrame.toPairs()).to.eql([
+            [0, { A: 10 }],
+            [1, { A: 20 }],
+            [2, { A: 30 }],
         ]);
     });
 
     it('index is set by default when values are passed in by config', () => {
         var dataframe = new DataFrame({
-            values: [10, 20, 30]
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ]
         });
 
         expect(dataframe.toPairs()).to.eql([
-            [0, 10],
-            [1, 20],
-            [2, 30],
+            [0, { A: 10 }],
+            [1, { A: 20 }],
+            [2, { A: 30 }],
         ]);
     });
 
     it('can set index via array passed to constructor', () => {
 
         var dataframe = new DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ],
             index: [100, 200, 300]
         });
 
         expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
     });
 
     it('can create dataframe with values array and index iterable', () => {
 
         var dataframe = new DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ],
             index: new ArrayIterable([100, 200, 300])
         });
 
         expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
 
     });
@@ -115,14 +178,18 @@ describe('DataFrame constructor', () => {
     it('can create dataframe with values iterable and index iterable', () => {
 
         var dataframe = new DataFrame({
-            values: new ArrayIterable([10, 20, 30]),
+            values: new ArrayIterable([
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ]),
             index: new ArrayIterable([100, 200, 300])
         });
 
         expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
 
     });
@@ -137,14 +204,18 @@ describe('DataFrame constructor', () => {
     it('can create dataframe with index from another dataframe', () => {
 
         var dataframe = new DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ],
             index: new DataFrame([100, 200, 300])
         });
 
         expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
         
     });
@@ -152,7 +223,11 @@ describe('DataFrame constructor', () => {
     it ('can get index from dataframe', () => {
 
         var dataframe = new DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ],
             index: [100, 200, 300]
         });
 
@@ -161,22 +236,24 @@ describe('DataFrame constructor', () => {
             200,
             300,
         ]);
-
     });
 
     it('can create dataframe with index from another index', () => {
 
         var dataframe = new DataFrame({
-            values: [10, 20, 30],
+            values: [
+                { A: 10 }, 
+                { A: 20 }, 
+                { A: 30 }, 
+            ],
             index: new Index([100, 200, 300])
         });
 
         expect(dataframe.toPairs()).to.eql([
-            [100, 10],
-            [200, 20],
-            [300, 30],
+            [100, { A: 10 }],
+            [200, { A: 20 }],
+            [300, { A: 30 }],
         ]);
-        
     });
 
     it('can create dataframe from pairs', () => {

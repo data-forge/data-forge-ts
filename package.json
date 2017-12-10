@@ -25,7 +25,11 @@
   },
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
+    "@types/babyparse": "0.0.30",
+    "@types/mock-require": "2.0.0",
+    "babyparse": "0.4.6",
     "easy-table": "1.1.0",
+    "mock-require": "2.0.2",
     "moment": "2.18.1",
     "sugar": "2.0.4"
   },

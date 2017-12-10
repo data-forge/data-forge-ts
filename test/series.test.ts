@@ -104,6 +104,18 @@ describe('Series', () => {
         ]);
     });
 
+    it('Series.toArray strips undefined values', () => {
 
-    //todo: inflate preserves index - both cases, test pairs
+        var series = new Series([10, undefined, 20, undefined]);
+        expect(series.toArray()).to.eql([10, 20]);
+    });
+
+    it('Series.toPairs strips undefined values', () => {
+
+        var series = new Series([10, undefined, 20, undefined]);
+        expect(series.toPairs()).to.eql([
+            [0, 10], 
+            [2, 20]
+        ]);
+    });
 });

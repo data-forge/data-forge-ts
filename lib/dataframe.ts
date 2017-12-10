@@ -7,10 +7,11 @@ import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
-var Table = require('easy-table');
+const Table = require('easy-table');
 import { assert } from 'chai';
 import { ISeries, Series, SelectorFn } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
+import * as BabyParse from 'babyparse';
 
 /**
  * DataFrame configuration.
@@ -85,6 +86,13 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
     toPairs (): ([IndexT, ValueT])[];
 
     /**
+     * Bake the data frame to an array of rows.
+     * 
+     *  @returns Returns an array of rows. Each row is an array of values in column order.   
+     */
+    toRows (): any[][];
+    
+    /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
      * @param selector Selector function that transforms each value to create a new dataframe.
@@ -115,6 +123,20 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
      */
     bake (): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Serialize the dataframe to JSON.
+     * 
+     *  @returns Returns a JSON format string representing the dataframe.   
+     */
+    toJSON (): string;
+
+    /**
+     * Serialize the dataframe to CSV.
+     * 
+     *  @returns Returns a CSV format string representing the dataframe.   
+     */
+    toCSV (): string;
 }
 
 /**
@@ -285,7 +307,7 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
             values: this.values,
             index: newIndex,
         });
-    };
+    }
 
     /**
      * Resets the index of the dataframe back to the default zero-based sequential integer index.
@@ -308,7 +330,10 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
         assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
 
         return new Series<IndexT, SeriesValueT>({
-            values: new SelectIterable<ValueT, SeriesValueT>(this.values, (row: any) => row[columnName]),
+            values: new SelectIterable<ValueT, SeriesValueT>(
+                this.values, 
+                (row: any) => row[columnName],
+            ),
             index: this.index,
         });   
     }
@@ -320,7 +345,7 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
     * @returns Returns an array of values contained within the dataframe. 
     */
     toArray (): any[] {
-        var values = [];
+        let values = [];
         for (const value of this.values) {
             values.push(value);
         }
@@ -335,11 +360,32 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
      */
     toPairs (): ([IndexT, ValueT])[] {
-        var pairs = [];
+        let pairs = [];
         for (const pair of this.pairs) {
             pairs.push(pair);
         }
         return pairs;
+    }
+
+    /**
+     * Bake the data frame to an array of rows.
+     * 
+     *  @returns Returns an array of rows. Each row is an array of values in column order.   
+     */
+    toRows (): any[][] {
+
+        const columnNames = this.getColumnNames();
+        let rows = [];
+        for (const value of this.values) {
+            let row = [];
+            for (let columnIndex = 0; columnIndex < columnNames.length; ++columnIndex) {
+                row.push((<any>value)[columnNames[columnIndex]]);
+            }
+
+            rows.push(row);
+        }
+        
+        return rows;
     }
 
     /**
@@ -356,7 +402,7 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
             values: new SelectIterable(this.values, selector),
             index: this.index,
         });
-    };
+    }
 
     /**
      * Skip a number of values in the dataframe.
@@ -380,14 +426,14 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
      */
     toString (): string {
 
-        var columnNames = this.getColumnNames();
-        var header = ["__index__"].concat(columnNames);
-        var pairs = this.toPairs();
+        const columnNames = this.getColumnNames();
+        const header = ["__index__"].concat(columnNames);
+        const pairs = this.toPairs();
 
-        var table = new Table();
+        let table = new Table();
         pairs.forEach(function (pair) {
-            var index = pair[0];
-            var value = pair[1] as any;
+            const index = pair[0];
+            const value = pair[1] as any;
             table.cell(header[0], index);
             columnNames.forEach((columnName, columnIndex) => {
                 table.cell(header[columnIndex+1], value[columnName]);
@@ -396,7 +442,7 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
         });
 
         return table.toString();
-    };
+    }
 
     /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
@@ -414,6 +460,26 @@ export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
             pairs: new ArrayIterable(this.toPairs()),
             baked: true,
         });
-    };
+    }
+
+    /**
+     * Serialize the dataframe to JSON.
+     * 
+     *  @returns Returns a JSON format string representing the dataframe.   
+     */
+    toJSON (): string {
+        return JSON.stringify(this.toArray(), null, 4);
+    }
+
+    /**
+     * Serialize the dataframe to CSV.
+     * 
+     *  @returns Returns a CSV format string representing the dataframe.   
+     */
+    toCSV (): string {
+
+        const data = [this.getColumnNames()].concat(this.toRows());
+        return BabyParse.unparse(data);
+    }
 }
 
