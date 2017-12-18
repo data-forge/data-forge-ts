@@ -1,14 +1,25 @@
+(<any>Symbol)["asyncIterator"] = Symbol.asyncIterator || Symbol.for("asyncIterator");
 
 export { Index, IIndex } from './lib/index';
+export { AsyncIndex, IAsyncIndex } from './lib/async/async-index';
 export { Series, ISeries, SelectorFn } from './lib/series';
+export { AsyncSeries, IAsyncSeries } from './lib/async/async-series';
 export { DataFrame, IDataFrame } from './lib/dataframe';
+export { AsyncDataFrame, IAsyncDataFrame } from './lib/async/async-dataframe';
 
 import { assert } from 'chai';
 import { DataFrame, IDataFrame } from './lib/dataframe';
+import { AsyncDataFrame, IAsyncDataFrame } from './lib/async/async-dataframe';
 import * as fs from 'fs';
 import * as BabyParse from 'babyparse';
 import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
+import { StreamIterable } from './lib/async/iterables/stream-iterable';
+import { StreamColumnNamesIterable } from './lib/async/iterables/stream-column-names-iterable';
+import { IStreamFactory } from './lib/async/stream/stream-factory';
+import { IStream } from './lib/async/stream/stream';
+import { CsvStream } from './lib/async/stream/csv-stream';
+import { JsonStream } from './lib/async/stream/json-stream';
 
 /**
  * Deserialize a dataframe from a JSON text string.
@@ -268,6 +279,113 @@ export function readFileSync (filePath: string): ISyncFileReader {
     return new SyncFileReader(filePath);
 }
 
+/**
+ * Reads a streaming file asynchonrously to a dataframe.
+ */
+export interface IIncrementalFileReader {
+
+    /**
+     * Deserialize a CSV file to a DataFrame.
+     * Returns a promise that later resolves to a DataFrame.
+     * 
+     * @param [config] Optional configuration file for parsing.
+     * 
+     * @returns Returns a promise of a dataframe loaded from the file. 
+     */
+    parseCSV (config?: any): IAsyncDataFrame<number, any>;
+
+    /**
+     * Deserialize a JSON file to a DataFrame.
+     * Returns a promise that later resolves to a DataFrame.
+     * 
+     * @param [config] Optional configuration file for parsing.
+     * 
+     * @returns Returns a promise of a dataframe loaded from the file. 
+     */
+    parseJSON (config?: any): IAsyncDataFrame<number, any>;
+}
+
+/**
+ * Reads a file incrementally to an incremental dataframe.
+ */
+class IncrementalFileReader implements IIncrementalFileReader {
+
+    filePath: string;
+
+    constructor(filePath: string) {
+        this.filePath = filePath;
+    }
+
+    /**
+     * Deserialize a CSV file to a DataFrame.
+     * Returns a promise that later resolves to a DataFrame.
+     * 
+     * @param [config] Optional configuration file for parsing.
+     * 
+     * @returns Returns a promise of a dataframe loaded from the file. 
+     */
+    parseCSV (config?: any): IAsyncDataFrame<number, any> {
+        if (config) {
+            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
+        }
+
+        var streamFactory: IStreamFactory = {
+            instantiate (inputFilePath: string, config?: any): IStream {
+                return new CsvStream(inputFilePath, config);
+            }
+        };
+
+        var streamIterable = new StreamIterable(streamFactory, this.filePath, config);
+        return new AsyncDataFrame({
+            values: streamIterable,
+            columnNames: config && config.columnNames || new StreamColumnNamesIterable(streamIterable),
+        });
+    }
+
+    /**
+     * Deserialize a JSON file to a DataFrame.
+     * Returns a promise that later resolves to a DataFrame.
+     * 
+     * @param [config] Optional configuration file for parsing.
+     * 
+     * @returns Returns a promise of a dataframe loaded from the file. 
+     */
+    parseJSON (config?: any): IAsyncDataFrame<number, any> {
+        if (config) {
+            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseJSON(...) to be an object with configuration options for JSON parsing.");
+        }
+
+        var streamFactory: IStreamFactory = {
+            instantiate (inputFilePath: string, config?: any): IStream {
+                return new JsonStream(inputFilePath, config);
+            }
+        };
+
+        var streamIterable = new StreamIterable(streamFactory, this.filePath, config);
+        return new AsyncDataFrame({
+            values: streamIterable,
+            columnNames: new StreamColumnNamesIterable(streamIterable),
+        });
+    } 
+}
+
+/**
+ * Read a file incrementally from the file system.
+ * This allows very large files (that don't fit in available memory) to be processed by Data-Forge.
+ * Works in Nodejs, doesn't work in the browser.
+ * 
+ * @param filePath The path to the file to read.
+ * 
+ * @returns Returns an object that represents the file. Use `parseCSV` or `parseJSON` to deserialize to an AsyncDataFrame.
+ */
+export function readFileIncremental (filePath: string): IIncrementalFileReader {
+
+    assert.isString(filePath, "Expected 'filePath' parameter to dataForge.readFile to be a string that specifies the path of the file to read.");
+
+    return new IncrementalFileReader(filePath);
+}
+
+/*
 var dr = new DataFrame([
     {
         A: 1,
@@ -280,3 +398,29 @@ var dr = new DataFrame([
 ]);
 
 console.log(dr.toString());
+*/
+
+//var s = await readFileStream("C:\projects\github\nodejs-chart-rendering-example-data\data\example-data.csv")
+
+async function main () {
+
+    try {
+        var s = await readFileIncremental("./test/data/example-data.csv")
+            .parseCSV()
+            .toString();
+        console.log(s);
+
+        var s = await readFileIncremental("./test/data/example-data.json")
+            .parseJSON()
+            .toString();
+
+        console.log(s);
+    }
+    catch (err) {
+        console.error(err); 
+    }
+
+}
+
+main();
+

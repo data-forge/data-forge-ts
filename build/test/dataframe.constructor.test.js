@@ -80,10 +80,6 @@ describe('DataFrame constructor', function () {
         // This isn't possible in TypeScript, but is in JavaScript.
         chai_1.expect(function () { return new dataframe_1.DataFrame({ values: 3 }); }).to.throw();
     });
-    //todo: create dataframe with values iterable in config
-    //todo create dataframe from values array and index iterable
-    // create dataframe from values iterable and index iterable
-    //tod: 
     it('index is set by default when values are passed in by array', function () {
         var dataFrame = new dataframe_1.DataFrame([
             { A: 10 },

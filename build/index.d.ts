@@ -1,7 +1,11 @@
 export { Index, IIndex } from './lib/index';
+export { AsyncIndex, IAsyncIndex } from './lib/async/async-index';
 export { Series, ISeries, SelectorFn } from './lib/series';
+export { AsyncSeries, IAsyncSeries } from './lib/async/async-series';
 export { DataFrame, IDataFrame } from './lib/dataframe';
+export { AsyncDataFrame, IAsyncDataFrame } from './lib/async/async-dataframe';
 import { DataFrame, IDataFrame } from './lib/dataframe';
+import { IAsyncDataFrame } from './lib/async/async-dataframe';
 /**
  * Deserialize a dataframe from a JSON text string.
  *
@@ -82,3 +86,36 @@ export interface ISyncFileReader {
  * @returns Returns an object that represents the file. Use `parseCSV` or `parseJSON` to deserialize to a DataFrame.
  */
 export declare function readFileSync(filePath: string): ISyncFileReader;
+/**
+ * Reads a streaming file asynchonrously to a dataframe.
+ */
+export interface IIncrementalFileReader {
+    /**
+     * Deserialize a CSV file to a DataFrame.
+     * Returns a promise that later resolves to a DataFrame.
+     *
+     * @param [config] Optional configuration file for parsing.
+     *
+     * @returns Returns a promise of a dataframe loaded from the file.
+     */
+    parseCSV(config?: any): IAsyncDataFrame<number, any>;
+    /**
+     * Deserialize a JSON file to a DataFrame.
+     * Returns a promise that later resolves to a DataFrame.
+     *
+     * @param [config] Optional configuration file for parsing.
+     *
+     * @returns Returns a promise of a dataframe loaded from the file.
+     */
+    parseJSON(config?: any): IAsyncDataFrame<number, any>;
+}
+/**
+ * Read a file incrementally from the file system.
+ * This allows very large files (that don't fit in available memory) to be processed by Data-Forge.
+ * Works in Nodejs, doesn't work in the browser.
+ *
+ * @param filePath The path to the file to read.
+ *
+ * @returns Returns an object that represents the file. Use `parseCSV` or `parseJSON` to deserialize to an AsyncDataFrame.
+ */
+export declare function readFileIncremental(filePath: string): IIncrementalFileReader;

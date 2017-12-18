@@ -102,11 +102,6 @@ describe('DataFrame constructor', () => {
         expect(() => new DataFrame({ values: <any>3 })).to.throw();
     })
 
-    //todo: create dataframe with values iterable in config
-    //todo create dataframe from values array and index iterable
-    // create dataframe from values iterable and index iterable
-    //tod: 
-
     it('index is set by default when values are passed in by array', () => {
 
         const dataFrame = new DataFrame([

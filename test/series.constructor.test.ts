@@ -56,11 +56,6 @@ describe('Series constructor', () => {
         expect(() => new Series({ values: <any>3 })).to.throw();
     })
 
-    //todo: create series with values iterable in config
-    //todo create series from values array and index iterable
-    // create series from values iterable and index iterable
-    //tod: 
-
     it('index is set by default when values are passed in by array', () => {
         var series = new Series([10, 20, 30]);
 

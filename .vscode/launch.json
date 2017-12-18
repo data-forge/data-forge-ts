@@ -8,7 +8,7 @@
             "name": "Main",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/cli.ts",
+            "program": "${workspaceRoot}/index.ts",
             "cwd": "${workspaceRoot}",
             "env": {
                 "NODE_ENV": "development"
