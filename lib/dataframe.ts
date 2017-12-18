@@ -27,7 +27,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
 /**
  * Interface that represents a dataframe.
  */
-export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
+export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<ValueT> {
 
     /**
      * Get an iterator to enumerate the values of the dataframe.
@@ -142,7 +142,7 @@ export interface IDataFrame<IndexT, ValueT> extends Iterable<ValueT> {
 /**
  * Class that represents a dataframe of indexed values.
  */
-export class DataFrame<IndexT, ValueT> implements IDataFrame<IndexT, ValueT> {
+export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<IndexT, ValueT> {
 
     private index: Iterable<IndexT>
     private values: Iterable<ValueT>;

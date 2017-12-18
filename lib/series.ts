@@ -29,7 +29,7 @@ export type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
 /**
  * Interface that represents a series of indexed values.
  */
-export interface ISeries<IndexT, ValueT> extends Iterable<ValueT> {
+export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
 
     /**
      * Get an iterator to enumerate the values of the series.
@@ -118,7 +118,7 @@ export interface ISeries<IndexT, ValueT> extends Iterable<ValueT> {
 /**
  * Class that represents a series of indexed values.
  */
-export class Series<IndexT, ValueT> implements ISeries<IndexT, ValueT> {
+export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
 
     private index: Iterable<IndexT>
     private values: Iterable<ValueT>;
@@ -384,4 +384,5 @@ export class Series<IndexT, ValueT> implements ISeries<IndexT, ValueT> {
             pairs: this.pairs,
         });
     }
+
 }
