@@ -321,4 +321,42 @@ describe('DataFrame constructor', () => {
         expect(dataframe.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
         expect(dataframe.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
     });
+
+	it('can create from rows', function () {
+
+		var columnNames = ["c1", "c2"];
+		var dataFrame = new DataFrame({
+			columnNames: columnNames,
+			values: [
+				[1, 2],
+				[3, 4],
+			],
+		});
+
+		expect(dataFrame.getColumnNames()).to.eql(columnNames);
+		expect(dataFrame.toArray()).to.eql([
+			{ c1: 1, c2: 2 },
+			{ c1: 3, c2: 4 },
+		]);
+    });
+    
+	it('can create from rows with index', function () {
+
+		var columnNames = ["c1", "c2"];
+		var dataFrame = new DataFrame({
+			columnNames: columnNames,
+			values: [
+				[1, 2],
+				[3, 4],
+			],
+			index: [10, 11],
+		});
+
+		expect(dataFrame.getColumnNames()).to.eql(columnNames);
+		expect(dataFrame.toPairs()).to.eql([
+			[10, { c1: 1, c2: 2 }],
+			[11, { c1: 3, c2: 4 }],
+		]);
+	});
+    
 });

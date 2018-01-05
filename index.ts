@@ -85,7 +85,7 @@ export function fromCSV (csvTextString: string, config?: any) {
     }
 
     return new DataFrame<number, any>({
-        values: new CsvRowsIterable(columnNames, rows),
+        values: rows,
         columnNames: columnNames,
     });
 }

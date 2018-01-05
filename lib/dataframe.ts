@@ -3,6 +3,7 @@ import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import { SelectIterable }  from './iterables/select-iterable';
+import { CsvRowsIterable }  from './iterables/csv-rows-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
@@ -213,7 +214,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         if (config.values) {
             this.values = this.initIterable<ValueT>(config.values, 'values');
-            if (!this.columnNames) {
+            if (config.columnNames) {
+                // Convert data from rows to columns.
+                this.values = new CsvRowsIterable(this.columnNames, this.values);
+            }
+            else {
                 this.columnNames = new ColumnNamesIterable(this.values);
             }
         }

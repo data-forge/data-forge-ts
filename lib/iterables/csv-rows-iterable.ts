@@ -6,10 +6,10 @@ import { CsvRowsIterator } from '../iterators/csv-rows-iterator';
 
 export class CsvRowsIterable implements Iterable<any> {
 
-    columnNames: string[];
-    rows: string[][];
+    columnNames: Iterable<string>;
+    rows: Iterable<any[]>;
 
-    constructor(columnNames: string[], rows: string[][]) {
+    constructor(columnNames: Iterable<string>, rows: Iterable<any[]>) {
         this.columnNames = columnNames;
         this.rows = rows;
     }
