@@ -23,6 +23,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     pairs?: Iterable<[IndexT, ValueT]>,
     columnNames?: string[] | Iterable<string>,
     baked?: boolean,
+    considerAllRows?: boolean,
 };
 
 /**
@@ -219,13 +220,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 this.values = new CsvRowsIterable(this.columnNames, this.values);
             }
             else {
-                this.columnNames = new ColumnNamesIterable(this.values);
+                this.columnNames = new ColumnNamesIterable(this.values, config.considerAllRows || false);
             }
         }
         else if (config.pairs) {
             this.values = new ExtractElementIterable(config.pairs, 1);
             if (!this.columnNames) {
-                this.columnNames = new ColumnNamesIterable(this.values);
+                this.columnNames = new ColumnNamesIterable(this.values, config.considerAllRows || false);
             }
         }
         else {

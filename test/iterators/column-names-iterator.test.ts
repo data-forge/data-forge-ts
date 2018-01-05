@@ -9,7 +9,7 @@ describe('column names iterator', function () {
 
 	it('iterator for empty values iterable', function () {
 
-        var it = new ColumnNamesIterator(new ArrayIterable([]));
+        var it = new ColumnNamesIterator(new ArrayIterable([]), false);
         expect(it.next().done).to.eql(true);
         expect(it.next().done).to.eql(true);
         expect(it.next().done).to.eql(true);
@@ -20,7 +20,7 @@ describe('column names iterator', function () {
         var it = new ColumnNamesIterator(new ArrayIterable([
             {
             },
-        ]));
+        ]), false);
         expect(it.next().done).to.eql(true);
 	});
 
@@ -32,7 +32,7 @@ describe('column names iterator', function () {
                 A: 1,
                 B: 2,
             },
-        ]));
+        ]), false);
         expect(it.next()).to.eql({
             done: false,
             value: "A",
@@ -55,7 +55,7 @@ describe('column names iterator', function () {
                 C: 10,
                 D: 20,
             },
-        ]));
+        ]), false);
         
         expect(it.next()).to.eql({
             done: false,
@@ -66,5 +66,37 @@ describe('column names iterator', function () {
             value: "B",
         });
         expect(it.next().done).to.eql(true);
-	});
+    });
+    
+	it('iterator for column names with varying elems - when all elems are considered', function () {
+
+        var it = new ColumnNamesIterator(new ArrayIterable([
+            {
+                A: 1,
+                B: 2,
+            },
+            {
+                C: 10,
+                D: 20,
+            },
+        ]), true);
+        
+        expect(it.next()).to.eql({
+            done: false,
+            value: "A",
+        });
+        expect(it.next()).to.eql({
+            done: false,
+            value: "B",
+        });
+        expect(it.next()).to.eql({
+            done: false,
+            value: "C",
+        });
+        expect(it.next()).to.eql({
+            done: false,
+            value: "D",
+        });
+        expect(it.next().done).to.eql(true);
+	});    
 });

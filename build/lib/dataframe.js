@@ -116,13 +116,13 @@ var DataFrame = /** @class */ (function () {
                 this.values = new csv_rows_iterable_1.CsvRowsIterable(this.columnNames, this.values);
             }
             else {
-                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
+                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values, config.considerAllRows || false);
             }
         }
         else if (config.pairs) {
             this.values = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 1);
             if (!this.columnNames) {
-                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
+                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values, config.considerAllRows || false);
             }
         }
         else {
