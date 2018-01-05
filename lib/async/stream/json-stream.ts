@@ -13,7 +13,7 @@ export class JsonStream implements IStream {
     private loaded: string[][] = []; // Store intermediate results from the csv file.
     private error: any; // Records any error that might occur.
     private done: boolean = false; // Record when the process has completed.
-    private unpause: Function | null = null; // Function used to resume the emitter when it is paused.
+    private resume: Function | null = null; // Function used to resume the emitter when it is paused.
 
     //
     // Column names that are read from the first row of the csv stream.
@@ -129,7 +129,7 @@ export class JsonStream implements IStream {
                 if (this.loaded.length > 0) {
                     // We still have data waiting for delivery.
                     // Pause the emitter until someone asks for more.
-                    //todo: this.unpause = emitter.pause(); 
+                    this.resume = emitter.pause(); 
                 }
             });
 
@@ -210,9 +210,9 @@ export class JsonStream implements IStream {
             } as IteratorResult<any>);
         }
     
-        if (this.unpause) {
-            this.unpause();
-            this.unpause = null;
+        if (this.resume) {
+            this.resume();
+            this.resume = null;
         }
 
         // Queue a promise to return the item when it comes in.
