@@ -16,7 +16,7 @@ export declare type SelectorFn<FromT, ToT> = (value: FromT, index: number) => To
 /**
  * Interface that represents a series of indexed values.
  */
-export interface ISeries<IndexT, ValueT> extends Iterable<ValueT> {
+export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
     /**
      * Get an iterator to enumerate the values of the series.
      */
@@ -93,7 +93,7 @@ export interface ISeries<IndexT, ValueT> extends Iterable<ValueT> {
 /**
  * Class that represents a series of indexed values.
  */
-export declare class Series<IndexT, ValueT> implements ISeries<IndexT, ValueT> {
+export declare class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
     private index;
     private values;
     private pairs;

@@ -3,7 +3,7 @@ export declare class JsonStream implements IStream {
     private loaded;
     private error;
     private done;
-    private unpause;
+    private resume;
     private columnNames?;
     private columnNamesRead;
     private nextResolve;

@@ -1,7 +1,7 @@
 export declare class CsvRowsIterator implements Iterator<any> {
     columnNames: string[];
-    rows: string[][];
+    rowsIterator: Iterator<any[]>;
     index: number;
-    constructor(columnNames: string[], rows: string[][]);
+    constructor(columnNames: Iterable<string>, rowsIterable: Iterable<any[]>);
     next(): IteratorResult<any>;
 }

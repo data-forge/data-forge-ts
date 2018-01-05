@@ -135,5 +135,19 @@ describe('DataFrame columns', function () {
         });
         chai_1.expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
     });
+    it('creating from objects with variable fields - by default just uses first row to determine column names', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            values: [
+                { c1: 1, c2: 2 },
+                { c3: 3, c4: 4 },
+            ],
+        });
+        var columnNames = ["c1", "c2"];
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(columnNames);
+        chai_1.expect(dataFrame.toArray()).to.eql([
+            { c1: 1, c2: 2 },
+            { c3: 3, c4: 4 },
+        ]);
+    });
 });
 //# sourceMappingURL=dataframe.columns.test.js.map

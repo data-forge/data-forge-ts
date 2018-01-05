@@ -1,6 +1,6 @@
 export declare class CsvRowsIterable implements Iterable<any> {
-    columnNames: string[];
-    rows: string[][];
-    constructor(columnNames: string[], rows: string[][]);
+    columnNames: Iterable<string>;
+    rows: Iterable<any[]>;
+    constructor(columnNames: Iterable<string>, rows: Iterable<any[]>);
     [Symbol.iterator](): Iterator<any>;
 }

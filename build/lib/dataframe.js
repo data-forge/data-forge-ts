@@ -15,6 +15,7 @@ var empty_iterable_1 = require("./iterables/empty-iterable");
 var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
 var select_iterable_1 = require("./iterables/select-iterable");
+var csv_rows_iterable_1 = require("./iterables/csv-rows-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
@@ -110,7 +111,11 @@ var DataFrame = /** @class */ (function () {
         }
         if (config.values) {
             this.values = this.initIterable(config.values, 'values');
-            if (!this.columnNames) {
+            if (config.columnNames) {
+                // Convert data from rows to columns.
+                this.values = new csv_rows_iterable_1.CsvRowsIterable(this.columnNames, this.values);
+            }
+            else {
                 this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values);
             }
         }

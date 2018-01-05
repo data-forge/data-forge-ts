@@ -259,5 +259,36 @@ describe('DataFrame constructor', function () {
         chai_1.expect(dataframe.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
         chai_1.expect(dataframe.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
     });
+    it('can create from rows', function () {
+        var columnNames = ["c1", "c2"];
+        var dataFrame = new dataframe_1.DataFrame({
+            columnNames: columnNames,
+            values: [
+                [1, 2],
+                [3, 4],
+            ],
+        });
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(columnNames);
+        chai_1.expect(dataFrame.toArray()).to.eql([
+            { c1: 1, c2: 2 },
+            { c1: 3, c2: 4 },
+        ]);
+    });
+    it('can create from rows with index', function () {
+        var columnNames = ["c1", "c2"];
+        var dataFrame = new dataframe_1.DataFrame({
+            columnNames: columnNames,
+            values: [
+                [1, 2],
+                [3, 4],
+            ],
+            index: [10, 11],
+        });
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(columnNames);
+        chai_1.expect(dataFrame.toPairs()).to.eql([
+            [10, { c1: 1, c2: 2 }],
+            [11, { c1: 3, c2: 4 }],
+        ]);
+    });
 });
 //# sourceMappingURL=dataframe.constructor.test.js.map

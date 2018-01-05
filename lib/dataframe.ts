@@ -145,9 +145,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
  */
 export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<IndexT, ValueT> {
 
-    private index: Iterable<IndexT>
-    private values: Iterable<ValueT>;
-    private pairs: Iterable<[IndexT, ValueT]>;
+    private index: Iterable<any>
+    private values: Iterable<any>;
+    private pairs: Iterable<[any, any]>;
     private columnNames: Iterable<string>;
 
     //

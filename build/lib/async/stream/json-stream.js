@@ -22,7 +22,7 @@ var JsonStream = /** @class */ (function () {
         var _this = this;
         this.loaded = []; // Store intermediate results from the csv file.
         this.done = false; // Record when the process has completed.
-        this.unpause = null; // Function used to resume the emitter when it is paused.
+        this.resume = null; // Function used to resume the emitter when it is paused.
         this.columnNamesRead = false; // Set to true when column names have been read.
         // Promise that is pending when next has been called a client is waiting for incoming data.
         this.nextResolve = null;
@@ -35,27 +35,27 @@ var JsonStream = /** @class */ (function () {
             var inArray_1 = 0;
             var curObject_1 = null;
             var curProperty_1 = null;
-            var emitter = bfj.walk(fileInputStream);
-            emitter.on(bfj.events.array, function () {
+            var emitter_1 = bfj.walk(fileInputStream);
+            emitter_1.on(bfj.events.array, function () {
                 ++inArray_1;
             });
-            emitter.on(bfj.events.object, function () {
+            emitter_1.on(bfj.events.object, function () {
                 if (inArray_1 <= 0) {
                     throw new Error("Expected JSON file to contain an array at the root level.");
                 }
                 curObject_1 = {};
             });
-            emitter.on(bfj.events.property, function (name) {
+            emitter_1.on(bfj.events.property, function (name) {
                 curProperty_1 = name;
             });
             var onValue = function (value) {
                 curObject_1[curProperty_1] = value;
                 curProperty_1 = null;
             };
-            emitter.on(bfj.events.string, onValue);
-            emitter.on(bfj.events.number, onValue);
-            emitter.on(bfj.events.literal, onValue);
-            emitter.on(bfj.events.endObject, function () {
+            emitter_1.on(bfj.events.string, onValue);
+            emitter_1.on(bfj.events.number, onValue);
+            emitter_1.on(bfj.events.literal, onValue);
+            emitter_1.on(bfj.events.endObject, function () {
                 if (!_this.columnNamesRead) {
                     _this.columnNamesRead = true;
                     _this.columnNames = Object.keys(curObject_1);
@@ -73,10 +73,10 @@ var JsonStream = /** @class */ (function () {
                 if (_this.loaded.length > 0) {
                     // We still have data waiting for delivery.
                     // Pause the emitter until someone asks for more.
-                    //todo: this.unpause = emitter.pause(); 
+                    _this.resume = emitter_1.pause();
                 }
             });
-            emitter.on(bfj.events.endArray, function () {
+            emitter_1.on(bfj.events.endArray, function () {
                 --inArray_1;
                 if (inArray_1 > 0) {
                     return; // Still in an array.
@@ -90,7 +90,7 @@ var JsonStream = /** @class */ (function () {
                     _this.nextReject = null;
                 }
             });
-            emitter.on(bfj.events.error, function (err) {
+            emitter_1.on(bfj.events.error, function (err) {
                 if (_this.error) {
                     // Error is already registered.
                     return;
@@ -196,9 +196,9 @@ var JsonStream = /** @class */ (function () {
                 done: true
             });
         }
-        if (this.unpause) {
-            this.unpause();
-            this.unpause = null;
+        if (this.resume) {
+            this.resume();
+            this.resume = null;
         }
         // Queue a promise to return the item when it comes in.
         return new Promise(function (resolve, reject) {

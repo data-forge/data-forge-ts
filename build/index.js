@@ -52,7 +52,6 @@ var chai_1 = require("chai");
 var dataframe_2 = require("./lib/dataframe");
 var async_dataframe_2 = require("./lib/async/async-dataframe");
 var BabyParse = require("babyparse");
-var csv_rows_iterable_1 = require("./lib/iterables/csv-rows-iterable");
 var stream_iterable_1 = require("./lib/async/iterables/stream-iterable");
 var stream_column_names_iterable_1 = require("./lib/async/iterables/stream-column-names-iterable");
 var csv_stream_1 = require("./lib/async/stream/csv-stream");
@@ -110,7 +109,7 @@ function fromCSV(csvTextString, config) {
         columnNames = rows.shift();
     }
     return new dataframe_2.DataFrame({
-        values: new csv_rows_iterable_1.CsvRowsIterable(columnNames, rows),
+        values: rows,
         columnNames: columnNames,
     });
 }

@@ -120,9 +120,9 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
  */
 export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
 
-    private index: Iterable<IndexT>
-    private values: Iterable<ValueT>;
-    private pairs: Iterable<[IndexT, ValueT]>;
+    private index: Iterable<any>
+    private values: Iterable<any>;
+    private pairs: Iterable<[any, any]>;
 
     //
     // Records if a series is baked into memory.
