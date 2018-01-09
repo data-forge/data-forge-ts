@@ -97,8 +97,53 @@ var DataFrame = /** @class */ (function () {
     // Initialise the DataFrame from a config object.
     //
     DataFrame.prototype.initFromConfig = function (config) {
-        if (config.columnNames) {
-            this.columnNames = this.initIterable(config.columnNames, 'columnNames');
+        if (config.columns) {
+            chai_1.assert.isObject(config.columns, "Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
+            var columnNames = Object.keys(config.columns);
+            var columnIterables = [];
+            try {
+                for (var columnNames_1 = __values(columnNames), columnNames_1_1 = columnNames_1.next(); !columnNames_1_1.done; columnNames_1_1 = columnNames_1.next()) {
+                    var columnName = columnNames_1_1.value;
+                    var columnIterable = this.initIterable(config.columns[columnName], columnName);
+                    columnIterables.push(columnIterable);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (columnNames_1_1 && !columnNames_1_1.done && (_a = columnNames_1.return)) _a.call(columnNames_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            this.columnNames = columnNames;
+            this.values = new csv_rows_iterable_1.CsvRowsIterable(columnNames, new multi_iterable_1.MultiIterable(columnIterables));
+        }
+        else {
+            if (config.columnNames) {
+                this.columnNames = this.initIterable(config.columnNames, 'columnNames');
+            }
+            if (config.values) {
+                this.values = this.initIterable(config.values, 'values');
+                if (config.columnNames) {
+                    // Convert data from rows to columns.
+                    this.values = new csv_rows_iterable_1.CsvRowsIterable(this.columnNames, this.values);
+                }
+                else {
+                    this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values, config.considerAllRows || false);
+                }
+            }
+            else if (config.pairs) {
+                this.values = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 1);
+                if (!this.columnNames) {
+                    this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values, config.considerAllRows || false);
+                }
+            }
+            else {
+                this.values = new empty_iterable_1.EmptyIterable();
+                if (!this.columnNames) {
+                    this.columnNames = new empty_iterable_1.EmptyIterable();
+                }
+            }
         }
         if (config.index) {
             this.index = this.initIterable(config.index, 'index');
@@ -109,28 +154,6 @@ var DataFrame = /** @class */ (function () {
         else {
             this.index = new count_iterable_1.CountIterable();
         }
-        if (config.values) {
-            this.values = this.initIterable(config.values, 'values');
-            if (config.columnNames) {
-                // Convert data from rows to columns.
-                this.values = new csv_rows_iterable_1.CsvRowsIterable(this.columnNames, this.values);
-            }
-            else {
-                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values, config.considerAllRows || false);
-            }
-        }
-        else if (config.pairs) {
-            this.values = new extract_element_iterable_1.ExtractElementIterable(config.pairs, 1);
-            if (!this.columnNames) {
-                this.columnNames = new column_names_iterable_1.ColumnNamesIterable(this.values, config.considerAllRows || false);
-            }
-        }
-        else {
-            this.values = new empty_iterable_1.EmptyIterable();
-            if (!this.columnNames) {
-                this.columnNames = new empty_iterable_1.EmptyIterable();
-            }
-        }
         if (config.pairs) {
             this.pairs = config.pairs;
         }
@@ -140,6 +163,7 @@ var DataFrame = /** @class */ (function () {
         if (config.baked !== undefined) {
             this.isBaked = config.baked;
         }
+        var e_1, _a;
     };
     /**
      * Get an iterator to enumerate the values of the dataframe.
@@ -214,15 +238,15 @@ var DataFrame = /** @class */ (function () {
                 values.push(value);
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_1) throw e_1.error; }
+            finally { if (e_2) throw e_2.error; }
         }
         return values;
-        var e_1, _c;
+        var e_2, _c;
     };
     /**
      * Retreive the index and values from the DataFrame as an array of pairs.
@@ -239,15 +263,15 @@ var DataFrame = /** @class */ (function () {
                 pairs.push(pair);
             }
         }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_2) throw e_2.error; }
+            finally { if (e_3) throw e_3.error; }
         }
         return pairs;
-        var e_2, _c;
+        var e_3, _c;
     };
     /**
      * Bake the data frame to an array of rows.
@@ -267,15 +291,15 @@ var DataFrame = /** @class */ (function () {
                 rows.push(row);
             }
         }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_3) throw e_3.error; }
+            finally { if (e_4) throw e_4.error; }
         }
         return rows;
-        var e_3, _c;
+        var e_4, _c;
     };
     /**
      * Generate a new dataframe based by calling the selector function on each value.

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chai_1 = require("chai");
 require("mocha");
 var dataframe_1 = require("../lib/dataframe");
+var series_1 = require("../lib/series");
 var array_iterable_1 = require("../lib/iterables/array-iterable");
 describe('DataFrame columns', function () {
     it('can get column name from empty dataframe - no params', function () {
@@ -162,6 +163,68 @@ describe('DataFrame columns', function () {
         chai_1.expect(dataFrame.toPairs()).to.eql([
             [0, { c1: 1, c2: 2 }],
             [1, { c3: 3, c4: 4 }],
+        ]);
+    });
+    it('can create data frame from column arrays with index', function () {
+        var df = new dataframe_1.DataFrame({
+            columns: {
+                A: [1, 2, 3, 4],
+                B: ['a', 'b', 'c', 'd'],
+            },
+            index: [10, 20, 30, 40],
+        });
+        chai_1.expect(df.getColumnNames()).to.eql(["A", "B"]);
+        chai_1.expect(df.toPairs()).to.eql([
+            [10, { A: 1, B: 'a' }],
+            [20, { A: 2, B: 'b' }],
+            [30, { A: 3, B: 'c' }],
+            [40, { A: 4, B: 'd' }],
+        ]);
+    });
+    it('can create data frame from column arrays - array', function () {
+        var df = new dataframe_1.DataFrame({
+            columns: {
+                A: [1, 2, 3, 4],
+                B: ['a', 'b', 'c', 'd'],
+            },
+            index: [11, 12, 13, 14],
+        });
+        chai_1.expect(df.getColumnNames()).to.eql(["A", "B"]);
+        chai_1.expect(df.toPairs()).to.eql([
+            [11, { A: 1, B: 'a' }],
+            [12, { A: 2, B: 'b' }],
+            [13, { A: 3, B: 'c' }],
+            [14, { A: 4, B: 'd' }],
+        ]);
+    });
+    it('can create dataframe from columns - with series', function () {
+        var df = new dataframe_1.DataFrame({
+            columns: {
+                A: new series_1.Series([1, 2, 3, 4]),
+                B: new series_1.Series(['a', 'b', 'c', 'd']),
+            },
+        });
+        chai_1.expect(df.getColumnNames()).to.eql(["A", "B"]);
+        chai_1.expect(df.toArray()).to.eql([
+            { A: 1, B: 'a' },
+            { A: 2, B: 'b' },
+            { A: 3, B: 'c' },
+            { A: 4, B: 'd' },
+        ]);
+    });
+    it('can create data frame from column arrays - default index', function () {
+        var df = new dataframe_1.DataFrame({
+            columns: {
+                A: [1, 2, 3, 4],
+                B: ['a', 'b', 'c', 'd'],
+            },
+        });
+        chai_1.expect(df.getColumnNames()).to.eql(["A", "B"]);
+        chai_1.expect(df.toPairs()).to.eql([
+            [0, { A: 1, B: 'a' }],
+            [1, { A: 2, B: 'b' }],
+            [2, { A: 3, B: 'c' }],
+            [3, { A: 4, B: 'd' }],
         ]);
     });
 });

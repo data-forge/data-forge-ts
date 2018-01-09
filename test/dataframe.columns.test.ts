@@ -2,6 +2,7 @@ import { assert, expect } from 'chai';
 import 'mocha';
 import { Index } from '../lib/index';
 import { DataFrame } from '../lib/dataframe';
+import { Series } from '../lib/series';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('DataFrame columns', () => {
@@ -201,6 +202,82 @@ describe('DataFrame columns', () => {
 		expect(dataFrame.toPairs()).to.eql([
 			[0, { c1: 1, c2: 2 }],
 			[1, { c3: 3, c4: 4 }],
+		]);
+	});
+
+	it('can create data frame from column arrays with index', function () {
+
+		var df = new DataFrame({
+			columns: {
+				A: [1, 2, 3, 4],
+				B: ['a', 'b', 'c', 'd'],
+			},
+
+			index: [10, 20, 30, 40],
+        });
+        
+        expect(df.getColumnNames()).to.eql(["A", "B"]);
+		expect(df.toPairs()).to.eql([
+			[10, { A: 1, B: 'a' }],
+			[20, { A: 2, B: 'b' }],
+			[30, { A: 3, B: 'c' }],
+			[40, { A: 4, B: 'd' }],
+		]);
+	});
+
+	it('can create data frame from column arrays - array', function () {
+
+		var df = new DataFrame({
+			columns: {
+				A: [1, 2, 3, 4],
+				B: ['a', 'b', 'c', 'd'],
+			},
+
+			index: [11, 12, 13, 14],
+        });
+        
+        expect(df.getColumnNames()).to.eql(["A", "B"]);
+		expect(df.toPairs()).to.eql([
+			[11, { A: 1, B: 'a' }],
+			[12, { A: 2, B: 'b' }],
+			[13, { A: 3, B: 'c' }],
+			[14, { A: 4, B: 'd' }],
+		]);
+	});
+
+	it('can create dataframe from columns - with series', function () {
+
+		var df = new DataFrame({
+			columns: {
+				A: new Series([1, 2, 3, 4]),
+				B: new Series(['a', 'b', 'c', 'd']),
+			},
+		});
+
+        expect(df.getColumnNames()).to.eql(["A", "B"]);
+		expect(df.toArray()).to.eql([
+			{ A: 1, B: 'a' },
+			{ A: 2, B: 'b' },
+			{ A: 3, B: 'c' },
+			{ A: 4, B: 'd' },
+		]);
+	});
+
+	it('can create data frame from column arrays - default index', function () {
+
+		var df = new DataFrame({
+			columns: {
+				A: [1, 2, 3, 4],
+				B: ['a', 'b', 'c', 'd'],
+			},
+		});
+
+        expect(df.getColumnNames()).to.eql(["A", "B"]);
+		expect(df.toPairs()).to.eql([
+			[0, { A: 1, B: 'a' }],
+			[1, { A: 2, B: 'b' }],
+			[2, { A: 3, B: 'c' }],
+			[3, { A: 4, B: 'd' }],
 		]);
 	});
 });

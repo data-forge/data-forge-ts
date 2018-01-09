@@ -24,6 +24,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: string[] | Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
+    columns?: any,
 };
 
 /**
@@ -199,8 +200,46 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     //
     private initFromConfig(config: IDataFrameConfig<IndexT, ValueT>): void {
 
-        if (config.columnNames) {
-            this.columnNames = this.initIterable<string>(config.columnNames, 'columnNames');
+        if (config.columns) {
+            assert.isObject(config.columns, "Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
+
+            const columnNames = Object.keys(config.columns);
+            let columnIterables: any[] = [];
+            for (let columnName of columnNames) {
+                const columnIterable = this.initIterable(config.columns[columnName], columnName);
+                columnIterables.push(columnIterable);
+            }
+
+            this.columnNames = columnNames;
+            this.values = new CsvRowsIterable(columnNames, new MultiIterable(columnIterables));
+        }
+        else {
+            if (config.columnNames) {
+                this.columnNames = this.initIterable<string>(config.columnNames, 'columnNames');
+            }
+
+            if (config.values) {
+                this.values = this.initIterable<ValueT>(config.values, 'values');
+                if (config.columnNames) {
+                    // Convert data from rows to columns.
+                    this.values = new CsvRowsIterable(this.columnNames, this.values);
+                }
+                else {
+                    this.columnNames = new ColumnNamesIterable(this.values, config.considerAllRows || false);
+                }
+            }
+            else if (config.pairs) {
+                this.values = new ExtractElementIterable(config.pairs, 1);
+                if (!this.columnNames) {
+                    this.columnNames = new ColumnNamesIterable(this.values, config.considerAllRows || false);
+                }
+            }
+            else {
+                this.values = new EmptyIterable();
+                if (!this.columnNames) {
+                    this.columnNames = new EmptyIterable();
+                }
+            }
         }
 
         if (config.index) {
@@ -213,28 +252,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             this.index = new CountIterable();
         }
 
-        if (config.values) {
-            this.values = this.initIterable<ValueT>(config.values, 'values');
-            if (config.columnNames) {
-                // Convert data from rows to columns.
-                this.values = new CsvRowsIterable(this.columnNames, this.values);
-            }
-            else {
-                this.columnNames = new ColumnNamesIterable(this.values, config.considerAllRows || false);
-            }
-        }
-        else if (config.pairs) {
-            this.values = new ExtractElementIterable(config.pairs, 1);
-            if (!this.columnNames) {
-                this.columnNames = new ColumnNamesIterable(this.values, config.considerAllRows || false);
-            }
-        }
-        else {
-            this.values = new EmptyIterable();
-            if (!this.columnNames) {
-                this.columnNames = new EmptyIterable();
-            }
-        }
 
         if (config.pairs) {
             this.pairs = config.pairs;

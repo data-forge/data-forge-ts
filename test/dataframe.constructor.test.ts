@@ -373,4 +373,5 @@ describe('DataFrame constructor', () => {
 			d.toArray();
 		}).to.throw();
 	});
+
 });

@@ -10,6 +10,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: string[] | Iterable<string>;
     baked?: boolean;
     considerAllRows?: boolean;
+    columns?: any;
 }
 /**
  * Interface that represents a dataframe.
