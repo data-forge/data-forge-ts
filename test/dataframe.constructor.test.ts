@@ -359,4 +359,18 @@ describe('DataFrame constructor', () => {
 		]);
 	});
     
+	it("can handle undefined row", function () {
+		var d = new DataFrame({
+			columnNames: ["c1", "c2"],
+			values: [
+				[1, 2],
+				undefined,
+				[5, 2]
+			],
+		});
+
+		expect(function () {
+			d.toArray();
+		}).to.throw();
+	});
 });
