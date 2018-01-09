@@ -10,7 +10,6 @@ var __values = (this && this.__values) || function (o) {
     };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var array_iterable_1 = require("./iterables/array-iterable");
 var empty_iterable_1 = require("./iterables/empty-iterable");
 var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
@@ -62,13 +61,13 @@ var DataFrame = /** @class */ (function () {
     //
     DataFrame.prototype.initFromArray = function (arr) {
         this.index = new count_iterable_1.CountIterable();
-        this.values = new array_iterable_1.ArrayIterable(arr);
+        this.values = arr;
         this.pairs = new multi_iterable_1.MultiIterable([this.index, this.values]);
         if (arr.length > 0) {
-            this.columnNames = new array_iterable_1.ArrayIterable(Object.keys(arr[0]));
+            this.columnNames = Object.keys(arr[0]);
         }
         else {
-            this.columnNames = new empty_iterable_1.EmptyIterable();
+            this.columnNames = [];
         }
     };
     //
@@ -82,7 +81,7 @@ var DataFrame = /** @class */ (function () {
     };
     DataFrame.prototype.initIterable = function (input, fieldName) {
         if (Sugar.Object.isArray(input)) {
-            return new array_iterable_1.ArrayIterable(input);
+            return input;
         }
         else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
@@ -361,7 +360,7 @@ var DataFrame = /** @class */ (function () {
             return this;
         }
         return new DataFrame({
-            pairs: new array_iterable_1.ArrayIterable(this.toPairs()),
+            pairs: this.toPairs(),
             baked: true,
         });
     };

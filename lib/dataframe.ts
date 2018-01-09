@@ -162,13 +162,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     //
     private initFromArray(arr: ValueT[]): void {
         this.index = new CountIterable();
-        this.values = new ArrayIterable(arr);
+        this.values = arr;
         this.pairs = new MultiIterable([this.index, this.values]);
         if (arr.length > 0) {
-            this.columnNames = new ArrayIterable(Object.keys(arr[0]));
+            this.columnNames = Object.keys(arr[0]);
         }
         else {
-            this.columnNames = new EmptyIterable();
+            this.columnNames = [];
         }
     }
 
@@ -184,7 +184,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     private initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
         if (Sugar.Object.isArray(input)) {
-            return new ArrayIterable<T>(input);
+            return input;
         }
         else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
@@ -480,7 +480,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         return new DataFrame({
-            pairs: new ArrayIterable(this.toPairs()),
+            pairs: this.toPairs(),
             baked: true,
         });
     }

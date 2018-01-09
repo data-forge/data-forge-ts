@@ -134,7 +134,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     private initFromArray(arr: ValueT[]): void {
         this.index = new CountIterable();
-        this.values = new ArrayIterable(arr);
+        this.values = arr;
         this.pairs = new MultiIterable([this.index, this.values]);
     }
 
@@ -149,7 +149,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     private initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
         if (Sugar.Object.isArray(input)) {
-            return new ArrayIterable<T>(input);
+            return input;
         }
         else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
@@ -364,7 +364,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return new Series<IndexT, ValueT>({
-            pairs: new ArrayIterable(this.toPairs()),
+            pairs: this.toPairs(),
             baked: true,
         });
     };
