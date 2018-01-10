@@ -280,4 +280,30 @@ describe('DataFrame columns', () => {
 			[3, { A: 4, B: 'd' }],
 		]);
 	});
+
+	it('duplicates columns are renamed to be unique - rows', function () {
+
+		var df = new DataFrame({
+			columnNames: [
+				"some-column",
+				"some-Column",
+			],
+			values: [
+				[1, 2],
+				[3, 4],
+			],
+		});
+
+		expect(df.getColumnNames()).to.eql(["some-column.1", "some-Column.2"]);
+		expect(df.toArray()).to.eql([
+			{
+				"some-column.1": 1,
+				"some-Column.2": 2,
+			},
+			{
+				"some-column.1": 3,
+				"some-Column.2": 4,
+			},
+		]);
+	});
 });

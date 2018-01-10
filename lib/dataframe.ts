@@ -182,6 +182,45 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         this.columnNames = new EmptyIterable();
     }
 
+    private initColumnNames(inputColumnNames: Iterable<string>): Iterable<string> {
+        var outputColumnNames: string[] = [];
+        var columnNamesMap: any = {};
+    
+        // Search for duplicate column names.
+        for (let columnName of inputColumnNames) {
+            var columnNameLwr = columnName.toLowerCase();
+            if (columnNamesMap[columnNameLwr] === undefined) {
+                columnNamesMap[columnNameLwr] = 1;
+            }
+            else {
+                columnNamesMap[columnNameLwr] += 1;
+            }
+        }
+
+        var columnNoMap: any = {};
+
+        for (let columnName of inputColumnNames) {
+            var columnNameLwr = columnName.toLowerCase();
+            if (columnNamesMap[columnNameLwr] > 1) {
+                var curColumnNo = 1;
+
+                // There are duplicates of this column.
+                if (columnNoMap[columnNameLwr] !== undefined) {
+                    curColumnNo = columnNoMap[columnNameLwr];
+                }
+
+                outputColumnNames.push(columnName + "." + curColumnNo);
+                columnNoMap[columnNameLwr] = curColumnNo + 1;
+            }
+            else {
+                // No duplicates.
+                outputColumnNames.push(columnName);
+            }
+        }
+
+        return outputColumnNames;
+    }
+
     private initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
         if (Sugar.Object.isArray(input)) {
             return input;
@@ -215,7 +254,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
         else {
             if (config.columnNames) {
-                this.columnNames = this.initIterable<string>(config.columnNames, 'columnNames');
+                this.columnNames = this.initColumnNames(config.columnNames);
             }
 
             if (config.values) {

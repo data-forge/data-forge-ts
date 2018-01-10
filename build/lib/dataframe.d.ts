@@ -122,6 +122,7 @@ export declare class DataFrame<IndexT = number, ValueT = any> implements IDataFr
     private isBaked;
     private initFromArray(arr);
     private initEmpty();
+    private initColumnNames(inputColumnNames);
     private initIterable<T>(input, fieldName);
     private initFromConfig(config);
     /**

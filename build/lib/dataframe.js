@@ -79,6 +79,59 @@ var DataFrame = /** @class */ (function () {
         this.pairs = new empty_iterable_1.EmptyIterable();
         this.columnNames = new empty_iterable_1.EmptyIterable();
     };
+    DataFrame.prototype.initColumnNames = function (inputColumnNames) {
+        var outputColumnNames = [];
+        var columnNamesMap = {};
+        try {
+            // Search for duplicate column names.
+            for (var inputColumnNames_1 = __values(inputColumnNames), inputColumnNames_1_1 = inputColumnNames_1.next(); !inputColumnNames_1_1.done; inputColumnNames_1_1 = inputColumnNames_1.next()) {
+                var columnName = inputColumnNames_1_1.value;
+                var columnNameLwr = columnName.toLowerCase();
+                if (columnNamesMap[columnNameLwr] === undefined) {
+                    columnNamesMap[columnNameLwr] = 1;
+                }
+                else {
+                    columnNamesMap[columnNameLwr] += 1;
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (inputColumnNames_1_1 && !inputColumnNames_1_1.done && (_a = inputColumnNames_1.return)) _a.call(inputColumnNames_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        var columnNoMap = {};
+        try {
+            for (var inputColumnNames_2 = __values(inputColumnNames), inputColumnNames_2_1 = inputColumnNames_2.next(); !inputColumnNames_2_1.done; inputColumnNames_2_1 = inputColumnNames_2.next()) {
+                var columnName = inputColumnNames_2_1.value;
+                var columnNameLwr = columnName.toLowerCase();
+                if (columnNamesMap[columnNameLwr] > 1) {
+                    var curColumnNo = 1;
+                    // There are duplicates of this column.
+                    if (columnNoMap[columnNameLwr] !== undefined) {
+                        curColumnNo = columnNoMap[columnNameLwr];
+                    }
+                    outputColumnNames.push(columnName + "." + curColumnNo);
+                    columnNoMap[columnNameLwr] = curColumnNo + 1;
+                }
+                else {
+                    // No duplicates.
+                    outputColumnNames.push(columnName);
+                }
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (inputColumnNames_2_1 && !inputColumnNames_2_1.done && (_b = inputColumnNames_2.return)) _b.call(inputColumnNames_2);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return outputColumnNames;
+        var e_1, _a, e_2, _b;
+    };
     DataFrame.prototype.initIterable = function (input, fieldName) {
         if (Sugar.Object.isArray(input)) {
             return input;
@@ -107,19 +160,19 @@ var DataFrame = /** @class */ (function () {
                     columnIterables.push(columnIterable);
                 }
             }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            catch (e_3_1) { e_3 = { error: e_3_1 }; }
             finally {
                 try {
                     if (columnNames_1_1 && !columnNames_1_1.done && (_a = columnNames_1.return)) _a.call(columnNames_1);
                 }
-                finally { if (e_1) throw e_1.error; }
+                finally { if (e_3) throw e_3.error; }
             }
             this.columnNames = columnNames;
             this.values = new csv_rows_iterable_1.CsvRowsIterable(columnNames, new multi_iterable_1.MultiIterable(columnIterables));
         }
         else {
             if (config.columnNames) {
-                this.columnNames = this.initIterable(config.columnNames, 'columnNames');
+                this.columnNames = this.initColumnNames(config.columnNames);
             }
             if (config.values) {
                 this.values = this.initIterable(config.values, 'values');
@@ -162,7 +215,7 @@ var DataFrame = /** @class */ (function () {
         if (config.baked !== undefined) {
             this.isBaked = config.baked;
         }
-        var e_1, _a;
+        var e_3, _a;
     };
     /**
      * Get an iterator to enumerate the values of the dataframe.
@@ -237,15 +290,15 @@ var DataFrame = /** @class */ (function () {
                 values.push(value);
             }
         }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_2) throw e_2.error; }
+            finally { if (e_4) throw e_4.error; }
         }
         return values;
-        var e_2, _c;
+        var e_4, _c;
     };
     /**
      * Retreive the index and values from the DataFrame as an array of pairs.
@@ -262,15 +315,15 @@ var DataFrame = /** @class */ (function () {
                 pairs.push(pair);
             }
         }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_3) throw e_3.error; }
+            finally { if (e_5) throw e_5.error; }
         }
         return pairs;
-        var e_3, _c;
+        var e_5, _c;
     };
     /**
      * Bake the data frame to an array of rows.
@@ -290,15 +343,15 @@ var DataFrame = /** @class */ (function () {
                 rows.push(row);
             }
         }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_4) throw e_4.error; }
+            finally { if (e_6) throw e_6.error; }
         }
         return rows;
-        var e_4, _c;
+        var e_6, _c;
     };
     /**
      * Generate a new dataframe based by calling the selector function on each value.
