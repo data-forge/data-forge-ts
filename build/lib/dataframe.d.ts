@@ -51,6 +51,20 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      */
     getSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
     /**
+     * Returns true if the column with the requested name exists in the dataframe.
+     *
+     * @param columnName - Name of the column to check.
+     */
+    hasSeries(columnName: string): boolean;
+    /**
+     *
+     * Verify the existance of a column and return it.
+     * Throws an exception if the column doesn't exist.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     */
+    expectSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
+    /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     *
@@ -171,6 +185,20 @@ export declare class DataFrame<IndexT = number, ValueT = any> implements IDataFr
      * @param columnName Specifies the name of the column that contains the series to retreive.
      */
     getSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
+    /**
+ * Returns true if the column with the requested name exists in the dataframe.
+ *
+ * @param columnName - Name of the column to check.
+ */
+    hasSeries(columnName: string): boolean;
+    /**
+     *
+     * Verify the existance of a column and return it.
+     * Throws an exception if the column doesn't exist.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     */
+    expectSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.

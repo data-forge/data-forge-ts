@@ -64,13 +64,29 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns a new dataframe with the index reset to the default zero-based index. 
      */
     resetIndex (): IDataFrame<number, ValueT>;
-
+    
     /**
      * Retreive a series from a column of the dataframe.
      *
      * @param columnName Specifies the name of the column that contains the series to retreive.
      */
     getSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT>;
+
+    /**
+     * Returns true if the column with the requested name exists in the dataframe.
+     *
+     * @param columnName - Name of the column to check.
+     */
+    hasSeries (columnName: string): boolean;
+
+    /**
+     * 
+     * Verify the existance of a column and return it.
+     * Throws an exception if the column doesn't exist.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     */
+    expectSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT>;
 
     /**
     * Extract values from the dataframe as an array.
@@ -399,7 +415,38 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             index: this.index,
         });   
     }
+
+        /**
+     * Returns true if the column with the requested name exists in the dataframe.
+     *
+     * @param columnName - Name of the column to check.
+     */
+    hasSeries (columnName: string): boolean {
+        var columnNameLwr = columnName.toLowerCase();
+        for (let existingColumnName of this.getColumnNames()) {
+            if (existingColumnName.toLowerCase() === columnNameLwr) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
+    /**
+     * 
+     * Verify the existance of a column and return it.
+     * Throws an exception if the column doesn't exist.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     */
+    expectSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT> {
+        if (!this.hasSeries(columnName)) {
+            throw new Error("Expected dataframe to contain series with column name: '" + columnName + "'.");
+        }
+
+        return this.getSeries(columnName);
+    }
+
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.

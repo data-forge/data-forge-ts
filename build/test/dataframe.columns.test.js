@@ -250,5 +250,33 @@ describe('DataFrame columns', function () {
             },
         ]);
     });
+    it('can check that column exists', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            columnNames: ["Value1", "Value2", "VALUE3"],
+            values: [
+                [100, 'foo', 11],
+                [200, 'bar', 22],
+            ],
+            index: [5, 6]
+        });
+        chai_1.expect(dataFrame.hasSeries('non-existing-column')).to.eql(false);
+        chai_1.expect(dataFrame.hasSeries('Value1')).to.eql(true);
+        chai_1.expect(dataFrame.hasSeries('VAlue2')).to.eql(true);
+        chai_1.expect(dataFrame.hasSeries('Value3')).to.eql(true);
+    });
+    it('can expect that a column exists', function () {
+        var dataFrame = new dataframe_1.DataFrame({
+            columnNames: ["Value1"],
+            values: [
+                [100],
+                [200],
+            ],
+            index: [5, 6]
+        });
+        chai_1.expect(function () {
+            dataFrame.expectSeries('non-existing-column');
+        }).to.throw();
+        chai_1.expect(dataFrame.expectSeries('Value1')).to.not.be.null;
+    });
 });
 //# sourceMappingURL=dataframe.columns.test.js.map

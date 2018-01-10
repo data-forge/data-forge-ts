@@ -277,6 +277,44 @@ var DataFrame = /** @class */ (function () {
         });
     };
     /**
+ * Returns true if the column with the requested name exists in the dataframe.
+ *
+ * @param columnName - Name of the column to check.
+ */
+    DataFrame.prototype.hasSeries = function (columnName) {
+        var columnNameLwr = columnName.toLowerCase();
+        try {
+            for (var _a = __values(this.getColumnNames()), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var existingColumnName = _b.value;
+                if (existingColumnName.toLowerCase() === columnNameLwr) {
+                    return true;
+                }
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        return false;
+        var e_4, _c;
+    };
+    /**
+     *
+     * Verify the existance of a column and return it.
+     * Throws an exception if the column doesn't exist.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     */
+    DataFrame.prototype.expectSeries = function (columnName) {
+        if (!this.hasSeries(columnName)) {
+            throw new Error("Expected dataframe to contain series with column name: '" + columnName + "'.");
+        }
+        return this.getSeries(columnName);
+    };
+    /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     *
@@ -290,15 +328,15 @@ var DataFrame = /** @class */ (function () {
                 values.push(value);
             }
         }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_4) throw e_4.error; }
+            finally { if (e_5) throw e_5.error; }
         }
         return values;
-        var e_4, _c;
+        var e_5, _c;
     };
     /**
      * Retreive the index and values from the DataFrame as an array of pairs.
@@ -315,15 +353,15 @@ var DataFrame = /** @class */ (function () {
                 pairs.push(pair);
             }
         }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_5) throw e_5.error; }
+            finally { if (e_6) throw e_6.error; }
         }
         return pairs;
-        var e_5, _c;
+        var e_6, _c;
     };
     /**
      * Bake the data frame to an array of rows.
@@ -343,15 +381,15 @@ var DataFrame = /** @class */ (function () {
                 rows.push(row);
             }
         }
-        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        catch (e_7_1) { e_7 = { error: e_7_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_6) throw e_6.error; }
+            finally { if (e_7) throw e_7.error; }
         }
         return rows;
-        var e_6, _c;
+        var e_7, _c;
     };
     /**
      * Generate a new dataframe based by calling the selector function on each value.
