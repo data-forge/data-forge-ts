@@ -28,6 +28,41 @@ export interface IDataFrameConfig<IndexT, ValueT> {
 };
 
 /**
+ * A selector function that can select a series from a dataframe.
+ */
+export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame: IDataFrame<IndexT, DataFrameValueT>) => ISeries<IndexT, SeriesValueT>;
+
+//
+// Helper function to map an array of objects.
+//
+function toMap(items: Iterable<any>, keySelector: (item: any) => any, valueSelector: (item: any) => any): any {
+    let output: any = {};
+    for (const item of items) {
+        var key = keySelector(item);
+        output[key] = valueSelector(item);
+    }
+    return output;
+}
+
+//
+// Helper function to only return distinct items.
+//
+function makeDistinct<ItemT, KeyT>(items: Iterable<ItemT>, selector?: (item: ItemT) => KeyT): ItemT[] {
+    let set: any = {};
+    let output: any[] = [];
+    for (const item of items) {
+        var key = selector && selector(item) || item;
+        if (!set[key]) {
+            // Haven't yet seen this key.
+            set[key] = true;
+            output.push(item);
+        }
+    }
+
+    return output;
+}
+
+/**
  * Interface that represents a dataframe.
  */
 export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<ValueT> {
@@ -87,6 +122,26 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param columnName - Name or index of the column to retreive.
      */
     expectSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT>;
+
+    /**
+     * Create a new dataframe with an additional column specified by the passed-in series.
+     *
+     * @param columnNameOrSpec - The name of the column to add or replace.
+     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     *
+     * @returns Returns a new dataframe replacing or adding a particular named column.
+     */
+    withSeries<SeriesValueT> (columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+    
+    /**
+     * Add a series if it doesn't already exist.
+     * 
+     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
+     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     * 
+     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
+     */
+    ensureSeries<SeriesValueT> (columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
     * Extract values from the dataframe as an array.
@@ -446,6 +501,101 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         return this.getSeries(columnName);
     }
+
+    /**
+     * Create a new dataframe with an additional column specified by the passed-in series.
+     *
+     * @param columnNameOrSpec - The name of the column to add or replace.
+     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     *
+     * @returns Returns a new dataframe replacing or adding a particular named column.
+     */
+    withSeries<SeriesValueT> (columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
+
+        if (!Sugar.Object.isObject(columnNameOrSpec)) {
+            assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
+            if (!Sugar.Object.isFunction(series as Object)) {
+                assert.isObject(series, "Expected 'series' parameter to 'DataFrame.withSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
+            }
+        }
+        else {
+            assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
+        }
+
+        if (Sugar.Object.isObject(columnNameOrSpec)) {
+            const columnNames = Object.keys(columnNameOrSpec);
+            let workingDataFrame: IDataFrame<IndexT, ValueT> = this;
+            for (const columnName of columnNames) {
+                workingDataFrame = workingDataFrame.withSeries(columnName, columnNameOrSpec[columnName]);
+            }
+
+            return workingDataFrame;
+        }
+
+        var importSeries: ISeries<IndexT, SeriesValueT>;
+
+        if (Sugar.Object.isFunction(series as Object)) {
+            importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
+        }
+        else { 
+            importSeries = series! as ISeries<IndexT, SeriesValueT>;
+        }
+
+        var seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
+        var newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec])); //TODO: This could be lazy.
+        return new DataFrame<IndexT, ValueT>({
+            columnNames: newColumnNames,
+            index: this.index,
+            pairs: new SelectIterable<any, any>(this.pairs, pair => {
+                var index = pair[0];
+                var value = pair[1];
+                var modified = Object.assign({}, value);
+                modified[columnNameOrSpec] = seriesValueMap[index];
+                return [
+                    index,
+                    modified
+                ];
+            }),
+        });
+    }
+    
+    /**
+     * Add a series if it doesn't already exist.
+     * 
+     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
+     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     * 
+     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
+     */
+    ensureSeries<SeriesValueT> (columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
+
+        if (!Sugar.Object.isObject(columnNameOrSpec)) {
+            assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.ensureSeries' function to be a string that specifies the column to set or replace.");
+            if (!Sugar.Object.isFunction(series as Object)) {
+                assert.isObject(series, "Expected 'series' parameter to 'DataFrame.ensureSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
+            }
+        }
+        else {
+            assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.ensureSeries' to not be set when 'columnNameOrSpec is an object.");
+        }
+
+        if (Sugar.Object.isObject(columnNameOrSpec)) {
+            const columnNames = Object.keys(columnNameOrSpec);
+            let workingDataFrame = <IDataFrame<IndexT,any>> this;
+            for (const columnName of columnNames) {
+                workingDataFrame = workingDataFrame.ensureSeries(columnName, columnNameOrSpec[columnName]);
+            }
+
+            return workingDataFrame;
+        }
+
+        if (this.hasSeries(columnNameOrSpec)) {
+            return this; // Already have the series.
+        }
+        else {
+            return this.withSeries(columnNameOrSpec, series);
+        }
+    }    
 
     /**
     * Extract values from the dataframe as an array.

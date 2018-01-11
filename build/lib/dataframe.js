@@ -25,6 +25,55 @@ var series_1 = require("./series");
 var column_names_iterable_1 = require("./iterables/column-names-iterable");
 var BabyParse = require("babyparse");
 ;
+//
+// Helper function to map an array of objects.
+//
+function toMap(items, keySelector, valueSelector) {
+    var output = {};
+    try {
+        for (var items_1 = __values(items), items_1_1 = items_1.next(); !items_1_1.done; items_1_1 = items_1.next()) {
+            var item = items_1_1.value;
+            var key = keySelector(item);
+            output[key] = valueSelector(item);
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (items_1_1 && !items_1_1.done && (_a = items_1.return)) _a.call(items_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    return output;
+    var e_1, _a;
+}
+//
+// Helper function to only return distinct items.
+//
+function makeDistinct(items, selector) {
+    var set = {};
+    var output = [];
+    try {
+        for (var items_2 = __values(items), items_2_1 = items_2.next(); !items_2_1.done; items_2_1 = items_2.next()) {
+            var item = items_2_1.value;
+            var key = selector && selector(item) || item;
+            if (!set[key]) {
+                // Haven't yet seen this key.
+                set[key] = true;
+                output.push(item);
+            }
+        }
+    }
+    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+    finally {
+        try {
+            if (items_2_1 && !items_2_1.done && (_a = items_2.return)) _a.call(items_2);
+        }
+        finally { if (e_2) throw e_2.error; }
+    }
+    return output;
+    var e_2, _a;
+}
 /**
  * Class that represents a dataframe of indexed values.
  */
@@ -95,12 +144,12 @@ var DataFrame = /** @class */ (function () {
                 }
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
                 if (inputColumnNames_1_1 && !inputColumnNames_1_1.done && (_a = inputColumnNames_1.return)) _a.call(inputColumnNames_1);
             }
-            finally { if (e_1) throw e_1.error; }
+            finally { if (e_3) throw e_3.error; }
         }
         var columnNoMap = {};
         try {
@@ -122,15 +171,15 @@ var DataFrame = /** @class */ (function () {
                 }
             }
         }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
                 if (inputColumnNames_2_1 && !inputColumnNames_2_1.done && (_b = inputColumnNames_2.return)) _b.call(inputColumnNames_2);
             }
-            finally { if (e_2) throw e_2.error; }
+            finally { if (e_4) throw e_4.error; }
         }
         return outputColumnNames;
-        var e_1, _a, e_2, _b;
+        var e_3, _a, e_4, _b;
     };
     DataFrame.prototype.initIterable = function (input, fieldName) {
         if (Sugar.Object.isArray(input)) {
@@ -160,12 +209,12 @@ var DataFrame = /** @class */ (function () {
                     columnIterables.push(columnIterable);
                 }
             }
-            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+            catch (e_5_1) { e_5 = { error: e_5_1 }; }
             finally {
                 try {
                     if (columnNames_1_1 && !columnNames_1_1.done && (_a = columnNames_1.return)) _a.call(columnNames_1);
                 }
-                finally { if (e_3) throw e_3.error; }
+                finally { if (e_5) throw e_5.error; }
             }
             this.columnNames = columnNames;
             this.values = new csv_rows_iterable_1.CsvRowsIterable(columnNames, new multi_iterable_1.MultiIterable(columnIterables));
@@ -215,7 +264,7 @@ var DataFrame = /** @class */ (function () {
         if (config.baked !== undefined) {
             this.isBaked = config.baked;
         }
-        var e_3, _a;
+        var e_5, _a;
     };
     /**
      * Get an iterator to enumerate the values of the dataframe.
@@ -291,15 +340,15 @@ var DataFrame = /** @class */ (function () {
                 }
             }
         }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_4) throw e_4.error; }
+            finally { if (e_6) throw e_6.error; }
         }
         return false;
-        var e_4, _c;
+        var e_6, _c;
     };
     /**
      *
@@ -315,6 +364,111 @@ var DataFrame = /** @class */ (function () {
         return this.getSeries(columnName);
     };
     /**
+     * Create a new dataframe with an additional column specified by the passed-in series.
+     *
+     * @param columnNameOrSpec - The name of the column to add or replace.
+     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     *
+     * @returns Returns a new dataframe replacing or adding a particular named column.
+     */
+    DataFrame.prototype.withSeries = function (columnNameOrSpec, series) {
+        if (!Sugar.Object.isObject(columnNameOrSpec)) {
+            chai_1.assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
+            if (!Sugar.Object.isFunction(series)) {
+                chai_1.assert.isObject(series, "Expected 'series' parameter to 'DataFrame.withSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
+            }
+        }
+        else {
+            chai_1.assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
+        }
+        if (Sugar.Object.isObject(columnNameOrSpec)) {
+            var columnNames = Object.keys(columnNameOrSpec);
+            var workingDataFrame = this;
+            try {
+                for (var columnNames_2 = __values(columnNames), columnNames_2_1 = columnNames_2.next(); !columnNames_2_1.done; columnNames_2_1 = columnNames_2.next()) {
+                    var columnName = columnNames_2_1.value;
+                    workingDataFrame = workingDataFrame.withSeries(columnName, columnNameOrSpec[columnName]);
+                }
+            }
+            catch (e_7_1) { e_7 = { error: e_7_1 }; }
+            finally {
+                try {
+                    if (columnNames_2_1 && !columnNames_2_1.done && (_a = columnNames_2.return)) _a.call(columnNames_2);
+                }
+                finally { if (e_7) throw e_7.error; }
+            }
+            return workingDataFrame;
+        }
+        var importSeries;
+        if (Sugar.Object.isFunction(series)) {
+            importSeries = series(this);
+        }
+        else {
+            importSeries = series;
+        }
+        var seriesValueMap = toMap(importSeries.toPairs(), function (pair) { return pair[0]; }, function (pair) { return pair[1]; });
+        var newColumnNames = makeDistinct(this.getColumnNames().concat([columnNameOrSpec])); //TODO: This could be lazy.
+        return new DataFrame({
+            columnNames: newColumnNames,
+            index: this.index,
+            pairs: new select_iterable_1.SelectIterable(this.pairs, function (pair) {
+                var index = pair[0];
+                var value = pair[1];
+                var modified = Object.assign({}, value);
+                modified[columnNameOrSpec] = seriesValueMap[index];
+                return [
+                    index,
+                    modified
+                ];
+            }),
+        });
+        var e_7, _a;
+    };
+    /**
+     * Add a series if it doesn't already exist.
+     *
+     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
+     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     *
+     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
+     */
+    DataFrame.prototype.ensureSeries = function (columnNameOrSpec, series) {
+        if (!Sugar.Object.isObject(columnNameOrSpec)) {
+            chai_1.assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.ensureSeries' function to be a string that specifies the column to set or replace.");
+            if (!Sugar.Object.isFunction(series)) {
+                chai_1.assert.isObject(series, "Expected 'series' parameter to 'DataFrame.ensureSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
+            }
+        }
+        else {
+            chai_1.assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.ensureSeries' to not be set when 'columnNameOrSpec is an object.");
+        }
+        if (Sugar.Object.isObject(columnNameOrSpec)) {
+            var columnNames = Object.keys(columnNameOrSpec);
+            var workingDataFrame = this;
+            try {
+                for (var columnNames_3 = __values(columnNames), columnNames_3_1 = columnNames_3.next(); !columnNames_3_1.done; columnNames_3_1 = columnNames_3.next()) {
+                    var columnName = columnNames_3_1.value;
+                    workingDataFrame = workingDataFrame.ensureSeries(columnName, columnNameOrSpec[columnName]);
+                }
+            }
+            catch (e_8_1) { e_8 = { error: e_8_1 }; }
+            finally {
+                try {
+                    if (columnNames_3_1 && !columnNames_3_1.done && (_a = columnNames_3.return)) _a.call(columnNames_3);
+                }
+                finally { if (e_8) throw e_8.error; }
+            }
+            return workingDataFrame;
+        }
+        if (this.hasSeries(columnNameOrSpec)) {
+            return this; // Already have the series.
+        }
+        else {
+            return this.withSeries(columnNameOrSpec, series);
+        }
+        var e_8, _a;
+    };
+    /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     *
@@ -328,15 +482,15 @@ var DataFrame = /** @class */ (function () {
                 values.push(value);
             }
         }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        catch (e_9_1) { e_9 = { error: e_9_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_5) throw e_5.error; }
+            finally { if (e_9) throw e_9.error; }
         }
         return values;
-        var e_5, _c;
+        var e_9, _c;
     };
     /**
      * Retreive the index and values from the DataFrame as an array of pairs.
@@ -353,15 +507,15 @@ var DataFrame = /** @class */ (function () {
                 pairs.push(pair);
             }
         }
-        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        catch (e_10_1) { e_10 = { error: e_10_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_6) throw e_6.error; }
+            finally { if (e_10) throw e_10.error; }
         }
         return pairs;
-        var e_6, _c;
+        var e_10, _c;
     };
     /**
      * Bake the data frame to an array of rows.
@@ -381,15 +535,15 @@ var DataFrame = /** @class */ (function () {
                 rows.push(row);
             }
         }
-        catch (e_7_1) { e_7 = { error: e_7_1 }; }
+        catch (e_11_1) { e_11 = { error: e_11_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_7) throw e_7.error; }
+            finally { if (e_11) throw e_11.error; }
         }
         return rows;
-        var e_7, _c;
+        var e_11, _c;
     };
     /**
      * Generate a new dataframe based by calling the selector function on each value.

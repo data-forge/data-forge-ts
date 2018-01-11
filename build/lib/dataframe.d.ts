@@ -13,6 +13,10 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columns?: any;
 }
 /**
+ * A selector function that can select a series from a dataframe.
+ */
+export declare type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame: IDataFrame<IndexT, DataFrameValueT>) => ISeries<IndexT, SeriesValueT>;
+/**
  * Interface that represents a dataframe.
  */
 export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<ValueT> {
@@ -64,6 +68,24 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param columnName - Name or index of the column to retreive.
      */
     expectSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
+    /**
+     * Create a new dataframe with an additional column specified by the passed-in series.
+     *
+     * @param columnNameOrSpec - The name of the column to add or replace.
+     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     *
+     * @returns Returns a new dataframe replacing or adding a particular named column.
+     */
+    withSeries<SeriesValueT>(columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+    /**
+     * Add a series if it doesn't already exist.
+     *
+     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
+     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     *
+     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
+     */
+    ensureSeries<SeriesValueT>(columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
@@ -199,6 +221,24 @@ export declare class DataFrame<IndexT = number, ValueT = any> implements IDataFr
      * @param columnName - Name or index of the column to retreive.
      */
     expectSeries<SeriesValueT>(columnName: string): ISeries<IndexT, SeriesValueT>;
+    /**
+     * Create a new dataframe with an additional column specified by the passed-in series.
+     *
+     * @param columnNameOrSpec - The name of the column to add or replace.
+     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     *
+     * @returns Returns a new dataframe replacing or adding a particular named column.
+     */
+    withSeries<SeriesValueT>(columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+    /**
+     * Add a series if it doesn't already exist.
+     *
+     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
+     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     *
+     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
+     */
+    ensureSeries<SeriesValueT>(columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
     /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
