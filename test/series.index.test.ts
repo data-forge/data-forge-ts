@@ -6,6 +6,15 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {
 
+	it('default index is generated', function () {
+		
+		var column = new Series([100, 200]);
+		expect(column.toPairs()).to.eql([			
+			[0, 100],
+			[1, 200]			
+		]);		
+    });
+    
     it('can set new index for series from array', () => {
 
         var series = new Series([10, 20, 30]);
