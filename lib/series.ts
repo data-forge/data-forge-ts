@@ -3,6 +3,8 @@ import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import { SelectIterable }  from './iterables/select-iterable';
+import { TakeIterable }  from './iterables/take-iterable';
+import { WhereIterable }  from './iterables/where-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
@@ -25,6 +27,11 @@ export interface ISeriesConfig<IndexT, ValueT> {
  * A selector function. Transforms a value into another kind of value.
  */
 export type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
+
+/**
+ * A predicate function, returns true or false based on input.
+ */
+export type PredicateFn<InputT> = (value: InputT) => boolean;
 
 /**
  * Interface that represents a series of indexed values.
@@ -89,6 +96,24 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new series with the specified number of values skipped. 
      */
     skip (numValues: number): ISeries<IndexT, ValueT>;
+
+/**
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     * 
+     * @returns Returns a new series with up to the specified number of values included.
+     */
+    take (numRows: number): ISeries<IndexT, ValueT>;
+    
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     * 
+     * @returns Returns a new series containing only the values that match the predicate. 
+     */
+    where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /** 
      * Format the series for display as a string.
@@ -328,6 +353,39 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             pairs: new SkipIterable(this.pairs, numValues),
         });
     }
+
+    /**
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     * 
+     * @returns Returns a new series with up to the specified number of values included.
+     */
+    take (numRows: number): ISeries<IndexT, ValueT> {
+        assert.isNumber(numRows, "Expected 'numRows' parameter to 'take' function to be a number.");
+
+        return new Series({
+            index: new TakeIterable(this.index, numRows),
+            values: new TakeIterable(this.values, numRows),
+            pairs: new TakeIterable(this.pairs, numRows)
+        });
+    };
+    
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     * 
+     * @returns Returns a new series containing only the values that match the predicate. 
+     */
+    where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'where' function to be a function.");
+
+        return new Series({
+            values: new WhereIterable(this.values, predicate),
+            pairs: new WhereIterable(this.pairs, pair => predicate(pair[1]))
+        });
+    };
 
     /** 
      * Format the series for display as a string.

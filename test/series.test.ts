@@ -5,19 +5,6 @@ import { Series } from '../lib/series';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {
-
-    it('can skip values in a series', ()  => {
-
-        var series = new Series({
-            values: [1, 2, 3, 4, 5],
-            index: [0, 1, 2, 3, 4],
-        });
-        var result = series.skip(2);
-
-        expect(result.toArray()).to.eql([3, 4, 5]);
-        expect(result.getIndex().toArray()).to.eql([2, 3, 4]);
-        expect(result.toPairs()).to.eql([[2, 3], [3, 4], [4, 5]]);
-    });
     
 	it('can bake series', function () {
 
@@ -117,5 +104,42 @@ describe('Series', () => {
             [0, 10], 
             [2, 20]
         ]);
+    });
+
+    it('can skip values in a series', ()  => {
+
+        var series = new Series({
+            values: [1, 2, 3, 4, 5],
+            index: [0, 1, 2, 3, 4],
+        });
+        var result = series.skip(2);
+
+        expect(result.toArray()).to.eql([3, 4, 5]);
+        expect(result.getIndex().toArray()).to.eql([2, 3, 4]);
+        expect(result.toPairs()).to.eql([[2, 3], [3, 4], [4, 5]]);
+    });
+
+	it('can take', function () {
+		var series = new Series({ 
+            index: [0, 1, 2, 3], 
+            values: [100, 300, 200, 5] 
+        });
+        
+        var skipped = series.take(2);		
+		expect(skipped.getIndex().toArray()).to.eql([0, 1]);
+		expect(skipped.toArray()).to.eql([100, 300]);		
+	});
+
+	it('can filter', function () {
+		var series = new Series({ 
+            index: [0, 1, 2, 3], 
+            values: [100, 300, 200, 5] 
+        });
+        
+        var filtered = series.where(value => {
+				return value >= 100 && value < 300;
+			});
+		expect(filtered.getIndex().toArray()).to.eql([0, 2]);
+		expect(filtered.toArray()).to.eql([100, 200]);		
     });
 });

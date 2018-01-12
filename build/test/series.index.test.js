@@ -5,6 +5,13 @@ require("mocha");
 var index_1 = require("../lib/index");
 var series_1 = require("../lib/series");
 describe('Series', function () {
+    it('default index is generated', function () {
+        var column = new series_1.Series([100, 200]);
+        chai_1.expect(column.toPairs()).to.eql([
+            [0, 100],
+            [1, 200]
+        ]);
+    });
     it('can set new index for series from array', function () {
         var series = new series_1.Series([10, 20, 30]);
         var newSeries = series.withIndex([11, 22, 33]);

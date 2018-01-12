@@ -14,6 +14,8 @@ var empty_iterable_1 = require("./iterables/empty-iterable");
 var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
 var select_iterable_1 = require("./iterables/select-iterable");
+var take_iterable_1 = require("./iterables/take-iterable");
+var where_iterable_1 = require("./iterables/where-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
@@ -235,6 +237,37 @@ var Series = /** @class */ (function () {
             pairs: new skip_iterable_1.SkipIterable(this.pairs, numValues),
         });
     };
+    /**
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     *
+     * @returns Returns a new series with up to the specified number of values included.
+     */
+    Series.prototype.take = function (numRows) {
+        chai_1.assert.isNumber(numRows, "Expected 'numRows' parameter to 'take' function to be a number.");
+        return new Series({
+            index: new take_iterable_1.TakeIterable(this.index, numRows),
+            values: new take_iterable_1.TakeIterable(this.values, numRows),
+            pairs: new take_iterable_1.TakeIterable(this.pairs, numRows)
+        });
+    };
+    ;
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     *
+     * @returns Returns a new series containing only the values that match the predicate.
+     */
+    Series.prototype.where = function (predicate) {
+        chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'where' function to be a function.");
+        return new Series({
+            values: new where_iterable_1.WhereIterable(this.values, predicate),
+            pairs: new where_iterable_1.WhereIterable(this.pairs, function (pair) { return predicate(pair[1]); })
+        });
+    };
+    ;
     /**
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.

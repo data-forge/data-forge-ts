@@ -14,6 +14,10 @@ export interface ISeriesConfig<IndexT, ValueT> {
  */
 export declare type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
 /**
+ * A predicate function, returns true or false based on input.
+ */
+export declare type PredicateFn<InputT> = (value: InputT) => boolean;
+/**
  * Interface that represents a series of indexed values.
  */
 export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
@@ -68,6 +72,22 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new series with the specified number of values skipped.
      */
     skip(numValues: number): ISeries<IndexT, ValueT>;
+    /**
+         * Take a number of rows in the series.
+         *
+         * @param numRows - Number of rows to take.
+         *
+         * @returns Returns a new series with up to the specified number of values included.
+         */
+    take(numRows: number): ISeries<IndexT, ValueT>;
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     *
+     * @returns Returns a new series containing only the values that match the predicate.
+     */
+    where(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
     /**
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.
@@ -166,6 +186,22 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns Returns a new series or dataframe with the specified number of values skipped.
      */
     skip(numValues: number): ISeries<IndexT, ValueT>;
+    /**
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     *
+     * @returns Returns a new series with up to the specified number of values included.
+     */
+    take(numRows: number): ISeries<IndexT, ValueT>;
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     *
+     * @returns Returns a new series containing only the values that match the predicate.
+     */
+    where(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
     /**
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.

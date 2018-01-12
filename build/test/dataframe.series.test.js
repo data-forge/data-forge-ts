@@ -146,7 +146,7 @@ describe('DataFrame', function () {
             [new Date(2015, 24, 2), 4, 'd', 4],
         ]);
     });
-    it('can set series from another data frame', function () {
+    it('can set series from another dataframe', function () {
         var dataFrame1 = new dataframe_1.DataFrame({
             columnNames: ["Date", "Value1", "Value2", "Value3"],
             values: [
