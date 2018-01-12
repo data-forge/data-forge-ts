@@ -73,12 +73,12 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     skip(numValues: number): ISeries<IndexT, ValueT>;
     /**
-         * Take a number of rows in the series.
-         *
-         * @param numRows - Number of rows to take.
-         *
-         * @returns Returns a new series with up to the specified number of values included.
-         */
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     *
+     * @returns Returns a new series with up to the specified number of values included.
+     */
     take(numRows: number): ISeries<IndexT, ValueT>;
     /**
      * Filter a series by a predicate selector.
@@ -187,6 +187,22 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      */
     skip(numValues: number): ISeries<IndexT, ValueT>;
     /**
+     * Skips values in the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series with all initial sequential values removed that match the predicate.
+     */
+    skipWhile(predicate: PredicateFn<ValueT>): Series<IndexT, ValueT>;
+    /**
+     * Skips values in the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     */
+    skipUntil(predicate: PredicateFn<ValueT>): Series<IndexT, ValueT>;
+    /**
      * Take a number of rows in the series.
      *
      * @param numRows - Number of rows to take.
@@ -194,6 +210,22 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns Returns a new series with up to the specified number of values included.
      */
     take(numRows: number): ISeries<IndexT, ValueT>;
+    /**
+     * Take values from the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     */
+    takeWhile(predicate: PredicateFn<ValueT>): Series<number, any>;
+    /**
+     * Take values from the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     */
+    takeUntil(predicate: PredicateFn<ValueT>): Series<number, any>;
     /**
      * Filter a series by a predicate selector.
      *

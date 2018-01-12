@@ -4,11 +4,13 @@ import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import { SelectIterable }  from './iterables/select-iterable';
 import { TakeIterable }  from './iterables/take-iterable';
+import { TakeWhileIterable }  from './iterables/take-while-iterable';
 import { WhereIterable }  from './iterables/where-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
+import { SkipWhileIterable } from './iterables/skip-while-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
 import { IDataFrame, DataFrame } from './dataframe';
@@ -97,7 +99,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     skip (numValues: number): ISeries<IndexT, ValueT>;
 
-/**
+    /**
      * Take a number of rows in the series.
      *
      * @param numRows - Number of rows to take.
@@ -353,6 +355,35 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             pairs: new SkipIterable(this.pairs, numValues),
         });
     }
+    
+    /**
+     * Skips values in the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     */
+    skipWhile (predicate: PredicateFn<ValueT>) {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'skipWhile' function to be a predicate function that returns true/false.");
+
+        return new Series<IndexT, ValueT>({
+            values: new SkipWhileIterable(this.values, predicate),
+            pairs: new SkipWhileIterable(this.pairs, pair => predicate(pair[1])),
+        });
+    }
+
+    /**
+     * Skips values in the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     */
+    skipUntil (predicate: PredicateFn<ValueT>) {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'skipUntil' function to be a predicate function that returns true/false.");
+
+        return this.skipWhile(value => !predicate(value)); 
+    }
 
     /**
      * Take a number of rows in the series.
@@ -370,7 +401,36 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             pairs: new TakeIterable(this.pairs, numRows)
         });
     };
-    
+
+    /**
+     * Take values from the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     */
+    takeWhile (predicate: PredicateFn<ValueT>) {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeWhile' function to be a predicate function that returns true/false.");
+
+        return new Series({
+            values: new TakeWhileIterable(this.values, predicate),
+            pairs: new TakeWhileIterable(this.pairs, pair => predicate(pair[1]))
+        });
+    }
+
+    /**
+     * Take values from the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     */
+    takeUntil (predicate: PredicateFn<ValueT>) {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeUntil' function to be a predicate function that returns true/false.");
+
+        return this.takeWhile(value => !predicate(value));
+    }
+
     /**
      * Filter a series by a predicate selector.
      *

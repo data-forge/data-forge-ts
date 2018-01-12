@@ -1,5 +1,5 @@
 //
-// An iterator that takes a certain number of elements from a child iterator.
+// An iterator that a sequence of elements while a predicate function returns true.
 //
 
 export class TakeIterator<T> implements Iterator<T> {

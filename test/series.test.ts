@@ -142,4 +142,44 @@ describe('Series', () => {
 		expect(filtered.getIndex().toArray()).to.eql([0, 2]);
 		expect(filtered.toArray()).to.eql([100, 200]);		
     });
+
+	it('can skip while', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [true, true, false, true] });
+        var skipped = series.skipWhile(value => value);
+		expect(skipped.toPairs()).to.eql([
+			[2, false],
+			[3, true],
+		]);
+	});
+
+	it('can skip until', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [false, false, true, false] });
+		var skipped = series.skipUntil(value => value);
+		expect(skipped.toPairs()).to.eql([
+			[2, true],
+			[3, false],
+		]);
+	});
+
+	it('can take while', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [true, true, false, true] });
+		var skipped = series.takeWhile(value => value);
+		expect(skipped.toPairs()).to.eql([
+			[0, true],
+			[1, true],
+		]);
+	});
+
+	it('can take until', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [false, false, true, false] });
+		var skipped = series.takeUntil(value => value);
+		expect(skipped.toPairs()).to.eql([
+			[0, false],
+			[1, false],
+		]);
+	});
 });

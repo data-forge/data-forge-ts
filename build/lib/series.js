@@ -15,11 +15,13 @@ var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
 var select_iterable_1 = require("./iterables/select-iterable");
 var take_iterable_1 = require("./iterables/take-iterable");
+var take_while_iterable_1 = require("./iterables/take-while-iterable");
 var where_iterable_1 = require("./iterables/where-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
 var skip_iterable_1 = require("./iterables/skip-iterable");
+var skip_while_iterable_1 = require("./iterables/skip-while-iterable");
 var Table = require('easy-table');
 var chai_1 = require("chai");
 var dataframe_1 = require("./dataframe");
@@ -238,6 +240,31 @@ var Series = /** @class */ (function () {
         });
     };
     /**
+     * Skips values in the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series with all initial sequential values removed that match the predicate.
+     */
+    Series.prototype.skipWhile = function (predicate) {
+        chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'skipWhile' function to be a predicate function that returns true/false.");
+        return new Series({
+            values: new skip_while_iterable_1.SkipWhileIterable(this.values, predicate),
+            pairs: new skip_while_iterable_1.SkipWhileIterable(this.pairs, function (pair) { return predicate(pair[1]); }),
+        });
+    };
+    /**
+     * Skips values in the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     */
+    Series.prototype.skipUntil = function (predicate) {
+        chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'skipUntil' function to be a predicate function that returns true/false.");
+        return this.skipWhile(function (value) { return !predicate(value); });
+    };
+    /**
      * Take a number of rows in the series.
      *
      * @param numRows - Number of rows to take.
@@ -253,6 +280,31 @@ var Series = /** @class */ (function () {
         });
     };
     ;
+    /**
+     * Take values from the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     */
+    Series.prototype.takeWhile = function (predicate) {
+        chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeWhile' function to be a predicate function that returns true/false.");
+        return new Series({
+            values: new take_while_iterable_1.TakeWhileIterable(this.values, predicate),
+            pairs: new take_while_iterable_1.TakeWhileIterable(this.pairs, function (pair) { return predicate(pair[1]); })
+        });
+    };
+    /**
+     * Take values from the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     *
+     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     */
+    Series.prototype.takeUntil = function (predicate) {
+        chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeUntil' function to be a predicate function that returns true/false.");
+        return this.takeWhile(function (value) { return !predicate(value); });
+    };
     /**
      * Filter a series by a predicate selector.
      *

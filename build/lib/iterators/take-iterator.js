@@ -1,6 +1,6 @@
 "use strict";
 //
-// An iterator that takes a certain number of elements from a child iterator.
+// An iterator that a sequence of elements while a predicate function returns true.
 //
 Object.defineProperty(exports, "__esModule", { value: true });
 var TakeIterator = /** @class */ (function () {

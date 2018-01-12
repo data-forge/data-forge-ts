@@ -116,5 +116,37 @@ describe('Series', function () {
         chai_1.expect(filtered.getIndex().toArray()).to.eql([0, 2]);
         chai_1.expect(filtered.toArray()).to.eql([100, 200]);
     });
+    it('can skip while', function () {
+        var series = new series_1.Series({ index: [0, 1, 2, 3], values: [true, true, false, true] });
+        var skipped = series.skipWhile(function (value) { return value; });
+        chai_1.expect(skipped.toPairs()).to.eql([
+            [2, false],
+            [3, true],
+        ]);
+    });
+    it('can skip until', function () {
+        var series = new series_1.Series({ index: [0, 1, 2, 3], values: [false, false, true, false] });
+        var skipped = series.skipUntil(function (value) { return value; });
+        chai_1.expect(skipped.toPairs()).to.eql([
+            [2, true],
+            [3, false],
+        ]);
+    });
+    it('can take while', function () {
+        var series = new series_1.Series({ index: [0, 1, 2, 3], values: [true, true, false, true] });
+        var skipped = series.takeWhile(function (value) { return value; });
+        chai_1.expect(skipped.toPairs()).to.eql([
+            [0, true],
+            [1, true],
+        ]);
+    });
+    it('can take until', function () {
+        var series = new series_1.Series({ index: [0, 1, 2, 3], values: [false, false, true, false] });
+        var skipped = series.takeUntil(function (value) { return value; });
+        chai_1.expect(skipped.toPairs()).to.eql([
+            [0, false],
+            [1, false],
+        ]);
+    });
 });
 //# sourceMappingURL=series.test.js.map
