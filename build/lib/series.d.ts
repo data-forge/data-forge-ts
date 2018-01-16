@@ -81,6 +81,28 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     take(numRows: number): ISeries<IndexT, ValueT>;
     /**
+     * Count the number of values in the series.
+     *
+     * @returns Returns the count of all values in the series.
+     */
+    count(): number;
+    /**
+     * Get X values from the start of the series.
+     *
+     * @param numValues - Number of values to take.
+     *
+     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.
+     */
+    head(numValues: number): ISeries<IndexT, ValueT>;
+    /**
+     * Get X values from the end of the series.
+     *
+     * @param numValues - Number of values to take.
+     *
+     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.
+     */
+    tail(numValues: number): ISeries<IndexT, ValueT>;
+    /**
      * Filter a series by a predicate selector.
      *
      * @param predicate - Predicte function to filter rows of the series.
@@ -226,6 +248,28 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
      */
     takeUntil(predicate: PredicateFn<ValueT>): Series<number, any>;
+    /**
+     * Count the number of values in the series.
+     *
+     * @returns Returns the count of all values in the series.
+     */
+    count(): number;
+    /**
+     * Get X values from the start of the series.
+     *
+     * @param numValues - Number of values to take.
+     *
+     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.
+     */
+    head(numValues: number): ISeries<IndexT, ValueT>;
+    /**
+     * Get X values from the end of the series.
+     *
+     * @param numValues - Number of values to take.
+     *
+     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.
+     */
+    tail(numValues: number): ISeries<IndexT, ValueT>;
     /**
      * Filter a series by a predicate selector.
      *

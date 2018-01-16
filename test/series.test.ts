@@ -6,7 +6,7 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {
     
-	it('can bake series', function () {
+	it('can bake series', () =>  {
 
 		var series = new Series({
             values: [10, 20],
@@ -17,7 +17,7 @@ describe('Series', () => {
 		expect(baked).not.to.equal(series);
 	});
 
-	it('baking a baked series returns same', function () {
+	it('baking a baked series returns same', () =>  {
 
 		var series = new Series({
             values: [10, 20],
@@ -119,7 +119,7 @@ describe('Series', () => {
         expect(result.toPairs()).to.eql([[2, 3], [3, 4], [4, 5]]);
     });
 
-	it('can take', function () {
+	it('can take', () =>  {
 		var series = new Series({ 
             index: [0, 1, 2, 3], 
             values: [100, 300, 200, 5] 
@@ -130,7 +130,7 @@ describe('Series', () => {
 		expect(skipped.toArray()).to.eql([100, 300]);		
 	});
 
-	it('can filter', function () {
+	it('can filter', () =>  {
 		var series = new Series({ 
             index: [0, 1, 2, 3], 
             values: [100, 300, 200, 5] 
@@ -143,7 +143,7 @@ describe('Series', () => {
 		expect(filtered.toArray()).to.eql([100, 200]);		
     });
 
-	it('can skip while', function () {
+	it('can skip while', () =>  {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [true, true, false, true] });
         var skipped = series.skipWhile(value => value);
@@ -153,7 +153,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can skip until', function () {
+	it('can skip until', () =>  {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [false, false, true, false] });
 		var skipped = series.skipUntil(value => value);
@@ -163,7 +163,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can take while', function () {
+	it('can take while', () =>  {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [true, true, false, true] });
 		var skipped = series.takeWhile(value => value);
@@ -173,7 +173,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can take until', function () {
+	it('can take until', () =>  {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [false, false, true, false] });
 		var skipped = series.takeUntil(value => value);
@@ -181,5 +181,25 @@ describe('Series', () => {
 			[0, false],
 			[1, false],
 		]);
+    });
+    
+    it('can count number of elements', () => {
+
+        var series = new Series([10, 20, 30]);
+        expect(series.count()).to.eql(3);
+    });
+
+	it('can get head of series', () =>  {
+
+		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+		var head = series.head(2);
+		expect(head.toArray()).to.eql(['A', 'B']);
+	});
+
+	it('can get tail of series', () =>  {
+
+		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+		var head = series.tail(2);
+		expect(head.toArray()).to.eql(['B', 'C']);
 	});
 });

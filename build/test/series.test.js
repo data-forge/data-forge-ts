@@ -148,5 +148,19 @@ describe('Series', function () {
             [1, false],
         ]);
     });
+    it('can count number of elements', function () {
+        var series = new series_1.Series([10, 20, 30]);
+        chai_1.expect(series.count()).to.eql(3);
+    });
+    it('can get head of series', function () {
+        var series = new series_1.Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+        var head = series.head(2);
+        chai_1.expect(head.toArray()).to.eql(['A', 'B']);
+    });
+    it('can get tail of series', function () {
+        var series = new series_1.Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+        var head = series.tail(2);
+        chai_1.expect(head.toArray()).to.eql(['B', 'C']);
+    });
 });
 //# sourceMappingURL=series.test.js.map

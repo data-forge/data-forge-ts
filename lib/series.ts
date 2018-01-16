@@ -109,6 +109,31 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     take (numRows: number): ISeries<IndexT, ValueT>;
     
     /**
+     * Count the number of values in the series.
+     *
+     * @returns Returns the count of all values in the series.
+     */
+    count (): number;
+    
+    /** 
+     * Get X values from the start of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     */
+    head (numValues: number): ISeries<IndexT, ValueT>;
+
+    /** 
+     * Get X values from the end of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     */
+    tail (numValues: number): ISeries<IndexT, ValueT>;
+
+    /**
      * Filter a series by a predicate selector.
      *
      * @param predicate - Predicte function to filter rows of the series.
@@ -429,6 +454,48 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeUntil' function to be a predicate function that returns true/false.");
 
         return this.takeWhile(value => !predicate(value));
+    }
+
+    /**
+     * Count the number of values in the series.
+     *
+     * @returns Returns the count of all values in the series.
+     */
+    count (): number {
+
+        var total = 0;
+        for (const value in this.values) {
+            ++total;
+        }
+        return total;
+    }
+    
+    /** 
+     * Get X values from the start of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     */
+    head (numValues: number): ISeries<IndexT, ValueT> {
+
+        assert.isNumber(numValues, "Expected 'values' parameter to 'head' function to be a number.");
+
+        return this.take(numValues);
+    }
+
+    /** 
+     * Get X values from the end of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     */
+    tail (numValues: number): ISeries<IndexT, ValueT> {
+
+        assert.isNumber(numValues, "Expected 'values' parameter to 'tail' function to be a number.");
+
+        return this.skip(this.count() - numValues);
     }
 
     /**
