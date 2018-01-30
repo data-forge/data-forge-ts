@@ -196,11 +196,19 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
     /**
      * Generate a new series based by calling the selector function on each value.
      *
-     * @param selector - Selector function that transforms each value to create a new series.
+     * @param selector Selector function that transforms each value to create a new series.
      *
      * @returns Returns a new series that has been transformed by the selector function.
      */
     select<ToT>(selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+    /**
+     * Generate a new series based on the results of the selector function.
+     *
+     * @param selector Selector function that transforms each value into a list of values.
+     *
+     * @returns  Returns a new series with values that have been produced by the selector function.
+     */
+    selectMany<ToT>(selector: SelectorFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
     /**
      * Skip a number of values in the series.
      *

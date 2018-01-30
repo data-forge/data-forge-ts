@@ -29,24 +29,6 @@ describe('Series', () => {
 		expect(rebaked).to.equal(baked);
     });
     
-    it('can rewrite series with select', () => {
-
-        var series = new Series([10, 20, 30]);
-        var modified = series.select(v => v * 2);
-        expect(modified.toArray()).to.eql([20, 40, 60]);
-    });
-
-    it('select ignores index', () => {
-
-        var series = new Series({
-            values: [10, 20, 30],
-            index: [100, 200, 300],
-        });
-        var modified = series.select(v => v * 2);
-        expect(modified.toPairs()).to.eql([[100, 20], [200, 40], [300, 60]]);
-        expect(modified.getIndex().toArray()).to.eql([100, 200, 300]);
-    });
-
     it('can inflate to dataframe', () => {
 
         var series = new Series({

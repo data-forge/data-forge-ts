@@ -14,6 +14,7 @@ var empty_iterable_1 = require("./iterables/empty-iterable");
 var count_iterable_1 = require("./iterables/count-iterable");
 var multi_iterable_1 = require("./iterables/multi-iterable");
 var select_iterable_1 = require("./iterables/select-iterable");
+var select_many_iterable_1 = require("./iterables/select-many-iterable");
 var take_iterable_1 = require("./iterables/take-iterable");
 var take_while_iterable_1 = require("./iterables/take-while-iterable");
 var where_iterable_1 = require("./iterables/where-iterable");
@@ -214,7 +215,7 @@ var Series = /** @class */ (function () {
     /**
      * Generate a new series based by calling the selector function on each value.
      *
-     * @param selector - Selector function that transforms each value to create a new series.
+     * @param selector Selector function that transforms each value to create a new series.
      *
      * @returns Returns a new series that has been transformed by the selector function.
      */
@@ -223,6 +224,41 @@ var Series = /** @class */ (function () {
         return new Series({
             values: new select_iterable_1.SelectIterable(this.values, selector),
             index: this.index,
+        });
+    };
+    ;
+    /**
+     * Generate a new series based on the results of the selector function.
+     *
+     * @param selector Selector function that transforms each value into a list of values.
+     *
+     * @returns  Returns a new series with values that have been produced by the selector function.
+     */
+    Series.prototype.selectMany = function (selector) {
+        chai_1.assert.isFunction(selector, "Expected 'selector' parameter to 'Series.selectMany' to be a function.");
+        var pairsIterable = new select_many_iterable_1.SelectManyIterable(this.pairs, function (pair, index) {
+            var outputPairs = [];
+            try {
+                for (var _a = __values(selector(pair[1], index)), _b = _a.next(); !_b.done; _b = _a.next()) {
+                    var transformed = _b.value;
+                    outputPairs.push([
+                        pair[0],
+                        transformed
+                    ]);
+                }
+            }
+            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+            finally {
+                try {
+                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                }
+                finally { if (e_3) throw e_3.error; }
+            }
+            return outputPairs;
+            var e_3, _c;
+        });
+        return new Series({
+            pairs: pairsIterable,
         });
     };
     ;

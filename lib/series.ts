@@ -3,6 +3,7 @@ import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import { SelectIterable }  from './iterables/select-iterable';
+import { SelectManyIterable }  from './iterables/select-many-iterable';
 import { TakeIterable }  from './iterables/take-iterable';
 import { TakeWhileIterable }  from './iterables/take-while-iterable';
 import { WhereIterable }  from './iterables/where-iterable';
@@ -354,7 +355,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Generate a new series based by calling the selector function on each value.
      *
-     * @param selector - Selector function that transforms each value to create a new series.
+     * @param selector Selector function that transforms each value to create a new series.
      * 
      * @returns Returns a new series that has been transformed by the selector function.
      */
@@ -367,6 +368,34 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         });
     };
 
+    /**
+     * Generate a new series based on the results of the selector function.
+     *
+     * @param selector Selector function that transforms each value into a list of values.
+     * 
+     * @returns  Returns a new series with values that have been produced by the selector function. 
+     */
+    selectMany<ToT> (selector: SelectorFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
+        assert.isFunction(selector, "Expected 'selector' parameter to 'Series.selectMany' to be a function.");
+
+        const pairsIterable = new SelectManyIterable(this.pairs, 
+            (pair: [IndexT, ValueT], index: number): Iterable<[IndexT, ToT]> => {
+                const outputPairs: [IndexT, ToT][] = [];
+                for (const transformed of selector(pair[1], index)) {
+                    outputPairs.push([
+                        pair[0],
+                        transformed
+                    ]);
+                }
+                return outputPairs;
+            }
+        );
+
+        return new Series({
+            pairs: pairsIterable,
+        });
+    };
+    
     /**
      * Skip a number of values in the series.
      *

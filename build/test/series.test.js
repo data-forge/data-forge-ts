@@ -21,20 +21,6 @@ describe('Series', function () {
         var rebaked = baked.bake();
         chai_1.expect(rebaked).to.equal(baked);
     });
-    it('can rewrite series with select', function () {
-        var series = new series_1.Series([10, 20, 30]);
-        var modified = series.select(function (v) { return v * 2; });
-        chai_1.expect(modified.toArray()).to.eql([20, 40, 60]);
-    });
-    it('select ignores index', function () {
-        var series = new series_1.Series({
-            values: [10, 20, 30],
-            index: [100, 200, 300],
-        });
-        var modified = series.select(function (v) { return v * 2; });
-        chai_1.expect(modified.toPairs()).to.eql([[100, 20], [200, 40], [300, 60]]);
-        chai_1.expect(modified.getIndex().toArray()).to.eql([100, 200, 300]);
-    });
     it('can inflate to dataframe', function () {
         var series = new series_1.Series({
             values: [10, 20],
