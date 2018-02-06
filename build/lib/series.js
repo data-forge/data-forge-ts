@@ -1,4 +1,14 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __values = (this && this.__values) || function (o) {
     var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
     if (m) return m.call(o);
@@ -18,6 +28,7 @@ var select_many_iterable_1 = require("./iterables/select-many-iterable");
 var take_iterable_1 = require("./iterables/take-iterable");
 var take_while_iterable_1 = require("./iterables/take-while-iterable");
 var where_iterable_1 = require("./iterables/where-iterable");
+var ordered_iterable_1 = require("./iterables/ordered-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
 var extract_element_iterable_1 = require("./iterables/extract-element-iterable");
@@ -439,7 +450,90 @@ var Series = /** @class */ (function () {
             pairs: this.pairs,
         });
     };
+    /**
+     * Sorts the series by a value defined by the selector (ascending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector.
+     */
+    Series.prototype.orderBy = function (selector) {
+        return new OrderedSeries(this.values, this.pairs, selector, ordered_iterable_1.Direction.Ascending, null);
+    };
+    /**
+     * Sorts the series by a value defined by the selector (descending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector.
+     */
+    Series.prototype.orderByDescending = function (selector) {
+        return new OrderedSeries(this.values, this.pairs, selector, ordered_iterable_1.Direction.Descending, null);
+    };
     return Series;
 }());
 exports.Series = Series;
+//
+// A series that has been ordered.
+//
+var OrderedSeries = /** @class */ (function (_super) {
+    __extends(OrderedSeries, _super);
+    function OrderedSeries(values, pairs, selector, direction, parent) {
+        var _this = this;
+        var valueSortSpecs = [];
+        var pairSortSpecs = [];
+        var sortLevel = 0;
+        while (parent !== null) {
+            valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, parent.selector, parent.direction));
+            pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(parent.selector), parent.direction));
+            ++sortLevel;
+            parent = parent.parent;
+        }
+        valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, selector, direction));
+        pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, function (pair, index) { return selector(pair[1], index); }, direction));
+        _this = _super.call(this, {
+            values: new ordered_iterable_1.OrderedIterable(values, valueSortSpecs),
+            pairs: new ordered_iterable_1.OrderedIterable(pairs, pairSortSpecs)
+        }) || this;
+        _this.parent = parent;
+        _this.selector = selector;
+        _this.direction = direction;
+        _this.origValues = values;
+        _this.origPairs = pairs;
+        return _this;
+    }
+    //
+    // Helper function to create a sort spec.
+    //
+    OrderedSeries.makeSortSpec = function (sortLevel, selector, direction) {
+        return { sortLevel: sortLevel, selector: selector, direction: direction };
+    };
+    //
+    // Helper function to make a sort selector for pairs, this captures the parent correct when generating the closure.
+    //
+    OrderedSeries.makePairsSelector = function (selector) {
+        return function (pair, index) { return selector(pair[1], index); };
+    };
+    /**
+     * Performs additional sorting (ascending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector.
+     */
+    OrderedSeries.prototype.thenBy = function (selector) {
+        return new OrderedSeries(this.origValues, this.origPairs, selector, ordered_iterable_1.Direction.Ascending, this);
+    };
+    /**
+     * Performs additional sorting (descending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector.
+     */
+    OrderedSeries.prototype.thenByDescending = function (selector) {
+        return new OrderedSeries(this.origValues, this.origPairs, selector, ordered_iterable_1.Direction.Descending, this);
+    };
+    return OrderedSeries;
+}(Series));
 //# sourceMappingURL=series.js.map

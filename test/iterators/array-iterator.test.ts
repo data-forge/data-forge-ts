@@ -1,5 +1,3 @@
-'use strict';
-
 import { assert, expect } from 'chai';
 import 'mocha';
 import { ArrayIterator } from '../../lib/iterators/array-iterator';

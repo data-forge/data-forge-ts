@@ -131,14 +131,51 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
     inflate(): IDataFrame<IndexT, ValueT>;
+    /**
+     * Sorts the series by a value defined by the selector (ascending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector.
+     */
+    orderBy<SortT>(selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    /**
+     * Sorts the series by a value defined by the selector (descending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector.
+     */
+    orderByDescending<SortT>(selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+}
+/**
+ * Interface to a series that has been ordered.
+ */
+export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> extends ISeries<IndexT, ValueT> {
+    /**
+     * Performs additional sorting (ascending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector.
+     */
+    thenBy<SortT>(selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    /**
+     * Performs additional sorting (descending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector.
+     */
+    thenByDescending<SortT>(selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }
 /**
  * Class that represents a series of indexed values.
  */
 export declare class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
-    private index;
-    private values;
-    private pairs;
+    protected index: Iterable<any>;
+    protected values: Iterable<any>;
+    protected pairs: Iterable<[any, any]>;
     private isBaked;
     private initFromArray(arr);
     private initEmpty();
@@ -307,4 +344,20 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
     inflate(): IDataFrame<IndexT, ValueT>;
+    /**
+     * Sorts the series by a value defined by the selector (ascending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector.
+     */
+    orderBy<SortT>(selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    /**
+     * Sorts the series by a value defined by the selector (descending).
+     *
+     * @param selector Selects the value to sort by.
+     *
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector.
+     */
+    orderByDescending<SortT>(selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }

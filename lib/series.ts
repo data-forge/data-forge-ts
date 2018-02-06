@@ -7,6 +7,7 @@ import { SelectManyIterable }  from './iterables/select-many-iterable';
 import { TakeIterable }  from './iterables/take-iterable';
 import { TakeWhileIterable }  from './iterables/take-while-iterable';
 import { WhereIterable }  from './iterables/where-iterable';
+import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
@@ -166,6 +167,48 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
     inflate (): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Sorts the series by a value defined by the selector (ascending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     */
+    orderBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+
+    /**
+     * Sorts the series by a value defined by the selector (descending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     */
+    orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+}
+
+/**
+ * Interface to a series that has been ordered.
+ */
+export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> extends ISeries<IndexT, ValueT> {
+
+    /** 
+     * Performs additional sorting (ascending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     */
+    thenBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+
+    /** 
+     * Performs additional sorting (descending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     */
+    thenByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }
 
 /**
@@ -173,9 +216,9 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
  */
 export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
 
-    private index: Iterable<any>
-    private values: Iterable<any>;
-    private pairs: Iterable<[any, any]>;
+    protected index: Iterable<any>
+    protected values: Iterable<any>;
+    protected pairs: Iterable<[any, any]>;
 
     //
     // Records if a series is baked into memory.
@@ -599,4 +642,105 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         });
     }
 
+    /**
+     * Sorts the series by a value defined by the selector (ascending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     */
+    orderBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+        return new OrderedSeries<IndexT, ValueT, SortT>(this.values, this.pairs, selector, Direction.Ascending, null);
+    }
+
+    /**
+     * Sorts the series by a value defined by the selector (descending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     */
+    orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+        return new OrderedSeries<IndexT, ValueT, SortT>(this.values, this.pairs, selector, Direction.Descending, null);
+    }
+    
 }
+
+//
+// A series that has been ordered.
+//
+class OrderedSeries<IndexT = number, ValueT = any, SortT = any> 
+    extends Series<IndexT, ValueT>
+    implements IOrderedSeries<IndexT, ValueT, SortT> {
+
+    parent: OrderedSeries<IndexT, ValueT, SortT> | null;
+    selector: SelectorFn<ValueT, SortT>;
+    direction: Direction;
+    origValues: Iterable<ValueT>;
+    origPairs: Iterable<[IndexT, ValueT]>;
+
+    //
+    // Helper function to create a sort spec.
+    //
+    private static makeSortSpec (sortLevel: number, selector: SortSelectorFn, direction: Direction): ISortSpec {
+        return { sortLevel: sortLevel, selector: selector, direction: direction };
+    }
+
+    //
+    // Helper function to make a sort selector for pairs, this captures the parent correct when generating the closure.
+    //
+    private static makePairsSelector (selector: SortSelectorFn): SortSelectorFn {
+        return (pair: any, index: number) => selector(pair[1], index);
+    }
+
+    constructor(values: Iterable<ValueT>, pairs: Iterable<[IndexT, ValueT]>, selector: SelectorFn<ValueT, SortT>, direction: Direction, parent: OrderedSeries<IndexT, ValueT> | null) {
+
+        const valueSortSpecs: ISortSpec[] = [];
+        const pairSortSpecs: ISortSpec[] = [];
+        let sortLevel = 0;
+
+        while (parent !== null) {
+            valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, parent.selector, parent.direction));
+            pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(parent.selector), parent.direction));
+            ++sortLevel;
+            parent = parent.parent;
+        }
+
+        valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, selector, direction));
+        pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, (pair: [IndexT, ValueT], index: number) => selector(pair[1], index), direction));
+
+        super({
+            values: new OrderedIterable(values, valueSortSpecs),
+            pairs: new OrderedIterable(pairs, pairSortSpecs)
+        });
+
+        this.parent = parent;
+        this.selector = selector;
+        this.direction = direction;
+        this.origValues = values;
+        this.origPairs = pairs;
+    }
+
+    /** 
+     * Performs additional sorting (ascending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     */
+    thenBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+        return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Ascending, this);
+    }
+
+    /** 
+     * Performs additional sorting (descending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     */
+    thenByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+        return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
+    }
+}
+    
