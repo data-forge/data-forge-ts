@@ -37,6 +37,7 @@ var skip_while_iterable_1 = require("./iterables/skip-while-iterable");
 var Table = require('easy-table');
 var chai_1 = require("chai");
 var dataframe_1 = require("./dataframe");
+var moment = require("moment");
 ;
 /**
  * Class that represents a series of indexed values.
@@ -418,6 +419,117 @@ var Series = /** @class */ (function () {
             table.newRow();
         });
         return table.toString();
+    };
+    ;
+    //
+    // Helper function to parse a string to an int.
+    //
+    Series.parseInt = function (value, valueIndex) {
+        if (value === undefined) {
+            return undefined;
+        }
+        else {
+            chai_1.assert.isString(value, "Called Series.parseInts, expected all values in the series to be strings, instead found a '" + typeof (value) + "' at index " + valueIndex);
+            if (value.length === 0) {
+                return undefined;
+            }
+            return parseInt(value);
+        }
+    };
+    /**
+     * Parse a series with string values to a series with int values.
+     *
+     * @returns Returns a new series where string values from the original series have been parsed to integer values.
+     */
+    Series.prototype.parseInts = function () {
+        return this.select(Series.parseInt);
+    };
+    ;
+    //
+    // Helper function to parse a string to a float.
+    //
+    Series.parseFloat = function (value, valueIndex) {
+        if (value === undefined) {
+            return undefined;
+        }
+        else {
+            chai_1.assert.isString(value, "Called Series.parseFloats, expected all values in the series to be strings, instead found a '" + typeof (value) + "' at index " + valueIndex);
+            if (value.length === 0) {
+                return undefined;
+            }
+            return parseFloat(value);
+        }
+    };
+    /**
+     * Parse a series with string values to a series with float values.
+     *
+     * @returns Returns a new series where string values from the original series have been parsed to floating-point values.
+     */
+    Series.prototype.parseFloats = function () {
+        return this.select(Series.parseFloat);
+    };
+    ;
+    //
+    // Helper function to parse a string to a date.
+    //
+    Series.parseDate = function (value, valueIndex, formatString) {
+        if (value === undefined) {
+            return undefined;
+        }
+        else {
+            chai_1.assert.isString(value, "Called Series.parseDates, expected all values in the series to be strings, instead found a '" + typeof (value) + "' at index " + valueIndex);
+            if (value.length === 0) {
+                return undefined;
+            }
+            return moment(value, formatString).toDate();
+        }
+    };
+    /**
+     * Parse a series with string values to a series with date values.
+     *
+     * @param [formatString] Optional formatting string for dates.
+     *
+     * @returns Returns a new series where string values from the original series have been parsed to Date values.
+     */
+    Series.prototype.parseDates = function (formatString) {
+        if (formatString) {
+            chai_1.assert.isString(formatString, "Expected optional 'formatString' parameter to Series.parseDates to be a string (if specified).");
+        }
+        return this.select(function (value, valueIndex) { return Series.parseDate(value, valueIndex, formatString); });
+    };
+    ;
+    //
+    // Helper function to convert a value to a string.
+    //
+    Series.toString = function (value, formatString) {
+        if (value === undefined) {
+            return undefined;
+        }
+        else if (value === null) {
+            return null;
+        }
+        else if (formatString && Sugar.Object.isDate(value)) {
+            return moment(value).format(formatString);
+        }
+        else if (formatString && moment.isMoment(value)) {
+            return value.format(formatString);
+        }
+        else {
+            return value.toString();
+        }
+    };
+    /**
+     * Convert a series of values of different types to a series of string values.
+     *
+     * @param [formatString] Optional formatting string for dates.
+     *
+     * @returns Returns a new series where the values from the original series have been stringified.
+     */
+    Series.prototype.toStrings = function (formatString) {
+        if (formatString) {
+            chai_1.assert.isString(formatString, "Expected optional 'formatString' parameter to Series.toStrings to be a string (if specified).");
+        }
+        return this.select(function (value) { return Series.toString(value, formatString); });
     };
     ;
     /**

@@ -16,6 +16,7 @@ import { SkipWhileIterable } from './iterables/skip-while-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
 import { IDataFrame, DataFrame } from './dataframe';
+import * as moment from 'moment';
 
 /**
  * Series configuration.
@@ -607,6 +608,131 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         return table.toString();
     };
+
+    //
+    // Helper function to parse a string to an int.
+    //
+    static parseInt (value: any | undefined, valueIndex: number): number | undefined {
+        if (value === undefined) {
+            return undefined;
+        }
+        else {
+            assert.isString(value, "Called Series.parseInts, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+
+            if (value.length === 0) {
+                return undefined;
+            }
+
+            return parseInt(value);
+        }
+    }
+
+    /**
+     * Parse a series with string values to a series with int values.
+     * 
+     * @returns Returns a new series where string values from the original series have been parsed to integer values.
+     */
+    parseInts (): ISeries<IndexT, number> {
+        return <ISeries<IndexT, number>> this.select(Series.parseInt);
+    };
+
+    //
+    // Helper function to parse a string to a float.
+    //
+    static parseFloat (value: any | undefined, valueIndex: number): number | undefined {
+        if (value === undefined) {
+            return undefined;
+        }
+        else {
+            assert.isString(value, "Called Series.parseFloats, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+
+            if (value.length === 0) {
+                return undefined;
+            }
+
+            return parseFloat(value);
+        }
+    }
+
+    /**
+     * Parse a series with string values to a series with float values.
+     * 
+     * @returns Returns a new series where string values from the original series have been parsed to floating-point values.
+     */
+    parseFloats (): ISeries<IndexT, number> {
+        return <ISeries<IndexT, number>> this.select(Series.parseFloat);
+    };
+
+    //
+    // Helper function to parse a string to a date.
+    //
+    static parseDate (value: any | undefined, valueIndex: number, formatString?: string): Date | undefined {
+        if (value === undefined) {
+            return undefined;
+        }
+        else {
+            assert.isString(value, "Called Series.parseDates, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+
+            if (value.length === 0) {
+                return undefined;
+            }
+
+            return moment(value, formatString).toDate();
+        }
+    }
+
+    /**
+     * Parse a series with string values to a series with date values.
+     *
+     * @param [formatString] Optional formatting string for dates.
+     * 
+     * @returns Returns a new series where string values from the original series have been parsed to Date values.
+     */
+    parseDates (formatString?: string): ISeries<IndexT, Date> {
+
+        if (formatString) {
+            assert.isString(formatString, "Expected optional 'formatString' parameter to Series.parseDates to be a string (if specified).");
+        }
+
+        return <ISeries<IndexT, Date>> this.select((value: any | undefined, valueIndex: number) => Series.parseDate(value, valueIndex, formatString));
+    };
+
+    //
+    // Helper function to convert a value to a string.
+    //
+    static toString(value: any | undefined, formatString?: string): string | undefined | null {
+        if (value === undefined) {
+            return undefined;
+        }
+        else if (value === null) {
+            return null;
+        }
+        else if (formatString && Sugar.Object.isDate(value)) {
+            return moment(value).format(formatString);
+        }
+        else if (formatString && moment.isMoment(value)) {
+            return value.format(formatString);
+        }
+        else {
+            return value.toString();	
+        }		
+    }
+
+    /**
+     * Convert a series of values of different types to a series of string values.
+     *
+     * @param [formatString] Optional formatting string for dates.
+     * 
+     * @returns Returns a new series where the values from the original series have been stringified. 
+     */
+    toStrings (formatString?: string): ISeries<IndexT, string> {
+
+        if (formatString) {
+            assert.isString(formatString, "Expected optional 'formatString' parameter to Series.toStrings to be a string (if specified).");
+        }
+
+        return <ISeries<IndexT, string>> this.select(value => Series.toString(value, formatString));
+    };    
 
     /**
      * Forces lazy evaluation to complete and 'bakes' the series into memory.

@@ -330,6 +330,38 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns Generates and returns a string representation of the series or dataframe.
      */
     toString(): string;
+    static parseInt(value: any | undefined, valueIndex: number): number | undefined;
+    /**
+     * Parse a series with string values to a series with int values.
+     *
+     * @returns Returns a new series where string values from the original series have been parsed to integer values.
+     */
+    parseInts(): ISeries<IndexT, number>;
+    static parseFloat(value: any | undefined, valueIndex: number): number | undefined;
+    /**
+     * Parse a series with string values to a series with float values.
+     *
+     * @returns Returns a new series where string values from the original series have been parsed to floating-point values.
+     */
+    parseFloats(): ISeries<IndexT, number>;
+    static parseDate(value: any | undefined, valueIndex: number, formatString?: string): Date | undefined;
+    /**
+     * Parse a series with string values to a series with date values.
+     *
+     * @param [formatString] Optional formatting string for dates.
+     *
+     * @returns Returns a new series where string values from the original series have been parsed to Date values.
+     */
+    parseDates(formatString?: string): ISeries<IndexT, Date>;
+    static toString(value: any | undefined, formatString?: string): string | undefined | null;
+    /**
+     * Convert a series of values of different types to a series of string values.
+     *
+     * @param [formatString] Optional formatting string for dates.
+     *
+     * @returns Returns a new series where the values from the original series have been stringified.
+     */
+    toStrings(formatString?: string): ISeries<IndexT, string>;
     /**
      * Forces lazy evaluation to complete and 'bakes' the series into memory.
      *
