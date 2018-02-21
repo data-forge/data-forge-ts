@@ -10,13 +10,17 @@ export interface ISeriesConfig<IndexT, ValueT> {
     baked?: boolean;
 }
 /**
+ * A callback function that can be applied to each value.
+ */
+export declare type CallbackFn<ValueT> = (value: ValueT, index: number) => void;
+/**
  * A selector function. Transforms a value into another kind of value.
  */
 export declare type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
 /**
  * A predicate function, returns true or false based on input.
  */
-export declare type PredicateFn<InputT> = (value: InputT) => boolean;
+export declare type PredicateFn<ValueT> = (value: ValueT) => boolean;
 /**
  * Interface that represents a series of indexed values.
  */
@@ -87,6 +91,18 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     count(): number;
     /**
+     * Get the first value of the series.
+     *
+     * @returns Returns the first value of the series.
+     */
+    first(): ValueT;
+    /**
+     * Get the last value of the series.
+     *
+     * @returns Returns the last value of the series.
+     */
+    last(): ValueT;
+    /**
      * Get X values from the start of the series.
      *
      * @param numValues - Number of values to take.
@@ -110,6 +126,91 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new series containing only the values that match the predicate.
      */
     where(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    /**
+     * Invoke a callback function for each value in the series.
+     *
+     * @param callback - The calback to invoke for each value.
+     *
+     * @returns Returns the input series with no modifications.
+     */
+    forEach(callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT>;
+    /**
+     * Determine if the predicate returns truthy for all values in the series.
+     * Returns false as soon as the predicate evaluates to falsy.
+     * Returns true if the predicate returns truthy for all values in the series.
+     * Returns false if the series is empty.
+     *
+     * TODO: Should predicate here by optional  as well same as in any and none?
+     *
+     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false.
+     */
+    all(predicate: PredicateFn<ValueT>): boolean;
+    /**
+     * Determine if the predicate returns truthy for any of the values in the series.
+     * Returns true as soon as the predicate returns truthy.
+     * Returns false if the predicate never returns truthy.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false.
+     */
+    any(predicate?: PredicateFn<ValueT>): boolean;
+    /**
+     * Determine if the predicate returns truthy for none of the values in the series.
+     * Returns true for an empty series.
+     * Returns true if the predicate always returns falsy.
+     * Otherwise returns false.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false.
+     */
+    none(predicate?: PredicateFn<ValueT>): boolean;
+    /**
+     * Get a new series containing all values starting at and after the specified index value.
+     *
+     * @param indexValue - The index value to search for before starting the new series.
+     *
+     * @returns Returns a new series containing all values starting at and after the specified index value.
+     */
+    startAt(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values up until and including the specified index value (inclusive).
+     *
+     * @param indexValue - The index value to search for before ending the new series.
+     *
+     * @returns Returns a new series containing all values up until and including the specified index value.
+     */
+    endAt(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values up to the specified index value (exclusive).
+     *
+     * @param indexValue - The index value to search for before ending the new series.
+     *
+     * @returns Returns a new series containing all values up to the specified inde value.
+     */
+    before(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values after the specified index value (exclusive).
+     *
+     * @param indexValue - The index value to search for.
+     *
+     * @returns Returns a new series containing all values after the specified index value.
+     */
+    after(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values between the specified index values (inclusive).
+     *
+     * @param startIndexValue - The index where the new sequence starts.
+     * @param endIndexValue - The index where the new sequence ends.
+     *
+     * @returns Returns a new series containing all values between the specified index values (inclusive).
+     */
+    between(startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT>;
     /**
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.
@@ -300,6 +401,18 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      */
     count(): number;
     /**
+     * Get the first value of the series.
+     *
+     * @returns Returns the first value of the series.
+     */
+    first(): ValueT;
+    /**
+     * Get the last value of the series.
+     *
+     * @returns Returns the last value of the series.
+     */
+    last(): ValueT;
+    /**
      * Get X values from the start of the series.
      *
      * @param numValues - Number of values to take.
@@ -323,6 +436,89 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns Returns a new series containing only the values that match the predicate.
      */
     where(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    /**
+     * Invoke a callback function for each value in the series.
+     *
+     * @param callback - The calback to invoke for each value.
+     *
+     * @returns Returns the input series with no modifications.
+     */
+    forEach(callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT>;
+    /**
+     * Determine if the predicate returns truthy for all values in the series.
+     * Returns false as soon as the predicate evaluates to falsy.
+     * Returns true if the predicate returns truthy for all values in the series.
+     * Returns false if the series is empty.
+     *
+     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false.
+     */
+    all(predicate: PredicateFn<ValueT>): boolean;
+    /**
+     * Determine if the predicate returns truthy for any of the values in the series.
+     * Returns true as soon as the predicate returns truthy.
+     * Returns false if the predicate never returns truthy.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false.
+     */
+    any(predicate?: PredicateFn<ValueT>): boolean;
+    /**
+     * Determine if the predicate returns truthy for none of the values in the series.
+     * Returns true for an empty series.
+     * Returns true if the predicate always returns falsy.
+     * Otherwise returns false.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false.
+     */
+    none(predicate?: PredicateFn<ValueT>): boolean;
+    /**
+     * Get a new series containing all values starting at and after the specified index value.
+     *
+     * @param indexValue - The index value to search for before starting the new series.
+     *
+     * @returns Returns a new series containing all values starting at and after the specified index value.
+     */
+    startAt(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values up until and including the specified index value (inclusive).
+     *
+     * @param indexValue - The index value to search for before ending the new series.
+     *
+     * @returns Returns a new series containing all values up until and including the specified index value.
+     */
+    endAt(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values up to the specified index value (exclusive).
+     *
+     * @param indexValue - The index value to search for before ending the new series.
+     *
+     * @returns Returns a new series containing all values up to the specified inde value.
+     */
+    before(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values after the specified index value (exclusive).
+     *
+     * @param indexValue - The index value to search for.
+     *
+     * @returns Returns a new series containing all values after the specified index value.
+     */
+    after(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    /**
+     * Get a new series containing all values between the specified index values (inclusive).
+     *
+     * @param startIndexValue - The index where the new sequence starts.
+     * @param endIndexValue - The index where the new sequence ends.
+     *
+     * @returns Returns a new series containing all values between the specified index values (inclusive).
+     */
+    between(startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT>;
     /**
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.

@@ -366,6 +366,54 @@ var Series = /** @class */ (function () {
         return total;
     };
     /**
+     * Get the first value of the series.
+     *
+     * @returns Returns the first value of the series.
+     */
+    Series.prototype.first = function () {
+        try {
+            for (var _a = __values(this), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var value = _b.value;
+                return value; // Only need the first value.
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        throw new Error("No values in Series.");
+        var e_4, _c;
+    };
+    /**
+     * Get the last value of the series.
+     *
+     * @returns Returns the last value of the series.
+     */
+    Series.prototype.last = function () {
+        var lastValue = null;
+        try {
+            for (var _a = __values(this), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var value = _b.value;
+                lastValue = value; // Throw away all values until we get to the last one.
+            }
+        }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_5) throw e_5.error; }
+        }
+        if (lastValue === null) {
+            throw new Error("No values in Series.");
+        }
+        return lastValue;
+        var e_5, _c;
+    };
+    /**
      * Get X values from the start of the series.
      *
      * @param numValues - Number of values to take.
@@ -401,7 +449,239 @@ var Series = /** @class */ (function () {
             pairs: new where_iterable_1.WhereIterable(this.pairs, function (pair) { return predicate(pair[1]); })
         });
     };
+    /**
+     * Invoke a callback function for each value in the series.
+     *
+     * @param callback - The calback to invoke for each value.
+     *
+     * @returns Returns the input series with no modifications.
+     */
+    Series.prototype.forEach = function (callback) {
+        chai_1.assert.isFunction(callback, "Expected 'callback' parameter to 'Series.forEach' to be a function.");
+        var index = 0;
+        try {
+            for (var _a = __values(this), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var value = _b.value;
+                callback(value, index++);
+            }
+        }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_6) throw e_6.error; }
+        }
+        return this;
+        var e_6, _c;
+    };
     ;
+    /**
+     * Determine if the predicate returns truthy for all values in the series.
+     * Returns false as soon as the predicate evaluates to falsy.
+     * Returns true if the predicate returns truthy for all values in the series.
+     * Returns false if the series is empty.
+     *
+     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false.
+     */
+    Series.prototype.all = function (predicate) {
+        chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.all' to be a function.");
+        var count = 0;
+        try {
+            for (var _a = __values(this), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var value = _b.value;
+                if (!predicate(value)) {
+                    return false;
+                }
+                ++count;
+            }
+        }
+        catch (e_7_1) { e_7 = { error: e_7_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_7) throw e_7.error; }
+        }
+        return count > 0;
+        var e_7, _c;
+    };
+    /**
+     * Determine if the predicate returns truthy for any of the values in the series.
+     * Returns true as soon as the predicate returns truthy.
+     * Returns false if the predicate never returns truthy.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false.
+     */
+    Series.prototype.any = function (predicate) {
+        if (predicate) {
+            chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.any' to be a function.");
+        }
+        if (predicate) {
+            try {
+                // Use the predicate to check each value.
+                for (var _a = __values(this), _b = _a.next(); !_b.done; _b = _a.next()) {
+                    var value = _b.value;
+                    if (predicate(value)) {
+                        return true;
+                    }
+                }
+            }
+            catch (e_8_1) { e_8 = { error: e_8_1 }; }
+            finally {
+                try {
+                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                }
+                finally { if (e_8) throw e_8.error; }
+            }
+        }
+        else {
+            try {
+                // Check each value directly.
+                for (var _d = __values(this), _e = _d.next(); !_e.done; _e = _d.next()) {
+                    var value = _e.value;
+                    if (value) {
+                        return true;
+                    }
+                }
+            }
+            catch (e_9_1) { e_9 = { error: e_9_1 }; }
+            finally {
+                try {
+                    if (_e && !_e.done && (_f = _d.return)) _f.call(_d);
+                }
+                finally { if (e_9) throw e_9.error; }
+            }
+        }
+        return false; // Nothing passed.
+        var e_8, _c, e_9, _f;
+    };
+    /**
+     * Determine if the predicate returns truthy for none of the values in the series.
+     * Returns true for an empty series.
+     * Returns true if the predicate always returns falsy.
+     * Otherwise returns false.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false.
+     */
+    Series.prototype.none = function (predicate) {
+        if (predicate) {
+            chai_1.assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.none' to be a function.");
+        }
+        if (predicate) {
+            try {
+                // Use the predicate to check each value.
+                for (var _a = __values(this), _b = _a.next(); !_b.done; _b = _a.next()) {
+                    var value = _b.value;
+                    if (predicate(value)) {
+                        return false;
+                    }
+                }
+            }
+            catch (e_10_1) { e_10 = { error: e_10_1 }; }
+            finally {
+                try {
+                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                }
+                finally { if (e_10) throw e_10.error; }
+            }
+        }
+        else {
+            try {
+                // Check each value directly.
+                for (var _d = __values(this), _e = _d.next(); !_e.done; _e = _d.next()) {
+                    var value = _e.value;
+                    if (value) {
+                        return false;
+                    }
+                }
+            }
+            catch (e_11_1) { e_11 = { error: e_11_1 }; }
+            finally {
+                try {
+                    if (_e && !_e.done && (_f = _d.return)) _f.call(_d);
+                }
+                finally { if (e_11) throw e_11.error; }
+            }
+        }
+        return true; // Nothing failed the predicate.
+        var e_10, _c, e_11, _f;
+    };
+    /**
+     * Get a new series containing all values starting at and after the specified index value.
+     *
+     * @param indexValue - The index value to search for before starting the new series.
+     *
+     * @returns Returns a new series containing all values starting at and after the specified index value.
+     */
+    Series.prototype.startAt = function (indexValue) {
+        var lessThan = this.getIndex().getLessThan();
+        return new Series({
+            index: new skip_while_iterable_1.SkipWhileIterable(this.index, function (index) { return lessThan(index, indexValue); }),
+            pairs: new skip_while_iterable_1.SkipWhileIterable(this.pairs, function (pair) { return lessThan(pair[0], indexValue); }),
+        });
+    };
+    /**
+     * Get a new series containing all values up until and including the specified index value (inclusive).
+     *
+     * @param indexValue - The index value to search for before ending the new series.
+     *
+     * @returns Returns a new series containing all values up until and including the specified index value.
+     */
+    Series.prototype.endAt = function (indexValue) {
+        var lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
+        return new Series({
+            index: new take_while_iterable_1.TakeWhileIterable(this.index, function (index) { return lessThanOrEqualTo(index, indexValue); }),
+            pairs: new take_while_iterable_1.TakeWhileIterable(this.pairs, function (pair) { return lessThanOrEqualTo(pair[0], indexValue); }),
+        });
+    };
+    /**
+     * Get a new series containing all values up to the specified index value (exclusive).
+     *
+     * @param indexValue - The index value to search for before ending the new series.
+     *
+     * @returns Returns a new series containing all values up to the specified inde value.
+     */
+    Series.prototype.before = function (indexValue) {
+        var lessThan = this.getIndex().getLessThan();
+        return new Series({
+            index: new take_while_iterable_1.TakeWhileIterable(this.index, function (index) { return lessThan(index, indexValue); }),
+            pairs: new take_while_iterable_1.TakeWhileIterable(this.pairs, function (pair) { return lessThan(pair[0], indexValue); }),
+        });
+    };
+    /**
+     * Get a new series containing all values after the specified index value (exclusive).
+     *
+     * @param indexValue - The index value to search for.
+     *
+     * @returns Returns a new series containing all values after the specified index value.
+     */
+    Series.prototype.after = function (indexValue) {
+        var lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
+        return new Series({
+            index: new skip_while_iterable_1.SkipWhileIterable(this.index, function (index) { return lessThanOrEqualTo(index, indexValue); }),
+            pairs: new skip_while_iterable_1.SkipWhileIterable(this.pairs, function (pair) { return lessThanOrEqualTo(pair[0], indexValue); }),
+        });
+    };
+    /**
+     * Get a new series containing all values between the specified index values (inclusive).
+     *
+     * @param startIndexValue - The index where the new sequence starts.
+     * @param endIndexValue - The index where the new sequence ends.
+     *
+     * @returns Returns a new series containing all values between the specified index values (inclusive).
+     */
+    Series.prototype.between = function (startIndexValue, endIndexValue) {
+        return this.startAt(startIndexValue).endAt(endIndexValue);
+    };
     /**
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.
