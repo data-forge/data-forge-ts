@@ -27,3 +27,7 @@ The additon of AsyncDataFrame and AsyncSeries.
 Removed dependencies on linqjs.
 Replaced babyparse with papaparse.
 Proper laziness all the way through!
+
+**Deprecated functions**
+
+asPairs/asValues

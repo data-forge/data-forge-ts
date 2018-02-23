@@ -28,6 +28,8 @@ var select_many_iterable_1 = require("./iterables/select-many-iterable");
 var take_iterable_1 = require("./iterables/take-iterable");
 var take_while_iterable_1 = require("./iterables/take-while-iterable");
 var where_iterable_1 = require("./iterables/where-iterable");
+var window_iterable_1 = require("./iterables/window-iterable");
+var rolling_window_iterable_1 = require("./iterables/rolling-window-iterable");
 var ordered_iterable_1 = require("./iterables/ordered-iterable");
 var Sugar = require("sugar");
 var index_1 = require("./index");
@@ -224,6 +226,29 @@ var Series = /** @class */ (function () {
         return pairs;
         var e_2, _c;
     };
+    //TODO: These functions are deprecated.
+    /**
+     * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     *
+     * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
+     */
+    Series.prototype.asPairs = function () {
+        return new Series({ values: this.pairs });
+    };
+    /**
+     * Convert a series of pairs to back to a regular series.
+     *
+     * @returns Returns a series of values where each pair has been extracted from the value of the input series.
+     */
+    Series.prototype.asValues = function () {
+        //TODO: This function didn't port well to TypeScript. It's deprecated though.
+        return new Series({
+            index: new select_iterable_1.SelectIterable(this.values, function (pair, index) { return pair[0]; }),
+            values: new select_iterable_1.SelectIterable(this.values, function (pair, index) { return pair[1]; }),
+            pairs: this.values,
+        });
+    };
+    ;
     /**
      * Generate a new series based by calling the selector function on each value.
      *
@@ -238,7 +263,6 @@ var Series = /** @class */ (function () {
             index: this.index,
         });
     };
-    ;
     /**
      * Generate a new series based on the results of the selector function.
      *
@@ -273,7 +297,53 @@ var Series = /** @class */ (function () {
             pairs: pairsIterable,
         });
     };
-    ;
+    /**
+     * Segment a Series into 'windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
+     * Use select or selectPairs to aggregate.
+     *
+     * @param period - The number of values in the window.
+     *
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    Series.prototype.window = function (period) {
+        chai_1.assert.isNumber(period, "Expected 'period' parameter to 'Series.window' to be a number.");
+        return new Series({
+            values: new window_iterable_1.WindowIterable(this.pairs, period)
+        });
+    };
+    /**
+     * Segment a Series into 'rolling windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
+    *
+     * @param period - The number of values in the window.
+     *
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    Series.prototype.rollingWindow = function (period) {
+        chai_1.assert.isNumber(period, "Expected 'period' parameter to 'Series.rollingWindow' to be a number.");
+        return new Series({
+            values: new rolling_window_iterable_1.RollingWindowIterable(this.pairs, period)
+        });
+    };
+    /**
+     * Compute the percent change between each pair of values.
+     * Percentages are expressed as 0-1 values.
+     *
+     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
+     */
+    Series.prototype.percentChange = function () {
+        return this // Have to assume this is a number series.
+            .rollingWindow(2)
+            .asPairs()
+            .select(function (pair) {
+            var window = pair[1];
+            var values = window.toArray();
+            var amountChange = values[1] - values[0]; // Compute amount of change.
+            var pctChange = amountChange / values[0]; // Compute % change.
+            return [window.getIndex().last(), pctChange]; // Return new index and value.
+        })
+            .asValues() // Result is always a series.
+        ;
+    };
     /**
      * Skip a number of values in the series.
      *
@@ -360,10 +430,21 @@ var Series = /** @class */ (function () {
      */
     Series.prototype.count = function () {
         var total = 0;
-        for (var value in this.values) {
-            ++total;
+        try {
+            for (var _a = __values(this.values), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var value = _b.value;
+                ++total;
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_4) throw e_4.error; }
         }
         return total;
+        var e_4, _c;
     };
     /**
      * Get the first value of the series.
@@ -377,15 +458,15 @@ var Series = /** @class */ (function () {
                 return value; // Only need the first value.
             }
         }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_4) throw e_4.error; }
+            finally { if (e_5) throw e_5.error; }
         }
         throw new Error("No values in Series.");
-        var e_4, _c;
+        var e_5, _c;
     };
     /**
      * Get the last value of the series.
@@ -400,18 +481,18 @@ var Series = /** @class */ (function () {
                 lastValue = value; // Throw away all values until we get to the last one.
             }
         }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_5) throw e_5.error; }
+            finally { if (e_6) throw e_6.error; }
         }
         if (lastValue === null) {
             throw new Error("No values in Series.");
         }
         return lastValue;
-        var e_5, _c;
+        var e_6, _c;
     };
     /**
      * Get X values from the start of the series.
@@ -465,15 +546,15 @@ var Series = /** @class */ (function () {
                 callback(value, index++);
             }
         }
-        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        catch (e_7_1) { e_7 = { error: e_7_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_6) throw e_6.error; }
+            finally { if (e_7) throw e_7.error; }
         }
         return this;
-        var e_6, _c;
+        var e_7, _c;
     };
     ;
     /**
@@ -498,15 +579,15 @@ var Series = /** @class */ (function () {
                 ++count;
             }
         }
-        catch (e_7_1) { e_7 = { error: e_7_1 }; }
+        catch (e_8_1) { e_8 = { error: e_8_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_7) throw e_7.error; }
+            finally { if (e_8) throw e_8.error; }
         }
         return count > 0;
-        var e_7, _c;
+        var e_8, _c;
     };
     /**
      * Determine if the predicate returns truthy for any of the values in the series.
@@ -532,12 +613,12 @@ var Series = /** @class */ (function () {
                     }
                 }
             }
-            catch (e_8_1) { e_8 = { error: e_8_1 }; }
+            catch (e_9_1) { e_9 = { error: e_9_1 }; }
             finally {
                 try {
                     if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
                 }
-                finally { if (e_8) throw e_8.error; }
+                finally { if (e_9) throw e_9.error; }
             }
         }
         else {
@@ -550,16 +631,16 @@ var Series = /** @class */ (function () {
                     }
                 }
             }
-            catch (e_9_1) { e_9 = { error: e_9_1 }; }
+            catch (e_10_1) { e_10 = { error: e_10_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_f = _d.return)) _f.call(_d);
                 }
-                finally { if (e_9) throw e_9.error; }
+                finally { if (e_10) throw e_10.error; }
             }
         }
         return false; // Nothing passed.
-        var e_8, _c, e_9, _f;
+        var e_9, _c, e_10, _f;
     };
     /**
      * Determine if the predicate returns truthy for none of the values in the series.
@@ -586,12 +667,12 @@ var Series = /** @class */ (function () {
                     }
                 }
             }
-            catch (e_10_1) { e_10 = { error: e_10_1 }; }
+            catch (e_11_1) { e_11 = { error: e_11_1 }; }
             finally {
                 try {
                     if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
                 }
-                finally { if (e_10) throw e_10.error; }
+                finally { if (e_11) throw e_11.error; }
             }
         }
         else {
@@ -604,16 +685,16 @@ var Series = /** @class */ (function () {
                     }
                 }
             }
-            catch (e_11_1) { e_11 = { error: e_11_1 }; }
+            catch (e_12_1) { e_12 = { error: e_12_1 }; }
             finally {
                 try {
                     if (_e && !_e.done && (_f = _d.return)) _f.call(_d);
                 }
-                finally { if (e_11) throw e_11.error; }
+                finally { if (e_12) throw e_12.error; }
             }
         }
         return true; // Nothing failed the predicate.
-        var e_10, _c, e_11, _f;
+        var e_11, _c, e_12, _f;
     };
     /**
      * Get a new series containing all values starting at and after the specified index value.

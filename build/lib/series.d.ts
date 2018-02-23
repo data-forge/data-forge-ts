@@ -62,6 +62,18 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     toPairs(): ([IndexT, ValueT])[];
     /**
+     * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     *
+     * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
+     */
+    asPairs(): ISeries<number, [IndexT, ValueT]>;
+    /**
+     * Convert a series of pairs to back to a regular series.
+     *
+     * @returns Returns a series of values where each pair has been extracted from the value of the input series.
+     */
+    asValues<NewIndexT, NewValueT>(): ISeries<NewIndexT, NewValueT>;
+    /**
      * Generate a new series based by calling the selector function on each value.
      *
      * @param selector - Selector function that transforms each value to create a new series or dataframe.
@@ -69,6 +81,38 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new series that has been transformed by the selector function.
      */
     select<ToT>(selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+    /**
+     * Generate a new series based on the results of the selector function.
+     *
+     * @param selector Selector function that transforms each value into a list of values.
+     *
+     * @returns  Returns a new series with values that have been produced by the selector function.
+     */
+    selectMany<ToT>(selector: SelectorFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
+    /**
+     * Segment a Series into 'windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
+     * Use select or selectPairs to aggregate.
+     *
+     * @param period - The number of values in the window.
+     *
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    window(period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+    /**
+     * Segment a Series into 'rolling windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
+    *
+     * @param period - The number of values in the window.
+     *
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    rollingWindow(period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+    /**
+     * Compute the percent change between each pair of values.
+     * Percentages are expressed as 0-1 values.
+     *
+     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
+     */
+    percentChange(): ISeries<IndexT, number>;
     /**
      * Skip a number of values in the series.
      *
@@ -274,9 +318,9 @@ export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> exte
  * Class that represents a series of indexed values.
  */
 export declare class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
-    protected index: Iterable<any>;
-    protected values: Iterable<any>;
-    protected pairs: Iterable<[any, any]>;
+    protected index: Iterable<IndexT>;
+    protected values: Iterable<ValueT>;
+    protected pairs: Iterable<[IndexT, ValueT]>;
     private isBaked;
     private initFromArray(arr);
     private initEmpty();
@@ -332,6 +376,18 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      */
     toPairs(): ([IndexT, ValueT])[];
     /**
+     * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     *
+     * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
+     */
+    asPairs(): ISeries<number, [IndexT, ValueT]>;
+    /**
+     * Convert a series of pairs to back to a regular series.
+     *
+     * @returns Returns a series of values where each pair has been extracted from the value of the input series.
+     */
+    asValues<NewIndexT = any, NewValueT = any>(): ISeries<NewIndexT, NewValueT>;
+    /**
      * Generate a new series based by calling the selector function on each value.
      *
      * @param selector Selector function that transforms each value to create a new series.
@@ -347,6 +403,30 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      * @returns  Returns a new series with values that have been produced by the selector function.
      */
     selectMany<ToT>(selector: SelectorFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
+    /**
+     * Segment a Series into 'windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
+     * Use select or selectPairs to aggregate.
+     *
+     * @param period - The number of values in the window.
+     *
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    window(period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+    /**
+     * Segment a Series into 'rolling windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
+    *
+     * @param period - The number of values in the window.
+     *
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    rollingWindow(period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+    /**
+     * Compute the percent change between each pair of values.
+     * Percentages are expressed as 0-1 values.
+     *
+     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
+     */
+    percentChange(): ISeries<IndexT, number>;
     /**
      * Skip a number of values in the series.
      *
