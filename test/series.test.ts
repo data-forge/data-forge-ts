@@ -618,4 +618,44 @@ describe('Series', () => {
 			[30, 3],
 		]);
     });
+
+	it('can aggregate series with no seed', function () {
+
+		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
+
+		var agg = series.aggregate((prevValue, value) => {
+				return prevValue + value;
+			});
+
+		expect(agg).to.eql(28);
+	});
+
+	it('can aggregate series with seed', function () {
+
+		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
+
+		var agg = series.aggregate(2, (prevValue, value) => {
+				return prevValue + value;
+			});
+
+		expect(agg).to.eql(30);
+	});
+
+	it('can aggregate series with a function as the seed', function () {
+
+		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
+
+		var agg = series.aggregate<Function>(
+			() => {
+				return 2;
+			},
+			(prevValue, value) => {
+				return () => {
+					return prevValue() + value;
+				};
+			});
+
+		expect(agg()).to.eql(30);
+	});
+    
 });

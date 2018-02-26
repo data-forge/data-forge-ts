@@ -46,6 +46,11 @@ export type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
 export type PredicateFn<ValueT> = (value: ValueT) => boolean;
 
 /**
+ * Defines a function for aggregation.
+ */
+export type AggregateFn<ValueT, ToT> = (accum: ToT, value: ValueT) => ToT;
+
+/**
  * Interface that represents a series of indexed values.
  */
 export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
@@ -144,6 +149,16 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
      */
     rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+
+    /**
+     * Aggregate the values in the series.
+     *
+     * @param [seed] - Optional seed value for producing the aggregation.
+     * @param selector - Function that takes the seed and then each value in the series and produces the aggregate value.
+     * 
+     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
+     */
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
 
     /**
      * Compute the percent change between each pair of values.
@@ -667,6 +682,32 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         });
     }
 
+    /**
+     * Aggregate the values in the series.
+     *
+     * @param [seed] - Optional seed value for producing the aggregation.
+     * @param selector - Function that takes the seed and then each value in the series and produces the aggregate value.
+     * 
+     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
+     */
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
+
+        if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
+            return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
+        }
+        else {
+            assert.isFunction(selector, "Expected 'selector' parameter to aggregate to be a function.");
+
+            let accum = <ToT> seedOrSelector;
+
+            for (const value of this) {
+                accum = selector!(accum, value);                
+            }
+
+            return accum;
+        }
+    };
+    
     /**
      * Compute the percent change between each pair of values.
      * Percentages are expressed as 0-1 values.
