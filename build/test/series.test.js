@@ -41,24 +41,19 @@ describe('Series', function () {
             [200, { V: 20, },],
         ]);
     });
-    it('can inflate to dataframe with no selector', function () {
-        var series = new index_1.Series({
-            values: [{ V: 10 }, { V: 20 }],
-            index: [100, 200]
+    it('can inflate series to dataframe using selector', function () {
+        var series = new index_1.Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+        var dataFrame = series.inflate(function (value) {
+            return {
+                Col1: value,
+                Col2: value + value,
+            };
         });
-        var dataframe = series.inflate();
-        chai_1.expect(dataframe.toArray()).to.eql([
-            {
-                V: 10,
-            },
-            {
-                V: 20,
-            },
-        ]);
-        chai_1.expect(dataframe.getIndex().toArray()).to.eql([100, 200]);
-        chai_1.expect(dataframe.toPairs()).to.eql([
-            [100, { V: 10, },],
-            [200, { V: 20, },],
+        chai_1.expect(dataFrame.getColumnNames()).to.eql(["Col1", "Col2"]);
+        chai_1.expect(dataFrame.toRows()).to.eql([
+            ['A', 'AA'],
+            ['B', 'BB'],
+            ['C', 'CC'],
         ]);
     });
     it('Series.toArray strips undefined values', function () {

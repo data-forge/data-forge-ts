@@ -275,7 +275,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    inflate(): IDataFrame<IndexT, ValueT>;
+    inflate<ToT>(selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
     /**
      * Sorts the series by a value defined by the selector (ascending).
      *
@@ -651,7 +651,7 @@ export declare class Series<IndexT = number, ValueT = any> implements ISeries<In
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    inflate(): IDataFrame<IndexT, ValueT>;
+    inflate<ToT = any>(selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
     /**
      * Sorts the series by a value defined by the selector (ascending).
      *

@@ -916,12 +916,22 @@ var Series = /** @class */ (function () {
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    Series.prototype.inflate = function () {
-        return new dataframe_1.DataFrame({
-            values: this.values,
-            index: this.index,
-            pairs: this.pairs,
-        });
+    Series.prototype.inflate = function (selector) {
+        if (selector) {
+            chai_1.assert.isFunction(selector, "Expected 'selector' parameter to Series.inflate to be a selector function.");
+            return new dataframe_1.DataFrame({
+                values: new select_iterable_1.SelectIterable(this.values, selector),
+                index: this.index,
+                pairs: new select_iterable_1.SelectIterable(this.pairs, function (pair, index) { return [pair[0], selector(pair[1], index)]; }),
+            });
+        }
+        else {
+            return new dataframe_1.DataFrame({
+                values: this.values,
+                index: this.index,
+                pairs: this.pairs
+            });
+        }
     };
     /**
      * Sorts the series by a value defined by the selector (ascending).

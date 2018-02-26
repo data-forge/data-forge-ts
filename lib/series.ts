@@ -334,7 +334,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    inflate (): IDataFrame<IndexT, ValueT>;
+    inflate<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
 
     /**
      * Sorts the series by a value defined by the selector (ascending). 
@@ -1234,13 +1234,24 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *
      * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
      */
-    inflate (): IDataFrame<IndexT, ValueT> {
+    inflate<ToT = any> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
 
-        return new DataFrame<IndexT, ValueT>({
-            values: this.values,
-            index: this.index,
-            pairs: this.pairs,
-        });
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to Series.inflate to be a selector function.");
+
+            return new DataFrame<IndexT, ToT>({
+                values: new SelectIterable(this.values, selector),
+                index: this.index,
+                pairs: new SelectIterable(this.pairs, (pair: [IndexT, ValueT], index: number): [IndexT, ToT] => [pair[0], selector(pair[1], index)]),
+            });            
+        }
+        else {
+            return new DataFrame<IndexT, ToT>({
+                values: <Iterable<ToT>> <any> this.values,
+                index: this.index,
+                pairs: <Iterable<[IndexT, ToT]>> <any> this.pairs
+            });
+        }
     }
 
     /**
