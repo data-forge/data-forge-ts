@@ -20,20 +20,6 @@ export class WindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, 
 
     next(): IteratorResult<ISeries<IndexT, ValueT>> {
 
-        /*
-        console.log('>> next'); //fio:
-
-        for (const xx of new TakeIterable(
-                new SkipIterable(
-                    this.iterable,
-                    this.windowIndex * this.period
-                ),
-                this.period
-            )) {
-                console.log(xx);
-            }
-            */
-
         const window = new Series<IndexT, ValueT>({
             pairs: new TakeIterable(
                 new SkipIterable(
@@ -43,9 +29,6 @@ export class WindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, 
                 this.period
             )
         });
-
-        //console.log('window'); //fio:
-        //console.log(window.toPairs()); //fio:
 
         if (window.none()) {
             // Nothing more to read from the underlying iterable.

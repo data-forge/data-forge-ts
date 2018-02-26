@@ -261,4 +261,73 @@ describe('Series window', () => {
 		expect(pctChanged.toArray()).to.eql([1, 1, 1]);
     });
 
+	it('variable window', function () {
+
+		var series = new Series({ 
+			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+			values: [1, 1, 2, 1, 1, 2, 3, 4, 3, 3],
+		});
+
+		var aggregated = series
+			.variableWindow((a, b) => a === b)
+			.asPairs()
+			.select(pair => {
+				var windowIndex = pair[0];
+				var window = pair[1];
+				return [window.getIndex().first(), window.count()];
+			})
+			.asValues()
+			;
+
+		expect(aggregated.toPairs()).to.eql([
+			[0, 2],
+			[2, 1],
+			[3, 2],
+			[5, 1],
+			[6, 1],
+			[7, 1],
+			[8, 2]
+		]);
+	});
+    
+	it('can collapse sequential duplicates and take first index', function () {
+
+		var series = new Series({ 
+			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+			values: [1, 1, 2, 3, 3, 3, 5, 6, 6, 7],
+		});
+
+		var collapsed = series.sequentialDistinct();
+
+		expect(collapsed.toPairs()).to.eql([
+			[0, 1],
+			[2, 2],
+			[3, 3],
+			[6, 5],
+			[7, 6],
+			[9, 7],
+		]);
+	});
+
+	it('can collapse sequential duplicates with custom selector', function () {
+
+		var series = new Series({ 
+			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+			values: [{ A: 1 }, { A: 1 }, { A: 2 }, { A: 3 }, { A: 3 }, { A: 3 }, { A: 5 }, { A: 6 }, { A: 6 }, { A: 7 }],
+		});
+
+		var collapsed = series
+			.sequentialDistinct(value => value.A)
+			.select(value => value.A)
+			;
+
+		expect(collapsed.toPairs()).to.eql([
+			[0, 1],
+			[2, 2],
+			[3, 3],
+			[6, 5],
+			[7, 6],
+			[9, 7],
+		]);
+    });
 });

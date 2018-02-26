@@ -9,6 +9,7 @@ import { TakeWhileIterable }  from './iterables/take-while-iterable';
 import { WhereIterable }  from './iterables/where-iterable';
 import { WindowIterable }  from './iterables/window-iterable';
 import { RollingWindowIterable }  from './iterables/rolling-window-iterable';
+import { VariableWindowIterable }  from './iterables/variable-window-iterable';
 import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
@@ -35,10 +36,17 @@ export interface ISeriesConfig<IndexT, ValueT> {
  */
 export type CallbackFn<ValueT> = (value: ValueT, index: number) => void;
 
+//TOOD: Rename SelectorFn and SelectorFnNoIndex.
+
 /**
  * A selector function. Transforms a value into another kind of value.
  */
 export type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
+
+/**
+ * A selector function with no index. Transforms a value into another kind of value.
+ */
+export type SelectorFnNoIndex<FromT, ToT> = (value: FromT) => ToT;
 
 /**
  * A predicate function, returns true or false based on input.
@@ -49,6 +57,11 @@ export type PredicateFn<ValueT> = (value: ValueT) => boolean;
  * Defines a function for aggregation.
  */
 export type AggregateFn<ValueT, ToT> = (accum: ToT, value: ValueT) => ToT;
+
+/**
+ * Compares to values and returns true if they are equivalent.
+ */
+export type ComparerFn<ValueT> = (a: ValueT, b: ValueT) => boolean;
 
 /**
  * Interface that represents a series of indexed values.
@@ -150,6 +163,24 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
 
+    /**
+     * Groups sequential values into variable length 'windows'.
+     *
+     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * 
+     * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
+     */
+    variableWindow (comparer: ComparerFn<ValueT>): ISeries<number, ISeries<IndexT, ValueT>>;
+
+    /**
+     * Group sequential duplicate values into a Series of windows.
+     *
+     * @param selector - Selects the value used to compare for duplicates.
+     * 
+     * @returns Returns a series of groups. Each group is itself a series. 
+     */
+    sequentialDistinct<ToT> (selector: SelectorFnNoIndex<ValueT, ToT>): ISeries<IndexT, ValueT>;
+    
     /**
      * Aggregate the values in the series.
      *
@@ -680,6 +711,48 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return new Series<number, ISeries<IndexT, ValueT>>({
             values: new RollingWindowIterable<IndexT, ValueT>(this.pairs, period)
         });
+    }
+
+    /**
+     * Groups sequential values into variable length 'windows'.
+     *
+     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * 
+     * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
+     */
+    variableWindow (comparer: ComparerFn<ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
+        
+        assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.variableWindow' to be a function.")
+
+        return new Series<number, ISeries<IndexT, ValueT>>({
+            values: new VariableWindowIterable<IndexT, ValueT>(this.pairs, comparer)
+        });
+    };    
+
+    /**
+     * Group sequential duplicate values into a Series of windows.
+     *
+     * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
+     * 
+     * @returns Returns a series of groups. Each group is itself a series. 
+     */
+    sequentialDistinct<ToT = ValueT> (selector?: SelectorFnNoIndex<ValueT, ToT>): ISeries<IndexT, ValueT> {
+        
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to 'Series.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
+        }
+        else {
+            selector = (value: ValueT): ToT => <ToT> <any> value;
+        }
+
+        return this.variableWindow((a: ValueT, b: ValueT): boolean => selector!(a) === selector!(b))
+            .asPairs()
+            .select(function (pair) {
+                var window = pair[1];
+                return [window.getIndex().first(), window.first()];
+            })
+            .asValues() 
+            ;
     }
 
     /**
