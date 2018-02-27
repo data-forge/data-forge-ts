@@ -425,6 +425,18 @@ export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> exte
     thenByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }
 
+//
+// Helper function to map an array of objects.
+//
+export function toMap(items: Iterable<any>, keySelector: (item: any) => any, valueSelector: (item: any) => any): any {
+    let output: any = {};
+    for (const item of items) {
+        var key = keySelector(item);
+        output[key] = valueSelector(item);
+    }
+    return output;
+}
+
 /**
  * Class that represents a series of indexed values.
  */
@@ -609,6 +621,22 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return pairs;
     }
 
+    /**
+     * Convert the series to a JavaScript object.
+     *
+     * @param {function} keySelector - Function that selects keys for the resulting object.
+     * @param {valueSelector} keySelector - Function that selects values for the resulting object.
+     * 
+     * @returns {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     */
+    toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
+
+        assert.isFunction(keySelector, "Expected 'keySelector' parameter to Series.toObject to be a function.");
+        assert.isFunction(valueSelector, "Expected 'valueSelector' parameter to Series.toObject to be a function.");
+
+        return toMap(this, keySelector, valueSelector);
+    }
+    
     //TODO: These functions are deprecated.
 
     /** 

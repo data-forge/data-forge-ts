@@ -10,7 +10,7 @@ import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 const Table = require('easy-table');
 import { assert } from 'chai';
-import { ISeries, Series, SelectorFn } from './series';
+import { ISeries, Series, SelectorFn, toMap } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import * as BabyParse from 'babyparse';
 
@@ -31,18 +31,6 @@ export interface IDataFrameConfig<IndexT, ValueT> {
  * A selector function that can select a series from a dataframe.
  */
 export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame: IDataFrame<IndexT, DataFrameValueT>) => ISeries<IndexT, SeriesValueT>;
-
-//
-// Helper function to map an array of objects.
-//
-function toMap(items: Iterable<any>, keySelector: (item: any) => any, valueSelector: (item: any) => any): any {
-    let output: any = {};
-    for (const item of items) {
-        var key = keySelector(item);
-        output[key] = valueSelector(item);
-    }
-    return output;
-}
 
 //
 // Helper function to only return distinct items.

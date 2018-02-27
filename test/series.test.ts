@@ -658,4 +658,53 @@ describe('Series', () => {
 		expect(agg()).to.eql(30);
 	});
     
+	it('can convert to javascript object', function () {
+
+		var series = new Series({
+            index: [0, 1], 
+            values: [
+                {
+                    Key: 'A',
+                    Value: 100,
+                },
+                {
+                    Key: 'B',
+                    Value: 200,
+                },
+            ]
+        });
+
+		var obj = series.toObject(row => row.Key, row => row.Value);
+		expect(obj).to.eql({
+			A: 100,
+			B: 200,
+		});
+	});
+
+	it('can convert to javascript object - with duplicate keys', function () {
+
+        var series = new Series({
+            index: [0, 1, 2], 
+            values: [
+                {
+                    Key: 'A',
+                    Value: 100,
+                },
+                {
+                    Key: 'B',
+                    Value: 200,
+                },
+                {
+                    Key: 'A',
+                    Value: 3,
+                },
+            ]
+        });
+
+		var obj = series.toObject(row => row.Key, row => row.Value);
+		expect(obj).to.eql({
+			A: 3,
+			B: 200,
+		});
+	});
 });
