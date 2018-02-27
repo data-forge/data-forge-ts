@@ -192,6 +192,32 @@ describe('Series', () => {
 		}).to.throw();
     });
 
+	it('can get value by index', function () {
+
+		var series = new Series({ 
+			index:  [100, 200, 300],
+			values: [10, 20, 30],
+		});
+
+		expect(series.at(200)).to.eql(20);
+	});
+
+	it('getting by index returns undefined when the requested index does not exist', function () {
+
+		var series = new Series({ 
+			index:  [100, 300],
+			values: [10, 30],
+		});
+
+		expect(series.at(200)).to.eql(undefined);
+	});
+
+	it('getting by index returns undefined when the series is empty', function () {
+
+		var series = new Series();
+		expect(series.at(200)).to.eql(undefined);
+	});
+    
     it('can get head of series', () =>  {
 
 		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });

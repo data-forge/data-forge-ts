@@ -237,6 +237,15 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     last (): ValueT;
 
+    /**
+     * Get the value at a specified index.
+     *
+     * @param index - Index to for which to retreive the value.
+     *
+     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     */
+    at (index: IndexT): ValueT | undefined;
+
     /** 
      * Get X values from the start of the series.
      *
@@ -399,6 +408,41 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
      */
     orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+
+    /**
+     * Sum the values in a series.
+     * 
+     * @returns Returns the sum of the number values in the series.
+     */
+    sum (): number;
+
+    /**
+     * Average the values in a series.
+     * 
+     * @returns Returns the average of the number values in the series.
+     */
+    average (): number;
+
+    /**
+     * Get the median value in the series. Not this sorts the series, so can be expensive.
+     * 
+     * @returns Returns the median of the values in the series.
+     */
+    median (): number;
+
+    /**
+     * Get the min value in the series.
+     * 
+     * @returns Returns the minimum of the number values in the series.
+     */
+    min (): number;
+
+    /**
+     * Get the max value in the series.
+     * 
+     * @returns Returns the maximum of the number values in the series.
+     */
+    max (): number;
 }
 
 /**
@@ -968,6 +1012,33 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return lastValue;
     }    
     
+    /**
+     * Get the value at a specified index.
+     *
+     * @param index - Index to for which to retreive the value.
+     *
+     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     */
+    at (index: IndexT): ValueT | undefined {
+
+        if (this.none()) {
+            return undefined;
+        }
+
+        //
+        // This is pretty expensive.
+        // A specialised index could improve this.
+        //
+
+        for (const pair of this.pairs) {
+            if (pair[0] === index) {
+                return pair[1];
+            }
+        }
+
+        return undefined;
+    }
+    
     /** 
      * Get X values from the start of the series.
      *
@@ -1396,6 +1467,88 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
     }
 
+    /**
+     * Sum the values in a series.
+     * 
+     * @returns Returns the sum of the number values in the series.
+     */
+    sum (): number {
+
+        if (this.none()) {
+            return 0;
+        }
+
+        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
+        return numberSeries.aggregate((prev: number, value: number) => prev + value);
+    }
+
+    /**
+     * Average the values in a series.
+     * 
+     * @returns Returns the average of the number values in the series.
+     */
+    average (): number {
+
+        const count = this.count();
+        if (count > 0) {
+            return this.sum() / count;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Get the median value in the series. Not this sorts the series, so can be expensive.
+     * 
+     * @returns Returns the median of the values in the series.
+     */
+    median (): number {
+
+        //
+        // From here: http://stackoverflow.com/questions/5275115/add-a-median-method-to-a-list
+        //
+        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
+
+        const count = numberSeries.count();
+        if (count === 0) {
+            return 0;
+        }
+
+        const ordered = numberSeries.orderBy(value => value).toArray();
+        if ((count % 2) == 0) {
+            // Even.
+            var a = ordered[count / 2 - 1];
+            var b = ordered[count / 2];
+            return (a + b) / 2;	
+        }
+
+        // Odd
+        return ordered[Math.floor(count / 2)];
+    }
+
+    /**
+     * Get the min value in the series.
+     * 
+     * @returns Returns the minimum of the number values in the series.
+     */
+    min (): number {
+
+        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
+        return numberSeries.aggregate((prev, value) => Math.min(prev, value));
+    }
+
+    /**
+     * Get the max value in the series.
+     * 
+     * @returns Returns the maximum of the number values in the series.
+     */
+    max (): number {
+
+        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
+        return numberSeries.aggregate((prev, value) => Math.max(prev, value));
+    }
+    
     /**
      * Sorts the series by a value defined by the selector (ascending). 
      * 
