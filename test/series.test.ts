@@ -733,4 +733,14 @@ describe('Series', () => {
 			B: 200,
 		});
 	});
+
+	it('can reverse', function () {
+
+		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+		var reversed = series.reverse();
+		expect(series.toArray()).to.eql(['A', 'B', 'C']);
+		expect(series.getIndex().toArray()).to.eql([0, 1, 2]);
+		expect(reversed.toArray()).to.eql(['C', 'B', 'A']);
+		expect(reversed.getIndex().toArray()).to.eql([2, 1, 0]);
+	});
 });

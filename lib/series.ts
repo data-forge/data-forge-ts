@@ -8,6 +8,7 @@ import { TakeIterable }  from './iterables/take-iterable';
 import { TakeWhileIterable }  from './iterables/take-while-iterable';
 import { WhereIterable }  from './iterables/where-iterable';
 import { WindowIterable }  from './iterables/window-iterable';
+import { ReverseIterable }  from './iterables/reverse-iterable';
 import { RollingWindowIterable }  from './iterables/rolling-window-iterable';
 import { VariableWindowIterable }  from './iterables/variable-window-iterable';
 import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
@@ -443,6 +444,13 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns the maximum of the number values in the series.
      */
     max (): number;
+
+    /** 
+     * Reverse the series.
+     * 
+     * @returns Returns a new series that is the reverse of the input.
+     */
+    reverse (): ISeries<IndexT, ValueT>;
 }
 
 /**
@@ -1549,6 +1557,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return numberSeries.aggregate((prev, value) => Math.max(prev, value));
     }
     
+    /** 
+     * Reverse the series.
+     * 
+     * @returns Returns a new series that is the reverse of the input.
+     */
+    reverse (): ISeries<IndexT, ValueT> {
+
+        return new Series<IndexT, ValueT>({
+            values: new ReverseIterable(this.values),
+            index: new ReverseIterable(this.index),
+            pairs: new ReverseIterable(this.pairs)
+        });
+    }
+   
     /**
      * Sorts the series by a value defined by the selector (ascending). 
      * 
