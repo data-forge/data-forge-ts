@@ -7,6 +7,7 @@ import { SelectManyIterable }  from './iterables/select-many-iterable';
 import { TakeIterable }  from './iterables/take-iterable';
 import { TakeWhileIterable }  from './iterables/take-while-iterable';
 import { WhereIterable }  from './iterables/where-iterable';
+import { ConcatIterable }  from './iterables/concat-iterable';
 import { WindowIterable }  from './iterables/window-iterable';
 import { ReverseIterable }  from './iterables/reverse-iterable';
 import { RollingWindowIterable }  from './iterables/rolling-window-iterable';
@@ -111,10 +112,9 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     toPairs (): ([IndexT,ValueT])[];
 
-    //TODO: These functions are deprecated.
-
     /** 
      * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     * THIS FUNCTION IS DEPRECATED.
      * 
      * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
      */
@@ -122,6 +122,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
 
     /** 
      * Convert a series of pairs to back to a regular series.
+     * THIS FUNCTION IS DEPRECATED.
      * 
      * @returns Returns a series of values where each pair has been extracted from the value of the input series.
      */
@@ -393,24 +394,6 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     inflate<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
 
     /**
-     * Sorts the series by a value defined by the selector (ascending). 
-     * 
-     * @param selector Selects the value to sort by.
-     * 
-     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
-     */
-    orderBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
-
-    /**
-     * Sorts the series by a value defined by the selector (descending). 
-     * 
-     * @param selector Selects the value to sort by.
-     * 
-     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
-     */
-    orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
-
-    /**
      * Sum the values in a series.
      * 
      * @returns Returns the sum of the number values in the series.
@@ -451,6 +434,33 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new series that is the reverse of the input.
      */
     reverse (): ISeries<IndexT, ValueT>;
+
+    /**
+     * Concatenate multiple other series onto this series.
+     * 
+     * @param series - Multiple arguments. Each can be either a series or an array of series.
+     * 
+     * @returns Returns a single series concatenated from multiple input series. 
+     */    
+    concat (...series: (ISeries<IndexT, ValueT>[]|ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT>;
+
+    /**
+     * Sorts the series by a value defined by the selector (ascending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     */
+    orderBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+
+    /**
+     * Sorts the series by a value defined by the selector (descending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     */
+    orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }
 
 /**
@@ -494,9 +504,9 @@ export function toMap(items: Iterable<any>, keySelector: (item: any) => any, val
  */
 export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
 
-    protected index: Iterable<IndexT>
-    protected values: Iterable<ValueT>;
-    protected pairs: Iterable<[IndexT, ValueT]>;
+    protected index: Iterable<IndexT> = []; // Initalizers here just to prevent warnings.
+    protected values: Iterable<ValueT> = [];
+    protected pairs: Iterable<[IndexT, ValueT]> = [];
 
     //
     // Records if a series is baked into memory.
@@ -689,10 +699,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return toMap(this, keySelector, valueSelector);
     }
     
-    //TODO: These functions are deprecated.
-
     /** 
      * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     * THIS FUNCTION IS DEPRECATED.
      * 
      * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
      */
@@ -702,6 +711,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /** 
      * Convert a series of pairs to back to a regular series.
+     * THIS FUNCTION IS DEPRECATED.
      * 
      * @returns Returns a series of values where each pair has been extracted from the value of the input series.
      */
@@ -1569,6 +1579,49 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             index: new ReverseIterable(this.index),
             pairs: new ReverseIterable(this.pairs)
         });
+    }
+
+    /**
+     * Concatenate multiple series into a single series.
+     *
+     * @param series - Array of series to concatenate.
+     * 
+     * @returns Returns a single series concatenated from multiple input series. 
+     */
+    static concat<IndexT = any, ValueT = any> (series: ISeries<IndexT, ValueT>[]): ISeries<IndexT, ValueT> {
+        assert.isArray(series, "Expected 'series' parameter to 'dataForge.concatSeries' to be an array of series.");
+
+        const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
+
+        return new Series({
+            index: new ConcatIterable(upcast.map(s => s.index)),
+            values: new ConcatIterable(upcast.map(s => s.values)),
+            pairs: new ConcatIterable(upcast.map(s => s.pairs)),
+        });
+    }
+    
+    /**
+     * Concatenate multiple other series onto this series.
+     * 
+     * @param series - Multiple arguments. Each can be either a series or an array of series.
+     * 
+     * @returns Returns a single series concatenated from multiple input series. 
+     */    
+    concat (...series: (ISeries<IndexT, ValueT>[]|ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT> {
+        const concatInput: ISeries<IndexT, ValueT>[] = [this];
+
+        for (const input of series) {
+            if (Sugar.Object.isArray(input)) {
+                for (const subInput of input) {
+                    concatInput.push(subInput);
+                }
+            }
+            else {
+                concatInput.push(input);
+            }
+        }
+
+        return Series.concat<IndexT, ValueT>(concatInput);
     }
    
     /**

@@ -20,6 +20,7 @@ import { IStreamFactory } from './lib/async/stream/stream-factory';
 import { IStream } from './lib/async/stream/stream';
 import { CsvStream } from './lib/async/stream/csv-stream';
 import { JsonStream } from './lib/async/stream/json-stream';
+import { Series } from '.';
 
 /**
  * Deserialize a dataframe from a JSON text string.
@@ -384,6 +385,19 @@ export function readFileIncremental (filePath: string): IIncrementalFileReader {
 
     return new IncrementalFileReader(filePath);
 }
+
+/**
+ * Concatenate multiple series into a single series.
+ * THIS FUNCTION IS DEPRECATED. Instead use dataFrame.Series.concat.
+ * 
+ * @param {array} series - Array of series to concatenate.
+ *
+ * @returns {Series} - Returns the single concatendated series.  
+ */
+const concat = Series.concat;
+export { concat as concatSeries };
+
+
 
 /*
 var dr = new DataFrame([

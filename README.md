@@ -29,3 +29,7 @@ Proper laziness all the way through!
 **Deprecated functions**
 
 asPairs/asValues
+dataForge.concatSeries (use static fn dataForge.Series.concat instead)
+dataForge.concatDataFrames (use static fn dataForge.DataFrame.concat instead)
+dataForge.zipSeries (use static fn dataForge.Series.zip instead)
+dataForge.zipDataFrames (use static fn dataForge.DataFrame.zip instead)
