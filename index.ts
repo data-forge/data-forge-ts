@@ -386,6 +386,8 @@ export function readFileIncremental (filePath: string): IIncrementalFileReader {
     return new IncrementalFileReader(filePath);
 }
 
+const concat = Series.concat;
+
 /**
  * Concatenate multiple series into a single series.
  * THIS FUNCTION IS DEPRECATED. Instead use dataFrame.Series.concat.
@@ -394,10 +396,20 @@ export function readFileIncremental (filePath: string): IIncrementalFileReader {
  *
  * @returns {Series} - Returns the single concatendated series.  
  */
-const concat = Series.concat;
 export { concat as concatSeries };
 
+const zip = Series.zip;
 
+/**
+ * Zip together multiple series to create a new series.
+ * THIS FUNCTION IS DEPRECATED. Instead use dataFrame.Series.zip.
+ *
+ * @param {array} series - Array of series to zip together.
+ * @param {function} selector - Selector function that produces a new series based on the input series.
+ * 
+ * @returns {Series} Returns a single series that is the combination of multiple input series that have been 'zipped' together by the 'selector' function.
+ */
+export { zip as zipSeries }
 
 /*
 var dr = new DataFrame([

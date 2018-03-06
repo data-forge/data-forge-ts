@@ -17,7 +17,6 @@ export class VariableWindowIterator<IndexT, ValueT> implements Iterator<ISeries<
     nextValue: IteratorResult<[IndexT, ValueT]>;
     comparer: ComparerFn<ValueT>
     windowIndex: number = 0;
-    maxVariableWindowIndex: number;
     
     constructor(iterable: Iterable<[IndexT, ValueT]>, comparer: ComparerFn<ValueT>) {
         this.iterator = iterable[Symbol.iterator]();

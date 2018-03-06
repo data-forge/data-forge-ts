@@ -10,6 +10,7 @@ import { WhereIterable }  from './iterables/where-iterable';
 import { ConcatIterable }  from './iterables/concat-iterable';
 import { WindowIterable }  from './iterables/window-iterable';
 import { ReverseIterable }  from './iterables/reverse-iterable';
+import { ZipIterable }  from './iterables/zip-iterable';
 import { RollingWindowIterable }  from './iterables/rolling-window-iterable';
 import { VariableWindowIterable }  from './iterables/variable-window-iterable';
 import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
@@ -44,6 +45,15 @@ export type CallbackFn<ValueT> = (value: ValueT, index: number) => void;
  * A selector function. Transforms a value into another kind of value.
  */
 export type SelectorFn<FromT, ToT> = (value: FromT, index: number) => ToT;
+
+/**
+ * Functions to zip together multiple values.
+ */
+export type ZipNFn<ValueT, ReturnT> = (input: ISeries<number, ValueT>) => ReturnT;
+export type Zip2Fn<T1, T2, ReturnT> = (a: T1, b : T2) => ReturnT;
+export type Zip3Fn<T1, T2, T3, ReturnT> = (a: T1, b: T2, c: T3) => ReturnT;
+export type Zip4Fn<T1, T2, T3, T4, ReturnT> = (a: T1, b: T2, c: T3, d: T4) => ReturnT;
+export type Zip5Fn<T1, T2, T3, T4, T5, ReturnT> = (a: T1, b: T2, c: T3, d: T4) => ReturnT;
 
 /**
  * A selector function with no index. Transforms a value into another kind of value.
@@ -444,6 +454,20 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */    
     concat (...series: (ISeries<IndexT, ValueT>[]|ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT>;
 
+    /**
+    * Zip together multiple series to create a new series.
+    * Preserves the index of the first series.
+    * 
+    * @param s2, s3, s4, s4 - Multiple series to zip.
+    * @param zipper - Zipper function that produces a new series based on the input series.
+    * 
+    * @returns Returns a single series concatenated from multiple input series. 
+    */    
+   zip<Index2T, Value2T, ResultT>  (s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): ISeries<IndexT, ResultT>;
+   zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): ISeries<IndexT, ResultT>;
+   zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT>  (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, s4: ISeries<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): ISeries<IndexT, ResultT>;
+   zip<ResultT>  (...args: any[]): ISeries<IndexT, ResultT>;
+   
     /**
      * Sorts the series by a value defined by the selector (ascending). 
      * 
@@ -1589,7 +1613,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a single series concatenated from multiple input series. 
      */
     static concat<IndexT = any, ValueT = any> (series: ISeries<IndexT, ValueT>[]): ISeries<IndexT, ValueT> {
-        assert.isArray(series, "Expected 'series' parameter to 'dataForge.concatSeries' to be an array of series.");
+        assert.isArray(series, "Expected 'series' parameter to 'Series.concat' to be an array of series.");
 
         const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
 
@@ -1624,6 +1648,56 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return Series.concat<IndexT, ValueT>(concatInput);
     }
    
+    /**
+    * Zip together multiple series to create a new series.
+    * Preserves the index of the first series.
+    *
+    * @param series - Multiple arguments. Each can be either a series or an array of series.
+    * @param zipper - Selector function that produces a new series based on the input series.
+    * 
+    * @returns Returns a single series zipped from multiple input series. 
+    */
+    static zip<IndexT = any, ValueT = any, ResultT = any> (series: ISeries<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): ISeries<IndexT, ResultT> {
+
+        assert.isArray(series, "Expected 'series' parameter to 'Series.zip' to be an array of series.");
+
+        if (series.length === 0) {
+            return new Series<IndexT, ResultT>();
+        }
+
+        const firstSeries = series[0];
+        if (firstSeries.none()) {
+            return new Series<IndexT, ResultT>();
+        }
+
+        const firstSeriesUpCast = <Series<IndexT, ValueT>> firstSeries;
+        const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
+
+        return new Series({
+            index: firstSeriesUpCast.index,
+            values: new ZipIterable(upcast.map(s => s.values), zipper),
+        });
+    }
+    
+    /**
+    * Zip together multiple series to create a new series.
+    * Preserves the index of the first series.
+    * 
+    * @param s2, s3, s4, s4 - Multiple series to zip.
+    * @param zipper - Zipper function that produces a new series based on the input series.
+    * 
+    * @returns Returns a single series concatenated from multiple input series. 
+    */    
+    zip<Index2T, Value2T, ResultT>  (s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT>  (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, s4: ISeries<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): ISeries<IndexT, ResultT>;
+    zip<ResultT>  (...args: any[]): ISeries<IndexT, ResultT> {
+
+        const selector: Function = args[args.length-1];
+        const input: ISeries<IndexT, any>[] = [this].concat(args.slice(0, args.length-1));
+        return Series.zip<IndexT, any, ResultT>(input, values => selector(...values));
+    }    
+
     /**
      * Sorts the series by a value defined by the selector (ascending). 
      * 
