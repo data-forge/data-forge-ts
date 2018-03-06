@@ -742,5 +742,44 @@ describe('Series', () => {
 		expect(series.getIndex().toArray()).to.eql([0, 1, 2]);
 		expect(reversed.toArray()).to.eql(['C', 'B', 'A']);
 		expect(reversed.getIndex().toArray()).to.eql([2, 1, 0]);
+    });
+    
+	it('can distinct items', function () {
+
+		var series = new Series({ 
+			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+			values: [1, 1, 2, 1, 1, 2, 3, 4, 3, 3],
+		});
+
+        var collapsed = series.distinct();
+        expect(collapsed.toArray()).to.eql([1, 2, 3, 4]);
+        expect(collapsed.getIndex().toArray()).to.eql([0, 2, 6, 7]);
+		expect(collapsed.toPairs()).to.eql([
+			[0, 1],
+			[2, 2],
+			[6, 3],
+			[7, 4],
+        ]);
 	});
+
+	it('can distinct items with custom selector', function () {
+
+		var series = new Series({ 
+			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+			values: [{ A: 1 }, { A: 1 }, { A: 2 }, { A: 1 }, { A: 1 }, { A: 2 }, { A: 3 }, { A: 4 }, { A: 3 }, { A: 3 }],
+		});
+
+		var collapsed = series
+			.distinct(value => value.A)
+			.select(value => value.A)
+			;
+
+		expect(collapsed.toPairs()).to.eql([
+			[0, 1],
+			[2, 2],
+			[6, 3],
+			[7, 4],
+		]);
+    });
+    
 });

@@ -11,6 +11,7 @@ import { ConcatIterable }  from './iterables/concat-iterable';
 import { WindowIterable }  from './iterables/window-iterable';
 import { ReverseIterable }  from './iterables/reverse-iterable';
 import { ZipIterable }  from './iterables/zip-iterable';
+import { DistinctIterable }  from './iterables/distinct-iterable';
 import { RollingWindowIterable }  from './iterables/rolling-window-iterable';
 import { VariableWindowIterable }  from './iterables/variable-window-iterable';
 import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
@@ -445,6 +446,15 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     reverse (): ISeries<IndexT, ValueT>;
 
+    /**
+     * Returns only values in the series that have distinct values.
+     *
+     * @param selector - Selects the value used to compare for duplicates.
+     * 
+     * @returns Returns a series containing only unique values as determined by the 'selector' function. 
+     */
+    distinct<ToT> (selector?: SelectorFnNoIndex<ValueT, ToT>): ISeries<IndexT, ValueT>;
+    
     /**
      * Concatenate multiple other series onto this series.
      * 
@@ -1605,6 +1615,21 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         });
     }
 
+    /**
+     * Returns only values in the series that have distinct values.
+     *
+     * @param selector - Selects the value used to compare for duplicates.
+     * 
+     * @returns Returns a series containing only unique values as determined by the 'selector' function. 
+     */
+    distinct<ToT> (selector?: SelectorFnNoIndex<ValueT, ToT>): ISeries<IndexT, ValueT> {
+
+        return new Series<IndexT, ValueT>({
+            values: new DistinctIterable<ValueT, ToT>(this.values, selector),
+            pairs: new DistinctIterable<[IndexT, ValueT],ToT>(this.pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
+        });
+    }
+    
     /**
      * Concatenate multiple series into a single series.
      *
