@@ -454,6 +454,15 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a series containing only unique values as determined by the 'selector' function. 
      */
     distinct<ToT> (selector?: SelectorFnNoIndex<ValueT, ToT>): ISeries<IndexT, ValueT>;
+
+    /**
+     * Group the series according to the selector.
+     *
+     * @param selector - Selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     */
+    groupBy<GroupT> (selector: SelectorFnNoIndex<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
     
     /**
      * Concatenate multiple other series onto this series.
@@ -1629,6 +1638,64 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             pairs: new DistinctIterable<[IndexT, ValueT],ToT>(this.pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
         });
     }
+
+    /**
+     * Group the series according to the selector.
+     *
+     * @param selector - Selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     */
+    groupBy<GroupT> (selector: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
+
+        assert.isFunction(selector, "Expected 'selector' parameter to 'Series.groupBy' to be a selector function that determines the value to group the series by.");
+
+        const groups: any[] = []; // Each group, in order of discovery.
+        const groupMap: any = {}; // Group map, records groups by key.
+        
+        let valueIndex = 0;
+
+        for (const pair of this.pairs) {
+            const groupKey = selector(pair[1], valueIndex);
+            ++valueIndex;
+            const existingGroup = groupMap[groupKey];
+            if (existingGroup) {
+                existingGroup.push(pair);
+            }
+            else {
+                const newGroup: any[] = [];
+                newGroup.push(pair);
+                groups.push(newGroup);
+                groupMap[groupKey] = newGroup;
+            }
+        }
+
+        return new Series<number, ISeries<IndexT, ValueT>>({
+            values: groups.map(group => new Series<IndexT, ValueT>({ pairs: group }))
+        });
+
+        /*fio:
+        var self = this;
+        var groupedPairs = E.from(self.toPairs())
+            .groupBy(function (pair) {
+                return selector(pair[1]);
+            })
+            .select(function (group) {
+                return [
+                    group.key(), //TODO: Is this tested? Indexing by group key.
+                    new Series({
+                        iterable: new ArrayIterable(group.getSource()), 
+                    }),
+                ];
+            })
+            .toArray();
+
+        return new Series({
+            iterable: new ArrayIterable(groupedPairs),
+        });
+        */
+    };
+    
     
     /**
      * Concatenate multiple series into a single series.
