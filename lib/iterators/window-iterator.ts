@@ -11,7 +11,6 @@ export class WindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, 
     iterable: Iterable<[IndexT, ValueT]>;
     period: number;
     windowIndex: number = 0;
-    maxWindowIndex: number;
     
     constructor(iterable: Iterable<[IndexT, ValueT]>, period: number) {
         this.iterable = iterable;
