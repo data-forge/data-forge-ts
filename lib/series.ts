@@ -76,6 +76,12 @@ export type AggregateFn<ValueT, ToT> = (accum: ToT, value: ValueT) => ToT;
  */
 export type ComparerFn<ValueT> = (a: ValueT, b: ValueT) => boolean;
 
+/*
+ * A function that generates a series config object.
+ * Used to make it easy to create lazy evaluated series.
+ */
+export type ConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>;
+
 /**
  * Interface that represents a series of indexed values.
  */
@@ -542,39 +548,64 @@ export function toMap(items: Iterable<any>, keySelector: (item: any) => any, val
     return output;
 }
 
+//
+// Represents the contents of a series.
+//
+interface ISeriesContent<IndexT, ValueT> {
+    index: Iterable<IndexT>; // Initalizers here just to prevent warnings.
+    values: Iterable<ValueT>;
+    pairs: Iterable<[IndexT, ValueT]>;
+
+    //
+    // Records if a series is baked into memory.
+    //
+    isBaked: boolean;
+}
+
 /**
  * Class that represents a series of indexed values.
  */
 export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
 
-    protected index: Iterable<IndexT> = []; // Initalizers here just to prevent warnings.
-    protected values: Iterable<ValueT> = [];
-    protected pairs: Iterable<[IndexT, ValueT]> = [];
+    //
+    // Function to lazy evaluate the configuration of a series.
+    //
+    private configFn: ConfigFn<IndexT, ValueT> | null = null;
 
     //
-    // Records if a series is baked into memory.
+    // The content of the series.
+    // When this is null it means the series is yet to be lazy initialised.
     //
-    private isBaked: boolean = false;
+    private content: ISeriesContent<IndexT, ValueT> | null = null;
+
+    private static readonly defaultCountIterable = new CountIterable();
+    private static readonly defaultEmptyIterable = new EmptyIterable();
 
     //
     // Initialise this Series from an array.
     //
-    private initFromArray(arr: ValueT[]): void {
-        this.index = new CountIterable();
-        this.values = arr;
-        this.pairs = new MultiIterable([this.index, this.values]);
+    private static initFromArray<IndexT, ValueT>(arr: ValueT[]): ISeriesContent<IndexT, ValueT> {
+        return {
+            index: Series.defaultCountIterable,
+            values: arr,
+            pairs: new MultiIterable([Series.defaultCountIterable, arr]),
+            isBaked: true,
+        };
     }
 
     //
     // Initialise an empty DataFrame.
     //
-    private initEmpty(): void {
-        this.index = new EmptyIterable();
-        this.values = new EmptyIterable();
-        this.pairs = new EmptyIterable();
+    private static initEmpty<IndexT, ValueT>(): ISeriesContent<IndexT, ValueT> {
+        return {
+            index: Series.defaultEmptyIterable,
+            values: Series.defaultEmptyIterable,
+            pairs: Series.defaultEmptyIterable,
+            isBaked: true,
+        };
     }
 
-    private initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
+    private static initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
         if (Sugar.Object.isArray(input)) {
             return input;
         }
@@ -590,38 +621,50 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Initialise the Series from a config object.
     //
-    private initFromConfig(config: ISeriesConfig<IndexT, ValueT>): void {
+    private static initFromConfig<IndexT, ValueT>(config: ISeriesConfig<IndexT, ValueT>): ISeriesContent<IndexT, ValueT> {
+
+        let index: Iterable<IndexT>;
+        let values: Iterable<ValueT>;
+        let pairs: Iterable<[IndexT, ValueT]>;
+        let isBaked = false;
 
         if (config.index) {
-            this.index = this.initIterable<IndexT>(config.index, 'index');
+            index = this.initIterable<IndexT>(config.index, 'index');
         }
         else if (config.pairs) {
-            this.index = new ExtractElementIterable(config.pairs, 0);
+            index = new ExtractElementIterable(config.pairs, 0);
         }
         else {
-            this.index = new CountIterable();
+            index = new CountIterable();
         }
 
         if (config.values) {
-            this.values = this.initIterable<ValueT>(config.values, 'values');
+            values = this.initIterable<ValueT>(config.values, 'values');
         }
         else if (config.pairs) {
-            this.values = new ExtractElementIterable(config.pairs, 1);
+            values = new ExtractElementIterable(config.pairs, 1);
         }
         else {
-            this.values = new EmptyIterable();
+            values = new EmptyIterable();
         }
 
         if (config.pairs) {
-            this.pairs = config.pairs;
+            pairs = config.pairs;
         }
         else {
-            this.pairs = new MultiIterable([this.index, this.values]);
+            pairs = new MultiIterable([index, values]);
         }
 
         if (config.baked !== undefined) {
-            this.isBaked = config.baked;
+            isBaked = config.baked;
         }
+
+        return {
+            index: index,
+            values: values,
+            pairs: pairs,
+            isBaked: isBaked,
+        };
     }
 
     /**
@@ -634,18 +677,38 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      index: Optional array or iterable of values that index the series, defaults to a series of integers from 1 and counting upward.
      *      pairs: Optional iterable of pairs (index and value) that the series contains.
      */
-    constructor(config?: ValueT[] | ISeriesConfig<IndexT, ValueT>) {
+    constructor(config?: ValueT[] | ISeriesConfig<IndexT, ValueT> | ConfigFn<IndexT, ValueT>) {
         if (config) {
-            if (Sugar.Object.isArray(config)) {
-                this.initFromArray(config);
+            if (Sugar.Object.isFunction(config)) {
+                this.configFn = config;
+            }
+            else if (Sugar.Object.isArray(config)) {
+                this.content = Series.initFromArray(config);
             }
             else {
-                this.initFromConfig(config);
+                this.content = Series.initFromConfig(config);
             }
         }
         else {
-            this.initEmpty();
+            this.content = Series.initEmpty();
         }
+    }
+
+    //
+    // Ensure the series content has been initialised.
+    //
+    private lazyInit() {
+        if (this.content === null && this.configFn !== null) {
+            this.content = Series.initFromConfig(this.configFn());
+        }
+    }
+
+    //
+    // Ensure the series content is lazy initalised and return it.
+    //
+    private getContent(): ISeriesContent<IndexT, ValueT> { 
+        this.lazyInit();
+        return this.content!;
     }
 
     /**
@@ -653,14 +716,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Enumerating the iterator forces lazy evaluation to complete.
      */
     [Symbol.iterator](): Iterator<ValueT> {
-        return this.values[Symbol.iterator]();
+        return this.getContent().values[Symbol.iterator]();
     }
 
     /**
      * Get the index for the series.
      */
     getIndex (): IIndex<IndexT> {
-        return new Index<IndexT>({ values: this.index });
+        return new Index<IndexT>({ values: this.getContent().index }); //TODO: Index should be able to take a config function.
     }
 
     /**
@@ -676,10 +739,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'Series.withIndex' to be an array, Series or Index.");
         }
 
-        return new Series<NewIndexT, ValueT>({
-            values: this.values,
+        return new Series<NewIndexT, ValueT>(() => ({
+            values: this.getContent().values,
             index: newIndex,
-        });
+        }));
     };
 
     /**
@@ -688,9 +751,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series with the index reset to the default zero-based index. 
      */
     resetIndex (): ISeries<number, ValueT> {
-        return new Series<number, ValueT>({
-            values: this.values // Just strip the index.
-        });
+        return new Series<number, ValueT>(() => ({
+            values: this.getContent().values // Just strip the index.
+        }));
     }
     
     /**
@@ -701,7 +764,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     */
     toArray (): any[] {
         var values = [];
-        for (const value of this.values) {
+        for (const value of this.getContent().values) {
             if (value !== undefined) {
                 values.push(value);
             }
@@ -718,7 +781,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     toPairs (): ([IndexT, ValueT])[] {
         var pairs: [IndexT, ValueT][] = [];
-        for (const pair of this.pairs) {
+        for (const pair of this.getContent().pairs) {
             if (pair[1] != undefined) {
                 pairs.push(pair);
             }
@@ -749,7 +812,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
      */
     asPairs (): ISeries<number, [IndexT, ValueT]> {
-        return new Series<number, [IndexT, ValueT]>({ values: this.pairs });
+        return new Series<number, [IndexT, ValueT]>(() => ({ values: this.getContent().pairs }));
     }
 
     /** 
@@ -762,11 +825,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         //TODO: This function didn't port well to TypeScript. It's deprecated though.
         
-        return new Series<NewIndexT, NewValueT>({
-            index: new SelectIterable<any, NewIndexT>(this.values, (pair: [any, any], index: number) => <NewIndexT> pair[0]),
-            values: new SelectIterable<any, NewValueT>(this.values, (pair: [any, any], index: number) => <NewValueT> pair[1]),
-            pairs: <Iterable<[NewIndexT, NewValueT]>> <any> this.values,
-        });
+        return new Series<NewIndexT, NewValueT>(() => ({
+            index: new SelectIterable<any, NewIndexT>(this.getContent().values, (pair: [any, any], index: number) => <NewIndexT> pair[0]),
+            values: new SelectIterable<any, NewValueT>(this.getContent().values, (pair: [any, any], index: number) => <NewValueT> pair[1]),
+            pairs: <Iterable<[NewIndexT, NewValueT]>> <any> this.getContent().values,
+        }));
     };
     
     /**
@@ -779,10 +842,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     select<ToT> (selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.select' function to be a function.");
 
-        return new Series({
-            values: new SelectIterable(this.values, selector),
-            index: this.index,
-        });
+        return new Series(() => ({
+            values: new SelectIterable(this.getContent().values, selector),
+            index: this.getContent().index,
+        }));
     }
 
     /**
@@ -795,22 +858,21 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     selectMany<ToT> (selector: SelectorFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.selectMany' to be a function.");
 
-        const pairsIterable = new SelectManyIterable(this.pairs, 
-            (pair: [IndexT, ValueT], index: number): Iterable<[IndexT, ToT]> => {
-                const outputPairs: [IndexT, ToT][] = [];
-                for (const transformed of selector(pair[1], index)) {
-                    outputPairs.push([
-                        pair[0],
-                        transformed
-                    ]);
+        return new Series(() => ({
+            pairs: new SelectManyIterable(
+                this.getContent().pairs, 
+                (pair: [IndexT, ValueT], index: number): Iterable<[IndexT, ToT]> => {
+                    const outputPairs: [IndexT, ToT][] = [];
+                    for (const transformed of selector(pair[1], index)) {
+                        outputPairs.push([
+                            pair[0],
+                            transformed
+                        ]);
+                    }
+                    return outputPairs;
                 }
-                return outputPairs;
-            }
-        );
-
-        return new Series({
-            pairs: pairsIterable,
-        });
+            )
+        }));
     }
 
     /**
@@ -825,9 +887,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         assert.isNumber(period, "Expected 'period' parameter to 'Series.window' to be a number.");
 
-        return new Series<number, ISeries<IndexT, ValueT>>({
-            values: new WindowIterable<IndexT, ValueT>(this.pairs, period)
-        });
+        return new Series<number, ISeries<IndexT, ValueT>>(() => ({
+            values: new WindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
+        }));
     }
 
     /** 
@@ -841,9 +903,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         assert.isNumber(period, "Expected 'period' parameter to 'Series.rollingWindow' to be a number.");
 
-        return new Series<number, ISeries<IndexT, ValueT>>({
-            values: new RollingWindowIterable<IndexT, ValueT>(this.pairs, period)
-        });
+        return new Series<number, ISeries<IndexT, ValueT>>(() => ({
+            values: new RollingWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
+        }));
     }
 
     /**
@@ -857,9 +919,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         
         assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.variableWindow' to be a function.")
 
-        return new Series<number, ISeries<IndexT, ValueT>>({
-            values: new VariableWindowIterable<IndexT, ValueT>(this.pairs, comparer)
-        });
+        return new Series<number, ISeries<IndexT, ValueT>>(() => ({
+            values: new VariableWindowIterable<IndexT, ValueT>(this.getContent().pairs, comparer)
+        }));
     };    
 
     /**
@@ -943,11 +1005,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series or dataframe with the specified number of values skipped. 
      */
     skip (numValues: number): ISeries<IndexT, ValueT> {
-        return new Series<IndexT, ValueT>({
-            values: new SkipIterable(this.values, numValues),
-            index: new SkipIterable(this.index, numValues),
-            pairs: new SkipIterable(this.pairs, numValues),
-        });
+        return new Series<IndexT, ValueT>(() => ({
+            values: new SkipIterable(this.getContent().values, numValues),
+            index: new SkipIterable(this.getContent().index, numValues),
+            pairs: new SkipIterable(this.getContent().pairs, numValues),
+        }));
     }
     
     /**
@@ -958,12 +1020,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series with all initial sequential values removed that match the predicate.  
      */
     skipWhile (predicate: PredicateFn<ValueT>) {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'skipWhile' function to be a predicate function that returns true/false.");
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.skipWhile' function to be a predicate function that returns true/false.");
 
-        return new Series<IndexT, ValueT>({
-            values: new SkipWhileIterable(this.values, predicate),
-            pairs: new SkipWhileIterable(this.pairs, pair => predicate(pair[1])),
-        });
+        return new Series<IndexT, ValueT>(() => ({
+            values: new SkipWhileIterable(this.getContent().values, predicate),
+            pairs: new SkipWhileIterable(this.getContent().pairs, pair => predicate(pair[1])),
+        }));
     }
 
     /**
@@ -974,7 +1036,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
      */
     skipUntil (predicate: PredicateFn<ValueT>) {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'skipUntil' function to be a predicate function that returns true/false.");
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.skipUntil' function to be a predicate function that returns true/false.");
 
         return this.skipWhile(value => !predicate(value)); 
     }
@@ -987,13 +1049,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series with up to the specified number of values included.
      */
     take (numRows: number): ISeries<IndexT, ValueT> {
-        assert.isNumber(numRows, "Expected 'numRows' parameter to 'take' function to be a number.");
+        assert.isNumber(numRows, "Expected 'numRows' parameter to 'Series.take' function to be a number.");
 
-        return new Series({
-            index: new TakeIterable(this.index, numRows),
-            values: new TakeIterable(this.values, numRows),
-            pairs: new TakeIterable(this.pairs, numRows)
-        });
+        return new Series(() => ({
+            index: new TakeIterable(this.getContent().index, numRows),
+            values: new TakeIterable(this.getContent().values, numRows),
+            pairs: new TakeIterable(this.getContent().pairs, numRows)
+        }));
     };
 
     /**
@@ -1004,12 +1066,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
      */
     takeWhile (predicate: PredicateFn<ValueT>) {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeWhile' function to be a predicate function that returns true/false.");
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.takeWhile' function to be a predicate function that returns true/false.");
 
-        return new Series({
-            values: new TakeWhileIterable(this.values, predicate),
-            pairs: new TakeWhileIterable(this.pairs, pair => predicate(pair[1]))
-        });
+        return new Series(() => ({
+            values: new TakeWhileIterable(this.getContent().values, predicate),
+            pairs: new TakeWhileIterable(this.getContent().pairs, pair => predicate(pair[1]))
+        }));
     }
 
     /**
@@ -1020,7 +1082,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
      */
     takeUntil (predicate: PredicateFn<ValueT>) {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'takeUntil' function to be a predicate function that returns true/false.");
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.takeUntil' function to be a predicate function that returns true/false.");
 
         return this.takeWhile(value => !predicate(value));
     }
@@ -1033,7 +1095,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     count (): number {
 
         var total = 0;
-        for (const value of this.values) {
+        for (const value of this.getContent().values) {
             ++total;
         }
         return total;
@@ -1091,7 +1153,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         // A specialised index could improve this.
         //
 
-        for (const pair of this.pairs) {
+        for (const pair of this.getContent().pairs) {
             if (pair[0] === index) {
                 return pair[1];
             }
@@ -1109,7 +1171,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     head (numValues: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'values' parameter to 'head' function to be a number.");
+        assert.isNumber(numValues, "Expected 'values' parameter to 'Series.head' function to be a number.");
 
         return this.take(numValues);
     }
@@ -1123,7 +1185,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     tail (numValues: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'values' parameter to 'tail' function to be a number.");
+        assert.isNumber(numValues, "Expected 'values' parameter to 'Series.tail' function to be a number.");
 
         return this.skip(this.count() - numValues);
     }
@@ -1136,12 +1198,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series containing only the values that match the predicate. 
      */
     where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'where' function to be a function.");
 
-        return new Series({
-            values: new WhereIterable(this.values, predicate),
-            pairs: new WhereIterable(this.pairs, pair => predicate(pair[1]))
-        });
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.where' function to be a function.");
+
+        return new Series(() => ({
+            values: new WhereIterable(this.getContent().values, predicate),
+            pairs: new WhereIterable(this.getContent().pairs, pair => predicate(pair[1]))
+        }));
     }
 
     /**
@@ -1268,11 +1331,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series containing all values starting at and after the specified index value. 
      */
     startAt (indexValue: IndexT): ISeries<IndexT, ValueT> {
-
-        var lessThan = this.getIndex().getLessThan();
-        return new Series<IndexT, ValueT>({
-            index: new SkipWhileIterable(this.index, index => lessThan(index, indexValue)),
-            pairs: new SkipWhileIterable(this.pairs, pair => lessThan(pair[0], indexValue)),
+        return new Series<IndexT, ValueT>(() => {
+            var lessThan = this.getIndex().getLessThan();
+            return {                
+                index: new SkipWhileIterable(this.getContent().index, index => lessThan(index, indexValue)),
+                pairs: new SkipWhileIterable(this.getContent().pairs, pair => lessThan(pair[0], indexValue)),
+            }
         });
     }
 
@@ -1284,11 +1348,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series containing all values up until and including the specified index value. 
      */
     endAt (indexValue: IndexT): ISeries<IndexT, ValueT> {
-
-        var lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
-        return new Series<IndexT, ValueT>({
-            index: new TakeWhileIterable(this.index, index => lessThanOrEqualTo(index, indexValue)),
-            pairs: new TakeWhileIterable(this.pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+        return new Series<IndexT, ValueT>(() => {
+            var lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
+            return {
+                index: new TakeWhileIterable(this.getContent().index, index => lessThanOrEqualTo(index, indexValue)),
+                pairs: new TakeWhileIterable(this.getContent().pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+            };
         });
     }
 
@@ -1300,11 +1365,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series containing all values up to the specified inde value. 
      */
     before (indexValue: IndexT): ISeries<IndexT, ValueT> {
-
-        var lessThan = this.getIndex().getLessThan();
-        return new Series<IndexT, ValueT>({
-            index: new TakeWhileIterable(this.index, index => lessThan(index, indexValue)),
-            pairs: new TakeWhileIterable(this.pairs, pair => lessThan(pair[0], indexValue)),
+        return new Series<IndexT, ValueT>(() => {
+            var lessThan = this.getIndex().getLessThan();
+            return {
+                index: new TakeWhileIterable(this.getContent().index, index => lessThan(index, indexValue)),
+                pairs: new TakeWhileIterable(this.getContent().pairs, pair => lessThan(pair[0], indexValue)),
+            };
         });
     }
 
@@ -1316,11 +1382,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new series containing all values after the specified index value.
      */
     after (indexValue: IndexT): ISeries<IndexT, ValueT> {
-
-        var lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
-        return new Series<IndexT, ValueT>({
-            index: new SkipWhileIterable(this.index, index => lessThanOrEqualTo(index, indexValue)),
-            pairs: new SkipWhileIterable(this.pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+        return new Series<IndexT, ValueT>(() => {
+            var lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
+            return {
+                index: new SkipWhileIterable(this.getContent().index, index => lessThanOrEqualTo(index, indexValue)),
+                pairs: new SkipWhileIterable(this.getContent().pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+            };
         });
     }
 
@@ -1490,7 +1557,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     bake (): ISeries<IndexT, ValueT> {
 
-        if (this.isBaked) {
+        if (this.getContent().isBaked) {
             // Already baked.
             return this;
         }
@@ -1513,17 +1580,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         if (selector) {
             assert.isFunction(selector, "Expected 'selector' parameter to Series.inflate to be a selector function.");
 
-            return new DataFrame<IndexT, ToT>({
-                values: new SelectIterable(this.values, selector),
-                index: this.index,
-                pairs: new SelectIterable(this.pairs, (pair: [IndexT, ValueT], index: number): [IndexT, ToT] => [pair[0], selector(pair[1], index)]),
+            return new DataFrame<IndexT, ToT>({ //TODO: Pass a fn in here.
+                values: new SelectIterable(this.getContent().values, selector),
+                index: this.getContent().index,
+                pairs: new SelectIterable(this.getContent().pairs, (pair: [IndexT, ValueT], index: number): [IndexT, ToT] => [pair[0], selector(pair[1], index)]),
             });            
         }
         else {
-            return new DataFrame<IndexT, ToT>({
-                values: <Iterable<ToT>> <any> this.values,
-                index: this.index,
-                pairs: <Iterable<[IndexT, ToT]>> <any> this.pairs
+            return new DataFrame<IndexT, ToT>({ //TODO: Pass a fn in here.
+                values: <Iterable<ToT>> <any> this.getContent().values,
+                index: this.getContent().index,
+                pairs: <Iterable<[IndexT, ToT]>> <any> this.getContent().pairs
             });
         }
     }
@@ -1617,11 +1684,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     reverse (): ISeries<IndexT, ValueT> {
 
-        return new Series<IndexT, ValueT>({
-            values: new ReverseIterable(this.values),
-            index: new ReverseIterable(this.index),
-            pairs: new ReverseIterable(this.pairs)
-        });
+        return new Series<IndexT, ValueT>(() => ({
+            values: new ReverseIterable(this.getContent().values),
+            index: new ReverseIterable(this.getContent().index),
+            pairs: new ReverseIterable(this.getContent().pairs)
+        }));
     }
 
     /**
@@ -1633,10 +1700,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     distinct<ToT> (selector?: SelectorFnNoIndex<ValueT, ToT>): ISeries<IndexT, ValueT> {
 
-        return new Series<IndexT, ValueT>({
-            values: new DistinctIterable<ValueT, ToT>(this.values, selector),
-            pairs: new DistinctIterable<[IndexT, ValueT],ToT>(this.pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
-        });
+        return new Series<IndexT, ValueT>(() => ({
+            values: new DistinctIterable<ValueT, ToT>(this.getContent().values, selector),
+            pairs: new DistinctIterable<[IndexT, ValueT],ToT>(this.getContent().pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
+        }));
     }
 
     /**
@@ -1650,50 +1717,31 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.groupBy' to be a selector function that determines the value to group the series by.");
 
-        const groups: any[] = []; // Each group, in order of discovery.
-        const groupMap: any = {}; // Group map, records groups by key.
-        
-        let valueIndex = 0;
-
-        for (const pair of this.pairs) {
-            const groupKey = selector(pair[1], valueIndex);
-            ++valueIndex;
-            const existingGroup = groupMap[groupKey];
-            if (existingGroup) {
-                existingGroup.push(pair);
+        return new Series<number, ISeries<IndexT, ValueT>>(() => {
+            const groups: any[] = []; // Each group, in order of discovery.
+            const groupMap: any = {}; // Group map, records groups by key.
+            
+            let valueIndex = 0;
+    
+            for (const pair of this.getContent().pairs) {
+                const groupKey = selector(pair[1], valueIndex);
+                ++valueIndex;
+                const existingGroup = groupMap[groupKey];
+                if (existingGroup) {
+                    existingGroup.push(pair);
+                }
+                else {
+                    const newGroup: any[] = [];
+                    newGroup.push(pair);
+                    groups.push(newGroup);
+                    groupMap[groupKey] = newGroup;
+                }
             }
-            else {
-                const newGroup: any[] = [];
-                newGroup.push(pair);
-                groups.push(newGroup);
-                groupMap[groupKey] = newGroup;
-            }
-        }
 
-        return new Series<number, ISeries<IndexT, ValueT>>({
-            values: groups.map(group => new Series<IndexT, ValueT>({ pairs: group }))
+            return {
+                values: groups.map(group => new Series<IndexT, ValueT>({ pairs: group }))
+            };            
         });
-
-        /*fio:
-        var self = this;
-        var groupedPairs = E.from(self.toPairs())
-            .groupBy(function (pair) {
-                return selector(pair[1]);
-            })
-            .select(function (group) {
-                return [
-                    group.key(), //TODO: Is this tested? Indexing by group key.
-                    new Series({
-                        iterable: new ArrayIterable(group.getSource()), 
-                    }),
-                ];
-            })
-            .toArray();
-
-        return new Series({
-            iterable: new ArrayIterable(groupedPairs),
-        });
-        */
     };
     
     
@@ -1707,12 +1755,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     static concat<IndexT = any, ValueT = any> (series: ISeries<IndexT, ValueT>[]): ISeries<IndexT, ValueT> {
         assert.isArray(series, "Expected 'series' parameter to 'Series.concat' to be an array of series.");
 
-        const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
-
-        return new Series({
-            index: new ConcatIterable(upcast.map(s => s.index)),
-            values: new ConcatIterable(upcast.map(s => s.values)),
-            pairs: new ConcatIterable(upcast.map(s => s.pairs)),
+        return new Series(() => {
+            const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
+            return {
+                index: new ConcatIterable(upcast.map(s => s.getContent().index)),
+                values: new ConcatIterable(upcast.map(s => s.getContent().values)),
+                pairs: new ConcatIterable(upcast.map(s => s.getContent().pairs)),
+            };
         });
     }
     
@@ -1762,12 +1811,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return new Series<IndexT, ResultT>();
         }
 
-        const firstSeriesUpCast = <Series<IndexT, ValueT>> firstSeries;
-        const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
-
-        return new Series({
-            index: firstSeriesUpCast.index,
-            values: new ZipIterable(upcast.map(s => s.values), zipper),
+        return new Series<IndexT, ResultT>(() => {
+            const firstSeriesUpCast = <Series<IndexT, ValueT>> firstSeries;
+            const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
+            
+            return {
+                index: <Iterable<IndexT>> firstSeriesUpCast.getContent().index,
+                values: new ZipIterable<ValueT, ResultT>(upcast.map(s => s.getContent().values), zipper),
+            };
         });
     }
     
@@ -1798,7 +1849,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
      */
     orderBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        return new OrderedSeries<IndexT, ValueT, SortT>(this.values, this.pairs, selector, Direction.Ascending, null);
+        //TODO: Should pass a config fn to OrderedSeries.
+        return new OrderedSeries<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Ascending, null);
     }
 
     /**
@@ -1809,7 +1861,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
      */
     orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        return new OrderedSeries<IndexT, ValueT, SortT>(this.values, this.pairs, selector, Direction.Descending, null);
+        //TODO: Should pass a config fn to OrderedSeries.
+        return new OrderedSeries<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Descending, null);
     }
     
 }
@@ -1877,6 +1930,7 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
      * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
      */
     thenBy<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+        //TODO: Should pass a config fn to OrderedSeries.
         return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Ascending, this);
     }
 
@@ -1888,6 +1942,7 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
      * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
      */
     thenByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+        //TODO: Should pass a config fn to OrderedSeries.
         return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
     }
 }
