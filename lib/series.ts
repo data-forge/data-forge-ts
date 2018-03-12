@@ -24,6 +24,7 @@ var Table = require('easy-table');
 import { assert } from 'chai';
 import { IDataFrame, DataFrame } from './dataframe';
 import * as moment from 'moment';
+import { isError } from 'util';
 
 /**
  * Series configuration.
@@ -469,6 +470,15 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
      */
     groupBy<GroupT> (selector: SelectorFnNoIndex<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
+
+    /**
+     * Group sequential values into a Series of windows.
+     *
+     * @param selector - Optional selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     */
+    groupSequentialBy<GroupT> (selector?: SelectorFnNoIndex<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
     
     /**
      * Concatenate multiple other series onto this series.
@@ -1742,9 +1752,27 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 values: groups.map(group => new Series<IndexT, ValueT>({ pairs: group }))
             };            
         });
-    };
+    }
     
-    
+    /**
+     * Group sequential values into a Series of windows.
+     *
+     * @param selector - Optional selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     */
+    groupSequentialBy<GroupT> (selector?: SelectorFnNoIndex<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
+
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to 'Series.groupSequentialBy' to be a selector function that determines the value to group the series by.")
+        }
+        else {
+            selector = value => <GroupT> <any> value;
+        }
+        
+        return this.variableWindow((a: ValueT, b: ValueT): boolean => selector!(a) === selector!(b));
+    }
+
     /**
      * Concatenate multiple series into a single series.
      *
