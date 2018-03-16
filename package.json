@@ -10,8 +10,8 @@
     "clean-build": "rm -rf build/* && tsc",
     "build:watch": "tsc --watch",
     "clean-build:watch": "rm -rf build/* && tsc --watch",
-    "test": "ts-mocha test/**/*.ts",
-    "test:watch": "ts-mocha test/**/*.ts --watch"
+    "test": "ts-mocha src/test/**/*.ts",
+    "test:watch": "ts-mocha src/test/**/*.ts --watch"
   },
   "repository": {
     "type": "git",

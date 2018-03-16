@@ -6,7 +6,7 @@ describe('csv async integration', () => {
 
 	it('can read streaming CSV file', async function () {
 
-        var data = await dataForge.readFileIncremental('./test/data/example-data.csv')
+        var data = await dataForge.readFileIncremental('./src/test/data/example-data.csv')
             .parseCSV()
             .toArray();
             

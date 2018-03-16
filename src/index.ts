@@ -431,12 +431,12 @@ console.log(dr.toString());
 async function main () {
 
     try {
-        var s = await readFileIncremental("./test/data/example-data.csv")
+        var s = await readFileIncremental("./src/test/data/example-data.csv")
             .parseCSV()
             .toString();
         console.log(s);
 
-        var s = await readFileIncremental("./test/data/example-data.json")
+        var s = await readFileIncremental("./src/test/data/example-data.json")
             .parseJSON()
             .toString();
 

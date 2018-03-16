@@ -6,7 +6,7 @@ describe('json async integration', () => {
 
 	it('can read streaming JSON file', async function () {
 
-        var data = await dataForge.readFileIncremental('./test/data/example-data.json')
+        var data = await dataForge.readFileIncremental('./src/test/data/example-data.json')
             .parseJSON()
             .toArray();
             
