@@ -12,6 +12,14 @@ Config object to fromJSON fn is no longer used.
 
 Config object to fromCSV is now only passed to Babyparse, it is no longer passed to DataFrame constructor.
 
+The Series.join function always used to return a DataFrame. This was wrong. It now returns a Series.
+
+Union/intersection/except have been simplified.
+Series.intersection/except now takes two selectors rather than a comparer.
+Series.intersection/except, etc, Join functions selector no longer takes an index.
+
+To simplify things intersection/except/join, etc selector fn no longer accepts the index.
+
 **New feature**
 
 Typescript

@@ -63,6 +63,16 @@ export type Zip5Fn<T1, T2, T3, T4, T5, ReturnT> = (a: T1, b: T2, c: T3, d: T4) =
 export type SelectorFnNoIndex<FromT, ToT> = (value: FromT) => ToT;
 
 /**
+ * A function that selects a key for a join.
+ */
+export type JoinSelectorFn<ValueT, ResultT> = (value: ValueT) => ResultT;
+
+/**
+ * A function that joins to vlaues.
+ */
+export type JoinFn<ValueT1, ValueT2, ResultT> = (a: ValueT1, b: ValueT2) => ResultT;
+
+/**
  * A predicate function, returns true or false based on input.
  */
 export type PredicateFn<ValueT> = (value: ValueT) => boolean;
@@ -75,7 +85,7 @@ export type AggregateFn<ValueT, ToT> = (accum: ToT, value: ValueT) => ToT;
 /**
  * Compares to values and returns true if they are equivalent.
  */
-export type ComparerFn<ValueT> = (a: ValueT, b: ValueT) => boolean;
+export type ComparerFn<ValueT1, ValueT2> = (a: ValueT1, b: ValueT2) => boolean;
 
 /*
  * A function that generates a series config object.
@@ -129,6 +139,16 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.  
      */
     toPairs (): ([IndexT,ValueT])[];
+
+     /**
+     * Convert the series to a JavaScript object.
+     *
+     * @param {function} keySelector - Function that selects keys for the resulting object.
+     * @param {valueSelector} keySelector - Function that selects values for the resulting object.
+     * 
+     * @returns {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     */
+    toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /** 
      * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
@@ -190,7 +210,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * 
      * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
      */
-    variableWindow (comparer: ComparerFn<ValueT>): ISeries<number, ISeries<IndexT, ValueT>>;
+    variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
      * Group sequential duplicate values into a Series of windows.
@@ -520,6 +540,136 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
      */
     orderByDescending<SortT> (selector: SelectorFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+
+    /**
+     * Returns the unique union of values between two series.
+     *
+     * @param other - The other Series or DataFrame to combine.
+     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * 
+     * @returns Returns the union of two series.
+     */
+    union<KeyT = ValueT> (
+        other: ISeries<IndexT, ValueT>, 
+        selector?: JoinSelectorFn<ValueT, KeyT>): 
+            ISeries<IndexT, ValueT>;
+
+    /**
+     * Returns the intersection of values between two series.
+     *
+     * @param inner - The other series to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two series.
+     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * 
+     * @returns Returns the intersection of two series.
+     */
+    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerSelector?: JoinSelectorFn<ValueT, KeyT>,
+        innerSelector?: JoinSelectorFn<InnerValueT, KeyT>): 
+            ISeries<IndexT, ValueT>;
+
+    /**
+     * Returns the exception of values between two series.
+     *
+     * @param inner - The other series to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two series.
+     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * 
+     * @returns Returns the difference between the two series.
+     */
+    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerSelector?: JoinSelectorFn<ValueT, KeyT>,
+        innerSelector?: JoinSelectorFn<InnerValueT, KeyT>): 
+            ISeries<IndexT, ValueT>;
+
+ /**
+     * Correlates the elements of two series on matching keys.
+     *
+     * @param this - The outer Series or DataFrame to join. 
+     * @param inner - The inner Series or DataFrame to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * @returns Returns the joined series. 
+     */
+    join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT, InnerValueT, ResultValueT>):
+            ISeries<number, ResultValueT>;
+
+    /**
+     * Performs an outer join on two series. Correlates the elements based on matching keys.
+     * Includes elements from both series that have no correlation in the other series.
+     *
+     * @param this - The outer series to join. 
+     * @param inner - The inner series to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined series. 
+     */
+    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            ISeries<number, ResultValueT>;
+
+    /**
+     * Performs a left outer join on two series. Correlates the elements based on matching keys.
+     * Includes left elements that have no correlation.
+     *
+     * @param this - The outer Series or DataFrame to join. 
+     * @param inner - The inner Series or DataFrame to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns {Series|DataFrame} Returns the joined series or dataframe. 
+     */
+    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            ISeries<number, ResultValueT>;
+
+    /**
+     * Performs a right outer join on two series. Correlates the elements based on matching keys.
+     * Includes right elements that have no correlation.
+     *
+     * @param this - The outer Series or DataFrame to join. 
+     * @param inner - The inner Series or DataFrame to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns {Series|DataFrame} Returns the joined series or dataframe. 
+     */
+    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            ISeries<number, ResultValueT>;
 }
 
 /**
@@ -925,7 +1075,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
      */
-    variableWindow (comparer: ComparerFn<ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
+    variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
         
         assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.variableWindow' to be a function.")
 
@@ -1892,7 +2042,283 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         //TODO: Should pass a config fn to OrderedSeries.
         return new OrderedSeries<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Descending, null);
     }
-    
+        
+    /**
+     * Returns the unique union of values between two series.
+     *
+     * @param other - The other Series or DataFrame to combine.
+     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * 
+     * @returns Returns the union of two series.
+     */
+    union<KeyT = ValueT> (
+        other: ISeries<IndexT, ValueT>, 
+        selector?: JoinSelectorFn<ValueT, KeyT>): 
+            ISeries<IndexT, ValueT> {
+
+        if (selector) {
+            assert.isFunction(selector, "Expected optional 'selector' parameter to 'Series.union' to be a selector function.");
+        }
+
+        return this.concat(other).distinct(selector);
+    };
+
+    /**
+     * Returns the intersection of values between two series.
+     *
+     * @param inner - The other series to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two series.
+     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * 
+     * @returns Returns the intersection of two series.
+     */
+    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerSelector?: JoinSelectorFn<ValueT, KeyT>,
+        innerSelector?: JoinSelectorFn<InnerValueT, KeyT>): 
+            ISeries<IndexT, ValueT> {
+
+        if (outerSelector) {
+            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'Series.intersection' to be a function.");
+        }
+        else {
+            outerSelector = value => <KeyT> <any> value;
+        }
+        
+        if (innerSelector) {
+            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'Series.intersection' to be a function.");
+        }
+        else {
+            innerSelector = value => <KeyT> <any> value;
+        }
+
+        const outer = this;
+        return outer.where(outerValue => {
+                const outerKey = outerSelector!(outerValue);
+                return inner
+                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .any();
+            });
+    };
+
+    /**
+     * Returns the exception of values between two series.
+     *
+     * @param inner - The other series to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two series.
+     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * 
+     * @returns Returns the difference between the two series.
+     */
+    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerSelector?: JoinSelectorFn<ValueT, KeyT>,
+        innerSelector?: JoinSelectorFn<InnerValueT, KeyT>): 
+            ISeries<IndexT, ValueT> {
+
+        if (outerSelector) {
+            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'Series.except' to be a function.");
+        }
+        else {
+            outerSelector = value => <KeyT> <any> value;
+        }
+
+        if (innerSelector) {
+            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'Series.except' to be a function.");
+        }
+        else {
+            innerSelector = value => <KeyT> <any> value;
+        }
+
+        const outer = this;
+        return outer.where(outerValue => {
+                const outerKey = outerSelector!(outerValue);
+                return inner
+                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .none();
+            });
+    };
+
+   /**
+     * Correlates the elements of two series on matching keys.
+     *
+     * @param this - The outer Series or DataFrame to join. 
+     * @param inner - The inner Series or DataFrame to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * @returns Returns the joined series. 
+     */
+    join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT, InnerValueT, ResultValueT>):
+            ISeries<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.join' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.join' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.join' to be a selector function.");
+
+        const outer = this;
+
+        return new Series<number, ResultValueT>(() => {
+            const innerMap = inner
+                .groupBy(innerKeySelector)
+                .toObject(
+                    group => innerKeySelector(group.first()), 
+                    group => group
+                );
+
+            const outerContent = outer.getContent();
+
+            const output: ResultValueT[] = [];
+            
+            for (const outerValue of outer) { //TODO: There should be an enumerator that does this.
+                const outerKey = outerKeySelector(outerValue);
+                const innerGroup = innerMap[outerKey];
+                if (innerGroup) {
+                    for (const innerValue of innerGroup) {
+                        output.push(resultSelector(outerValue, innerValue));
+                    }    
+                }
+            }
+
+            return {
+                values: output
+            };
+        });
+    }
+
+    /**
+     * Performs an outer join on two series. Correlates the elements based on matching keys.
+     * Includes elements from both series that have no correlation in the other series.
+     *
+     * @param this - The outer series to join. 
+     * @param inner - The inner series to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined series. 
+     */
+    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            ISeries<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.joinOuter' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.joinOuter' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.joinOuter' to be a selector function.");
+
+        // Get the results in the outer that are not in the inner.
+        const outer = this;
+        const outerResult = outer.except<InnerIndexT, InnerValueT, KeyT>(inner, outerKeySelector, innerKeySelector)
+            .select(outer => resultSelector(outer, null))
+            .resetIndex();
+
+        // Get the results in the inner that are not in the outer.
+        const innerResult = inner.except<IndexT, ValueT, KeyT>(outer, innerKeySelector, outerKeySelector)
+            .select(inner => resultSelector(null, inner))
+            .resetIndex();
+
+        // Get the intersection of results between inner and outer.
+        const intersectionResults = outer.join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(inner, outerKeySelector, innerKeySelector, resultSelector);
+
+        return outerResult
+            .concat(intersectionResults)
+            .concat(innerResult)
+            .resetIndex();
+    };
+
+    /**
+     * Performs a left outer join on two series. Correlates the elements based on matching keys.
+     * Includes left elements that have no correlation.
+     *
+     * @param this - The outer Series or DataFrame to join. 
+     * @param inner - The inner Series or DataFrame to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns {Series|DataFrame} Returns the joined series or dataframe. 
+     */
+    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            ISeries<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
+
+        // Get the results in the outer that are not in the inner.
+        const outer = this;
+        const outerResult = outer.except<InnerIndexT, InnerValueT, KeyT>(inner, outerKeySelector, innerKeySelector)
+            .select(outer => resultSelector(outer, null))
+            .resetIndex();
+
+        // Get the intersection of results between inner and outer.
+        const intersectionResults = outer.join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(inner, outerKeySelector, innerKeySelector, resultSelector);
+
+        return outerResult
+            .concat(intersectionResults)
+            .resetIndex();
+    };
+
+    /**
+     * Performs a right outer join on two series. Correlates the elements based on matching keys.
+     * Includes right elements that have no correlation.
+     *
+     * @param this - The outer Series or DataFrame to join. 
+     * @param inner - The inner Series or DataFrame to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns {Series|DataFrame} Returns the joined series or dataframe. 
+     */
+    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: ISeries<InnerIndexT, InnerValueT>, 
+        outerKeySelector: JoinSelectorFn<ValueT, KeyT>, 
+        innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            ISeries<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.joinOuterRight' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.joinOuterRight' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.joinOuterRight' to be a selector function.");
+
+        // Get the results in the inner that are not in the outer.
+        const outer = this;
+        const innerResult = inner.except<IndexT, ValueT, KeyT>(outer, innerKeySelector, outerKeySelector)
+            .select(inner => resultSelector(null, inner))
+            .resetIndex();
+
+        // Get the intersection of results between inner and outer.
+        const intersectionResults = outer.join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(inner, outerKeySelector, innerKeySelector, resultSelector);
+
+        return intersectionResults
+            .concat(innerResult)
+            .resetIndex();
+    }    
 }
 
 //
