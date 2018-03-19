@@ -781,4 +781,29 @@ describe('Series', () => {
 			[7, 4],
 		]);
     });
+
+	it('can truncate string values', function () {
+
+		var series = new Series({ index: [1, 2], values: ['foo', 'bar'] });
+		var truncated = series.truncateStrings(2);
+
+		expect(truncated.getIndex().toArray()).to.eql([1, 2]);
+		expect(truncated.toArray()).to.eql(['fo', 'ba']);
+	});
+
+	it('truncation ignores strings that are already short enough', function () {
+
+		var series = new Series({ index: [1, 2], values: ['foo', 'bar'] });
+		var truncated = series.truncateStrings(20);
+
+		expect(truncated.toArray()).to.eql(['foo', 'bar']);
+	});
+
+	it('truncation passes through other values', function () {
+
+		var series = new Series({ index: [1, 2, 3, 4], values: [null, undefined, 1, new Date(2015, 1, 1)] });
+		var truncated = series.truncateStrings(20);
+
+		expect(truncated.toArray()).to.eql([null, 1, new Date(2015, 1, 1)]);
+	});
 });

@@ -2319,6 +2319,28 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             .concat(innerResult)
             .resetIndex();
     }    
+
+    /**
+     * Produces a new series with all string values truncated to the requested maximum length.
+     *
+     * @param maxLength - The maximum length of the string values after truncation.
+     * 
+     * @returns Returns a new series with strings that are truncated to the specified maximum length. 
+     */
+    truncateStrings (maxLength: number): ISeries<IndexT, ValueT> {
+
+        assert.isNumber(maxLength, "Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
+
+        return this.select((value: any) => {
+                if (Sugar.Object.isString(value)) {
+                    if (value.length > maxLength) {
+                        return value.substring(0, maxLength);
+                    }
+                }
+
+                return value;
+            });
+    };    
 }
 
 //
