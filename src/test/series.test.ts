@@ -805,5 +805,112 @@ describe('Series', () => {
 		var truncated = series.truncateStrings(20);
 
 		expect(truncated.toArray()).to.eql([null, 1, new Date(2015, 1, 1)]);
+    });
+    
+	it('can insert pair at start of empty series', function () {
+
+		var series = new Series();
+		var modified = series.insertPair([10, 100]);
+		expect(modified.toPairs()).to.eql([
+			[10, 100]
+		]);
 	});
+
+	it('can insert pair at start of series with existing items', function () {
+
+		var series = new Series({
+			index:  [1,  2],
+			values: [10, 11],
+		});
+		var modified = series.insertPair([20, 100]);
+		expect(modified.toPairs()).to.eql([
+			[20, 100],
+			[1, 10],
+			[2, 11],
+		]);
+	});
+
+
+	it('can append pair to empty series', function () {
+
+		var series = new Series();
+		var appended = series.appendPair([10, 100]);
+		expect(appended.toPairs()).to.eql([
+			[10, 100]
+		]);
+	});
+
+	it('can append pair to series with existing items', function () {
+
+		var series = new Series({
+			index:  [1,  2],
+			values: [10, 11],
+		});
+		var appended = series.appendPair([20, 100]);
+		expect(appended.toPairs()).to.eql([
+			[1, 10],
+			[2, 11],
+			[20, 100],
+		]);
+	});
+
+	it('can fill gaps in series - fill forward', function () {
+
+		var seriesWithGaps = new Series({
+			index:  [1,  2,  6,  7,  10, 11],
+			values: [10, 11, 12, 13, 14, 15],
+		});
+
+		var seriesWithoutGaps = seriesWithGaps.fillGaps(
+			(pairA: [number, number], pairB: [number, number]) => pairB[0] - pairA[0] > 1,
+			(pairA: [number, number], pairB: [number, number]) => {
+				var gapSize = pairB[0] - pairA[0];
+                var numEntries = gapSize - 1;
+                var output: [number, number][] = [];
+                for (var i = 0; i < numEntries; ++i) {
+                    output.push([
+                        pairA[0] + i + 1, 
+                        pairA[1]
+                    ]);
+                }
+				return output;
+			}
+		);
+
+		expect(seriesWithoutGaps.toPairs()).to.eql([
+			[1, 10],
+			[2, 11],
+			[3, 11],
+			[4, 11],
+			[5, 11],
+			[6, 12],
+			[7, 13],
+			[8, 13],
+			[9, 13],
+			[10, 14],
+			[11, 15],
+		]);
+	});
+
+	it('can select default instead of empty series - array', function () {
+
+		var series = new Series();
+		var defaulted = series.defaultIfEmpty([1, 2]);
+		expect(defaulted.toArray()).to.eql([1, 2]);
+	});
+
+	it('can select default instead of empty series - series', function () {
+
+		var series = new Series();
+		var defaulted = series.defaultIfEmpty(new Series({ values: [1, 2] }));
+		expect(defaulted.toArray()).to.eql([1, 2]);
+	});
+
+	it('default is ignored for non-empty series', function () {
+
+		var series = new Series({ values: [5, 6] });
+		var defaulted = series.defaultIfEmpty([1, 2]);
+		expect(defaulted.toArray()).to.eql([5, 6]);
+	});
+    
 });

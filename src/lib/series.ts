@@ -93,6 +93,11 @@ export type ComparerFn<ValueT1, ValueT2> = (a: ValueT1, b: ValueT2) => boolean;
  */
 export type ConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>;
 
+/*
+ * A function that generates a sequence of values between to fill the gap between two other values.
+ */
+export type GapFillFn<ValueT, ResultT> = (a: ValueT, b: ValueT) => ResultT[];
+
 /**
  * Interface that represents a series of indexed values.
  */
@@ -670,6 +675,52 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
         innerKeySelector: JoinSelectorFn<InnerValueT, KeyT>, 
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             ISeries<number, ResultValueT>;
+
+/**
+     * Produces a new series with all string values truncated to the requested maximum length.
+     *
+     * @param maxLength - The maximum length of the string values after truncation.
+     * 
+     * @returns Returns a new series with strings that are truncated to the specified maximum length. 
+     */
+    truncateStrings (maxLength: number): ISeries<IndexT, ValueT>;
+
+    /**
+     * Insert a pair at the start of the series.
+     *
+     * @param pair - The pair to insert.
+     * 
+     * @returns Returns a new series with the specified pair inserted.
+     */
+    insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
+
+    /**
+     * Append a pair to the end of a Series.
+     *
+     * @param pair - The pair to append.
+     *  
+     * @returns Returns a new series with the specified pair appended.
+     */
+    appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
+
+    /**
+     * Fill gaps in a series or dataframe.
+     *
+     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
+     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     *
+     * @returns {Series} Returns a new series with gaps filled in.
+     */
+    fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT>;
+
+    /**
+     * Returns the specified default sequence if the series is empty. 
+     *
+     * @param defaultSequence - Default sequence to return if the series is empty.
+     * 
+     * @returns Returns 'defaultSequence' if the series is empty. 
+     */
+    defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT>;
 }
 
 /**
@@ -2341,6 +2392,99 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 return value;
             });
     };    
+
+    /**
+     * Insert a pair at the start of the series.
+     *
+     * @param pair - The pair to insert.
+     * 
+     * @returns Returns a new series with the specified pair inserted.
+     */
+    insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
+        assert.isArray(pair, "Expected 'pair' parameter to 'Series.insertPair' to be an array.");
+        assert(pair.length === 2, "Expected 'pair' parameter to 'Series.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
+
+        return (new Series<number, [IndexT, ValueT]>([pair])
+            .concat(this.asPairs()))
+            .asValues();
+    }
+
+    /**
+     * Append a pair to the end of a Series.
+     *
+     * @param pair - The pair to append.
+     *  
+     * @returns Returns a new series with the specified pair appended.
+     */
+    appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
+        assert.isArray(pair, "Expected 'pair' parameter to 'Series.appendPair' to be an array.");
+        assert(pair.length === 2, "Expected 'pair' parameter to 'Series.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
+
+        return this.asPairs()
+            .concat(new Series<number, [IndexT, ValueT]>([pair]))
+            .asValues();
+    }
+
+    /**
+     * Fill gaps in a series or dataframe.
+     * TODO: This function doesn't actually need the comparer. You can easily do this with select many!!
+     *
+     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
+     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     *
+     * @returns Returns a new series with gaps filled in.
+     */
+    fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT> {
+        assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.fillGaps' to be a comparer function that compares two values and returns a boolean.")
+        assert.isFunction(generator, "Expected 'generator' parameter to 'Series.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
+
+        return this.rollingWindow(2)
+            .asPairs()
+            .selectMany((pair: [number, ISeries<IndexT, ValueT>]) => {
+                var window = pair[1];
+                var pairA = window.asPairs().first();
+                var pairB = window.asPairs().last();
+                if (!comparer(pairA, pairB)) {
+                    return [pairA];
+                }
+
+                var generatedRows = generator(pairA, pairB);
+                assert.isArray(generatedRows, "Expected return from 'generator' parameter to 'Series.fillGaps' to be an array of pairs, instead got a " + typeof(generatedRows));
+
+                return [pairA].concat(generatedRows);
+            })
+            .asValues<IndexT, ValueT>()
+            .appendPair(this.asPairs().last());
+    }
+
+    /**
+     * Returns the specified default sequence if the series is empty. 
+     *
+     * @param defaultSequence - Default sequence to return if the series is empty.
+     * 
+     * @returns Returns 'defaultSequence' if the series is empty. 
+     */
+    defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT> {
+
+        if (!Sugar.Object.isArray(defaultSequence)) {
+        }
+
+        if (this.none()) {
+            if (defaultSequence instanceof Series) {
+                return <ISeries<IndexT, ValueT>> defaultSequence;
+            }
+            else if (Sugar.Object.isArray(defaultSequence)) {
+                return new Series<IndexT, ValueT>(defaultSequence);
+            }
+            else {
+                throw new Error("Expected 'defaultSequence' parameter to 'Series.defaultIfEmpty' to be an array or a series.");
+            }
+        } 
+        else {
+            return this;
+        }
+    };
+    
 }
 
 //
