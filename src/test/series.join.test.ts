@@ -5,8 +5,83 @@ import { Series } from '../lib/series';
 import { DataFrame } from '../lib/dataframe';
 
 describe('Series join', () => {
+
+	it('can get union of 2 series with unique values', () => {
+
+		var series1 = new Series({ values: [5, 6] })
+		var series2 = new Series({ values: [7, 8] })
+		var result = series1.union(series2);
+
+		expect(result.toArray()).to.eql([5, 6, 7, 8]);
+	});
+
+	it('can get union of 2 series with overlapping values', () => {
+
+		var series1 = new Series({ values: [5, 6] })
+		var series2 = new Series({ values: [6, 7] })
+		var result = series1.union(series2);
+
+		expect(result.toArray()).to.eql([5, 6, 7]);
+	});
+
+	it('union can work with selector', () => {
+
+		var series1 = new Series({ values: [{ X: 5 }, { X: 6 }] })
+		var series2 = new Series({ values: [{ X: 6 }, { X: 7 }] })
+		var result = series1.union(series2, row=> row.X);
+
+		expect(result.toArray()).to.eql([ { X: 5 }, { X: 6 }, { X: 7 }]);
+	});
+
+	it('can get intersection of 2 series with overlapping values', () => {
+		
+		var series1 = new Series({ values: [5, 6] })
+		var series2 = new Series({ values: [6, 7] })
+		var result = series1.intersection(series2);
+		expect(result.toArray()).to.eql([6]);
+	});
+
+	it('intersection result is empty for 2 series that have no overlapping values', () => {
+
+		var series1 = new Series({ values: [5, 6] })
+		var series2 = new Series({ values: [7, 8] })
+		var result = series1.intersection(series2);
+		expect(result.toArray()).to.eql([]);
+	});
+
+	it('intersection can work with selector', () => {
+
+		var series1 = new Series({ values: [{ X: 5 }, { X: 6 }] })
+		var series2 = new Series({ values: [{ X: 6 }, { X: 7 }] })
+		var result = series1.intersection(series2, left => left.X, right => right.X);
+		expect(result.toArray()).to.eql([ { X: 6 }, ]);
+	});
+
+	it('can get exception of 2 series with overlapping values', () => {
+		
+		var series1 = new Series({ values: [5, 6] })
+		var series2 = new Series({ values: [6, 7] })
+		var result = series1.except(series2);
+		expect(result.toArray()).to.eql([5]);
+	});
+
+	it('exception result is empty for 2 series that have fully overlapping values', () => {
+
+		var series1 = new Series({ values: [5, 6] })
+		var series2 = new Series({ values: [5, 6] })
+		var result = series1.except(series2);
+		expect(result.toArray()).to.eql([]);
+	});
+
+	it('except can work with selector', () => {
+
+		var series1 = new Series({ values: [{ X: 5 }, { X: 6 }] })
+		var series2 = new Series({ values: [{ X: 6 }, { X: 7 }] })
+		var result = series1.except(series2, left => left.X, right => right.X);
+		expect(result.toArray()).to.eql([ { X: 5 }, ]);
+	});    
    
-    it('can merge on column', function () {
+    it('can merge on column', () => {
 
         var left = new Series([
             {
@@ -75,7 +150,7 @@ describe('Series join', () => {
     });
 
     // http://blogs.geniuscode.net/RyanDHatch/?p=116
-    it('outer join', function () {
+    it('outer join', () => {
 
         var ryan = { Name: "Ryan" };
         var jer = { Name: "Jer" };
@@ -129,13 +204,13 @@ describe('Series join', () => {
 //
 //  http://chrisalbon.com/python/pandas_join_merge_dataframe.html
 //
-describe('pandas-examples', function () {
+describe('pandas-examples', () => {
 
     var df_a;
     var df_b;
     var df_n;
 
-    beforeEach(function () {
+    beforeEach(() => {
         df_a = new DataFrame({
             columnNames: [
                 'subject_id',
@@ -186,7 +261,7 @@ describe('pandas-examples', function () {
         });
     });
 
-    it('Join the two dataframes along rows', function () {
+    it('Join the two dataframes along rows', () => {
 
         var df_new = concatDataFrames([df_a, df_b]);
 
@@ -210,7 +285,7 @@ describe('pandas-examples', function () {
 
     });
 
-    it('Join the two dataframes along columns', function () {
+    it('Join the two dataframes along columns', () => {
 
         var df_new = concatDataFrames([df_a, df_b], { axis: 1 });
 
@@ -236,7 +311,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge two dataframes along the subject_id value', function () {
+    it('Merge two dataframes along the subject_id value', () => {
 
         var df_new = concatDataFrames([df_a, df_b]);
         var df_merged = df_new
@@ -283,7 +358,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge two dataframes along the subject_id value', function () {
+    it('Merge two dataframes along the subject_id value', () => {
 
         var df_new = concatDataFrames([df_a, df_b]);
         var df_merged = df_new.join(
@@ -327,7 +402,7 @@ describe('pandas-examples', function () {
     });
 
     // Exactly the same as the previous example.
-    it('Merge two dataframes with both the left and right dataframes using the subject_id key', function () {
+    it('Merge two dataframes with both the left and right dataframes using the subject_id key', () => {
 
         var df_new = concatDataFrames([df_a, df_b]);
         var df_merged = df_new.join(
@@ -369,7 +444,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge with outer join', function () {
+    it('Merge with outer join', () => {
 
         var df_merged = df_a.joinOuter(
                 df_b,
@@ -416,7 +491,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge with inner join', function () {
+    it('Merge with inner join', () => {
 
         var df_merged = df_a.join(
                 df_b,
@@ -452,7 +527,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge with right join', function () {
+    it('Merge with right join', () => {
 
         var df_merged = df_a.joinOuterRight(
                 df_b,
@@ -496,7 +571,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge with left join', function () {
+    it('Merge with left join', () => {
 
         var df_merged = df_a.joinOuterLeft(
                 df_b,
@@ -540,7 +615,7 @@ describe('pandas-examples', function () {
         ]);
     });
     
-    it('Merge while adding a suffix to duplicate column names', function () {
+    it('Merge while adding a suffix to duplicate column names', () => {
 
         var df_merged = df_a.joinOuterLeft(
                 df_b,
@@ -584,7 +659,7 @@ describe('pandas-examples', function () {
         ]);
     });
 
-    it('Merge based on indexes', function () {
+    it('Merge based on indexes', () => {
 
            var df_merged = df_a.join(
                 df_b,
