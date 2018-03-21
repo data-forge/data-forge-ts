@@ -91,7 +91,7 @@ export type ComparerFn<ValueT1, ValueT2> = (a: ValueT1, b: ValueT2) => boolean;
  * A function that generates a series config object.
  * Used to make it easy to create lazy evaluated series.
  */
-export type ConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>;
+export type SeriesConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>;
 
 /*
  * A function that generates a sequence of values between to fill the gap between two other values.
@@ -99,7 +99,7 @@ export type ConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>;
 export type GapFillFn<ValueT, ResultT> = (a: ValueT, b: ValueT) => ResultT[];
 
 /**
- * Interface that represents a series of indexed values.
+ * Interface that represents a series containing a sequence of indexed values.
  */
 export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
 
@@ -676,7 +676,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             ISeries<number, ResultValueT>;
 
-/**
+    /**
      * Produces a new series with all string values truncated to the requested maximum length.
      *
      * @param maxLength - The maximum length of the string values after truncation.
@@ -763,7 +763,7 @@ export function toMap(items: Iterable<any>, keySelector: (item: any) => any, val
 // Represents the contents of a series.
 //
 interface ISeriesContent<IndexT, ValueT> {
-    index: Iterable<IndexT>; // Initalizers here just to prevent warnings.
+    index: Iterable<IndexT>;
     values: Iterable<ValueT>;
     pairs: Iterable<[IndexT, ValueT]>;
 
@@ -774,14 +774,14 @@ interface ISeriesContent<IndexT, ValueT> {
 }
 
 /**
- * Class that represents a series of indexed values.
+ * Class that represents a series containing a sequence of indexed values.
  */
 export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, ValueT> {
 
     //
-    // Function to lazy evaluate the configuration of a series.
+    // Function to lazy evaluate the configuration of the series.
     //
-    private configFn: ConfigFn<IndexT, ValueT> | null = null;
+    private configFn: SeriesConfigFn<IndexT, ValueT> | null = null;
 
     //
     // The content of the series.
@@ -888,7 +888,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      index: Optional array or iterable of values that index the series, defaults to a series of integers from 1 and counting upward.
      *      pairs: Optional iterable of pairs (index and value) that the series contains.
      */
-    constructor(config?: ValueT[] | ISeriesConfig<IndexT, ValueT> | ConfigFn<IndexT, ValueT>) {
+    constructor(config?: ValueT[] | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
         if (config) {
             if (Sugar.Object.isFunction(config)) {
                 this.configFn = config;
