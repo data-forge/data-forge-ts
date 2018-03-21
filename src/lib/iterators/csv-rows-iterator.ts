@@ -5,10 +5,10 @@
 export class CsvRowsIterator implements Iterator<any> {
 
     columnNames: string[];
-    rowsIterator: Iterator<any[]>;
+    rowsIterator: Iterator<any>;
     index: number = 0;
 
-    constructor(columnNames: Iterable<string>, rowsIterable: Iterable<any[]>) {
+    constructor(columnNames: Iterable<string>, rowsIterable: Iterable<any>) {
         this.columnNames = Array.from(columnNames);
         this.rowsIterator = rowsIterable[Symbol.iterator]();
     }

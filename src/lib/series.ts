@@ -793,7 +793,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     private static readonly defaultEmptyIterable = new EmptyIterable();
 
     //
-    // Initialise this Series from an array.
+    // Initialise series content from an array of values.
     //
     private static initFromArray<IndexT, ValueT>(arr: ValueT[]): ISeriesContent<IndexT, ValueT> {
         return {
@@ -805,7 +805,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     //
-    // Initialise an empty DataFrame.
+    // Initialise an empty series.
     //
     private static initEmpty<IndexT, ValueT>(): ISeriesContent<IndexT, ValueT> {
         return {
@@ -816,6 +816,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         };
     }
 
+    //
+    // Initialise an interable.
+    // TODO: This actually does nothing except error checking.
+    //
     private static initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
         if (Sugar.Object.isArray(input)) {
             return input;
@@ -830,7 +834,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     //
-    // Initialise the Series from a config object.
+    // Initialise series content from a config object.
     //
     private static initFromConfig<IndexT, ValueT>(config: ISeriesConfig<IndexT, ValueT>): ISeriesContent<IndexT, ValueT> {
 
@@ -846,7 +850,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             index = new ExtractElementIterable(config.pairs, 0);
         }
         else {
-            index = new CountIterable();
+            index = Series.defaultCountIterable;
         }
 
         if (config.values) {
@@ -856,7 +860,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             values = new ExtractElementIterable(config.pairs, 1);
         }
         else {
-            values = new EmptyIterable();
+            values = Series.defaultEmptyIterable;
         }
 
         if (config.pairs) {

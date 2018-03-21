@@ -358,7 +358,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 values = this.initIterable<ValueT>(config.values, 'values');
                 if (config.columnNames) {
                     // Convert data from rows to columns.
-                    values = new CsvRowsIterable(columnNames, values);
+                    values = new CsvRowsIterable(columnNames!, values);
                 }
                 else {
                     columnNames = new ColumnNamesIterable(values, config.considerAllRows || false);

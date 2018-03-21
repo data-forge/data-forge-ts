@@ -7,9 +7,9 @@ import { CsvRowsIterator } from '../iterators/csv-rows-iterator';
 export class CsvRowsIterable implements Iterable<any> {
 
     columnNames: Iterable<string>;
-    rows: Iterable<any[]>;
+    rows: Iterable<any>;
 
-    constructor(columnNames: Iterable<string>, rows: Iterable<any[]>) {
+    constructor(columnNames: Iterable<string>, rows: Iterable<any>) {
         this.columnNames = columnNames;
         this.rows = rows;
     }
