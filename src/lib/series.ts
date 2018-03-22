@@ -938,7 +938,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Get the index for the series.
      */
     getIndex (): IIndex<IndexT> {
-        return new Index<IndexT>({ values: this.getContent().index }); //TODO: Index should be able to take a config function.
+        return new Index<IndexT>(() => ({ values: this.getContent().index }));
     }
 
     /**

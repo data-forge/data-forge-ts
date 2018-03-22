@@ -1,4 +1,4 @@
-import { ISeries, Series } from './series';
+import { ISeries, Series, SeriesConfigFn } from './series';
 import * as Sugar from 'sugar';
 import * as moment from 'moment';
 
@@ -52,7 +52,7 @@ export class Index<IndexT> extends Series<number, IndexT> implements IIndex<Inde
     //
     private _type?: string;
 
-    constructor(config?: any) {
+    constructor(config?: any | SeriesConfigFn<number, IndexT>) {
         super(config);
     }
 

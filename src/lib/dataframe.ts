@@ -217,8 +217,6 @@ interface IDataFrameContent<IndexT, ValueT> {
 
     columnNames: string[] | Iterable<string>,
     isBaked: boolean,
-    //fio:considerAllRows: boolean,
-    //fio:columns: any, //todo: is this needed?
 }
 
 /**
@@ -473,8 +471,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Get the index for the dataframe.
      */
     getIndex (): IIndex<IndexT> {
-        //TODO: Pass in config fn.
-        return new Index<IndexT>({ values: this.getContent().index });
+        return new Index<IndexT>(() => ({ values: this.getContent().index }));
     }
 
     /**
@@ -490,11 +487,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'DataFrame.withIndex' to be an array, DataFrame or Index.");
         }
 
-        //TODO: Pass in config fn.
-        return new DataFrame<NewIndexT, ValueT>({
+        return new DataFrame<NewIndexT, ValueT>(() => ({
             values: this.getContent().values,
             index: newIndex,
-        });
+        }));
     }
 
     /**
@@ -503,10 +499,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe with the index reset to the default zero-based index. 
      */
     resetIndex (): IDataFrame<number, ValueT> {
-        //TODO: Pass in config fn.
-        return new DataFrame<number, ValueT>({
+        return new DataFrame<number, ValueT>(() => ({
             values: this.getContent().values // Just strip the index.
-        });
+        }));
     }
     
     /**
@@ -518,14 +513,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
 
-        //TODO: Pass in config fn.
-        return new Series<IndexT, SeriesValueT>({
+        return new Series<IndexT, SeriesValueT>(() => ({
             values: new SelectIterable<ValueT, SeriesValueT>(
                 this.getContent().values, 
                 (row: any) => row[columnName],
             ),
             index: this.getContent().index,
-        });   
+        }));
     }
 
         /**
@@ -579,6 +573,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
+        var importSeries: ISeries<IndexT, SeriesValueT>;
+    
+        if (Sugar.Object.isFunction(series as Object)) {
+            importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
+        }
+        else { 
+            importSeries = series! as ISeries<IndexT, SeriesValueT>;
+        }
+    
         if (Sugar.Object.isObject(columnNameOrSpec)) {
             const columnNames = Object.keys(columnNameOrSpec);
             let workingDataFrame: IDataFrame<IndexT, ValueT> = this;
@@ -589,31 +592,24 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return workingDataFrame;
         }
 
-        var importSeries: ISeries<IndexT, SeriesValueT>;
-
-        if (Sugar.Object.isFunction(series as Object)) {
-            importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
-        }
-        else { 
-            importSeries = series! as ISeries<IndexT, SeriesValueT>;
-        }
-
-        var seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
-        var newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec])); //TODO: This could be lazy.
-        //TODO: Pass in config fn.
-        return new DataFrame<IndexT, ValueT>({
-            columnNames: newColumnNames,
-            index: this.getContent().index,
-            pairs: new SelectIterable<any, any>(this.getContent().pairs, pair => {
-                var index = pair[0];
-                var value = pair[1];
-                var modified = Object.assign({}, value);
-                modified[columnNameOrSpec] = seriesValueMap[index];
-                return [
-                    index,
-                    modified
-                ];
-            }),
+        return new DataFrame<IndexT, ValueT>(() => {    
+            var seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
+            var newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec]));
+    
+            return {
+                columnNames: newColumnNames,
+                index: this.getContent().index,
+                pairs: new SelectIterable<[IndexT, ValueT], [IndexT, ValueT]>(this.getContent().pairs, pair => {
+                    var index = pair[0];
+                    var value = pair[1];
+                    var modified: any = Object.assign({}, value);
+                    modified[columnNameOrSpec] = seriesValueMap[index];
+                    return [
+                        index,
+                        modified
+                    ];
+                }),
+            };
         });
     }
     
@@ -662,7 +658,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * @returns Returns an array of values contained within the dataframe. 
     */
     toArray (): any[] {
-        let values = [];
+        const values = [];
         for (const value of this.getContent().values) {
             values.push(value);
         }
@@ -677,7 +673,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
      */
     toPairs (): ([IndexT, ValueT])[] {
-        let pairs = [];
+        const pairs = [];
         for (const pair of this.getContent().pairs) {
             pairs.push(pair);
         }
@@ -690,11 +686,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *  @returns Returns an array of rows. Each row is an array of values in column order.   
      */
     toRows (): any[][] {
-
         const columnNames = this.getColumnNames();
-        let rows = [];
+        const rows = [];
         for (const value of this.getContent().values) {
-            let row = [];
+            const row = [];
             for (let columnIndex = 0; columnIndex < columnNames.length; ++columnIndex) {
                 row.push((<any>value)[columnNames[columnIndex]]);
             }
@@ -715,10 +710,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     select<ToT> (selector: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
 
-        return new DataFrame({
+        return new DataFrame(() => ({
             values: new SelectIterable(this.getContent().values, selector),
             index: this.getContent().index,
-        });
+        }));
     }
 
     /**
@@ -728,11 +723,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe or dataframe with the specified number of values skipped. 
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT> {
-        return new DataFrame<IndexT, ValueT>({
+        return new DataFrame<IndexT, ValueT>(() => ({
             values: new SkipIterable(this.getContent().values, numValues),
             index: new SkipIterable(this.getContent().index, numValues),
             pairs: new SkipIterable(this.getContent().pairs, numValues),
-        });
+        }));
     }
 
     /** 
@@ -745,10 +740,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         const columnNames = this.getColumnNames();
         const header = ["__index__"].concat(columnNames);
-        const pairs = this.toPairs();
 
-        let table = new Table();
-        pairs.forEach(function (pair) {
+        const table = new Table();
+        //TODO: for (const pair of this.asPairs()) {
+        for (const pair of this.toPairs()) {
             const index = pair[0];
             const value = pair[1] as any;
             table.cell(header[0], index);
@@ -756,7 +751,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 table.cell(header[columnIndex+1], value[columnName]);
             });
             table.newRow();
-        });
+        }
 
         return table.toString();
     }
