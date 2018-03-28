@@ -1998,14 +1998,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const upcast = <DataFrame<IndexT, ValueT>[]> dataframes; // Upcast so that we can access private index, values and pairs.
             const contents = upcast.map(dataframe => dataframe.getContent());
 
-            const columnNames: string[] = [];
+            let columnNames: string[] = [];
             for (const content of contents) {
                 for (const columnName of content.columnNames) {
                     columnNames.push(columnName);
                 }
             }
 
-            console.log(columnNames); //fio:
+            columnNames = makeDistinct(columnNames);
 
             return {
                 columnNames: columnNames,
