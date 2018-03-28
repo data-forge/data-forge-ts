@@ -288,7 +288,7 @@ describe('DataFrame columns', () => {
 				"some-column",
 				"some-Column",
 			],
-			values: [
+			rows: [
 				[1, 2],
 				[3, 4],
 			],
@@ -311,7 +311,7 @@ describe('DataFrame columns', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Value1", "Value2", "VALUE3" ],
-			values: [
+			rows: [
 				[100, 'foo', 11],
 				[200, 'bar', 22],
 			],
@@ -328,7 +328,7 @@ describe('DataFrame columns', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Value1" ],
-			values: [
+			rows: [
 				[100],
 				[200],
 			],

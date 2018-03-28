@@ -51,7 +51,7 @@ describe('DataFrame', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "S" ],
-			values: [
+			rows: [
 				[undefined],
 				[11],
 				[undefined],
@@ -71,7 +71,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
-			values: [
+			rows: [
 				[1]
 			],
 		});
@@ -84,7 +84,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
-			values: [
+			rows: [
 				[1],
 				[2],
 			],
@@ -105,7 +105,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
-			values: [
+			rows: [
 				[1, 52],
 				[2, 53],
 			],
@@ -124,7 +124,7 @@ describe('DataFrame', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
-			values: [
+			rows: [
 				[new Date(2011, 24, 2), 300, 'c', 3],
 				[new Date(1975, 24, 2), 200, 'b', 1],
 				[new Date(2013, 24, 2), 20, 'c', 22],
@@ -155,7 +155,7 @@ describe('DataFrame', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
-			values: [
+			rows: [
 				[new Date(2011, 24, 2), 300, 'c', 3],
 				[new Date(1975, 24, 2), 200, 'b', 1],
 				[new Date(2013, 24, 2), 20, 'c', 22],
@@ -178,7 +178,7 @@ describe('DataFrame', () => {
 		
 		var dataFrame1 = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
-			values: [
+			rows: [
 				[new Date(1975, 24, 2), 100, 'foo', 11],
 				[new Date(2015, 24, 2), 200, 'bar', 22],
 			],
@@ -186,7 +186,7 @@ describe('DataFrame', () => {
         });
 		var dataFrame2 = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
-            values: [
+            rows: [
 				[new Date(2011, 24, 2), 300, 'c', 3],
 				[new Date(1975, 24, 2), 200, 'b', 1],
 				[new Date(2013, 24, 2), 20, 'c', 22],
@@ -214,7 +214,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
-			values: [
+			rows: [
 				[1],
 				[2],
 			],
@@ -235,7 +235,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
-			values: [
+			rows: [
 				[1, 52],
 				[2, 53],
 			],
@@ -254,7 +254,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
-			values: [
+			rows: [
 				[1],
 				[2],
 			],
@@ -275,7 +275,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
-			values: [
+			rows: [
 				[1, 52],
 				[2, 53],
 			],
@@ -294,7 +294,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
-			values: [
+			rows: [
 				[1],
 				[2],
 			],
@@ -315,7 +315,7 @@ describe('DataFrame', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
-			values: [
+			rows: [
 				[1, 52],
 				[2, 53],
 			],

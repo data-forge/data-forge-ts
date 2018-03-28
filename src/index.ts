@@ -2,7 +2,7 @@
 
 export { Index, IIndex } from './lib/index';
 export { AsyncIndex, IAsyncIndex } from './lib/async/async-index';
-export { Series, ISeries, SelectorFn } from './lib/series';
+export { Series, ISeries, SelectorWithIndexFn } from './lib/series';
 export { AsyncSeries, IAsyncSeries } from './lib/async/async-series';
 export { DataFrame, IDataFrame } from './lib/dataframe';
 export { AsyncDataFrame, IAsyncDataFrame } from './lib/async/async-dataframe';
@@ -86,7 +86,7 @@ export function fromCSV (csvTextString: string, config?: any) {
     }
 
     return new DataFrame<number, any>({
-        values: rows,
+        rows: rows,
         columnNames: columnNames,
     });
 }

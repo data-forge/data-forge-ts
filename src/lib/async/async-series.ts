@@ -11,7 +11,7 @@ import { SkipIterable } from './iterables/skip-iterable';
 var Table = require('easy-table');
 import { assert } from 'chai';
 import { IAsyncDataFrame, AsyncDataFrame } from './async-dataframe';
-import { ISeries, Series, SelectorFn } from '../series';
+import { ISeries, Series, SelectorWithIndexFn } from '../series';
 
 /**
  * Series configuration.
@@ -76,7 +76,7 @@ export interface IAsyncSeries<IndexT, ValueT> extends AsyncIterable<ValueT> {
      * 
      * @returns Returns a new series that has been transformed by the selector function.
      */
-    select<ToT> (selector: SelectorFn<ValueT, ToT>): IAsyncSeries<IndexT, ToT>;
+    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IAsyncSeries<IndexT, ToT>;
     
     /**
      * Skip a number of values in the series.
@@ -293,7 +293,7 @@ export class AsyncSeries<IndexT, ValueT> implements IAsyncSeries<IndexT, ValueT>
      * 
      * @returns Returns a new series that has been transformed by the selector function.
      */
-    select<ToT> (selector: SelectorFn<ValueT, ToT>): IAsyncSeries<IndexT, ToT> {
+    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IAsyncSeries<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.select' function to be a function.");
 
         return new AsyncSeries({

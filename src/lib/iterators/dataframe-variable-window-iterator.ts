@@ -4,14 +4,14 @@
 
 import { TakeIterable } from '../iterables/take-iterable';
 import { SkipIterable } from '../iterables/skip-iterable';
-import { Series, ISeries } from '../series';
+import { DataFrame, IDataFrame } from '../dataframe';
 
 /**
  * Compares to values and returns true if they are equivalent.
  */
 export type ComparerFn<ValueT> = (a: ValueT, b: ValueT) => boolean;
 
-export class VariableWindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, ValueT>> {
+export class DataFrameVariableWindowIterator<IndexT, ValueT> implements Iterator<IDataFrame<IndexT, ValueT>> {
 
     iterator: Iterator<[IndexT, ValueT]>;
     nextValue: IteratorResult<[IndexT, ValueT]>;
@@ -24,12 +24,12 @@ export class VariableWindowIterator<IndexT, ValueT> implements Iterator<ISeries<
         this.comparer = comparer;
     }
 
-    next(): IteratorResult<ISeries<IndexT, ValueT>> {
+    next(): IteratorResult<IDataFrame<IndexT, ValueT>> {
 
         if (this.nextValue.done) {
             // Nothing more to read.
             // https://github.com/Microsoft/TypeScript/issues/8938
-            return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>)  // <= explicit cast here!;
+            return ({ done: true } as IteratorResult<IDataFrame<IndexT, ValueT>>)  // <= explicit cast here!;
         }
 
         var pairs = [
@@ -52,7 +52,7 @@ export class VariableWindowIterator<IndexT, ValueT> implements Iterator<ISeries<
             pairs.push(this.nextValue.value);
         }
 
-        const window = new Series<IndexT, ValueT>({
+        const window = new DataFrame<IndexT, ValueT>({
             pairs: pairs,
         });
 

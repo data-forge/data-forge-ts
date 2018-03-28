@@ -3,24 +3,40 @@ import { EmptyIterable }  from './iterables/empty-iterable';
 import { CountIterable }  from './iterables/count-iterable';
 import { MultiIterable }  from './iterables/multi-iterable';
 import { SelectIterable }  from './iterables/select-iterable';
+import { SelectManyIterable }  from './iterables/select-many-iterable';
+import { TakeIterable }  from './iterables/take-iterable';
+import { TakeWhileIterable }  from './iterables/take-while-iterable';
+import { WhereIterable }  from './iterables/where-iterable';
+import { ConcatIterable }  from './iterables/concat-iterable';
+import { DataFrameWindowIterable }  from './iterables/dataframe-window-iterable';
+import { ReverseIterable }  from './iterables/reverse-iterable';
+import { ZipIterable }  from './iterables/zip-iterable';
 import { CsvRowsIterable }  from './iterables/csv-rows-iterable';
+import { DistinctIterable }  from './iterables/distinct-iterable';
+import { DataFrameRollingWindowIterable }  from './iterables/dataframe-rolling-window-iterable';
+import { DataFrameVariableWindowIterable }  from './iterables/dataframe-variable-window-iterable';
+import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
 import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
+import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
 import { assert } from 'chai';
-import { ISeries, Series, SelectorFn, toMap } from './series';
+import * as moment from 'moment';
+import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import * as BabyParse from 'babyparse';
+import { toMap, makeDistinct } from './utils';
 
 /**
  * DataFrame configuration.
  */
 export interface IDataFrameConfig<IndexT, ValueT> {
     values?: ValueT[] | Iterable<ValueT>,
+    rows?: any[][] | Iterable<any[]>,
     index?: IndexT[] | Iterable<IndexT>,
-    pairs?: Iterable<[IndexT, ValueT]>,
+    pairs?: [IndexT, ValueT][] | Iterable<[IndexT, ValueT]>,
     columnNames?: string[] | Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
@@ -38,23 +54,6 @@ export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame
  */
 export type DataFrameConfigFn<IndexT, ValueT> = () => IDataFrameConfig<IndexT, ValueT>;
 
-//
-// Helper function to only return distinct items.
-//
-function makeDistinct<ItemT, KeyT>(items: Iterable<ItemT>, selector?: (item: ItemT) => KeyT): ItemT[] {
-    let set: any = {};
-    let output: any[] = [];
-    for (const item of items) {
-        var key = selector && selector(item) || item;
-        if (!set[key]) {
-            // Haven't yet seen this key.
-            set[key] = true;
-            output.push(item);
-        }
-    }
-
-    return output;
-}
 
 /**
  * Interface that represents a dataframe containing a sequence of indexed rows of data.
@@ -79,9 +78,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     getIndex (): IIndex<IndexT>;
 
     /**
-     * Apply a new index to the DataFrame.
+     * Apply a new index to the dataframe.
      * 
-     * @param newIndex The new index to apply to the DataFrame.
+     * @param newIndex The new index to apply to the dataframe.
      * 
      * @returns Returns a new dataframe with the specified index attached.
      */
@@ -154,11 +153,37 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     toPairs (): ([IndexT, ValueT])[];
 
     /**
+     * Convert the dataframe to a JavaScript object.
+     *
+     * @param {function} keySelector - Function that selects keys for the resulting object.
+     * @param {valueSelector} keySelector - Function that selects values for the resulting object.
+     * 
+     * @returns {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     */
+    toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
+
+    /**
      * Bake the data frame to an array of rows.
      * 
      *  @returns Returns an array of rows. Each row is an array of values in column order.   
      */
     toRows (): any[][];
+
+    /** 
+     * Convert a dataframe to a DataFrame of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     * THIS FUNCTION IS DEPRECATED.
+     * 
+     * @returns {Pairs} Returns a dataframe of pairs for each index and value pair in the input sequence.
+     */
+    asPairs (): IDataFrame<number, [IndexT, ValueT]>;
+
+    /** 
+     * Convert a dataframe of pairs to back to a regular dataframe.
+     * THIS FUNCTION IS DEPRECATED.
+     * 
+     * @returns Returns a dataframe of values where each pair has been extracted from the value of the input dataframe.
+     */
+    asValues<NewIndexT = any, NewValueT = any> (): IDataFrame<NewIndexT, NewValueT>;
     
     /**
      * Generate a new dataframe based by calling the selector function on each value.
@@ -167,7 +192,63 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @returns Returns a new dataframe that has been transformed by the selector function.
      */
-    select<ToT> (selector: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
+    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
+
+    /**
+     * Generate a new dataframe based on the results of the selector function.
+     *
+     * @param selector Selector function that transforms each value into a list of values.
+     * 
+     * @returns  Returns a new dataframe with values that have been produced by the selector function. 
+     */
+    selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT>;
+
+    /**
+     * Segment a dataframe into 'windows'. Returns a new series. Each value in the new dataframe contains a 'window' (or segment) of the original dataframe.
+     * Use select or selectPairs to aggregate.
+     *
+     * @param period - The number of values in the window.
+     * 
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     */
+    window (period: number): ISeries<number, IDataFrame<IndexT, ValueT>>;
+
+    /** 
+     * Segment a dataframe into 'rolling windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original dataframe.
+    *
+     * @param period - The number of values in the window.
+     * 
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     */
+    rollingWindow (period: number): ISeries<number, IDataFrame<IndexT, ValueT>>;
+
+    /**
+     * Groups sequential values into variable length 'windows'.
+     *
+     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * 
+     * @returns Returns a series of groups. Each group is itself a dataframe that contains the values in the 'window'. 
+     */
+    variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
+
+    /**
+     * Collapase distinct values that happen to be sequential.
+     *
+     * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
+     * 
+     * @returns Returns a new dataframe with duplicate values that are sequential removed.
+     */
+    sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Aggregate the values in the dataframe.
+     *
+     * @param [seed] - Optional seed value for producing the aggregation.
+     * @param selector - Function that takes the seed and then each value in the dataframe and produces the aggregate value.
+     * 
+     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
+     */
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
     
     /**
      * Skip a number of values in the dataframe.
@@ -176,6 +257,208 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns a new dataframe or dataframe with the specified number of values skipped. 
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Skips values in the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     */
+    skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Skips values in the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     */
+    skipUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     * 
+     * @returns Returns a new series with up to the specified number of values included.
+     */
+    take (numRows: number): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Take values from the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     */
+    takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Take values from the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     */
+    takeUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Count the number of values in the series.
+     *
+     * @returns Returns the count of all values in the series.
+     */
+    count (): number;
+
+    /**
+     * Get the first value of the series.
+     *
+     * @returns Returns the first value of the series.
+     */
+    first (): ValueT;
+
+    /**
+     * Get the last value of the series.
+     *
+     * @returns Returns the last value of the series.
+     */
+    last (): ValueT;
+    
+    /**
+     * Get the value at a specified index.
+     *
+     * @param index - Index to for which to retreive the value.
+     *
+     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     */
+    at (index: IndexT): ValueT | undefined;
+    
+    /** 
+     * Get X values from the start of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     */
+    head (numValues: number): IDataFrame<IndexT, ValueT>;
+
+    /** 
+     * Get X values from the end of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     */
+    tail (numValues: number): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     * 
+     * @returns Returns a new series containing only the values that match the predicate. 
+     */
+    where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Invoke a callback function for each value in the series.
+     *
+     * @param callback - The calback to invoke for each value.
+     * 
+     * @returns Returns the input series with no modifications.
+     */
+    forEach (callback: CallbackFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Determine if the predicate returns truthy for all values in the series.
+     * Returns false as soon as the predicate evaluates to falsy.
+     * Returns true if the predicate returns truthy for all values in the series.
+     * Returns false if the series is empty.
+     *
+     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     */
+    all (predicate: PredicateFn<ValueT>): boolean;
+
+    /**
+     * Determine if the predicate returns truthy for any of the values in the series.
+     * Returns true as soon as the predicate returns truthy.
+     * Returns false if the predicate never returns truthy.
+     * If no predicate is specified the value itself is checked. 
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     */
+    any (predicate?: PredicateFn<ValueT>): boolean;
+
+    /**
+     * Determine if the predicate returns truthy for none of the values in the series.
+     * Returns true for an empty series.
+     * Returns true if the predicate always returns falsy.
+     * Otherwise returns false.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * 
+     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     */
+    none (predicate?: PredicateFn<ValueT>): boolean;
+
+    /**
+     * Get a new series containing all values starting at and after the specified index value.
+     * 
+     * @param indexValue - The index value to search for before starting the new series.
+     * 
+     * @returns Returns a new series containing all values starting at and after the specified index value. 
+     */
+    startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Get a new series containing all values up until and including the specified index value (inclusive).
+     * 
+     * @param indexValue - The index value to search for before ending the new series.
+     * 
+     * @returns Returns a new series containing all values up until and including the specified index value. 
+     */
+    endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Get a new series containing all values up to the specified index value (exclusive).
+     * 
+     * @param indexValue - The index value to search for before ending the new series.
+     * 
+     * @returns Returns a new series containing all values up to the specified inde value. 
+     */
+    before (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Get a new series containing all values after the specified index value (exclusive).
+     * 
+     * @param indexValue - The index value to search for.
+     * 
+     * @returns Returns a new series containing all values after the specified index value.
+     */
+    after (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Get a new dataframe containing all values between the specified index values (inclusive).
+     * 
+     * @param startIndexValue - The index where the new sequence starts. 
+     * @param endIndexValue - The index where the new sequence ends.
+     * 
+     * @returns Returns a new dataframe containing all values between the specified index values (inclusive).
+     */
+    between (startIndexValue: IndexT, endIndexValue: IndexT): IDataFrame<IndexT, ValueT>;
+
+    /** 
+     * Format the dataframe for display as a string.
+     * This forces lazy evaluation to complete.
+     * 
+     * @returns Generates and returns a string representation of the dataframe or dataframe.
+     */
+    toString (): string;
 
     /** 
      * Format the dataframe for display as a string.
@@ -192,6 +475,250 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      */
     bake (): IDataFrame<IndexT, ValueT>;
 
+    /** 
+     * Reverse the dataframe.
+     * 
+     * @returns Returns a new dataframe that is the reverse of the input.
+     */
+    reverse (): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Returns only values in the dataframe that have distinct values.
+     *
+     * @param selector - Selects the value used to compare for duplicates.
+     * 
+     * @returns Returns a dataframe containing only unique values as determined by the 'selector' function. 
+     */
+    distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Group the dataframe according to the selector.
+     *
+     * @param selector - Selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     */
+    groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
+    
+    /**
+     * Group sequential values into a series of windows.
+     *
+     * @param selector - Optional selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     */
+    groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
+    
+    /**
+     * Concatenate multiple other dataframes onto this dataframe.
+     * 
+     * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
+     * 
+     * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+     */    
+    concat (...dataframes: (IDataFrame<IndexT, ValueT>[] | IDataFrame<IndexT, ValueT>)[]): IDataFrame<IndexT, ValueT>;
+    
+    /**
+    * Zip together multiple dataframes to create a new dataframe.
+    * Preserves the index of the first dataframe.
+    * 
+    * @param s2, s3, s4, s4 - Multiple dataframes to zip.
+    * @param zipper - Zipper function that produces a new dataframe based on the input dataframes.
+    * 
+    * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+    */    
+    zip<Index2T, Value2T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): IDataFrame<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, s4: IDataFrame<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
+    zip<ResultT>  (...args: any[]): IDataFrame<IndexT, ResultT>;
+
+    /**
+     * Sorts the dataframe by a value defined by the selector (ascending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     */
+    orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
+
+    /**
+     * Sorts the dataframe by a value defined by the selector (descending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     */
+    orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
+        
+    /**
+     * Returns the unique union of values between two dataframes.
+     *
+     * @param other - The other dataframe to combine.
+     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * 
+     * @returns Returns the union of two dataframes.
+     */
+    union<KeyT = ValueT> (
+        other: IDataFrame<IndexT, ValueT>, 
+        selector?: SelectorFn<ValueT, KeyT>): 
+            IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Returns the intersection of values between two dataframes.
+     *
+     * @param inner - The other dataframes to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * 
+     * @returns Returns the intersection of two dataframes.
+     */
+    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerSelector?: SelectorFn<ValueT, KeyT>,
+        innerSelector?: SelectorFn<InnerValueT, KeyT>): 
+            IDataFrame<IndexT, ValueT>;
+    
+
+    /**
+     * Returns the exception of values between two dataframes.
+     *
+     * @param inner - The other dataframe to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * 
+     * @returns Returns the difference between the two dataframes.
+     */
+    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerSelector?: SelectorFn<ValueT, KeyT>,
+        innerSelector?: SelectorFn<InnerValueT, KeyT>): 
+            IDataFrame<IndexT, ValueT>;
+
+   /**
+     * Correlates the elements of two dataframes on matching keys.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * @returns Returns the joined dataframe. 
+     */
+    join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT, InnerValueT, ResultValueT>):
+            IDataFrame<number, ResultValueT>;
+
+    /**
+     * Performs an outer join on two dataframes. Correlates the elements based on matching keys.
+     * Includes elements from both dataframes that have no correlation in the other dataframe.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined dataframe. 
+     */
+    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            IDataFrame<number, ResultValueT>;
+    
+
+    /**
+     * Performs a left outer join on two dataframe. Correlates the elements based on matching keys.
+     * Includes left elements that have no correlation.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined dataframe. 
+     */
+    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            IDataFrame<number, ResultValueT>;
+
+    /**
+     * Performs a right outer join on two dataframes. Correlates the elements based on matching keys.
+     * Includes right elements that have no correlation.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined dataframe. 
+     */
+    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            IDataFrame<number, ResultValueT>;
+
+    /**
+     * Insert a pair at the start of the dataframe.
+     *
+     * @param pair - The pair to insert.
+     * 
+     * @returns Returns a new dataframe with the specified pair inserted.
+     */
+    insertPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Append a pair to the end of a dataframe.
+     *
+     * @param pair - The pair to append.
+     *  
+     * @returns Returns a new dataframe with the specified pair appended.
+     */
+    appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Fill gaps in a dataframe.
+     *
+     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
+     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     *
+     * @returns Returns a new dataframe with gaps filled in.
+     */
+    fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Returns the specified default sequence if the dataframe is empty. 
+     *
+     * @param defaultSequence - Default sequence to return if the dataframe is empty.
+     * 
+     * @returns Returns 'defaultSequence' if the dataframe is empty. 
+     */
+    defaultIfEmpty (defaultSequence: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT>;
+    
     /**
      * Serialize the dataframe to JSON.
      * 
@@ -207,6 +734,29 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     toCSV (): string;
 }
 
+/**
+ * Interface to a dataframe that has been ordered.
+ */
+export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> extends IDataFrame<IndexT, ValueT> {
+
+    /** 
+     * Performs additional sorting (ascending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     */
+    thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
+
+    /** 
+     * Performs additional sorting (descending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     */
+    thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
+}
 //
 // Represents the contents of a dataframe.
 //
@@ -269,12 +819,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     // Initialise dataframe column names.
     //
     private static initColumnNames(inputColumnNames: Iterable<string>): Iterable<string> {
-        var outputColumnNames: string[] = [];
-        var columnNamesMap: any = {};
+        const outputColumnNames: string[] = [];
+        const columnNamesMap: any = {};
     
         // Search for duplicate column names.
-        for (let columnName of inputColumnNames) {
-            var columnNameLwr = columnName.toLowerCase();
+        for (const columnName of inputColumnNames) {
+            const columnNameLwr = columnName.toLowerCase();
             if (columnNamesMap[columnNameLwr] === undefined) {
                 columnNamesMap[columnNameLwr] = 1;
             }
@@ -283,12 +833,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }
         }
 
-        var columnNoMap: any = {};
+        const columnNoMap: any = {};
 
-        for (let columnName of inputColumnNames) {
-            var columnNameLwr = columnName.toLowerCase();
+        for (const columnName of inputColumnNames) {
+            const columnNameLwr = columnName.toLowerCase();
             if (columnNamesMap[columnNameLwr] > 1) {
-                var curColumnNo = 1;
+                let curColumnNo = 1;
 
                 // There are duplicates of this column.
                 if (columnNoMap[columnNameLwr] !== undefined) {
@@ -308,18 +858,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     //
-    // Initialise an interable.
-    // TODO: This actually does nothing except error checking.
+    // Check that a value is an interable.
     //
-    private static initIterable<T>(input: T[] | Iterable<T>, fieldName: string): Iterable<T> {
+    private static checkIterable<T>(input: T[] | Iterable<T>, fieldName: string): void {
         if (Sugar.Object.isArray(input)) {
-            return input;
+            // Ok
         }
         else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
-            return input;
+            // Ok
         }
         else {
+            // Not ok
             throw new Error("Expected '" + fieldName + "' field of DataFrame config object to be an array of values or an iterable of values.");
         }
     };
@@ -331,18 +881,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         let index: Iterable<IndexT>;
         let values: Iterable<ValueT>;
-        let pairs: Iterable<[IndexT, ValueT]>;
+        let pairs: Iterable<[IndexT, ValueT]> | undefined;
         let isBaked = false;
         let columnNames: Iterable<string>;
 
+        if (config.pairs) {
+            DataFrame.checkIterable<[IndexT, ValueT]>(config.pairs, "pairs");
+            pairs = config.pairs;
+        }
+        
         if (config.columns) {
             assert.isObject(config.columns, "Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
 
             columnNames = Object.keys(config.columns);
             let columnIterables: any[] = [];
             for (let columnName of columnNames) {
-                const columnIterable = this.initIterable(config.columns[columnName], columnName);
-                columnIterables.push(columnIterable);
+                DataFrame.checkIterable(config.columns[columnName], columnName);
+                columnIterables.push(config.columns[columnName]);
             }
 
             values = new CsvRowsIterable(columnNames, new MultiIterable(columnIterables));
@@ -352,18 +907,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 columnNames = this.initColumnNames(config.columnNames);
             }
 
-            if (config.values) {
-                values = this.initIterable<ValueT>(config.values, 'values');
-                if (config.columnNames) {
-                    // Convert data from rows to columns.
-                    values = new CsvRowsIterable(columnNames!, values);
+            if (config.rows) {
+                if (!config.columnNames) {
+                    columnNames = new SelectIterable(new CountIterable(), c => "Column." + c.toString());
                 }
-                else {
+
+                DataFrame.checkIterable<any[][]>(config.rows, 'rows')
+                values = new CsvRowsIterable(columnNames!, config.rows); // Convert data from rows to columns.
+            }
+            else if (config.values) {
+                DataFrame.checkIterable<ValueT>(config.values, 'values')
+                values = config.values;
+                if (!config.columnNames) {
                     columnNames = new ColumnNamesIterable(values, config.considerAllRows || false);
                 }
             }
-            else if (config.pairs) {
-                values = new ExtractElementIterable(config.pairs, 1);
+            else if (pairs) {
+                values = new ExtractElementIterable(pairs, 1);
                 if (!config.columnNames) {
                     columnNames = new ColumnNamesIterable(values, config.considerAllRows || false);
                 }
@@ -377,19 +937,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         if (config.index) {
-            index = this.initIterable<IndexT>(config.index, 'index');
+            DataFrame.checkIterable<IndexT>(config.index, 'index');
+            index = config.index;
         }
-        else if (config.pairs) {
-            index = new ExtractElementIterable(config.pairs, 0);
+        else if (pairs) {
+            index = new ExtractElementIterable(pairs, 0);
         }
         else {
             index = DataFrame.defaultCountIterable;
         }
 
-        if (config.pairs) {
-            pairs = config.pairs;
-        }
-        else {
+        if (!pairs) {
             pairs = new MultiIterable([index, values]);
         }
 
@@ -475,16 +1033,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Apply a new index to the DataFrame.
+     * Apply a new index to the dataframe.
      * 
-     * @param newIndex The new index to apply to the DataFrame.
+     * @param newIndex The new index to apply to the dataframe.
      * 
      * @returns Returns a new dataframe or dataframe with the specified index attached.
      */
     withIndex<NewIndexT> (newIndex: NewIndexT[] | Iterable<NewIndexT>): IDataFrame<NewIndexT, ValueT> {
 
         if (!Sugar.Object.isArray(newIndex)) {
-            assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'DataFrame.withIndex' to be an array, DataFrame or Index.");
+            assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'DataFrame.withIndex' to be an array, Series or Index.");
         }
 
         return new DataFrame<NewIndexT, ValueT>(() => ({
@@ -528,7 +1086,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param columnName - Name of the column to check.
      */
     hasSeries (columnName: string): boolean {
-        var columnNameLwr = columnName.toLowerCase();
+        const columnNameLwr = columnName.toLowerCase();
         for (let existingColumnName of this.getColumnNames()) {
             if (existingColumnName.toLowerCase() === columnNameLwr) {
                 return true;
@@ -573,7 +1131,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
-        var importSeries: ISeries<IndexT, SeriesValueT>;
+        let importSeries: ISeries<IndexT, SeriesValueT>;
     
         if (Sugar.Object.isFunction(series as Object)) {
             importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
@@ -593,16 +1151,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         return new DataFrame<IndexT, ValueT>(() => {    
-            var seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
-            var newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec]));
+            const seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
+            const newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec]));
     
             return {
                 columnNames: newColumnNames,
                 index: this.getContent().index,
                 pairs: new SelectIterable<[IndexT, ValueT], [IndexT, ValueT]>(this.getContent().pairs, pair => {
-                    var index = pair[0];
-                    var value = pair[1];
-                    var modified: any = Object.assign({}, value);
+                    const index = pair[0];
+                    const value = pair[1];
+                    const modified: any = Object.assign({}, value);
                     modified[columnNameOrSpec] = seriesValueMap[index];
                     return [
                         index,
@@ -660,7 +1218,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     toArray (): any[] {
         const values = [];
         for (const value of this.getContent().values) {
-            values.push(value);
+            if (value !== undefined) {
+                values.push(value);
+            }
         }
         return values;
     }
@@ -675,11 +1235,29 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     toPairs (): ([IndexT, ValueT])[] {
         const pairs = [];
         for (const pair of this.getContent().pairs) {
-            pairs.push(pair);
+            if (pair[1] != undefined) {
+                pairs.push(pair);
+            }
         }
         return pairs;
     }
 
+    /**
+     * Convert the dataframe to a JavaScript object.
+     *
+     * @param keySelector - Function that selects keys for the resulting object.
+     * @param valueSelector - Function that selects values for the resulting object.
+     * 
+     * @returns Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     */
+    toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
+
+        assert.isFunction(keySelector, "Expected 'keySelector' parameter to DataFrame.toObject to be a function.");
+        assert.isFunction(valueSelector, "Expected 'valueSelector' parameter to DataFrame.toObject to be a function.");
+
+        return toMap(this, keySelector, valueSelector);
+    }
+    
     /**
      * Bake the data frame to an array of rows.
      * 
@@ -700,6 +1278,33 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return rows;
     }
 
+    /** 
+     * Convert a dataframe to a DataFrame of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
+     * THIS FUNCTION IS DEPRECATED.
+     * 
+     * @returns {Pairs} Returns a dataframe of pairs for each index and value pair in the input sequence.
+     */
+    asPairs (): IDataFrame<number, [IndexT, ValueT]> {
+        return new DataFrame<number, [IndexT, ValueT]>(() => ({ values: this.getContent().pairs }));
+    }
+
+    /** 
+     * Convert a dataframe of pairs to back to a regular dataframe.
+     * THIS FUNCTION IS DEPRECATED.
+     * 
+     * @returns Returns a dataframe of values where each pair has been extracted from the value of the input dataframe.
+     */
+    asValues<NewIndexT = any, NewValueT = any> (): IDataFrame<NewIndexT, NewValueT> {
+
+        //TODO: This function didn't port well to TypeScript. It's deprecated though.
+        
+        return new DataFrame<NewIndexT, NewValueT>(() => ({
+            index: new SelectIterable<any, NewIndexT>(this.getContent().values, (pair: [any, any], index: number) => <NewIndexT> pair[0]),
+            values: new SelectIterable<any, NewValueT>(this.getContent().values, (pair: [any, any], index: number) => <NewValueT> pair[1]),
+            pairs: <Iterable<[NewIndexT, NewValueT]>> <any> this.getContent().values,
+        }));
+    }    
+
     /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
@@ -707,7 +1312,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @returns Returns a new dataframe that has been transformed by the selector function.
      */
-    select<ToT> (selector: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
+    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
 
         return new DataFrame(() => ({
@@ -717,9 +1322,137 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
+     * Generate a new dataframe based on the results of the selector function.
+     *
+     * @param selector Selector function that transforms each value into a list of values.
+     * 
+     * @returns  Returns a new dataframe with values that have been produced by the selector function. 
+     */
+    selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT> {
+        assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.selectMany' to be a function.");
+
+        return new DataFrame(() => ({
+            pairs: new SelectManyIterable(
+                this.getContent().pairs, 
+                (pair: [IndexT, ValueT], index: number): Iterable<[IndexT, ToT]> => {
+                    const outputPairs: [IndexT, ToT][] = [];
+                    for (const transformed of selector(pair[1], index)) {
+                        outputPairs.push([
+                            pair[0],
+                            transformed
+                        ]);
+                    }
+                    return outputPairs;
+                }
+            )
+        }));
+    }
+
+    /**
+     * Segment a dataframe into 'windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original dataframe.
+     * Use select or selectPairs to aggregate.
+     *
+     * @param period - The number of values in the window.
+     * 
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     */
+    window (period: number): ISeries<number, IDataFrame<IndexT, ValueT>> {
+
+        assert.isNumber(period, "Expected 'period' parameter to 'DataFrame.window' to be a number.");
+
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => ({
+            values: new DataFrameWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
+        }));
+    }
+
+    /** 
+     * Segment a dataframe into 'rolling windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original series.
+    *
+     * @param period - The number of values in the window.
+     * 
+     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     */
+    rollingWindow (period: number): ISeries<number, IDataFrame<IndexT, ValueT>> {
+
+        assert.isNumber(period, "Expected 'period' parameter to 'DataFrame.rollingWindow' to be a number.");
+
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => ({
+            values: new DataFrameRollingWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
+        }));
+    }
+
+    /**
+     * Groups sequential values into variable length 'windows'.
+     *
+     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * 
+     * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
+     */
+    variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
+        
+        assert.isFunction(comparer, "Expected 'comparer' parameter to 'DataFrame.variableWindow' to be a function.")
+
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => ({
+            values: new DataFrameVariableWindowIterable<IndexT, ValueT>(this.getContent().pairs, comparer)
+        }));
+    };    
+
+    /**
+     * Group sequential duplicate values into a series of windows.
+     *
+     * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
+     * 
+     * @returns Returns a series of groups. Each group is itself a series. 
+     */
+    sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT> {
+        
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
+        }
+        else {
+            selector = (value: ValueT): ToT => <ToT> <any> value;
+        }
+
+        return this.variableWindow((a: ValueT, b: ValueT): boolean => selector!(a) === selector!(b))
+            .asPairs()
+            .select((pair: [number, IDataFrame<IndexT, ValueT>], index: number): [IndexT, ValueT] => {
+                const window = pair[1];
+                return [window.getIndex().first(), window.first()];
+            })
+            .asValues<IndexT, ValueT>() 
+            .inflate();
+    }
+
+    /**
+     * Aggregate the values in the dataframe.
+     *
+     * @param [seed] - Optional seed value for producing the aggregation.
+     * @param selector - Function that takes the seed and then each value in the dataframe and produces the aggregate value.
+     * 
+     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
+     */
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
+
+        if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
+            return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
+        }
+        else {
+            assert.isFunction(selector, "Expected 'selector' parameter to aggregate to be a function.");
+
+            let accum = <ToT> seedOrSelector;
+
+            for (const value of this) {
+                accum = selector!(accum, value);                
+            }
+
+            return accum;
+        }
+    };
+    
+    /**
      * Skip a number of values in the dataframe.
      *
-     * @param numValues - Number of values to skip.     * 
+     * @param numValues - Number of values to skip.
      * @returns Returns a new dataframe or dataframe with the specified number of values skipped. 
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT> {
@@ -728,6 +1461,397 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             index: new SkipIterable(this.getContent().index, numValues),
             pairs: new SkipIterable(this.getContent().pairs, numValues),
         }));
+    }
+
+    /**
+     * Skips values in the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     */
+    skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipWhile' function to be a predicate function that returns true/false.");
+
+        return new DataFrame<IndexT, ValueT>(() => ({
+            values: new SkipWhileIterable(this.getContent().values, predicate),
+            pairs: new SkipWhileIterable(this.getContent().pairs, pair => predicate(pair[1])),
+        }));
+    }
+
+    /**
+     * Skips values in the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     */
+    skipUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipUntil' function to be a predicate function that returns true/false.");
+
+        return this.skipWhile(value => !predicate(value)); 
+    }
+
+    /**
+     * Take a number of rows in the series.
+     *
+     * @param numRows - Number of rows to take.
+     * 
+     * @returns Returns a new series with up to the specified number of values included.
+     */
+    take (numRows: number): IDataFrame<IndexT, ValueT> {
+        assert.isNumber(numRows, "Expected 'numRows' parameter to 'DataFrame.take' function to be a number.");
+
+        return new DataFrame(() => ({
+            index: new TakeIterable(this.getContent().index, numRows),
+            values: new TakeIterable(this.getContent().values, numRows),
+            pairs: new TakeIterable(this.getContent().pairs, numRows)
+        }));
+    };
+
+    /**
+     * Take values from the series while a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     */
+    takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeWhile' function to be a predicate function that returns true/false.");
+
+        return new DataFrame(() => ({
+            values: new TakeWhileIterable(this.getContent().values, predicate),
+            pairs: new TakeWhileIterable(this.getContent().pairs, pair => predicate(pair[1]))
+        }));
+    }
+
+    /**
+     * Take values from the series until a condition is met.
+     *
+     * @param predicate - Return true to indicate the condition met.
+     * 
+     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     */
+    takeUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeUntil' function to be a predicate function that returns true/false.");
+
+        return this.takeWhile(value => !predicate(value));
+    }
+
+    /**
+     * Count the number of values in the series.
+     *
+     * @returns Returns the count of all values in the series.
+     */
+    count (): number {
+
+        let total = 0;
+        for (const value of this.getContent().values) {
+            ++total;
+        }
+        return total;
+    }
+
+    /**
+     * Get the first value of the series.
+     *
+     * @returns Returns the first value of the series.
+     */
+    first (): ValueT {
+
+        for (const value of this) {
+            return value; // Only need the first value.
+        }
+
+        throw new Error("No values in Series.");
+    }
+
+    /**
+     * Get the last value of the series.
+     *
+     * @returns Returns the last value of the series.
+     */
+    last (): ValueT {
+
+        let lastValue = null;
+
+        for (const value of this) {
+            lastValue = value; // Throw away all values until we get to the last one.
+        }
+
+        if (lastValue === null) {
+            throw new Error("No values in Series.");
+        }
+
+        return lastValue;
+    }    
+    
+    /**
+     * Get the value at a specified index.
+     *
+     * @param index - Index to for which to retreive the value.
+     *
+     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     */
+    at (index: IndexT): ValueT | undefined {
+
+        if (this.none()) {
+            return undefined;
+        }
+
+        //
+        // This is pretty expensive.
+        // A specialised index could improve this.
+        //
+
+        for (const pair of this.getContent().pairs) {
+            if (pair[0] === index) {
+                return pair[1];
+            }
+        }
+
+        return undefined;
+    }
+    
+    /** 
+     * Get X values from the start of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     */
+    head (numValues: number): IDataFrame<IndexT, ValueT> {
+
+        assert.isNumber(numValues, "Expected 'values' parameter to 'DataFrame.head' function to be a number.");
+
+        return this.take(numValues);
+    }
+
+    /** 
+     * Get X values from the end of the series.
+     *
+     * @param numValues - Number of values to take.
+     * 
+     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     */
+    tail (numValues: number): IDataFrame<IndexT, ValueT> {
+
+        assert.isNumber(numValues, "Expected 'values' parameter to 'DataFrame.tail' function to be a number.");
+
+        return this.skip(this.count() - numValues);
+    }
+
+    /**
+     * Filter a series by a predicate selector.
+     *
+     * @param predicate - Predicte function to filter rows of the series.
+     * 
+     * @returns Returns a new series containing only the values that match the predicate. 
+     */
+    where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.where' function to be a function.");
+
+        return new DataFrame(() => ({
+            values: new WhereIterable(this.getContent().values, predicate),
+            pairs: new WhereIterable(this.getContent().pairs, pair => predicate(pair[1]))
+        }));
+    }
+
+    /**
+     * Invoke a callback function for each value in the series.
+     *
+     * @param callback - The calback to invoke for each value.
+     * 
+     * @returns Returns the input series with no modifications.
+     */
+    forEach (callback: CallbackFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        assert.isFunction(callback, "Expected 'callback' parameter to 'DataFrame.forEach' to be a function.");
+
+        let index = 0;
+        for (const value of this) {
+            callback(value, index++);
+        }
+
+        return this;
+    }
+
+    /**
+     * Determine if the predicate returns truthy for all values in the series.
+     * Returns false as soon as the predicate evaluates to falsy.
+     * Returns true if the predicate returns truthy for all values in the series.
+     * Returns false if the series is empty.
+     *
+     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     */
+    all (predicate: PredicateFn<ValueT>): boolean {
+        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.all' to be a function.")
+
+        let count = 0;
+
+        for (const value of this) {
+            if (!predicate(value)) {
+                return false;
+            }
+
+            ++count;
+        }
+
+        return count > 0;
+    }
+
+    /**
+     * Determine if the predicate returns truthy for any of the values in the series.
+     * Returns true as soon as the predicate returns truthy.
+     * Returns false if the predicate never returns truthy.
+     * If no predicate is specified the value itself is checked. 
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     */
+    any (predicate?: PredicateFn<ValueT>): boolean {
+        if (predicate) {
+            assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.any' to be a function.")
+        }
+
+        if (predicate) {
+            // Use the predicate to check each value.
+            for (const value of this) {
+                if (predicate(value)) {
+                    return true;
+                }
+            }
+        }
+        else {
+            // Check each value directly.
+            for (const value of this) {
+                if (value) {
+                    return true;
+                }
+            }
+        }
+
+        return false; // Nothing passed.
+    }
+
+    /**
+     * Determine if the predicate returns truthy for none of the values in the series.
+     * Returns true for an empty series.
+     * Returns true if the predicate always returns falsy.
+     * Otherwise returns false.
+     * If no predicate is specified the value itself is checked.
+     *
+     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * 
+     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     */
+    none (predicate?: PredicateFn<ValueT>): boolean {
+
+        if (predicate) {
+            assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.none' to be a function.")
+        }
+
+        if (predicate) {
+            // Use the predicate to check each value.
+            for (const value of this) {
+                if (predicate(value)) {
+                    return false;
+                }
+            }
+        }
+        else {
+            // Check each value directly.
+            for (const value of this) {
+                if (value) {
+                    return false;
+                }
+            }
+        }
+
+        return true; // Nothing failed the predicate.
+    }
+
+    /**
+     * Get a new series containing all values starting at and after the specified index value.
+     * 
+     * @param indexValue - The index value to search for before starting the new series.
+     * 
+     * @returns Returns a new series containing all values starting at and after the specified index value. 
+     */
+    startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+        return new DataFrame<IndexT, ValueT>(() => {
+            const lessThan = this.getIndex().getLessThan();
+            return {                
+                index: new SkipWhileIterable(this.getContent().index, index => lessThan(index, indexValue)),
+                pairs: new SkipWhileIterable(this.getContent().pairs, pair => lessThan(pair[0], indexValue)),
+            }
+        });
+    }
+
+    /**
+     * Get a new series containing all values up until and including the specified index value (inclusive).
+     * 
+     * @param indexValue - The index value to search for before ending the new series.
+     * 
+     * @returns Returns a new series containing all values up until and including the specified index value. 
+     */
+    endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+        return new DataFrame<IndexT, ValueT>(() => {
+            const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
+            return {
+                index: new TakeWhileIterable(this.getContent().index, index => lessThanOrEqualTo(index, indexValue)),
+                pairs: new TakeWhileIterable(this.getContent().pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+            };
+        });
+    }
+
+    /**
+     * Get a new series containing all values up to the specified index value (exclusive).
+     * 
+     * @param indexValue - The index value to search for before ending the new series.
+     * 
+     * @returns Returns a new series containing all values up to the specified inde value. 
+     */
+    before (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+        return new DataFrame<IndexT, ValueT>(() => {
+            const lessThan = this.getIndex().getLessThan();
+            return {
+                index: new TakeWhileIterable(this.getContent().index, index => lessThan(index, indexValue)),
+                pairs: new TakeWhileIterable(this.getContent().pairs, pair => lessThan(pair[0], indexValue)),
+            };
+        });
+    }
+
+    /**
+     * Get a new series containing all values after the specified index value (exclusive).
+     * 
+     * @param indexValue - The index value to search for.
+     * 
+     * @returns Returns a new series containing all values after the specified index value.
+     */
+    after (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+        return new DataFrame<IndexT, ValueT>(() => {
+            const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
+            return {
+                index: new SkipWhileIterable(this.getContent().index, index => lessThanOrEqualTo(index, indexValue)),
+                pairs: new SkipWhileIterable(this.getContent().pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+            };
+        });
+    }
+
+    /**
+     * Get a new dataframe containing all values between the specified index values (inclusive).
+     * 
+     * @param startIndexValue - The index where the new sequence starts. 
+     * @param endIndexValue - The index where the new sequence ends.
+     * 
+     * @returns Returns a new dataframe containing all values between the specified index values (inclusive).
+     */
+    between (startIndexValue: IndexT, endIndexValue: IndexT): IDataFrame<IndexT, ValueT> {
+        return this.startAt(startIndexValue).endAt(endIndexValue); 
     }
 
     /** 
@@ -774,6 +1898,585 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         });
     }
 
+    /** 
+     * Reverse the dataframe.
+     * 
+     * @returns Returns a new dataframe that is the reverse of the input.
+     */
+    reverse (): IDataFrame<IndexT, ValueT> {
+
+        return new DataFrame<IndexT, ValueT>(() => ({
+            values: new ReverseIterable(this.getContent().values),
+            index: new ReverseIterable(this.getContent().index),
+            pairs: new ReverseIterable(this.getContent().pairs)
+        }));
+    }
+
+    /**
+     * Returns only values in the dataframe that are distinct.
+     *
+     * @param selector - Selects the value used to compare for duplicates.
+     * 
+     * @returns Returns a dataframe containing only unique values as determined by the 'selector' function. 
+     */
+    distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT> {
+
+        return new DataFrame<IndexT, ValueT>(() => ({
+            values: new DistinctIterable<ValueT, ToT>(this.getContent().values, selector),
+            pairs: new DistinctIterable<[IndexT, ValueT],ToT>(this.getContent().pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
+        }));
+    }
+
+    /**
+     * Groups the dataframe according to the selector.
+     *
+     * @param selector - Selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     */
+    groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
+
+        assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.groupBy' to be a selector function that determines the value to group the series by.");
+
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
+            const groups: any[] = []; // Each group, in order of discovery.
+            const groupMap: any = {}; // Group map, records groups by key.
+            
+            let valueIndex = 0;
+    
+            for (const pair of this.getContent().pairs) {
+                const groupKey = selector(pair[1], valueIndex);
+                ++valueIndex;
+                const existingGroup = groupMap[groupKey];
+                if (existingGroup) {
+                    existingGroup.push(pair);
+                }
+                else {
+                    const newGroup: any[] = [];
+                    newGroup.push(pair);
+                    groups.push(newGroup);
+                    groupMap[groupKey] = newGroup;
+                }
+            }
+
+            return {
+                values: groups.map(group => new DataFrame<IndexT, ValueT>({ pairs: group }))
+            };            
+        });
+    }
+    
+    /**
+     * Group sequential values into a series of windows.
+     *
+     * @param selector - Optional selector that defines the value to group by.
+     *
+     * @returns Returns a series of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     */
+    groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
+
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.groupSequentialBy' to be a selector function that determines the value to group the series by.")
+        }
+        else {
+            selector = value => <GroupT> <any> value;
+        }
+        
+        return this.variableWindow((a: ValueT, b: ValueT): boolean => selector!(a) === selector!(b));
+    }
+
+    /**
+     * Concatenate multiple dataframes into a single dataframe.
+     *
+     * @param dataframes - Array of dataframes to concatenate.
+     * 
+     * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+     */
+    static concat<IndexT = any, ValueT = any> (dataframes: IDataFrame<IndexT, ValueT>[]): IDataFrame<IndexT, ValueT > {
+        assert.isArray(dataframes, "Expected 'dataframes' parameter to 'DataFrame.concat' to be an array of dataframes.");
+
+        return new DataFrame(() => {
+            const upcast = <DataFrame<IndexT, ValueT>[]> dataframes; // Upcast so that we can access private index, values and pairs.
+            const contents = upcast.map(dataframe => dataframe.getContent());
+
+            const columnNames: string[] = [];
+            for (const content of contents) {
+                for (const columnName of content.columnNames) {
+                    columnNames.push(columnName);
+                }
+            }
+
+            console.log(columnNames); //fio:
+
+            return {
+                columnNames: columnNames,
+                values: new ConcatIterable(contents.map(content => content.values)),
+                pairs: new ConcatIterable(contents.map(content => content.pairs)),
+            };
+        });    
+    }
+    
+    /**
+     * Concatenate multiple other dataframes onto this dataframe.
+     * 
+     * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
+     * 
+     * @returns Returns a single dataframes concatenated from multiple input dataframes. 
+     */    
+    concat (...dataframes: (IDataFrame<IndexT, ValueT>[] | IDataFrame<IndexT, ValueT>)[]): IDataFrame<IndexT, ValueT> {
+        const concatInput: IDataFrame<IndexT, ValueT>[] = [this];
+
+        for (const input of dataframes) {
+            if (Sugar.Object.isArray(input)) {
+                for (const subInput of input) {
+                    concatInput.push(subInput);
+                }
+            }
+            else {
+                concatInput.push(input);
+            }
+        }
+
+        return DataFrame.concat<IndexT, ValueT>(concatInput);
+    }
+   
+    /**
+    * Zip together multiple dataframes to create a new dataframe.
+    * Preserves the index of the first dataframe.
+    *
+    * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
+    * @param zipper - Selector function that produces a new dataframe based on the input dataframes.
+    * 
+    * @returns Returns a single dataframe zipped from multiple input dataframes. 
+    */
+    static zip<IndexT = any, ValueT = any, ResultT = any> (dataframes: IDataFrame<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): IDataFrame<IndexT, ResultT> {
+
+        assert.isArray(dataframes, "Expected 'dataframe' parameter to 'DataFrame.zip' to be an array of dataframes.");
+
+        if (dataframes.length === 0) {
+            return new DataFrame<IndexT, ResultT>();
+        }
+
+        const firstSeries = dataframes[0];
+        if (firstSeries.none()) {
+            return new DataFrame<IndexT, ResultT>();
+        }
+
+        return new DataFrame<IndexT, ResultT>(() => {
+            const firstSeriesUpCast = <DataFrame<IndexT, ValueT>> firstSeries;
+            const upcast = <DataFrame<IndexT, ValueT>[]> dataframes; // Upcast so that we can access private index, values and pairs.
+            
+            return {
+                index: <Iterable<IndexT>> firstSeriesUpCast.getContent().index,
+                values: new ZipIterable<ValueT, ResultT>(upcast.map(s => s.getContent().values), zipper),
+            };
+        });
+    }
+    
+    /**
+    * Zip together multiple dataframes to create a new dataframe.
+    * Preserves the index of the first dataframe.
+    * 
+    * @param s2, s3, s4, s4 - Multiple dataframes to zip.
+    * @param zipper - Zipper function that produces a new dataframe based on the input dataframes.
+    * 
+    * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+    */    
+    zip<Index2T, Value2T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): IDataFrame<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, s4: IDataFrame<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
+    zip<ResultT>  (...args: any[]): IDataFrame<IndexT, ResultT> {
+
+        const selector: Function = args[args.length-1];
+        const input: IDataFrame<IndexT, any>[] = [this].concat(args.slice(0, args.length-1));
+        return DataFrame.zip<IndexT, any, ResultT>(input, values => selector(...values));
+    }    
+
+    /**
+     * Sorts the dataframe by a value defined by the selector (ascending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     */
+    orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
+        //TODO: Should pass a config fn to OrderedSeries.
+        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Ascending, null);
+    }
+
+    /**
+     * Sorts the dataframe by a value defined by the selector (descending). 
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     */
+    orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
+        //TODO: Should pass a config fn to OrderedSeries.
+        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Descending, null);
+    }
+        
+    /**
+     * Returns the unique union of values between two dataframes.
+     *
+     * @param other - The other dataframes to combine.
+     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * 
+     * @returns Returns the union of two dataframes.
+     */
+    union<KeyT = ValueT> (
+        other: IDataFrame<IndexT, ValueT>, 
+        selector?: SelectorFn<ValueT, KeyT>): 
+            IDataFrame<IndexT, ValueT> {
+
+        if (selector) {
+            assert.isFunction(selector, "Expected optional 'selector' parameter to 'DataFrame.union' to be a selector function.");
+        }
+
+        return this.concat(other).distinct(selector);
+    };
+
+    /**
+     * Returns the intersection of values between two dataframes.
+     *
+     * @param inner - The other dataframe to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * 
+     * @returns Returns the intersection of two series.
+     */
+    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerSelector?: SelectorFn<ValueT, KeyT>,
+        innerSelector?: SelectorFn<InnerValueT, KeyT>): 
+            IDataFrame<IndexT, ValueT> {
+
+        if (outerSelector) {
+            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'DataFrame.intersection' to be a function.");
+        }
+        else {
+            outerSelector = value => <KeyT> <any> value;
+        }
+        
+        if (innerSelector) {
+            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'DataFrame.intersection' to be a function.");
+        }
+        else {
+            innerSelector = value => <KeyT> <any> value;
+        }
+
+        const outer = this;
+        return outer.where(outerValue => {
+                const outerKey = outerSelector!(outerValue);
+                return inner
+                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .any();
+            });
+    };
+
+    /**
+     * Returns the exception of values between two dataframes.
+     *
+     * @param inner - The other dataframe to combine.
+     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * 
+     * @returns Returns the difference between the two series.
+     */
+    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerSelector?: SelectorFn<ValueT, KeyT>,
+        innerSelector?: SelectorFn<InnerValueT, KeyT>): 
+            IDataFrame<IndexT, ValueT> {
+
+        if (outerSelector) {
+            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'DataFrame.except' to be a function.");
+        }
+        else {
+            outerSelector = value => <KeyT> <any> value;
+        }
+
+        if (innerSelector) {
+            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'DataFrame.except' to be a function.");
+        }
+        else {
+            innerSelector = value => <KeyT> <any> value;
+        }
+
+        const outer = this;
+        return outer.where(outerValue => {
+                const outerKey = outerSelector!(outerValue);
+                return inner
+                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .none();
+            });
+    };
+
+   /**
+     * Correlates the elements of two dataframes on matching keys.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * @returns Returns the joined dataframe. 
+     */
+    join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT, InnerValueT, ResultValueT>):
+            IDataFrame<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.join' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.join' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.join' to be a selector function.");
+
+        const outer = this;
+
+        return new DataFrame<number, ResultValueT>(() => {
+            const innerMap = inner
+                .groupBy(innerKeySelector)
+                .toObject(
+                    group => innerKeySelector(group.first()), 
+                    group => group
+                );
+
+            const outerContent = outer.getContent();
+
+            const output: ResultValueT[] = [];
+            
+            for (const outerValue of outer) { //TODO: There should be an enumerator that does this.
+                const outerKey = outerKeySelector(outerValue);
+                const innerGroup = innerMap[outerKey];
+                if (innerGroup) {
+                    for (const innerValue of innerGroup) {
+                        output.push(resultSelector(outerValue, innerValue));
+                    }    
+                }
+            }
+
+            return {
+                values: output
+            };
+        });
+    }
+
+    /**
+     * Performs an outer join on two series. Correlates the elements based on matching keys.
+     * Includes elements from both series that have no correlation in the other series.
+     *
+     * @param this - The outer series to join. 
+     * @param inner - The inner series to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined series. 
+     */
+    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            IDataFrame<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
+
+        // Get the results in the outer that are not in the inner.
+        const outer = this;
+        const outerResult = outer.except<InnerIndexT, InnerValueT, KeyT>(inner, outerKeySelector, innerKeySelector)
+            .select(outer => resultSelector(outer, null))
+            .resetIndex();
+
+        // Get the results in the inner that are not in the outer.
+        const innerResult = inner.except<IndexT, ValueT, KeyT>(outer, innerKeySelector, outerKeySelector)
+            .select(inner => resultSelector(null, inner))
+            .resetIndex();
+
+        // Get the intersection of results between inner and outer.
+        const intersectionResults = outer.join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(inner, outerKeySelector, innerKeySelector, resultSelector);
+
+        return outerResult
+            .concat(intersectionResults)
+            .concat(innerResult)
+            .resetIndex();
+    };
+
+    /**
+     * Performs a left outer join on two dataframes. Correlates the elements based on matching keys.
+     * Includes left elements that have no correlation.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined dataframes. 
+     */
+    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            IDataFrame<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
+
+        // Get the results in the outer that are not in the inner.
+        const outer = this;
+        const outerResult = outer.except<InnerIndexT, InnerValueT, KeyT>(inner, outerKeySelector, innerKeySelector)
+            .select(outer => resultSelector(outer, null))
+            .resetIndex();
+
+        // Get the intersection of results between inner and outer.
+        const intersectionResults = outer.join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(inner, outerKeySelector, innerKeySelector, resultSelector);
+
+        return outerResult
+            .concat(intersectionResults)
+            .resetIndex();
+    };
+
+    /**
+     * Performs a right outer join on two dataframes. Correlates the elements based on matching keys.
+     * Includes right elements that have no correlation.
+     *
+     * @param this - The outer dataframe to join. 
+     * @param inner - The inner dataframe to join.
+     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
+     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
+     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * 
+     * Implementation from here:
+     * 
+     * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
+     * 
+     * @returns Returns the joined dataframes. 
+     */
+    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
+        inner: IDataFrame<InnerIndexT, InnerValueT>, 
+        outerKeySelector: SelectorFn<ValueT, KeyT>, 
+        innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
+        resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
+            IDataFrame<number, ResultValueT> {
+
+        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
+        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
+        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
+
+        // Get the results in the inner that are not in the outer.
+        const outer = this;
+        const innerResult = inner.except<IndexT, ValueT, KeyT>(outer, innerKeySelector, outerKeySelector)
+            .select(inner => resultSelector(null, inner))
+            .resetIndex();
+
+        // Get the intersection of results between inner and outer.
+        const intersectionResults = outer.join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(inner, outerKeySelector, innerKeySelector, resultSelector);
+
+        return intersectionResults
+            .concat(innerResult)
+            .resetIndex();
+    }    
+
+    /**
+     * Insert a pair at the start of the dataframe.
+     *
+     * @param pair - The pair to insert.
+     * 
+     * @returns Returns a new dataframe with the specified pair inserted.
+     */
+    insertPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT> {
+        assert.isArray(pair, "Expected 'pair' parameter to 'DataFrame.insertPair' to be an array.");
+        assert(pair.length === 2, "Expected 'pair' parameter to 'DataFrame.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
+
+        return (new DataFrame<IndexT, ValueT>({ pairs: [pair] })).concat(this);
+    }
+
+    /**
+     * Append a pair to the end of a dataframe.
+     *
+     * @param pair - The pair to append.
+     *  
+     * @returns Returns a new dataframe with the specified pair appended.
+     */
+    appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT> {
+        assert.isArray(pair, "Expected 'pair' parameter to 'DataFrame.appendPair' to be an array.");
+        assert(pair.length === 2, "Expected 'pair' parameter to 'DataFrame.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
+
+        return this.concat(new DataFrame<IndexT, ValueT>({ pairs: [pair] }));
+    }
+
+    /**
+     * Fill gaps in a dataframe.
+     *
+     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
+     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     *
+     * @returns Returns a new dataframe with gaps filled in.
+     */
+    fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT> {
+        assert.isFunction(comparer, "Expected 'comparer' parameter to 'DataFrame.fillGaps' to be a comparer function that compares two values and returns a boolean.")
+        assert.isFunction(generator, "Expected 'generator' parameter to 'DataFrame.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
+
+        return this.rollingWindow(2)
+            .asPairs()
+            .selectMany((pair: [number, IDataFrame<IndexT, ValueT>]) => {
+                const window = pair[1];
+                const pairA = window.asPairs().first();
+                const pairB = window.asPairs().last();
+                if (!comparer(pairA, pairB)) {
+                    return [pairA];
+                }
+
+                const generatedRows = generator(pairA, pairB);
+                assert.isArray(generatedRows, "Expected return from 'generator' parameter to 'DataFrame.fillGaps' to be an array of pairs, instead got a " + typeof(generatedRows));
+
+                return [pairA].concat(generatedRows);
+            })
+            .asValues<IndexT, ValueT>()
+            .appendPair(this.asPairs().last())
+            .inflate();
+    }
+
+    /**
+     * Returns the specified default sequence if the dataframe is empty. 
+     *
+     * @param defaultSequence - Default sequence to return if the dataframe is empty.
+     * 
+     * @returns Returns 'defaultSequence' if the dataframe is empty. 
+     */
+    defaultIfEmpty (defaultSequence: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT> {
+
+        if (this.none()) {
+            if (defaultSequence instanceof DataFrame) {
+                return <IDataFrame<IndexT, ValueT>> defaultSequence;
+            }
+            else if (Sugar.Object.isArray(defaultSequence)) {
+                return new DataFrame<IndexT, ValueT>(defaultSequence);
+            }
+            else {
+                throw new Error("Expected 'defaultSequence' parameter to 'DataFrame.defaultIfEmpty' to be an array or a series.");
+            }
+        } 
+        else {
+            return this;
+        }
+    }
+
     /**
      * Serialize the dataframe to JSON.
      * 
@@ -793,5 +2496,86 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         const data = [this.getColumnNames()].concat(this.toRows());
         return BabyParse.unparse(data);
     }
+    
 }
 
+//
+// A dataframe that has been ordered.
+//
+class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any> 
+    extends DataFrame<IndexT, ValueT>
+    implements IOrderedDataFrame<IndexT, ValueT, SortT> {
+
+    parent: OrderedDataFrame<IndexT, ValueT, SortT> | null;
+    selector: SelectorWithIndexFn<ValueT, SortT>;
+    direction: Direction;
+    origValues: Iterable<ValueT>;
+    origPairs: Iterable<[IndexT, ValueT]>;
+
+    //
+    // Helper function to create a sort spec.
+    //
+    private static makeSortSpec (sortLevel: number, selector: SortSelectorFn, direction: Direction): ISortSpec {
+        return { sortLevel: sortLevel, selector: selector, direction: direction };
+    }
+
+    //
+    // Helper function to make a sort selector for pairs, this captures the parent correct when generating the closure.
+    //
+    private static makePairsSelector (selector: SortSelectorFn): SortSelectorFn {
+        return (pair: any, index: number) => selector(pair[1], index);
+    }
+
+    constructor(values: Iterable<ValueT>, pairs: Iterable<[IndexT, ValueT]>, selector: SelectorWithIndexFn<ValueT, SortT>, direction: Direction, parent: OrderedDataFrame<IndexT, ValueT> | null) {
+
+        const valueSortSpecs: ISortSpec[] = [];
+        const pairSortSpecs: ISortSpec[] = [];
+        let sortLevel = 0;
+
+        while (parent !== null) {
+            valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, parent.selector, parent.direction));
+            pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(parent.selector), parent.direction));
+            ++sortLevel;
+            parent = parent.parent;
+        }
+
+        valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, selector, direction));
+        pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, (pair: [IndexT, ValueT], index: number) => selector(pair[1], index), direction));
+
+        super({
+            values: new OrderedIterable(values, valueSortSpecs),
+            pairs: new OrderedIterable(pairs, pairSortSpecs)
+        });
+
+        this.parent = parent;
+        this.selector = selector;
+        this.direction = direction;
+        this.origValues = values;
+        this.origPairs = pairs;
+    }
+
+    /** 
+     * Performs additional sorting (ascending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     */
+    thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
+        //TODO: Should pass a config fn to OrderedSeries.
+        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Ascending, this);
+    }
+
+    /** 
+     * Performs additional sorting (descending).
+     * 
+     * @param selector Selects the value to sort by.
+     * 
+     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     */
+    thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
+        //TODO: Should pass a config fn to OrderedSeries.
+        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
+    }
+}
+    

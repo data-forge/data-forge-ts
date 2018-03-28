@@ -7,42 +7,31 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 describe('Series constructor', () => {
 
     it('create series from array of values', ()  => {
-        
         expect(new Series([10, 20, 30]).toArray()).to.eql([10, 20, 30]);        
-
     });
 
     it('create series from empty array', ()  => {
-        
         expect(new Series([]).toArray()).to.eql([]);
-
     });
 
-    it('create empty series using no params', ()  => {
-        
+    it('create empty series with no params', ()  => {        
         expect(new Series().toArray()).to.eql([]);
     });
 
-    it('create empty series from empty config', ()  => {
-        
+    it('create empty series from empty config', ()  => {        
         expect(new Series({}).toArray()).to.eql([]);
     });
 
-    it('create empty series from config with no values, although index is set.', ()  => {
-        
+    it('create empty series from config with no values, although index is set.', ()  => {        
         expect(new Series({ index: [100, 200, 300] }).toArray()).to.eql([]);
     });
 
     it('create series from array of values in config', ()  => {
-
-        expect(new Series({ values: [10, 20, 30] }).toArray()).to.eql([10, 20, 30]);        
-
+        expect(new Series({ values: [10, 20, 30] }).toArray()).to.eql([10, 20, 30]);
     });
     
     it('create series from empty array in config', ()  => {
-
         expect(new Series({ values: [] }).toArray()).to.eql([]);
-
     });
 
     it('create series with values iterable', () => {
@@ -51,7 +40,6 @@ describe('Series constructor', () => {
     });
 
     it('passing something other than an array or iterable for values is an error', () => {
-
         // This isn't possible in TypeScript, but is in JavaScript.
         expect(() => new Series({ values: <any>3 })).to.throw();
     })
@@ -79,7 +67,6 @@ describe('Series constructor', () => {
     });
 
     it('can set index via array passed to constructor', () => {
-
         var series = new Series({
             values: [10, 20, 30],
             index: [100, 200, 300]
@@ -108,7 +95,6 @@ describe('Series constructor', () => {
     });
 
     it('can create series with values iterable and index iterable', () => {
-
         var series = new Series({
             values: new ArrayIterable([10, 20, 30]),
             index: new ArrayIterable([100, 200, 300])
@@ -123,14 +109,11 @@ describe('Series constructor', () => {
     });
 
     it('passing something other than an array or iterable for index is an error', () => {
-
         // This isn't possible in TypeScript, but is in JavaScript.
         expect(() => new Series({ values: [10, 20, 30], index: <any>3 })).to.throw();
-
     });
 
     it('can create series with index from another series', () => {
-
         var series = new Series({
             values: [10, 20, 30],
             index: new Series([100, 200, 300])
@@ -141,11 +124,9 @@ describe('Series constructor', () => {
             [200, 20],
             [300, 30],
         ]);
-        
     });
 
     it ('can get index from series', () => {
-
         var series = new Series({
             values: [10, 20, 30],
             index: [100, 200, 300]
@@ -156,11 +137,9 @@ describe('Series constructor', () => {
             200,
             300,
         ]);
-
     });
 
     it('can create series with index from another index', () => {
-
         var series = new Series({
             values: [10, 20, 30],
             index: new Index([100, 200, 300])
@@ -171,17 +150,15 @@ describe('Series constructor', () => {
             [200, 20],
             [300, 30],
         ]);
-        
     });
 
     it('can create series from pairs', () => {
-
         var series = new Series({ 
-            pairs: new ArrayIterable([
+            pairs: [
                 [100, 10],
                 [200, 20],
                 [300, 30],                
-            ]),
+            ],
         });
 
         expect(series.getIndex().toArray()).to.eql([100, 200, 300]);
@@ -189,7 +166,6 @@ describe('Series constructor', () => {
     });
 
     it('can create series from values and pairs', () => {
-
         var series = new Series({ 
             values: new ArrayIterable([
                 5, 4, 6, // Bit of a trick here, using different values to the pairs.
@@ -225,7 +201,6 @@ describe('Series constructor', () => {
     });
 
     it('can create series from values, index and pairs', () => {
-
         var series = new Series({ 
             values: new ArrayIterable([
                 5, 4, 6, // Bit of a trick here, using different values to the pairs.

@@ -7,7 +7,6 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 describe('DataFrame constructor', () => {
 
     it('create dataframe from array of values', ()  => {
-        
         const dataFrame = new DataFrame([
             { A: 10 }, 
             { A: 20 }, 
@@ -20,47 +19,24 @@ describe('DataFrame constructor', () => {
         ]);
     });
 
-    it('can get rows from dataframe', () => {
-
-        const dataFrame = new DataFrame([
-            { A: 10, B: 100 }, 
-            { A: 20, B: 200 }, 
-            { A: 30, B: 300 }, 
-        ]);
-        expect(dataFrame.toRows()).to.eql([
-            [10, 100],
-            [20, 200],
-            [30, 300],
-        ]);
-    });
-
-    it('empty dataframe returns empty row', () => {
-
-        expect(new DataFrame().toRows()).to.eql([]);
-    });
-
-    it('create dataframe from empty array', ()  => {
-        
+    it('create dataframe from empty array', ()  => {        
         expect(new DataFrame([]).toArray()).to.eql([]);
     });
 
-    it('create empty dataframe using no params', ()  => {
+    it('create empty dataframe with no params', ()  => {
         
         expect(new DataFrame().toArray()).to.eql([]);
     });
 
-    it('create empty dataframe from empty config', ()  => {
-        
+    it('create empty dataframe from empty config', ()  => {        
         expect(new DataFrame({}).toArray()).to.eql([]);
     });
 
-    it('create empty dataframe from config with no values, although index is set.', ()  => {
-        
+    it('create empty dataframe from config with no values, although index is set.', ()  => {        
         expect(new DataFrame({ index: [100, 200, 300] }).toArray()).to.eql([]);
     });
 
     it('create dataframe from array of values in config', ()  => {
-
         const dataFrame = new DataFrame({
             values: [
                 { A: 10 }, 
@@ -76,9 +52,7 @@ describe('DataFrame constructor', () => {
     });
     
     it('create dataframe from empty array in config', ()  => {
-
         expect(new DataFrame({ values: [] }).toArray()).to.eql([]);
-
     });
 
     it('create dataframe with values iterable', () => {
@@ -97,13 +71,11 @@ describe('DataFrame constructor', () => {
     });
 
     it('passing something other than an array or iterable for values is an error', () => {
-
         // This isn't possible in TypeScript, but is in JavaScript.
         expect(() => new DataFrame({ values: <any>3 })).to.throw();
     })
 
     it('index is set by default when values are passed in by array', () => {
-
         const dataFrame = new DataFrame([
             { A: 10 }, 
             { A: 20 }, 
@@ -134,7 +106,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can set index via array passed to constructor', () => {
-
         var dataframe = new DataFrame({
             values: [
                 { A: 10 }, 
@@ -152,7 +123,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe with values array and index iterable', () => {
-
         var dataframe = new DataFrame({
             values: [
                 { A: 10 }, 
@@ -171,7 +141,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe with values iterable and index iterable', () => {
-
         var dataframe = new DataFrame({
             values: new ArrayIterable([
                 { A: 10 }, 
@@ -190,14 +159,11 @@ describe('DataFrame constructor', () => {
     });
 
     it('passing something other than an array or iterable for index is an error', () => {
-
         // This isn't possible in TypeScript, but is in JavaScript.
         expect(() => new DataFrame({ values: [10, 20, 30], index: <any>3 })).to.throw();
-
     });
 
     it('can create dataframe with index from another dataframe', () => {
-
         var dataframe = new DataFrame({
             values: [
                 { A: 10 }, 
@@ -212,11 +178,9 @@ describe('DataFrame constructor', () => {
             [200, { A: 20 }],
             [300, { A: 30 }],
         ]);
-        
     });
 
     it ('can get index from dataframe', () => {
-
         var dataframe = new DataFrame({
             values: [
                 { A: 10 }, 
@@ -234,7 +198,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe with index from another index', () => {
-
         var dataframe = new DataFrame({
             values: [
                 { A: 10 }, 
@@ -252,13 +215,12 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe from pairs', () => {
-
         var dataframe = new DataFrame({ 
-            pairs: new ArrayIterable([
+            pairs: [
                 [100, 10],
                 [200, 20],
                 [300, 30],                
-            ]),
+            ],
         });
 
         expect(dataframe.getIndex().toArray()).to.eql([100, 200, 300]);
@@ -266,7 +228,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe from values and pairs', () => {
-
         var dataframe = new DataFrame({ 
             values: new ArrayIterable([
                 5, 4, 6, // Bit of a trick here, using different values to the pairs.
@@ -284,7 +245,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe from index and pairs', () => {
-
         var dataframe = new DataFrame({ 
             index: new ArrayIterable([
                 15, 16, 17 // Trick. Separate index values.
@@ -302,7 +262,6 @@ describe('DataFrame constructor', () => {
     });
 
     it('can create dataframe from values, index and pairs', () => {
-
         var dataframe = new DataFrame({ 
             values: new ArrayIterable([
                 5, 4, 6, // Bit of a trick here, using different values to the pairs.
@@ -323,11 +282,10 @@ describe('DataFrame constructor', () => {
     });
 
 	it('can create from rows', function () {
-
 		var columnNames = ["c1", "c2"];
 		var dataFrame = new DataFrame({
 			columnNames: columnNames,
-			values: [
+			rows: [
 				[1, 2],
 				[3, 4],
 			],
@@ -341,11 +299,10 @@ describe('DataFrame constructor', () => {
     });
     
 	it('can create from rows with index', function () {
-
 		var columnNames = ["c1", "c2"];
 		var dataFrame = new DataFrame({
 			columnNames: columnNames,
-			values: [
+			rows: [
 				[1, 2],
 				[3, 4],
 			],
@@ -362,7 +319,7 @@ describe('DataFrame constructor', () => {
 	it("can handle undefined row", function () {
 		var d = new DataFrame({
 			columnNames: ["c1", "c2"],
-			values: [
+			rows: <any[][]> [ // Cast is here to allow this in TypeScript. Normally this is not allowed, but it can be done in JavaScript so I want to handle it.
 				[1, 2],
 				undefined,
 				[5, 2]
@@ -374,4 +331,16 @@ describe('DataFrame constructor', () => {
 		}).to.throw();
 	});
 
+    it('can get rows from dataframe', () => {
+        const dataFrame = new DataFrame([
+            { A: 10, B: 100 }, 
+            { A: 20, B: 200 }, 
+            { A: 30, B: 300 }, 
+        ]);
+        expect(dataFrame.toRows()).to.eql([
+            [10, 100],
+            [20, 200],
+            [30, 300],
+        ]);
+    });
 });

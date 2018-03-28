@@ -20,6 +20,10 @@ Series.intersection/except, etc, Join functions selector no longer takes an inde
 
 To simplify things intersection/except/join, etc selector fn no longer accepts the index.
 
+Removed the column wise concatenation of dataframes, this can be done with zip.
+
+Rows must now be passed into a dataframe via the 'rows' field of the dataframe config.
+
 **New feature**
 
 Typescript

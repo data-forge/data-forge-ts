@@ -6,7 +6,7 @@ import { TakeIterable } from '../iterables/take-iterable';
 import { SkipIterable } from '../iterables/skip-iterable';
 import { Series, ISeries } from '../series';
 
-export class WindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, ValueT>> {
+export class SeriesRollingWindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, ValueT>> {
 
     iterable: Iterable<[IndexT, ValueT]>;
     period: number;
@@ -23,13 +23,13 @@ export class WindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, 
             pairs: new TakeIterable(
                 new SkipIterable(
                     this.iterable,
-                    this.windowIndex++ * this.period
+                    this.windowIndex++
                 ),
                 this.period
             )
         });
 
-        if (window.none()) {
+        if (window.count() < this.period) {
             // Nothing more to read from the underlying iterable.
             // https://github.com/Microsoft/TypeScript/issues/8938
             return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>)  // <= explicit cast here!;

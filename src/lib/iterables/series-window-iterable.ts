@@ -2,10 +2,10 @@
 // Iterates an underlying iterable in the 'windows'.
 //
 
-import { WindowIterator } from '../iterators/window-iterator';
+import { SeriesWindowIterator } from '../iterators/series-window-iterator';
 import { ISeries } from '../series';
 
-export class WindowIterable<IndexT, ValueT> implements Iterable<ISeries<IndexT, ValueT>> {
+export class SeriesWindowIterable<IndexT, ValueT> implements Iterable<ISeries<IndexT, ValueT>> {
 
     iterable: Iterable<[IndexT, ValueT]>;
     period: number;
@@ -16,6 +16,6 @@ export class WindowIterable<IndexT, ValueT> implements Iterable<ISeries<IndexT, 
     }
 
     [Symbol.iterator](): Iterator<ISeries<IndexT, ValueT>> {
-        return new WindowIterator(this.iterable, this.period);
+        return new SeriesWindowIterator(this.iterable, this.period);
     }
 }

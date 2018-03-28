@@ -2,10 +2,10 @@
 // Iterates an underlying iterable in the 'windows'.
 //
 
-import { VariableWindowIterator, ComparerFn } from '../iterators/variable-window-iterator';
+import { SeriesVariableWindowIterator, ComparerFn } from '../iterators/series-variable-window-iterator';
 import { ISeries } from '../series';
 
-export class VariableWindowIterable<IndexT, ValueT> implements Iterable<ISeries<IndexT, ValueT>> {
+export class SeriesVariableWindowIterable<IndexT, ValueT> implements Iterable<ISeries<IndexT, ValueT>> {
 
     iterable: Iterable<[IndexT, ValueT]>;
     comparer: ComparerFn<ValueT>;
@@ -16,6 +16,6 @@ export class VariableWindowIterable<IndexT, ValueT> implements Iterable<ISeries<
     }
 
     [Symbol.iterator](): Iterator<ISeries<IndexT, ValueT>> {
-        return new VariableWindowIterator(this.iterable, this.comparer);
+        return new SeriesVariableWindowIterator(this.iterable, this.comparer);
     }
 }

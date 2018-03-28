@@ -10,7 +10,7 @@ import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 const Table = require('easy-table');
 import { assert } from 'chai';
-import { SelectorFn } from '../series';
+import { SelectorWithIndexFn } from '../series';
 import { IAsyncSeries, AsyncSeries } from './async-series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import * as BabyParse from 'babyparse';
@@ -101,7 +101,7 @@ export interface IAsyncDataFrame<IndexT, ValueT> extends AsyncIterable<ValueT> {
      * 
      * @returns Returns a new dataframe that has been transformed by the selector function.
      */
-    select<ToT> (selector: SelectorFn<ValueT, ToT>): IAsyncDataFrame<IndexT, ToT>;
+    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IAsyncDataFrame<IndexT, ToT>;
     
     /**
      * Skip a number of values in the dataframe.
@@ -146,10 +146,10 @@ export interface IAsyncDataFrame<IndexT, ValueT> extends AsyncIterable<ValueT> {
  */
 export class AsyncDataFrame<IndexT, ValueT> implements IAsyncDataFrame<IndexT, ValueT> {
 
-    private index: AsyncIterable<IndexT>
-    private values: AsyncIterable<ValueT>;
-    private pairs: AsyncIterable<[IndexT, ValueT]>;
-    private columnNames: AsyncIterable<string>;
+    private index: AsyncIterable<IndexT> = new ArrayIterable([]);
+    private values: AsyncIterable<ValueT> = new ArrayIterable([]);
+    private pairs: AsyncIterable<[IndexT, ValueT]> = new ArrayIterable([]);
+    private columnNames: AsyncIterable<string> = new ArrayIterable([]);
 
     //
     // Initialise this DataFrame from an array.
@@ -395,7 +395,7 @@ export class AsyncDataFrame<IndexT, ValueT> implements IAsyncDataFrame<IndexT, V
      * 
      * @returns Returns a new dataframe that has been transformed by the selector function.
      */
-    select<ToT> (selector: SelectorFn<ValueT, ToT>): IAsyncDataFrame<IndexT, ToT> {
+    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IAsyncDataFrame<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
 
         return new AsyncDataFrame({
@@ -454,7 +454,7 @@ export class AsyncDataFrame<IndexT, ValueT> implements IAsyncDataFrame<IndexT, V
 
         var pairs = await this.toPairs();
 
-        return new DataFrame({
+        return new DataFrame<IndexT, ValueT>({
             pairs: new SyncArrayIterable(pairs),
         });
     }

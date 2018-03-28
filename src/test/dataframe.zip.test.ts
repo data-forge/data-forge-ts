@@ -6,15 +6,13 @@ import { DataFrame } from '../lib/dataframe';
 
 describe('DataFrame zip', () => {
 
-    /*todo:
+	it('can zip multiple series', () => {
 
-	it('can zip multiple series', function () {
+		var series1 = new DataFrame([0, 1, 2]);
+		var series2 = new DataFrame([10, 11, 12]);
+		var series3 = new DataFrame([100, 101, 102]);
 
-		var series1 = new Series([0, 1, 2]);
-		var series2 = new Series([10, 11, 12]);
-		var series3 = new Series([100, 101, 102]);
-
-		var zipped = Series.zip([series1, series2, series3], values => values.sum());
+		var zipped = DataFrame.zip([series1, series2, series3], values => values.sum());
 
 		expect(zipped.toPairs()).to.eql([
 			[0,
@@ -29,13 +27,13 @@ describe('DataFrame zip', () => {
 		]);
 	});
 
-	it('can zip multiple series with ragged rows', function () {
+	it('can zip multiple series with ragged rows', () => {
 
-		var series1 = new Series([0, 1, 2]);
-		var series2 = new Series([10, 11]);
-		var series3 = new Series([100, 101, 102]);
+		var series1 = new DataFrame([0, 1, 2]);
+		var series2 = new DataFrame([10, 11]);
+		var series3 = new DataFrame([100, 101, 102]);
 
-		var zipped = Series.zip([series1, series2, series3], values => values.sum());
+		var zipped = DataFrame.zip([series1, series2, series3], values => values.sum());
 
 		expect(zipped.toPairs()).to.eql([
 			[0,
@@ -47,17 +45,15 @@ describe('DataFrame zip', () => {
 		]);
 	});
 
-	it('can zip multiple data-frames', function () {
+	it('can zip multiple data-frames', () => {
 
-	 	var df1 = new Series({ columnNames: ["a", "b"], values: [[1, 2], [3, 4]] });
-	 	var df2 = new Series({ columnNames: ["c", "d"], values: [[6, 5], [8, 7]] });
-	 	var df3 = new Series({ columnNames: ["e", "f"], values: [[9, 10], [11, 12]] });
+	 	var df1 = new DataFrame({ columnNames: ["a", "b"], rows: [[1, 2], [3, 4]] });
+	 	var df2 = new DataFrame({ columnNames: ["c", "d"], rows: [[6, 5], [8, 7]] });
+	 	var df3 = new DataFrame({ columnNames: ["e", "f"], rows: [[9, 10], [11, 12]] });
 
-		var zipped = dataForge.zipDataFrames([df1, df2, df3],
-			function (rows) {
-				return extend({}, rows.at(0), rows.at(1), rows.at(2));
-			}
-		);
+		var zipped = DataFrame.zip([df1, df2, df3], rows => {
+				return Object.assign({}, rows.at(0), rows.at(1), rows.at(2));
+			});
 
 		expect(zipped.toPairs()).to.eql([
 			[0,
@@ -83,17 +79,15 @@ describe('DataFrame zip', () => {
 		]);
 	});
 
-	it('can zip multiple data-frames with ragged rows', function () {
+	it('can zip multiple data-frames with ragged rows', () => {
 
-	 	var df1 = new Series({ columnNames: ["a", "b"], values: [[1, 2], [3, 4]] });
-	 	var df2 = new Series({ columnNames: ["c", "d"], values: [[6, 5]] });
-	 	var df3 = new Series({ columnNames: ["e", "f"], values: [[9, 10], [11, 12]] });
+	 	var df1 = new DataFrame({ columnNames: ["a", "b"], rows: [[1, 2], [3, 4]] });
+	 	var df2 = new DataFrame({ columnNames: ["c", "d"], rows: [[6, 5]] });
+	 	var df3 = new DataFrame({ columnNames: ["e", "f"], rows: [[9, 10], [11, 12]] });
 
-		var zipped = dataForge.zipDataFrames([df1, df2, df3],
-			function (rows) {
-				return extend({}, rows.at(0), rows.at(1), rows.at(2));
-			}
-		);
+		var zipped = DataFrame.zip([df1, df2, df3], rows => {
+				return Object.assign({}, rows.at(0), rows.at(1), rows.at(2));
+			});
 
 		expect(zipped.toPairs()).to.eql([
 			[0,
@@ -109,22 +103,22 @@ describe('DataFrame zip', () => {
 		]);
     });
 
-	it('can zip two series', function () {
+	it('can zip two series', () => {
 
-		var zipped = new Series([0, 1, 2])
-			.zip(new Series([10, 11, 12]), (s1, s2) => {
+		var zipped = new DataFrame([0, 1, 2])
+			.zip(new DataFrame([10, 11, 12]), (s1, s2) => {
 				return s1 + s2;
 			});
 
 		expect(zipped.toArray()).to.eql([0+10, 1+11, 2+12]);
 	});
 
-	it('can zip multiple series', function () {
+	it('can zip multiple series', () => {
 
-		var zipped = new Series([0, 1, 2])
+		var zipped = new DataFrame([0, 1, 2])
 			.zip(
-				new Series([10, 11, 12]), 
-				new Series([100, 101, 102]),
+				new DataFrame([10, 11, 12]), 
+				new DataFrame([100, 101, 102]),
 				(s1, s2, s3) => {
 					return s1 + s2 + s3;
 				}
@@ -133,14 +127,14 @@ describe('DataFrame zip', () => {
 		expect(zipped.toArray()).to.eql([0+10+100, 1+11+101, 2+12+102]);
 	});
 
-	it('zip preserves the index of the first series', function () {
+	it('zip preserves the index of the first series', () => {
 
-		var s1 = new Series({ 
+		var s1 = new DataFrame({ 
 			values: [1, 2, 3],
 			index: [10, 11, 12],
 		});
 
-		var s2 = new Series({ 
+		var s2 = new DataFrame({ 
 			values: [10, 20, 30],
 			index: [50, 51, 52],
 		});
@@ -158,27 +152,26 @@ describe('DataFrame zip', () => {
 		]);
 	});
 
-	it('can zip multiple data-frames', function () {
+	it('can zip multiple data-frames', () => {
 
-		var df1 = new Series({
+		var df1 = new DataFrame({
 			columnNames: ["a", "b"],
-			values: [[1, 2], [3, 4]],
+			rows: [[1, 2], [3, 4]],
 		});
 
-		var df2 = new Series({
+		var df2 = new DataFrame({
 			columnNames: ["c", "d"],
-			values: [[6, 5], [8, 7]],
+			rows: [[6, 5], [8, 7]],
 		});
 
-		var df3 = new Series({
+		var df3 = new DataFrame({
 			columnNames: ["e", "f"],
-			values: [[9, 10], [11, 12]],
+			rows: [[9, 10], [11, 12]],
 		});				
 
-		var zipped = df1.zip(df2, df3, function (row1, row2, row3) {
-				return extend({}, row1, row2, row3);
-			}
-		);
+		var zipped = df1.zip(df2, df3, (row1, row2, row3) => {
+				return Object.assign({}, row1, row2, row3);
+			});
 
 		expect(zipped.toPairs()).to.eql([
 			[0,
@@ -204,25 +197,23 @@ describe('DataFrame zip', () => {
 		]);
     });
 
-	it('zip preserves index of first dataframe', function () {
+	it('zip preserves index of first dataframe', () => {
 
-		var df1 = new Series({
+		var df1 = new DataFrame({
 			columnNames: ["c"],
-			values: [[1], [2]],
+			rows: [[1], [2]],
 			index: [20, 27],
 		});
 
-		var df2 = new Series({
+		var df2 = new DataFrame({
 			columnNames: ["x"],
-			values: [[100], [200]],
+			rows: [[100], [200]],
 			index: [30, 62],
 		});
 
-		var zipped = df1.zip(df2, 
-				function (row1, row2) {
-					return extend({}, row1, row2);
-				}
-			);
+		var zipped = df1.zip(df2, (row1, row2) => {
+					return Object.assign({}, row1, row2);
+				});
 
 		expect(zipped.toPairs()).to.eql([
 			[20,
@@ -239,6 +230,5 @@ describe('DataFrame zip', () => {
 			],
 		]);
     });
-    */
 
 });
