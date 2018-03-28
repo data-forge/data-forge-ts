@@ -24,6 +24,8 @@ Removed the column wise concatenation of dataframes, this can be done with zip.
 
 Rows must now be passed into a dataframe via the 'rows' field of the dataframe config.
 
+dataForge.use and plugins have been removed. I never really made proper use of this.
+
 **New feature**
 
 Typescript

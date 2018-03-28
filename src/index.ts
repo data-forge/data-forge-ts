@@ -8,7 +8,6 @@ export { DataFrame, IDataFrame } from './lib/dataframe';
 export { AsyncDataFrame, IAsyncDataFrame } from './lib/async/async-dataframe';
 
 import { assert } from 'chai';
-import { DataFrame, IDataFrame } from './lib/dataframe';
 import { AsyncDataFrame, IAsyncDataFrame } from './lib/async/async-dataframe';
 import * as fs from 'fs';
 import * as BabyParse from 'babyparse';
@@ -20,7 +19,8 @@ import { IStreamFactory } from './lib/async/stream/stream-factory';
 import { IStream } from './lib/async/stream/stream';
 import { CsvStream } from './lib/async/stream/csv-stream';
 import { JsonStream } from './lib/async/stream/json-stream';
-import { Series } from '.';
+import { Series, ISeries } from '.';
+import { DataFrame, IDataFrame } from '.';
 
 /**
  * Deserialize a dataframe from a JSON text string.
@@ -411,6 +411,68 @@ const zip = Series.zip;
  */
 export { zip as zipSeries }
 
+/**
+ * Generate a series from a range of numbers.
+ *
+ * @param start - The value of the first number in the range.
+ * @param count - The number of sequential values in the range.
+ * 
+ * @returns Returns a series with a sequence of generated values. The series contains 'count' values beginning at 'start'. 
+ */
+export function range (start: number, count: number): ISeries<number, number> {
+
+    assert.isNumber(start, "Expect 'start' parameter to 'dataForge.range' function to be a number.");
+    assert.isNumber(count, "Expect 'count' parameter to 'dataForge.range' function to be a number.");
+
+    const values: number[] = [];
+    for (let valueIndex = 0; valueIndex < count; ++valueIndex) {
+        values.push(start + valueIndex);
+    }
+
+    return new Series<number, number>(values);
+}
+
+/**
+ * Generate a data-frame containing a matrix of values.
+ *
+ * @param numColumns - The number of columns in the data-frame.
+ * @param numRows - The number of rows in the data-frame.
+ * @param start - The starting value.
+ * @param increment - The value to increment by for each new value.
+ * 
+ * @returns Returns a dataframe that contains a matrix of generated values.
+ */
+export function matrix (numColumns: number, numRows: number, start: number, increment: number): IDataFrame<number, any> {
+    assert.isNumber(numColumns, "Expect 'numColumns' parameter to 'dataForge.matrix' function to be a number.");
+    assert.isNumber(numRows, "Expect 'numRows' parameter to 'dataForge.matrix' function to be a number.");
+    assert.isNumber(start, "Expect 'start' parameter to 'dataForge.matrix' function to be a number.");
+    assert.isNumber(increment, "Expect 'increment' parameter to 'dataForge.matrix' function to be a number.");
+
+    const rows: number[][] = [];
+    const columnNames: string[] = [];
+    var nextValue = start;
+
+    for (let colIndex = 0; colIndex < numColumns; ++colIndex) {
+        columnNames.push((colIndex+1).toString());
+    }
+    
+    for (let rowIndex = 0; rowIndex < numRows; ++rowIndex) {
+        var row: number[] = [];
+
+        for (let colIndex = 0; colIndex < numColumns; ++colIndex) {
+            row.push(nextValue + (colIndex * increment));
+        }
+
+        nextValue += numColumns * increment;
+        rows.push(row);
+    }
+
+    return new DataFrame({
+        columnNames: columnNames,
+        rows: rows,
+    });
+}
+
 /*
 var dr = new DataFrame([
     {
@@ -428,6 +490,7 @@ console.log(dr.toString());
 
 //var s = await readFileStream("C:\projects\github\nodejs-chart-rendering-example-data\data\example-data.csv")
 
+/*
 async function main () {
 
     try {
@@ -449,4 +512,4 @@ async function main () {
 }
 
 main();
-
+*/
