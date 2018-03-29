@@ -13,12 +13,14 @@ export type ComparerFn<ValueT> = (a: ValueT, b: ValueT) => boolean;
 
 export class DataFrameVariableWindowIterator<IndexT, ValueT> implements Iterator<IDataFrame<IndexT, ValueT>> {
 
+    columnNames: Iterable<string>;
     iterator: Iterator<[IndexT, ValueT]>;
     nextValue: IteratorResult<[IndexT, ValueT]>;
     comparer: ComparerFn<ValueT>
     windowIndex: number = 0;
     
-    constructor(iterable: Iterable<[IndexT, ValueT]>, comparer: ComparerFn<ValueT>) {
+    constructor(columnNames: Iterable<string>, iterable: Iterable<[IndexT, ValueT]>, comparer: ComparerFn<ValueT>) {
+        this.columnNames = columnNames;
         this.iterator = iterable[Symbol.iterator]();
         this.nextValue = this.iterator.next();
         this.comparer = comparer;
@@ -53,6 +55,7 @@ export class DataFrameVariableWindowIterator<IndexT, ValueT> implements Iterator
         }
 
         const window = new DataFrame<IndexT, ValueT>({
+            columnNames: this.columnNames,
             pairs: pairs,
         });
 

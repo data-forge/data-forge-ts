@@ -8,11 +8,13 @@ import { DataFrame, IDataFrame } from '../dataframe';
 
 export class DataFrameRollingWindowIterator<IndexT, ValueT> implements Iterator<IDataFrame<IndexT, ValueT>> {
 
+    columnNames: Iterable<string>;
     iterable: Iterable<[IndexT, ValueT]>;
     period: number;
     windowIndex: number = 0;
     
-    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number) {
+    constructor(columnNames: Iterable<string>, iterable: Iterable<[IndexT, ValueT]>, period: number) {
+        this.columnNames = columnNames;
         this.iterable = iterable;
         this.period = period;
     }
@@ -20,6 +22,7 @@ export class DataFrameRollingWindowIterator<IndexT, ValueT> implements Iterator<
     next(): IteratorResult<IDataFrame<IndexT, ValueT>> {
 
         const window = new DataFrame<IndexT, ValueT>({
+            columnNames: this.columnNames,
             pairs: new TakeIterable(
                 new SkipIterable(
                     this.iterable,

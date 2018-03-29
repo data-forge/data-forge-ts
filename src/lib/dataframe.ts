@@ -78,6 +78,15 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     getIndex (): IIndex<IndexT>;
 
     /**
+     * Set a named column as the index of the data-frame.
+     *
+     * @param columnName - Name or index of the column to set as the index.
+     *
+     * @returns Returns a new dataframe with the values of a particular named column as the index.  
+     */
+    setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT>;
+    
+    /**
      * Apply a new index to the dataframe.
      * 
      * @param newIndex The new index to apply to the dataframe.
@@ -135,6 +144,24 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
      */
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | any, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Create a new data-frame from a subset of columns.
+     *
+     * @param columnNames - Array of column names to include in the new data-frame.
+     * 
+     * @returns Returns a dataframe with a subset of columns from the input dataframe.
+     */
+    subset<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
+
+    /**
+     * Create a new data frame with the requested column or columns dropped.
+     *
+     * @param columnOrColumns - Specifies the column name (a string) or columns (array of column names) to drop.
+     * 
+     * @returns Returns a new dataframe with a particular name column or columns removed.
+     */
+    dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT>;
 
     /**
     * Extract values from the dataframe as an array.
@@ -460,13 +487,43 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      */
     toString (): string;
 
-    /** 
-     * Format the dataframe for display as a string.
-     * This forces lazy evaluation to complete.
+    /**
+     * Parse a column with string values to a column with int values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
      * 
-     * @returns Generates and returns a string representation of the dataframe or dataframe.
+     * @returns Returns a new dataframe with a particular named column parsed as ints.  
      */
-    toString (): string;
+    parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Parse a column with string values to a column with float values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * 
+     * @returns  Returns a new dataframe with a particular named column parsed as floats.  
+     */
+    parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Parse a column with string values to a column with date values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * @param [formatString] - Optional formatting string for dates.
+     * 
+     * @returns Returns a new dataframe with a particular named column parsed as dates.  
+     */
+    parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Convert a column of values of different types to a column of string values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to convert to strings.
+     * @param [formatString] - Optional formatting string for dates.
+     * 
+     * @returns Returns a new dataframe with a particular named column convert to strings.  
+     */
+    toStrings (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT>;    
 
     /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
@@ -1033,6 +1090,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
+     * Set a named column as the index of the data-frame.
+     *
+     * @param columnName - Name or index of the column to set as the index.
+     *
+     * @returns Returns a new dataframe with the values of a particular named column as the index.  
+     */
+    setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT> {
+        assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.setIndex' to be a string that specifies the name of the column to set as the index for the dataframe.");
+
+        return this.withIndex<NewIndexT>(this.getSeries(columnName));
+    }
+    
+    /**
      * Apply a new index to the dataframe.
      * 
      * @param newIndex The new index to apply to the dataframe.
@@ -1041,14 +1111,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     withIndex<NewIndexT> (newIndex: NewIndexT[] | Iterable<NewIndexT>): IDataFrame<NewIndexT, ValueT> {
 
-        if (!Sugar.Object.isArray(newIndex)) {
-            assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'DataFrame.withIndex' to be an array, Series or Index.");
-        }
+        DataFrame.checkIterable(newIndex, 'newIndex');
 
-        return new DataFrame<NewIndexT, ValueT>(() => ({
-            values: this.getContent().values,
-            index: newIndex,
-        }));
+        return new DataFrame<NewIndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: content.values,
+                index: newIndex,    
+            };
+        });
     }
 
     /**
@@ -1057,9 +1129,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe with the index reset to the default zero-based index. 
      */
     resetIndex (): IDataFrame<number, ValueT> {
-        return new DataFrame<number, ValueT>(() => ({
-            values: this.getContent().values // Just strip the index.
-        }));
+        return new DataFrame<number, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: content.values,
+                // Strip the index.
+            };
+        });
     }
     
     /**
@@ -1210,6 +1287,85 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
+     * Create a new data-frame from a subset of columns.
+     *
+     * @param columnNames - Array of column names to include in the new data-frame.
+     * 
+     * @returns Returns a dataframe with a subset of columns from the input dataframe.
+     */
+    subset<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT> {
+        assert.isArray(columnNames, "Expected 'columnNames' parameter to 'DataFrame.subset' to be an array of column names to keep.");	
+
+        return new DataFrame<IndexT, NewValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: columnNames,
+                index: content.index,
+                values: new SelectIterable<ValueT, NewValueT>(content.values, (value: any) => {
+                    const output: any = {};
+                    for (const columnName of columnNames) {
+                        output[columnName] = value[columnName];
+                    }
+                    return output;
+                }),
+                pairs: new SelectIterable<[IndexT, ValueT], [IndexT, NewValueT]>(content.pairs, (pair: any) => {
+                    const output: any = {};
+                    const value = pair[1];
+                    for (const columnName of columnNames) {
+                        output[columnName] = value[columnName];
+                    }
+                    return [pair[0], output];
+                }),
+            }
+        });
+    };
+    
+    /**
+     * Create a new data frame with the requested column or columns dropped.
+     *
+     * @param columnOrColumns - Specifies the column name (a string) or columns (array of column names) to drop.
+     * 
+     * @returns Returns a new dataframe with a particular name column or columns removed.
+     */
+    dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT> {
+
+        if (!Sugar.Object.isArray(columnOrColumns)) {
+            assert.isString(columnOrColumns, "'DataFrame.dropSeries' expected either a string or an array or strings.");
+
+            columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
+        }
+
+        return new DataFrame<IndexT, NewValueT>(() => {
+            const content = this.getContent();
+            const newColumnNames = [];
+            for (const columnName of content.columnNames) {
+                if (columnOrColumns.indexOf(columnName) === -1) {
+                    newColumnNames.push(columnName); // This column is not being dropped.
+                }
+            }
+
+            return {
+                columnNames: newColumnNames,
+                index: content.index,
+                values: new SelectIterable<ValueT, NewValueT>(content.values, value => {
+                    const clone: any = Object.assign({}, value);
+                    for (const droppedColumnName of columnOrColumns) {
+                        delete clone[droppedColumnName];
+                    }
+                    return clone;
+                }),
+                pairs: new SelectIterable<[IndexT, ValueT], [IndexT, NewValueT]>(content.pairs, pair => {
+                    const clone: any = Object.assign({}, pair[1]);
+                    for (const droppedColumnName of columnOrColumns) {
+                        delete clone[droppedColumnName];
+                    }
+                    return [pair[0], clone];
+                }),
+            };
+        });
+    }
+    
+    /**
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     * 
@@ -1315,10 +1471,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
 
-        return new DataFrame(() => ({
-            values: new SelectIterable(this.getContent().values, selector),
-            index: this.getContent().index,
-        }));
+        return new DataFrame(() => {
+            const content = this.getContent();
+            return {
+                values: new SelectIterable<ValueT, ToT>(content.values, selector),
+                index: content.index,    
+            };
+        });
     }
 
     /**
@@ -1360,9 +1519,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         assert.isNumber(period, "Expected 'period' parameter to 'DataFrame.window' to be a number.");
 
-        return new Series<number, IDataFrame<IndexT, ValueT>>(() => ({
-            values: new DataFrameWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
-        }));
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
+            const content = this.getContent();
+            return {
+                values: new DataFrameWindowIterable<IndexT, ValueT>(content.columnNames, content.pairs, period)
+            };            
+        });
     }
 
     /** 
@@ -1376,9 +1538,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         assert.isNumber(period, "Expected 'period' parameter to 'DataFrame.rollingWindow' to be a number.");
 
-        return new Series<number, IDataFrame<IndexT, ValueT>>(() => ({
-            values: new DataFrameRollingWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
-        }));
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
+            const content = this.getContent();
+            return {
+                values: new DataFrameRollingWindowIterable<IndexT, ValueT>(content.columnNames, content.pairs, period)
+            };            
+        });
     }
 
     /**
@@ -1392,10 +1557,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         
         assert.isFunction(comparer, "Expected 'comparer' parameter to 'DataFrame.variableWindow' to be a function.")
 
-        return new Series<number, IDataFrame<IndexT, ValueT>>(() => ({
-            values: new DataFrameVariableWindowIterable<IndexT, ValueT>(this.getContent().pairs, comparer)
-        }));
-    };    
+        return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
+            const content = this.getContent();
+            return {
+                values: new DataFrameVariableWindowIterable<IndexT, ValueT>(content.columnNames, content.pairs, comparer)
+            };            
+        });
+    }
 
     /**
      * Group sequential duplicate values into a series of windows.
@@ -1456,11 +1624,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe or dataframe with the specified number of values skipped. 
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT> {
-        return new DataFrame<IndexT, ValueT>(() => ({
-            values: new SkipIterable(this.getContent().values, numValues),
-            index: new SkipIterable(this.getContent().index, numValues),
-            pairs: new SkipIterable(this.getContent().pairs, numValues),
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: new SkipIterable(content.values, numValues),
+                index: new SkipIterable(content.index, numValues),
+                pairs: new SkipIterable(content.pairs, numValues),
+            };
+        });
     }
 
     /**
@@ -1473,10 +1645,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipWhile' function to be a predicate function that returns true/false.");
 
-        return new DataFrame<IndexT, ValueT>(() => ({
-            values: new SkipWhileIterable(this.getContent().values, predicate),
-            pairs: new SkipWhileIterable(this.getContent().pairs, pair => predicate(pair[1])),
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: new SkipWhileIterable(content.values, predicate),
+                pairs: new SkipWhileIterable(content.pairs, pair => predicate(pair[1])),
+            };
+        });
     }
 
     /**
@@ -1502,11 +1678,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     take (numRows: number): IDataFrame<IndexT, ValueT> {
         assert.isNumber(numRows, "Expected 'numRows' parameter to 'DataFrame.take' function to be a number.");
 
-        return new DataFrame(() => ({
-            index: new TakeIterable(this.getContent().index, numRows),
-            values: new TakeIterable(this.getContent().values, numRows),
-            pairs: new TakeIterable(this.getContent().pairs, numRows)
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                index: new TakeIterable(content.index, numRows),
+                values: new TakeIterable(content.values, numRows),
+                pairs: new TakeIterable(content.pairs, numRows)
+            };
+        });
     };
 
     /**
@@ -1519,10 +1699,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeWhile' function to be a predicate function that returns true/false.");
 
-        return new DataFrame(() => ({
-            values: new TakeWhileIterable(this.getContent().values, predicate),
-            pairs: new TakeWhileIterable(this.getContent().pairs, pair => predicate(pair[1]))
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: new TakeWhileIterable(content.values, predicate),
+                pairs: new TakeWhileIterable(content.pairs, pair => predicate(pair[1]))
+            };
+        });
     }
 
     /**
@@ -1652,10 +1836,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.where' function to be a function.");
 
-        return new DataFrame(() => ({
-            values: new WhereIterable(this.getContent().values, predicate),
-            pairs: new WhereIterable(this.getContent().pairs, pair => predicate(pair[1]))
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: new WhereIterable(content.values, predicate),
+                pairs: new WhereIterable(content.pairs, pair => predicate(pair[1]))
+            };
+        });
     }
 
     /**
@@ -1782,12 +1970,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new series containing all values starting at and after the specified index value. 
      */
     startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+
         return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
             const lessThan = this.getIndex().getLessThan();
             return {                
-                index: new SkipWhileIterable(this.getContent().index, index => lessThan(index, indexValue)),
-                pairs: new SkipWhileIterable(this.getContent().pairs, pair => lessThan(pair[0], indexValue)),
-            }
+                columnNames: content.columnNames,
+                index: new SkipWhileIterable(content.index, index => lessThan(index, indexValue)),
+                pairs: new SkipWhileIterable(content.pairs, pair => lessThan(pair[0], indexValue)),
+            };
         });
     }
 
@@ -1799,11 +1990,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new series containing all values up until and including the specified index value. 
      */
     endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+
         return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
             const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
             return {
-                index: new TakeWhileIterable(this.getContent().index, index => lessThanOrEqualTo(index, indexValue)),
-                pairs: new TakeWhileIterable(this.getContent().pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+                columnNames: content.columnNames,
+                index: new TakeWhileIterable(content.index, index => lessThanOrEqualTo(index, indexValue)),
+                pairs: new TakeWhileIterable(content.pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
             };
         });
     }
@@ -1816,11 +2010,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new series containing all values up to the specified inde value. 
      */
     before (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
+
         return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
             const lessThan = this.getIndex().getLessThan();
             return {
-                index: new TakeWhileIterable(this.getContent().index, index => lessThan(index, indexValue)),
-                pairs: new TakeWhileIterable(this.getContent().pairs, pair => lessThan(pair[0], indexValue)),
+                columnNames: content.columnNames,
+                index: new TakeWhileIterable(content.index, index => lessThan(index, indexValue)),
+                pairs: new TakeWhileIterable(content.pairs, pair => lessThan(pair[0], indexValue)),
             };
         });
     }
@@ -1834,10 +2031,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     after (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
         return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
             const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
             return {
-                index: new SkipWhileIterable(this.getContent().index, index => lessThanOrEqualTo(index, indexValue)),
-                pairs: new SkipWhileIterable(this.getContent().pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
+                columnNames: content.columnNames,
+                index: new SkipWhileIterable(content.index, index => lessThanOrEqualTo(index, indexValue)),
+                pairs: new SkipWhileIterable(content.pairs, pair => lessThanOrEqualTo(pair[0], indexValue)),
             };
         });
     }
@@ -1881,6 +2080,104 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
+     * Parse a column with string values to a column with int values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * 
+     * @returns Returns a new dataframe with a particular named column parsed as ints.  
+     */
+    parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
+
+        if (Sugar.Object.isArray(columnNameOrNames)) {
+            let working: IDataFrame<IndexT, ValueT> = this;
+            for (const columnName of columnNameOrNames) {
+                working = working.parseInts(columnName);
+            }
+            
+            return working;
+        }
+        else {
+            return this.withSeries(columnNameOrNames, this.getSeries(columnNameOrNames).parseInts());
+        }
+    }
+
+    /**
+     * Parse a column with string values to a column with float values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * 
+     * @returns  Returns a new dataframe with a particular named column parsed as floats.  
+     */
+    parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
+
+        if (Sugar.Object.isArray(columnNameOrNames)) {
+            let working: IDataFrame<IndexT, ValueT> = this;
+            for (const columnName of columnNameOrNames) {
+                working = working.parseFloats(columnName);
+            }
+            
+            return working;
+        }
+        else {
+            return this.withSeries(columnNameOrNames, this.getSeries(columnNameOrNames).parseFloats());
+        }
+    }
+
+    /**
+     * Parse a column with string values to a column with date values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * @param [formatString] - Optional formatting string for dates.
+     * 
+     * @returns Returns a new dataframe with a particular named column parsed as dates.  
+     */
+    parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT> {
+
+        if (formatString) {
+            assert.isString(formatString, "Expected optional 'formatString' parameter to 'DataFrame.parseDates' to be a string (if specified).");
+        }
+
+        if (Sugar.Object.isArray(columnNameOrNames)) {
+            let working: IDataFrame<IndexT, ValueT> = this;
+            for (const columnName of columnNameOrNames) {
+                working = working.parseDates(columnName, formatString);
+            }
+            
+            return working;
+        }
+        else {
+            return this.withSeries(columnNameOrNames, this.getSeries(columnNameOrNames).parseDates(formatString));
+        }
+    }
+
+    /**
+     * Convert a column of values of different types to a column of string values.
+     *
+     * @param columnNameOrNames - Specifies the column name or array of column names to convert to strings.
+     * @param [formatString] - Optional formatting string for dates.
+     * 
+     * @returns Returns a new dataframe with a particular named column convert to strings.  
+     */
+    toStrings (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT> {
+
+        if (formatString) {
+            assert.isString(formatString, "Expected optional 'formatString' parameter to 'DataFrame.parseDates' to be a string (if specified).");
+        }
+
+        if (Sugar.Object.isArray(columnNameOrNames)) {
+            let working: IDataFrame<IndexT, ValueT> = this;
+            for (const columnName of columnNameOrNames) {
+                working = working.toStrings(columnName, formatString);
+            }
+            
+            return working;
+        }
+        else {
+            return this.withSeries(columnNameOrNames, this.getSeries(columnNameOrNames).toStrings(formatString));
+        }
+    }
+
+    /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      * 
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
@@ -1893,6 +2190,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         return new DataFrame({
+            columnNames: this.getColumnNames(),
+            values: this.toArray(),
+            index: this.getIndex().toArray(),
             pairs: this.toPairs(),
             baked: true,
         });
@@ -1904,12 +2204,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe that is the reverse of the input.
      */
     reverse (): IDataFrame<IndexT, ValueT> {
-
-        return new DataFrame<IndexT, ValueT>(() => ({
-            values: new ReverseIterable(this.getContent().values),
-            index: new ReverseIterable(this.getContent().index),
-            pairs: new ReverseIterable(this.getContent().pairs)
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: new ReverseIterable(content.values),
+                index: new ReverseIterable(content.index),
+                pairs: new ReverseIterable(content.pairs)
+            };
+        });
     }
 
     /**
@@ -1920,11 +2223,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a dataframe containing only unique values as determined by the 'selector' function. 
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT> {
-
-        return new DataFrame<IndexT, ValueT>(() => ({
-            values: new DistinctIterable<ValueT, ToT>(this.getContent().values, selector),
-            pairs: new DistinctIterable<[IndexT, ValueT],ToT>(this.getContent().pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
-        }));
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                values: new DistinctIterable<ValueT, ToT>(content.values, selector),
+                pairs: new DistinctIterable<[IndexT, ValueT],ToT>(content.pairs, (pair: [IndexT, ValueT]): ToT => selector && selector(pair[1]) || <ToT> <any> pair[1])
+            };
+        });
     }
 
     /**

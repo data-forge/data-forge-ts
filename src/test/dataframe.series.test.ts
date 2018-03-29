@@ -329,4 +329,174 @@ describe('DataFrame', () => {
 			[2, 53],
 		]);
 	});
+
+	it('can drop column', function () {
+		
+		var dataFrame = new DataFrame({
+			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
+			rows: [
+				[new Date(2011, 24, 2), 300, 'c', 3],
+				[new Date(1975, 24, 2), 200, 'b', 1],
+				[new Date(2013, 24, 2), 20, 'c', 22],
+				[new Date(2015, 24, 2), 100, 'd', 4],
+			],
+			index: [5, 6, 7, 8]
+        });
+		var modified = dataFrame.dropSeries('Date');
+		expect(modified.getIndex().toArray()).to.eql([5, 6, 7, 8]);
+		expect(modified.toRows()).to.eql([
+			[300, 'c', 3],
+			[200, 'b', 1],
+			[20, 'c', 22],
+			[100, 'd', 4],
+		]);
+	});
+
+	it('can drop multiple columns', function () {
+		
+		var dataFrame = new DataFrame({
+			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
+			rows: [
+				[new Date(2011, 24, 2), 300, 'c', 3],
+				[new Date(1975, 24, 2), 200, 'b', 1],
+				[new Date(2013, 24, 2), 20, 'c', 22],
+				[new Date(2015, 24, 2), 100, 'd', 4],
+			],
+			index: [5, 6, 7, 8]
+		});
+        var modified = dataFrame.dropSeries(['Date', 'Value2'])
+		expect(modified.getIndex().toArray()).to.eql([5, 6, 7, 8]);
+		expect(modified.toRows()).to.eql([
+			[300, 3],
+			[200, 1],
+			[20, 22],
+			[100, 4],
+        ]);
+		expect(modified.toArray()).to.eql([
+            {
+                Value1: 300,
+                Value3: 3,
+            },
+            {
+                Value1: 200,
+                Value3: 1,
+            },
+            {
+                Value1: 20,
+                Value3: 22,
+            },
+            {
+                Value1: 100,
+                Value3: 4,
+            },
+		]);
+    });
+
+	it('dropping non-existing column has no effect', function () {
+		
+		var columnNames = [ "Date", "Value1", "Value2", "Value3" ];
+		var dataFrame = new DataFrame({
+			columnNames: columnNames,
+			rows: [
+				[new Date(2011, 24, 2), 300, 'c', 3],
+				[new Date(1975, 24, 2), 200, 'b', 1],
+				[new Date(2013, 24, 2), 20, 'c', 22],
+				[new Date(2015, 24, 2), 100, 'd', 4],
+			],
+			index: [5, 6, 7, 8]
+		});
+		var modified = dataFrame.dropSeries('non-existing-column');
+		expect(modified.getIndex().toArray()).to.eql([5, 6, 7, 8]);
+		expect(modified.getColumnNames()).to.eql(columnNames);
+		expect(modified.toRows()).to.eql([
+				[new Date(2011, 24, 2), 300, 'c', 3],
+				[new Date(1975, 24, 2), 200, 'b', 1],
+				[new Date(2013, 24, 2), 20, 'c', 22],
+				[new Date(2015, 24, 2), 100, 'd', 4],
+		]);
+	});
+    
+	it('can retreive column subset as new dataframe', function () 
+	{
+		var dataFrame = new DataFrame({
+			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
+			rows: [
+				[new Date(1975, 24, 2), 100, 'foo', 11],
+				[new Date(2015, 24, 2), 200, 'bar', 22],
+			],
+			index: [5, 6]
+		});
+		var subset = dataFrame.subset(['Value3', 'Value1']);
+		expect(dataFrame).not.to.equal(subset); 
+		expect(subset.getIndex().toArray()).to.eql([5, 6]);
+		expect(subset.toRows()).to.eql([
+			[11, 100],
+			[22, 200],
+		]);
+	});
+	
+	it('can keep column', function () {
+		
+		var dataFrame = new DataFrame({
+			columnNames: [ "Value1", "Value2", "Value3" ],
+			rows: [
+				[300, 'c', 3],
+				[200, 'b', 1],
+				[20, 'c', 22],
+				[100, 'd', 4],
+			],
+			index: [5, 6, 7, 8]
+		});
+		var modified = dataFrame.subset(['Value1']);
+		expect(modified.getColumnNames()).to.eql(['Value1']);
+		expect(modified.getIndex().toArray()).to.eql([5, 6, 7, 8]);
+		expect(modified.toRows()).to.eql([
+			[300],
+			[200],
+			[20],
+			[100],
+		]);
+	});
+
+	it('can keep multiple columns', function () {
+		
+		var dataFrame = new DataFrame({
+			columnNames: [ "Value1", "Value2", "Value3" ],
+			rows: [
+				[300, 'c', 3],
+				[200, 'b', 1],
+				[20, 'c', 22],
+				[100, 'd', 4],
+			],
+			index: [5, 6, 7, 8]
+        });
+
+		var modified = dataFrame.subset(['Value1', 'Value3']);
+		expect(modified.getColumnNames()).to.eql(['Value1', 'Value3']);
+		expect(modified.getIndex().toArray()).to.eql([5, 6, 7, 8]);
+		expect(modified.toRows()).to.eql([
+			[300, 3],
+			[200, 1],
+			[20, 22],
+			[100, 4],
+        ]);
+		expect(modified.toArray()).to.eql([
+            {
+                Value1: 300,
+                Value3: 3,
+            },
+            {
+                Value1: 200,
+                Value3: 1,
+            },
+            {
+                Value1: 20,
+                Value3: 22,
+            },
+            {
+                Value1: 100,
+                Value3: 4,
+            },
+		]);
+	});
 });
