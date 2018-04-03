@@ -43,6 +43,22 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columns?: any,
 };
 
+/** 
+ * Represents a name column in a dataframe.
+ */
+export interface IColumn {
+    
+    /**
+     * The name of the column.
+     */
+    name: string;
+
+    /**
+     * The data series from the column.
+     */
+    series: ISeries<any, any>;
+}
+
 /**
  * A selector function that can select a series from a dataframe.
  */
@@ -71,6 +87,13 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns an array of the column names in the dataframe.  
      */
     getColumnNames (): string[];
+
+    /** 
+     * Retreive a collection of all columns in the dataframe.
+     * 
+     * @returns Returns a series the columns in the dataframe.
+     */
+    getColumns (): ISeries<number, IColumn>;
 
     /**
      * Get the index for the dataframe.
@@ -1081,6 +1104,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     getColumnNames (): string[] {
         return Array.from(this.getContent().columnNames);
     }
+
+    /** 
+     * Retreive a collection of all columns in the dataframe.
+     * 
+     * @returns Returns a series the columns in the dataframe.
+     */
+    getColumns (): ISeries<number, IColumn> {
+        return new Series<number, IColumn>(() => {
+            const columnNames = this.getColumnNames();
+            return {
+                values: columnNames.map(columnName => {
+                    return {
+                        name: columnName,
+                        series: this.getSeries(columnName),
+                    };
+                }),
+            };
+        });
+    }    
     
     /**
      * Get the index for the dataframe.

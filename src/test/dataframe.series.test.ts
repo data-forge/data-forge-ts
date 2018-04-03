@@ -499,4 +499,24 @@ describe('DataFrame', () => {
             },
 		]);
 	});
+
+	it('can retreive columns', function () {
+		
+		var dataFrame = new DataFrame({
+			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
+			rows: [
+				[new Date(1975, 24, 2), 100, 'foo', 11],
+				[new Date(2015, 24, 2), 200, 'bar', 22],
+			],
+			index: [5, 6]
+        });
+		var columns = dataFrame.getColumns();
+		expect(columns.count()).to.eql(4);
+
+		expect(columns.at(0)!.name).to.eql('Date');
+		expect(columns.at(0)!.series.toArray()).to.eql([new Date(1975, 24, 2), new Date(2015, 24, 2)]);
+
+		expect(columns.at(2)!.name).to.eql('Value2');
+		expect(columns.at(2)!.series.toArray()).to.eql(['foo', 'bar']);
+    });
 });
