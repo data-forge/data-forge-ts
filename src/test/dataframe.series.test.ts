@@ -519,4 +519,42 @@ describe('DataFrame', () => {
 		expect(columns.at(2)!.name).to.eql('Value2');
 		expect(columns.at(2)!.series.toArray()).to.eql(['foo', 'bar']);
     });
+
+	it('column being merged is reindexed', function () {
+
+		var dataFrame = new DataFrame({
+			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
+			rows: [
+				[new Date(2011, 24, 2), 300, 'c', 3],
+				[new Date(1975, 24, 2), 200, 'b', 1],
+				[new Date(2013, 24, 2), 20, 'c', 22],
+				[new Date(2015, 24, 2), 100, 'd', 4],
+			],
+			index: [5, 6, 7, 8]
+        });
+		
+		var newColumnName = "new column";
+		var newIndex = [0, 5, 2, 7];
+		var newSeries = new Series({ values: [4, 3, 2, 1], index: newIndex });
+		var modified = dataFrame.withSeries(newColumnName, newSeries);
+		var mergedSeries = modified.getSeries(newColumnName);
+
+		expect(modified.getIndex().take(4).toArray()).to.eql([5, 6, 7, 8]);
+		expect(modified.getColumnNames()).to.eql([
+			"Date",
+			"Value1",
+			"Value2",
+			"Value3",
+			newColumnName,
+		]);
+		expect(modified.toRows()).to.eql([
+			[new Date(2011, 24, 2), 300, 'c', 3, 3],
+			[new Date(1975, 24, 2), 200, 'b', 1, undefined],
+			[new Date(2013, 24, 2), 20, 'c', 22, 1],
+			[new Date(2015, 24, 2), 100, 'd', 4, undefined],
+		]);
+
+		expect(mergedSeries.getIndex().take(4).toArray()).to.eql([5, 6, 7, 8]);
+		expect(mergedSeries.toArray()).to.eql([3, 1]);
+	});    
 });
