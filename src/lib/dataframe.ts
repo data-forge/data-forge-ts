@@ -1269,6 +1269,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return workingDataFrame;
         }
 
+        if (this.none()) {
+            // Empty data frame.
+            return importSeries.inflate<ValueT>(value => {
+                    var row: any = {};
+                    row[columnNameOrSpec] = value;
+                    return row;
+                });
+        }
+
         return new DataFrame<IndexT, ValueT>(() => {    
             const seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
             const newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec]));

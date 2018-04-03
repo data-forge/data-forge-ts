@@ -556,5 +556,19 @@ describe('DataFrame', () => {
 
 		expect(mergedSeries.getIndex().take(4).toArray()).to.eql([5, 6, 7, 8]);
 		expect(mergedSeries.toArray()).to.eql([3, 1]);
-	});    
+    });
+    
+	it('can set series on empty dataframe', function () {
+
+		var dataFrame = new DataFrame();
+        var withSeries = dataFrame.withSeries("NewSeries", new Series({ values: [1, 2, 3] }))
+        
+		expect(withSeries.getColumnNames()).to.eql(["NewSeries"]);
+		expect(withSeries.toRows()).to.eql([
+			[1],
+			[2],
+			[3],
+		]);
+	});
+    
 });
