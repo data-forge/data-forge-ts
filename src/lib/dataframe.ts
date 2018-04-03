@@ -1250,15 +1250,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
-        let importSeries: ISeries<IndexT, SeriesValueT>;
-    
-        if (Sugar.Object.isFunction(series as Object)) {
-            importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
-        }
-        else { 
-            importSeries = series! as ISeries<IndexT, SeriesValueT>;
-        }
-    
         if (Sugar.Object.isObject(columnNameOrSpec)) {
             const columnNames = Object.keys(columnNameOrSpec);
             let workingDataFrame: IDataFrame<IndexT, ValueT> = this;
@@ -1270,6 +1261,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         if (this.none()) {
+            let importSeries: ISeries<IndexT, SeriesValueT>;
+    
+            if (Sugar.Object.isFunction(series as Object)) {
+                importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
+            }
+            else { 
+                importSeries = series! as ISeries<IndexT, SeriesValueT>;
+            }
+                
             // Empty data frame.
             return importSeries.inflate<ValueT>(value => {
                     var row: any = {};
@@ -1279,6 +1279,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         return new DataFrame<IndexT, ValueT>(() => {    
+            let importSeries: ISeries<IndexT, SeriesValueT>;
+    
+            if (Sugar.Object.isFunction(series as Object)) {
+                importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
+            }
+            else { 
+                importSeries = series! as ISeries<IndexT, SeriesValueT>;
+            }
+
             const seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
             const newColumnNames =  makeDistinct(this.getColumnNames().concat([columnNameOrSpec]));
     

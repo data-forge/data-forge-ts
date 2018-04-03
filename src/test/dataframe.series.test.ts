@@ -571,4 +571,41 @@ describe('DataFrame', () => {
 		]);
 	});
     
+	it('can generate new series', function () {
+
+		var dataFrame = new DataFrame({
+				columnNames: ["A"],
+				rows: [[1], [2], [3]],
+			});
+		var withSeries = dataFrame
+			.withSeries("B", df => {
+				return new Series({ values: [10, 20, 30]});				
+			});
+
+		expect(withSeries.getColumnNames()).to.eql(["A", "B"]);
+		expect(withSeries.toRows()).to.eql([
+			[1, 10],
+			[2, 20],
+			[3, 30],
+		]);
+    });
+
+	it('can transform existing series', function () {
+
+		var dataFrame = new DataFrame({
+				columnNames: ["A"],
+				rows: [[1], [2], [3]],
+			});
+		var modified = dataFrame
+			.withSeries("B", df => {
+				return df.getSeries<number>("A").select(v => v * 10); 
+			});
+
+		expect(modified.getColumnNames()).to.eql(["A", "B"]);
+		expect(modified.toRows()).to.eql([
+			[1, 10],
+			[2, 20],
+			[3, 30],
+		]);
+	});
 });
