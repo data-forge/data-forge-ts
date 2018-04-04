@@ -608,4 +608,81 @@ describe('DataFrame', () => {
 			[3, 30],
 		]);
 	});
+
+	it('can set new series - using column spec', function () {
+
+		var dataFrame = new DataFrame({
+				columnNames: ["A"],
+				rows: [[1], [2], [3]],
+			});
+		var modified = dataFrame
+			.withSeries({ 
+				B: new Series({ values: [10, 20, 30] }), 
+			});
+
+		expect(modified.getColumnNames()).to.eql(["A", "B"]);
+		expect(modified.toRows()).to.eql([
+			[1, 10],
+			[2, 20],
+			[3, 30],
+		]);
+	});
+
+	it('can set multiple series - using column spec', function () {
+
+		var dataFrame = new DataFrame({
+				columnNames: ["A"],
+				rows: [[1], [2], [3]],
+			});
+		var modified = dataFrame
+			.withSeries({ 
+                B: new Series({ values: [10, 20, 30] }), 
+                C: new Series({ values: [100, 200, 300] }), 
+			});
+
+		expect(modified.getColumnNames()).to.eql(["A", "B", "C"]);
+		expect(modified.toRows()).to.eql([
+			[1, 10, 100],
+			[2, 20, 200],
+			[3, 30, 300],
+		]);
+    });
+    
+	it('can generate new series - using column spec', function () {
+
+		var dataFrame = new DataFrame({
+				columnNames: ["A"],
+				rows: [[1], [2], [3]],
+			});
+		var modified = dataFrame
+			.withSeries({
+				B: df => new Series({ values: [10, 20, 30]})
+			});
+
+		expect(modified.getColumnNames()).to.eql(["A", "B"]);
+		expect(modified.toRows()).to.eql([
+			[1, 10],
+			[2, 20],
+			[3, 30],
+		]);
+	});
+
+	it('can transform existing series - using column spec', function () {
+
+		var dataFrame = new DataFrame({
+				columnNames: ["A"],
+				rows: [[1], [2], [3]],
+			});
+		var modified = dataFrame
+			.withSeries({
+				B: df => df.getSeries<number>("A").select(v => v * 10) ,
+			});
+
+		expect(modified.getColumnNames()).to.eql(["A", "B"]);
+		expect(modified.toRows()).to.eql([
+			[1, 10],
+			[2, 20],
+			[3, 30],
+		]);
+	});
 });
