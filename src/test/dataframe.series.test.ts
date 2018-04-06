@@ -685,4 +685,64 @@ describe('DataFrame', () => {
 			[3, 30],
 		]);
 	});
+
+	it('can reorder existing columns', function () {
+
+		var df = new DataFrame({
+			columnNames: [ "Col1", "Col2" ],
+			rows: [
+				['foo', 11],
+				['bar', 22],
+			],
+			index: [5, 6]
+        });
+
+		var remapped = df.reorderSeries(["Col2", "Col1"]);
+
+		expect(remapped.getColumnNames()).to.eql([ "Col2", "Col1" ]);
+		expect(remapped.toRows()).to.eql([
+			[11, 'foo'],
+			[22, 'bar'],
+		]);
+	});
+
+	it('columns not in remap table are dropped', function () {
+
+		var df = new DataFrame({
+			columnNames: [ "Col1", "Col2" ],
+			rows: [
+				['foo', 11],
+				['bar', 22],
+			],
+			index: [5, 6]
+        });
+
+		var remapped = df.reorderSeries(["Col2"]);
+
+		expect(remapped.getColumnNames()).to.eql([ "Col2" ]);
+		expect(remapped.toRows()).to.eql([
+			[11],
+			[22],
+		]);
+	});
+
+	it('new columns in remap table are initialised to a column of empty values', function () {
+
+		var df = new DataFrame({
+			columnNames: [ "Col1", "Col2" ],
+			rows: [
+				['foo', 11],
+				['bar', 22],
+			],
+			index: [5, 6]
+        });
+
+		var remapped = df.reorderSeries(["New Column", "Col2"]);
+
+		expect(remapped.getColumnNames()).to.eql([ "New Column", "Col2" ]);
+		expect(remapped.toRows()).to.eql([
+			[undefined, 11],
+			[undefined, 22],
+		]);
+    });
 });

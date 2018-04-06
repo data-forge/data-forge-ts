@@ -1444,6 +1444,48 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             };
         });
     }
+        
+    /**
+     * Create a new data frame with columns reordered.
+     * New column names create new columns (with undefined values), omitting existing column names causes those columns to be dropped.
+     * 
+     * @param columnNames - The new order for columns.
+     * 
+     * @returns Returns a new dataframe with columns remapped according to the specified column layout.   
+     */
+    reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT> {
+
+        assert.isArray(columnNames, "Expected parameter 'columnNames' to 'DataFrame.reorderSeries' to be an array with column names.");
+
+        for (const columnName of columnNames) {
+            assert.isString(columnName, "Expected parameter 'columnNames' to 'DataFrame.reorderSeries' to be an array with column names.");
+        }
+
+        return new DataFrame<IndexT, NewValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: columnNames,
+                index: content.index,
+                values: new SelectIterable<ValueT, NewValueT>(content.values, (value: any) => {
+                    const output: any = {};
+                    for (const columnName of columnNames) {
+                        output[columnName] = value[columnName];
+                    }
+
+                    return <NewValueT> output;
+                }),
+                pairs:  new SelectIterable<[IndexT, ValueT], [IndexT, NewValueT]>(content.pairs, (pair: [IndexT, ValueT]) => {
+                    const value: any = <any> pair[1];
+                    const output: any = {};
+                    for (const columnName of columnNames) {
+                        output[columnName] = value[columnName];
+                    }
+
+                    return [pair[0], <NewValueT> output];
+                }),
+            };
+        });
+    }
     
     /**
     * Extract values from the dataframe as an array.
