@@ -77,7 +77,6 @@ export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame
  */
 export type DataFrameConfigFn<IndexT, ValueT> = () => IDataFrameConfig<IndexT, ValueT>;
 
-
 /**
  * Interface that represents a dataframe containing a sequence of indexed rows of data.
  */
@@ -554,6 +553,15 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns a new dataframe with a particular named column convert to strings.  
      */
     toStrings (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT>;    
+
+    /**
+     * Produces a new data frame with all string values truncated to the requested maximum length.
+     *
+     * @param maxLength - The maximum length of the string values after truncation.
+     * 
+     * @returns Returns a new dataframe with all strings truncated to the specified maximum length.
+     */
+    truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT>;
 
     /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
@@ -2247,6 +2255,31 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         else {
             return this.withSeries(columnNameOrNames, this.getSeries(columnNameOrNames).toStrings(formatString));
         }
+    }
+
+    /**
+     * Produces a new data frame with all string values truncated to the requested maximum length.
+     *
+     * @param maxLength - The maximum length of the string values after truncation.
+     * 
+     * @returns Returns a new dataframe with all strings truncated to the specified maximum length.
+     */
+    truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT> {
+        assert.isNumber(maxLength, "Expected 'maxLength' parameter to 'truncateStrings' to be an integer.");
+
+        return this.select((row: any) => {
+            const output: any = {};
+            for (const key of Object.keys(row)) {
+                const value = row[key];
+                if (Sugar.Object.isString(value)) {
+                    output[key] = value.substring(0, maxLength);
+                }
+                else {
+                    output[key] = value;
+                }
+            }
+           return <ValueT> output;
+        });
     }
 
     /**

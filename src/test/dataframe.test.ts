@@ -779,6 +779,57 @@ describe('DataFrame', () => {
 		]);
     });
    
+	it('can truncate string values', function () {
+
+		var df = new DataFrame({
+			columnNames: ["Col1", "Col2"],
+			rows: [
+				["Long string", "Short"],
+				["Small", "Even longer string"],
+			]
+        });
+
+		var truncated = df.truncateStrings(10);
+		expect(truncated.toRows()).to.eql([
+			["Long strin", "Short"],
+			["Small", "Even longe"],
+		]);
+	});
+
+	it('truncation ignores strings that are already short enough', function () {
+
+		var df = new DataFrame({
+			columnNames: ["Col1", "Col2"],
+			rows: [
+				["Long string", "Short"],
+				["Small", "Even longer string"],
+			]
+        });
+
+		var truncated = df.truncateStrings(20);
+		expect(truncated.toRows()).to.eql([
+			["Long string", "Short"],
+			["Small", "Even longer string"],
+		]);
+	});
+
+	it('truncation passes through other values', function () {
+
+		var df = new DataFrame({
+			columnNames: ["Col1", "Col2", "Col3"],
+			rows: [
+				["Long string", 5, "Short"],
+				["Small", "Even longer string", new Date(1, 2, 3)],
+			]
+        });
+
+        var truncated = df.truncateStrings(10);
+		expect(truncated.toRows()).to.eql([
+			["Long strin", 5, "Short"],
+			["Small", "Even longe", new Date(1, 2, 3)],
+		]);
+    });
+
 	it('can insert pair at start of empty dataframe', function () {
 
 		var dataframe = new DataFrame();
