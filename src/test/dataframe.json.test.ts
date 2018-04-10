@@ -4,17 +4,15 @@ import { Index } from '../lib/index';
 import { DataFrame } from '../lib/dataframe';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
-describe('DataFrame csv', () => {
+describe('DataFrame json', () => {
 
-	it('can save empty data frame to csv', function () {
+	it('can save empty data frame to json', function () {
 
 		var df = new DataFrame();
-		var csvData = df.toCSV();
-		assert.isString(csvData);
-		expect(csvData.length).to.eql(0);
+		expect(df.toJSON()).to.eql("[]");
 	});
 
-	it('can save data frame to csv', function () {
+	it('can save data frame to json', function () {
 
         var df = new DataFrame([
             {
@@ -27,13 +25,18 @@ describe('DataFrame csv', () => {
             },
         ]);
 
-		var csvData = df.toCSV();
-		assert.isString(csvData);
-		expect(csvData).to.eql(
-			"Column1,Column2\r\n" +
-			"A,1\r\n" +
-			"B,2"
+		expect(df.toJSON()).to.eql(
+			'[\n' +
+			'    {\n' +
+			'        "Column1": "A",\n' +
+			'        "Column2": 1\n' +
+			'    },\n' +
+			'    {\n' +
+			'        "Column1": "B",\n' +
+			'        "Column2": 2\n' +
+			'    }\n' +
+			']'
 		);
-	});
-    
+    });	
+     
 });
