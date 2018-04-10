@@ -67,6 +67,13 @@ export interface IColumnSpec {
 }
 
 /**
+ * Specifies how to rename columns.
+ */
+export interface IColumnRenameSpec {
+    [index: string]: string;
+}
+
+/**
  * A selector function that can select a series from a dataframe.
  */
 export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame: IDataFrame<IndexT, DataFrameValueT>) => ISeries<IndexT, SeriesValueT>;
@@ -191,6 +198,25 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns a new dataframe with a particular name column or columns removed.
      */
     dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT>;
+
+    /**
+     * Create a new data frame with columns reordered.
+     * New column names create new columns (with undefined values), omitting existing column names causes those columns to be dropped.
+     * 
+     * @param columnNames - The new order for columns.
+     * 
+     * @returns Returns a new dataframe with columns remapped according to the specified column layout.   
+     */
+    reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
+
+    /**
+     * Create a new data-frame with renamed series.
+     *
+     * @param newColumnNames - A column rename spec - maps existing column names to new column names.
+     * 
+     * @returns Returns a new dataframe with columns renamed.
+     */
+    renameSeries<NewValueT = ValueT> (newColumnNames: IColumnRenameSpec): IDataFrame<IndexT, NewValueT>;
 
     /**
     * Extract values from the dataframe as an array.
@@ -1486,6 +1512,63 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             };
         });
     }
+    
+    /**
+     * Create a new data-frame with renamed series.
+     *
+     * @param newColumnNames - A column rename spec - maps existing column names to new column names.
+     * 
+     * @returns Returns a new dataframe with columns renamed.
+     */
+    renameSeries<NewValueT = ValueT> (newColumnNames: IColumnRenameSpec): IDataFrame<IndexT, NewValueT> {
+
+        assert.isObject(newColumnNames, "Expected parameter 'newColumnNames' to 'DataFrame.renameSeries' to be an array with column names.");
+
+        const existingColumnsToRename = Object.keys(newColumnNames);
+        for (const existingColumnName of existingColumnsToRename) {
+            assert.isString(existingColumnName, "Expected existing column name '" + existingColumnName + "' of 'newColumnNames' parameter to 'DataFrame.renameSeries' to be a string.");
+            assert.isString(newColumnNames[existingColumnName], "Expected new column name '" + newColumnNames[existingColumnName] + "' for existing column '" + existingColumnName + "' of 'newColumnNames' parameter to 'DataFrame.renameSeries' to be a string.");
+        }
+
+        return new DataFrame<IndexT, NewValueT>(() => {
+            const content = this.getContent();
+            const renamedColumns: string[] = [];
+
+            for (const existingColumnName of content.columnNames) { // Convert the column rename spec to array of new column names.
+                const columnIndex = existingColumnsToRename.indexOf(existingColumnName);
+                if (columnIndex === -1) {
+                    renamedColumns.push(existingColumnName); // This column is not renamed.                    
+                }
+                else {
+                    renamedColumns.push(newColumnNames[existingColumnName]); // This column is renamed.
+                }
+                
+            }
+    
+            //
+            // Remap each row of the data frame to the new column names.
+            //
+            function remapValue (value: any): any {
+                const clone = Object.assign({}, value);
+    
+                for (const existingColumName of existingColumnsToRename) {
+                    clone[newColumnNames[existingColumName]] = clone[existingColumName];
+                    delete clone[existingColumName];
+                }
+    
+                return clone;
+            }
+    
+            return {
+                columnNames: renamedColumns,
+                index: content.index,
+                values: new SelectIterable<ValueT, NewValueT>(content.values, remapValue),
+                pairs: new SelectIterable<[IndexT, ValueT], [IndexT, NewValueT]>(content.pairs, pair => {
+                    return [pair[0], remapValue(pair[1])];
+                }),
+            };
+        });
+    };
     
     /**
     * Extract values from the dataframe as an array.

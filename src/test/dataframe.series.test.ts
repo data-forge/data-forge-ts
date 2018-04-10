@@ -745,4 +745,71 @@ describe('DataFrame', () => {
 			[undefined, 22],
 		]);
     });
+
+	it('can rename single column', function () {
+
+		var df = new DataFrame({
+            columnNames: ["Column1", "Column2", "Column3"], 
+			rows: [
+                ['A', 1],
+                ['B', 2],
+            ],
+            index: [10, 11]
+        });
+
+		var columnDef = {
+            "Column2": "NewColumnName"
+        };
+		var renamed = df.renameSeries(columnDef);
+
+		expect(df.getColumnNames()[1]).to.eql("Column2");
+
+		expect(renamed.getColumnNames()[1]).to.eql("NewColumnName");
+		expect(renamed.getSeries("NewColumnName")).to.be.ok;
+	});
+
+	it('renaming non-existing column has no effect', function () {
+
+		var columnNames = ["Column1", "Column2"];
+		var dataFrame = new DataFrame({
+            columnNames: columnNames, 
+            rows: [
+                ['A', 1],
+                ['B', 2],
+            ],
+            index: [10, 11]
+        });
+
+		var columnDef = {
+            "some-column-that-doesnt-exist": "new-column-name"
+        };
+		var renamed = dataFrame.renameSeries(columnDef);
+
+		expect(dataFrame.getColumnNames()).to.eql(columnNames);
+		expect(dataFrame.getIndex().toArray()).to.eql([10, 11]);
+		expect(dataFrame.toRows()).to.eql([
+			['A', 1],
+			['B', 2],
+		]);
+    });	
+        
+	it('can rename all columns', function () {
+
+		var df = new DataFrame({
+			columnNames: [ "Col1", "Col2", "Col3" ],
+			rows: [
+				[300, 'c', 3],
+				[200, 'b', 1],
+			],
+			index: [5, 6]
+        });
+
+		var newColumnNames = {
+            "Col1": "Val1", 
+            "Col2": "Val2", 
+            "Col3": "Val3"
+        };
+		var renamed = df.renameSeries(newColumnNames);
+		expect(renamed.getColumnNames()).to.eql(["Val1", "Val2", "Val3"]);
+    });
 });

@@ -26,6 +26,8 @@ Rows must now be passed into a dataframe via the 'rows' field of the dataframe c
 
 dataForge.use and plugins have been removed. I never really made proper use of this.
 
+renameSeries no longer takes an array of strings for column names, just a column name map.
+
 **New feature**
 
 Typescript
