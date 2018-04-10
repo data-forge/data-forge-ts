@@ -28,6 +28,7 @@ dataForge.use and plugins have been removed. I never really made proper use of t
 
 renameSeries no longer takes an array of strings for column names, just a column name map.
 
+
 **New feature**
 
 Typescript

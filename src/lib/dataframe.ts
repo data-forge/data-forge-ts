@@ -853,6 +853,20 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *  @returns Returns a CSV format string representing the dataframe.   
      */
     toCSV (): string;
+
+    /**
+     * Treat the dataframe as CSV data for purposes of serialization.
+     * 
+     * @returns Returns an object that represents the dataframe for serialization in the CSV format. Call `writeFile`, `writeFileSync` to output the dataframe via different media.
+     */
+    asCSV (): ICsvSerializer;
+
+    /**
+     * Treat the dataframe as JSON data for purposes of serialization.
+     * 
+     * @returns Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
+     */
+    asJSON (): IJsonSerializer;
 }
 
 /**
@@ -3032,7 +3046,170 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         const data = [this.getColumnNames()].concat(this.toRows());
         return BabyParse.unparse(data);
     }
+
+    /**
+     * Treat the dataframe as CSV data for purposes of serialization.
+     * 
+     * @returns Returns an object that represents the dataframe for serialization in the CSV format. Call `writeFile`, `writeFileSync` to output the dataframe via different media.
+     */
+    asCSV (): ICsvSerializer {
+        return new CsvSerializer<IndexT, ValueT>(this);
+    }
+
+    /**
+     * Treat the dataframe as JSON data for purposes of serialization.
+     * 
+     * @returns Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
+     */
+    asJSON (): IJsonSerializer {
+        return new JsonSerializer<IndexT, ValueT>(this);        
+    }
+}
+
+/** 
+ * Packages a dataframe ready for CSV serialization.
+ * */
+export interface ICsvSerializer {
+
+    /**
+     * Serialize the dataframe to a CSV file in the local file system.
+     * Asynchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     * 
+     *  @returns Returns a promise that resolves when the file has been written.   
+     */
+    writeFile (filePath: string): Promise<void>;
+
+    /**
+     * Serialize the dataframe to a CSV file in the local file system.
+     * Synchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     */
+    writeFileSync (filePath: string): void;
+}
+
+//
+// Packages a dataframe ready for CSV serialization.
+//
+class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
+
+    dataframe: IDataFrame<IndexT, ValueT>;
+
+    constructor (dataframe: IDataFrame<IndexT, ValueT>) {
+        this.dataframe = dataframe;
+    }
     
+    /**
+     * Serialize the dataframe to a CSV file in the local file system.
+     * Asynchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     * 
+     *  @returns Returns a promise that resolves when the file has been written.   
+     */
+    writeFile (filePath: string): Promise<void> {
+        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFile' to be a string that specifies the path of the file to write to the local file system.");
+
+        return new Promise((resolve, reject) => {
+            var fs = require('fs');	
+            fs.writeFile(filePath, this.dataframe.toCSV(), (err: any) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Serialize the dataframe to a CSV file in the local file system.
+     * Synchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     */
+    writeFileSync (filePath: string): void {
+        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFileSync' to be a string that specifies the path of the file to write to the local file system.");
+
+        var fs = require('fs');	
+        fs.writeFileSync(filePath, this.dataframe.toCSV());
+    }
+}
+
+/**
+ * Packages a dataframe ready for JSON serialization.
+ */
+export interface IJsonSerializer {
+
+    /**
+     * Serialize the dataframe to a JSON file in the local file system.
+     * Asynchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     * 
+     *  @returns Returns a promise that resolves when the file has been written.   
+     */
+    /*async*/ writeFile (filePath: string): Promise<void>;
+
+    /**
+     * Serialize the dataframe to a JSON file in the local file system.
+     * Synchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     */
+    writeFileSync (filePath: string): void;
+}
+
+//
+// Packages a dataframe ready for JSON serialization.
+//
+class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
+
+    dataframe: IDataFrame<IndexT, ValueT>;
+
+    constructor (dataframe: IDataFrame<IndexT, ValueT>) {
+        this.dataframe = dataframe;
+    }
+
+    /**
+     * Serialize the dataframe to a JSON file in the local file system.
+     * Asynchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     * 
+     *  @returns Returns a promise that resolves when the file has been written.   
+     */
+    writeFile (filePath: string): Promise<void> {
+        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
+
+        return new Promise((resolve, reject) => {
+            var fs = require('fs');	
+            fs.writeFile(filePath, this.dataframe.toJSON(), (err: any) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Serialize the dataframe to a JSON file in the local file system.
+     * Synchronous version.
+     * 
+     * @param filePath - Specifies the output path for the file. 
+     */
+    writeFileSync (filePath: string): void {
+        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
+
+        var fs = require('fs');	
+        fs.writeFileSync(filePath, this.dataframe.toJSON());
+    }
 }
 
 //
