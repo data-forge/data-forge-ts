@@ -24,7 +24,7 @@ import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
 import { assert } from 'chai';
 import * as moment from 'moment';
-import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn } from './series';
+import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import * as BabyParse from 'babyparse';
 import { toMap, makeDistinct } from './utils';
@@ -71,6 +71,13 @@ export interface IColumnSpec {
  */
 export interface IColumnRenameSpec {
     [index: string]: string;
+}
+
+/**
+ * Specifies columns to transform.
+ */
+export interface IColumnTransformSpec {
+    [index: string]: SelectorWithIndexFn<any, any>;
 }
 
 /**
@@ -143,7 +150,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnName Specifies the name of the column that contains the series to retreive.
      */
-    getSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT>;
+    getSeries<SeriesValueT = any> (columnName: string): ISeries<IndexT, SeriesValueT>;
 
     /**
      * Returns true if the column with the requested name exists in the dataframe.
@@ -284,6 +291,44 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns  Returns a new dataframe with values that have been produced by the selector function. 
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT>;
+
+    /**
+     * Transform one or more columns. This is equivalent to extracting a column, calling 'select' on it,
+     * then plugging it back in as the same column.
+     *
+     * @param columnSelectors - Object with field names for each column to be transformed. Each field you be a selector that transforms that column.
+     * 
+     * @returns Returns a new dataframe with 1 or more columns transformed.   
+     */
+    transformSeries<NewValueT = ValueT> (columnSelectors: IColumnTransformSpec): IDataFrame<IndexT, NewValueT>;
+
+    /** 
+     * Generate new columns based on existing rows.
+     *
+     * @param generator - Generator function that transforms each row to a new set of columns.
+     * 
+     * @returns Returns a new dataframe with 1 or more new columns.
+     */
+    generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT>;
+
+    /** 
+     * Deflate a data-frame to a series.
+     *
+     * @param [selector] - Optional selector function that transforms each row to a new sequence of values.
+     *
+     * @returns Returns a series that was created from the input dataframe.
+     */
+    deflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+
+    /** 
+     * Inflate a named series in the data-frame to 1 or more new series in the new dataframe.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     * @param [selector] - Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
+     * 
+     * @returns Returns a new dataframe with a column inflated to 1 or more new columns.
+     */
+    inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT>;
 
     /**
      * Segment a dataframe into 'windows'. Returns a new series. Each value in the new dataframe contains a 'window' (or segment) of the original dataframe.
@@ -1241,7 +1286,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnName Specifies the name of the column that contains the series to retreive.
      */
-    getSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT> {
+    getSeries<SeriesValueT = any> (columnName: string): ISeries<IndexT, SeriesValueT> {
 
         assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
 
@@ -1724,6 +1769,131 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }
             )
         }));
+    }
+
+    /**
+     * Transform one or more columns. This is equivalent to extracting a column, calling 'select' on it,
+     * then plugging it back in as the same column.
+     *
+     * @param columnSelectors - Object with field names for each column to be transformed. Each field you be a selector that transforms that column.
+     * 
+     * @returns Returns a new dataframe with 1 or more columns transformed.   
+     */
+    transformSeries<NewValueT = ValueT> (columnSelectors: IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
+
+        assert.isObject(columnSelectors, "Expected 'columnSelectors' parameter of 'DataFrame.transformSeries' function to be an object. Field names should specify columns to transform. Field values should be selector functions that specify the transformation for each column.");
+
+        let working: IDataFrame<IndexT, any> = this;
+
+        for (const columnName of Object.keys(columnSelectors)) {
+            if (working.hasSeries(columnName)) {
+                working = working.withSeries(
+                    columnName, 
+                    working.getSeries(columnName)
+                        .select(columnSelectors[columnName])
+                );
+            }
+        }
+
+        return working;
+    }
+
+    /** 
+     * Generate new columns based on existing rows.
+     *
+     * @param generator - Generator function that transforms each row to a new set of columns.
+     * 
+     * @returns Returns a new dataframe with 1 or more new columns.
+     */
+    generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
+
+        if (!Sugar.Object.isObject(generator)) {
+            assert.isFunction(generator, "Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
+
+            const selector = generator as SelectorWithIndexFn<any, any>;
+            const newColumns = this.select(selector); // Build a new dataframe.
+            const newColumnNames = newColumns.getColumnNames(); 
+
+            let working: IDataFrame<IndexT, any> = this;
+ 
+            //TODO: There must be a cheaper implementation!
+            for (const newColumnName of newColumnNames) {
+                working = working.withSeries(newColumnName, newColumns.getSeries(newColumnName));
+            }
+
+            return working;
+        }
+        else {
+            const columnTransformSpec = generator as IColumnTransformSpec;
+            const newColumnNames = Object.keys(columnTransformSpec);
+            
+            let working: IDataFrame<IndexT, any> = this;
+
+            for (const newColumnName of newColumnNames) {
+                working = working.withSeries(newColumnName, working.select(columnTransformSpec[newColumnName]).deflate());
+            }
+
+            return working;
+        }
+    }    
+
+    /** 
+     * Deflate a data-frame to a series.
+     *
+     * @param [selector] - Optional selector function that transforms each row to a new sequence of values.
+     *
+     * @returns Returns a series that was created from the input dataframe.
+     */
+    deflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
+
+        if (selector) {
+            assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.deflate' function to be a selector function.");
+        }
+
+        return new Series<IndexT, ToT>(() => { 
+            const content = this.getContent();
+            if (selector) {
+                return {
+                    index: content.index,
+                    values: new SelectIterable<ValueT, ToT>(content.values, selector),
+                    pairs: new SelectIterable<[IndexT, ValueT], [IndexT, ToT]>(content.pairs, (pair, index) => {
+                        return [
+                            pair[0],
+                            selector(pair[1], index)
+                        ];
+                    }),    
+                };
+            }
+            else {
+                return {
+                    index: content.index,
+                    values: content.values as any as Iterable<ToT>,
+                    pairs: content.pairs as any as Iterable<[IndexT, ToT]>,
+                };
+            }
+        });
+    };
+
+    /** 
+     * Inflate a named series in the data-frame to 1 or more new series in the new dataframe.
+     *
+     * @param columnName - Name or index of the column to retreive.
+     * @param [selector] - Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
+     * 
+     * @returns Returns a new dataframe with a column inflated to 1 or more new columns.
+     */
+    inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
+
+        assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.inflateSeries' to be a string that is the name of the column to inflate.");
+
+        if (selector) {
+            assert.isFunction(selector, "Expected optional 'selector' parameter to 'DataFrame.inflateSeries' to be a selector function, if it is specified.");
+        }
+
+        return this.zip(
+            this.getSeries(columnName).inflate(selector),
+            (row1, row2) => Object.assign({}, row1, row2) //todo: this be should zip's default operation.
+        );
     }
 
     /**

@@ -41,8 +41,6 @@ export interface ISeriesConfig<IndexT, ValueT> {
  */
 export type CallbackFn<ValueT> = (value: ValueT, index: number) => void;
 
-//TOOD: Rename SelectorFn and SelectorFnNoIndex.
-
 /**
  * A selector function. Transforms a value into another kind of value.
  */

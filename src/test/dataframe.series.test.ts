@@ -47,7 +47,7 @@ describe('DataFrame', () => {
         expect(dataFrame.getSeries("B").getIndex().toArray()).to.eql([100, 200]);
     });
 
-	it('when a series is extracted from a dataframe, undefined values are stripped out.', function () {
+	it('when a series is extracted from a dataframe, undefined values are stripped out.', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "S" ],
@@ -67,7 +67,7 @@ describe('DataFrame', () => {
 		]);
     });
 
-	it('retreive a non-existing column results in an empty series', function () {
+	it('retreive a non-existing column results in an empty series', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
@@ -80,7 +80,7 @@ describe('DataFrame', () => {
 		expect(series.toPairs()).to.eql([]);
 	});
 
-	it('can ensure series that doesnt exist', function () {
+	it('can ensure series that doesnt exist', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
@@ -101,7 +101,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can ensure series that already exists', function () {
+	it('can ensure series that already exists', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
@@ -120,7 +120,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-    it('can set new series', function () {
+    it('can set new series', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -151,7 +151,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can set existing series', function () {
+	it('can set existing series', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -174,7 +174,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can set series from another dataframe', function () {
+	it('can set series from another dataframe', () => {
 		
 		var dataFrame1 = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -210,7 +210,7 @@ describe('DataFrame', () => {
 		]);
     });
     
-	it('can ensure that series exists - with series generator function', function () {
+	it('can ensure that series exists - with series generator function', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
@@ -231,7 +231,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can ensure that series already exists - with series generator function', function () {
+	it('can ensure that series already exists - with series generator function', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
@@ -250,7 +250,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can ensure that series exists - with column spec', function () {
+	it('can ensure that series exists - with column spec', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
@@ -271,7 +271,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can ensure that series already exists - with column spec', function () {
+	it('can ensure that series already exists - with column spec', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
@@ -290,7 +290,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can ensure that series exists - with column spec and series generator fn', function () {
+	it('can ensure that series exists - with column spec and series generator fn', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1"],
@@ -311,7 +311,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can ensure that series already exists - with column spec and series generator fn', function () {
+	it('can ensure that series already exists - with column spec and series generator fn', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: ["C1", "C2"],
@@ -330,7 +330,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can drop column', function () {
+	it('can drop column', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -352,7 +352,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can drop multiple columns', function () {
+	it('can drop multiple columns', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -392,7 +392,7 @@ describe('DataFrame', () => {
 		]);
     });
 
-	it('dropping non-existing column has no effect', function () {
+	it('dropping non-existing column has no effect', () => {
 		
 		var columnNames = [ "Date", "Value1", "Value2", "Value3" ];
 		var dataFrame = new DataFrame({
@@ -435,7 +435,7 @@ describe('DataFrame', () => {
 		]);
 	});
 	
-	it('can keep column', function () {
+	it('can keep column', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Value1", "Value2", "Value3" ],
@@ -458,7 +458,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can keep multiple columns', function () {
+	it('can keep multiple columns', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Value1", "Value2", "Value3" ],
@@ -500,7 +500,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can retreive columns', function () {
+	it('can retreive columns', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -520,7 +520,7 @@ describe('DataFrame', () => {
 		expect(columns.at(2)!.series.toArray()).to.eql(['foo', 'bar']);
     });
 
-	it('column being merged is reindexed', function () {
+	it('column being merged is reindexed', () => {
 
 		var dataFrame = new DataFrame({
 			columnNames: [ "Date", "Value1", "Value2", "Value3" ],
@@ -558,7 +558,7 @@ describe('DataFrame', () => {
 		expect(mergedSeries.toArray()).to.eql([3, 1]);
     });
     
-	it('can set series on empty dataframe', function () {
+	it('can set series on empty dataframe', () => {
 
 		var dataFrame = new DataFrame();
         var withSeries = dataFrame.withSeries("NewSeries", new Series({ values: [1, 2, 3] }))
@@ -571,7 +571,7 @@ describe('DataFrame', () => {
 		]);
 	});
     
-	it('can generate new series', function () {
+	it('can generate new series', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -590,7 +590,7 @@ describe('DataFrame', () => {
 		]);
     });
 
-	it('can transform existing series', function () {
+	it('can transform existing series', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -609,7 +609,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can set new series - using column spec', function () {
+	it('can set new series - using column spec', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -628,7 +628,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can set multiple series - using column spec', function () {
+	it('can set multiple series - using column spec', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -648,7 +648,7 @@ describe('DataFrame', () => {
 		]);
     });
     
-	it('can generate new series - using column spec', function () {
+	it('can generate new series - using column spec', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -667,7 +667,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can transform existing series - using column spec', function () {
+	it('can transform existing series - using column spec', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -686,7 +686,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can reorder existing columns', function () {
+	it('can reorder existing columns', () => {
 
 		var df = new DataFrame({
 			columnNames: [ "Col1", "Col2" ],
@@ -706,7 +706,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('columns not in remap table are dropped', function () {
+	it('columns not in remap table are dropped', () => {
 
 		var df = new DataFrame({
 			columnNames: [ "Col1", "Col2" ],
@@ -726,7 +726,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('new columns in remap table are initialised to a column of empty values', function () {
+	it('new columns in remap table are initialised to a column of empty values', () => {
 
 		var df = new DataFrame({
 			columnNames: [ "Col1", "Col2" ],
@@ -746,7 +746,7 @@ describe('DataFrame', () => {
 		]);
     });
 
-	it('can rename single column', function () {
+	it('can rename single column', () => {
 
 		var df = new DataFrame({
             columnNames: ["Column1", "Column2", "Column3"], 
@@ -768,10 +768,10 @@ describe('DataFrame', () => {
 		expect(renamed.getSeries("NewColumnName")).to.be.ok;
 	});
 
-	it('renaming non-existing column has no effect', function () {
+	it('renaming non-existing column has no effect', () => {
 
 		var columnNames = ["Column1", "Column2"];
-		var dataFrame = new DataFrame({
+		var df = new DataFrame({
             columnNames: columnNames, 
             rows: [
                 ['A', 1],
@@ -783,17 +783,17 @@ describe('DataFrame', () => {
 		var columnDef = {
             "some-column-that-doesnt-exist": "new-column-name"
         };
-		var renamed = dataFrame.renameSeries(columnDef);
+		var renamed = df.renameSeries(columnDef);
 
-		expect(dataFrame.getColumnNames()).to.eql(columnNames);
-		expect(dataFrame.getIndex().toArray()).to.eql([10, 11]);
-		expect(dataFrame.toRows()).to.eql([
+		expect(df.getColumnNames()).to.eql(columnNames);
+		expect(df.getIndex().toArray()).to.eql([10, 11]);
+		expect(df.toRows()).to.eql([
 			['A', 1],
 			['B', 2],
 		]);
     });	
         
-	it('can rename all columns', function () {
+	it('can rename all columns', () => {
 
 		var df = new DataFrame({
 			columnNames: [ "Col1", "Col2", "Col3" ],
@@ -812,4 +812,189 @@ describe('DataFrame', () => {
 		var renamed = df.renameSeries(newColumnNames);
 		expect(renamed.getColumnNames()).to.eql(["Val1", "Val2", "Val3"]);
     });
+
+	it('can deflate dataframe to series', () => {
+
+		var df = new DataFrame({
+                columnNames: ["Column1", "Column2"], 
+                rows: [
+                    [1, 10],
+                    [2, 20],
+                    [3, 30],
+                ],
+                index: [10, 11, 12]
+            });
+
+		var series = df.deflate(row => row.Column1 + row.Column2);
+		expect(series.toArray()).to.eql([11, 22, 33]);
+    });
+
+	it('can deflate dataframe to series with no selector', () => {
+
+		var df = new DataFrame({
+                columnNames: ["Column1"], 
+                values: [33, 44, 55],
+            });
+
+		var series = df.deflate();
+		expect(series.toArray()).to.eql([33, 44, 55]);
+    });
+    
+	it('can transform column', () => {
+
+		var df = new DataFrame({
+				columnNames: ["Column1", "Column2"], 
+				rows: [
+					['A', 1],
+					['B', 2],
+				],
+				index: [10, 11]
+            });
+
+		var modified = df.transformSeries({
+				Column2: value => value + 100,
+            });
+            
+		expect(df.getSeries("Column2").toArray()).to.eql([1, 2]);
+		expect(modified.getSeries("Column2").toArray()).to.eql([101, 102]);
+	});
+
+	it('can transform multiple columns', () => {
+
+		var df = new DataFrame({
+		        columnNames: ["Column1", "Column2"], 
+				rows: [
+					['A', 1],
+					['B', 2],
+				],
+				index: [10, 11]
+            });
+
+		var modified = df.transformSeries({
+				Column2: value => value + 100,
+				Column1: value => value + value
+            });
+            
+		expect(df.getSeries("Column1").toArray()).to.eql(['A', 'B']);
+		expect(df.getSeries("Column2").toArray()).to.eql([1, 2]);
+		expect(modified.getSeries("Column1").toArray()).to.eql(['AA', 'BB']);
+		expect(modified.getSeries("Column2").toArray()).to.eql([101, 102]);
+	});
+
+	it('transforming non-existing column has no effect', () => {
+
+		var df = new DataFrame({
+				columnNames: ["Column1", "Column2"], 
+				rows: [
+					['A', 1],
+					['B', 2],
+				],
+				index: [10, 11]
+            });
+
+		var modified = df.transformSeries({
+				"non-existing-column": value => value + 100,
+            });
+            
+		expect(df).to.equal(modified);
+        expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
+        expect(df.toArray()).to.eql([
+                {
+                    Column1: 'A',
+                    Column2: 1,
+                },
+                {
+                    Column1: 'B',
+                    Column2: 2,
+                },
+            ]);
+	});
+
+	it('transforming a normal column and a non-existing column has no additional effect', () => {
+
+		var df = new DataFrame({
+				columnNames: ["Column1", "Column2"], 
+				rows: [
+					['A', 1],
+					['B', 2],
+				],
+				index: [10, 11]
+            });
+
+		var modified = df.transformSeries({
+                Column2: v => v + 5,
+				"non-existing-column": value => value + 100,
+			});
+
+        expect(modified.toArray()).to.eql([
+                {
+                    Column1: 'A',
+                    Column2: 6,
+                },
+                {
+                    Column1: 'B',
+                    Column2: 7,
+                },
+            ]);
+        });
+    
+	it('can generate series - function version', () => {
+
+		var df = new DataFrame({
+                columnNames: ["Column1", "Column2"], 
+                rows: [
+					[1, 10],
+					[2, 20],
+					[3, 30],
+				],
+				index: [10, 11, 12]
+            });
+
+		var modified = df.generateSeries(row => ({
+                NewColumn: row.Column1 + row.Column2,
+			}));
+
+		expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
+		expect(modified.getColumnNames()).to.eql(["Column1", "Column2", "NewColumn"]);
+		expect(modified.getSeries("NewColumn").toArray()).to.eql([11, 22, 33]);
+	});
+
+	it('can generate series - object version', () => {
+
+		var df = new DataFrame({
+                columnNames: ["Column1", "Column2"], 
+                rows: [
+                    [1, 10],
+                    [2, 20],
+                    [3, 30],
+                ],
+                index:[10, 11, 12]
+            });
+
+		var modified = df.generateSeries({
+				NewColumn: row => row.Column1 + row.Column2
+			});
+			
+		expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
+		expect(modified.getColumnNames()).to.eql(["Column1", "Column2", "NewColumn"]);
+		expect(modified.getSeries("NewColumn").toArray()).to.eql([11, 22, 33]);
+	});    
+
+	it('can inflate column to new columns', function () {
+
+		var df = new DataFrame({
+			columnNames: ["a", "b"], 
+			rows: [
+				[1, { X: 2, Y: 3 }], 
+				[4, { X: 5, Y: 6 }],
+			]
+        });
+
+		var inflated = df.inflateSeries("b");
+		expect(inflated.getColumnNames()).to.eql(["a", "b", "X", "Y"]);
+		expect(inflated.toRows()).to.eql([
+			[1, { X: 2, Y: 3 }, 2, 3],
+			[4, { X: 5, Y: 6 }, 5, 6],
+		]);
+	});
 });
