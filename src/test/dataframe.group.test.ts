@@ -3,7 +3,7 @@ import 'mocha';
 import { DataFrame, Index } from '../index';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
-describe('DataFarme group', () => {
+describe('DataFrame group', () => {
     
 	it('can group by value', function () {
 		var df = new DataFrame({

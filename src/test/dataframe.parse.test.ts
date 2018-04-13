@@ -4,7 +4,7 @@ import { Index } from '../lib/index';
 import { Series } from '../lib/series';
 import { DataFrame } from '../lib/dataframe';
 
-describe('DataFrame select', () => {
+describe('DataFrame parse', () => {
 
     it('can parse single columns', () => {
 

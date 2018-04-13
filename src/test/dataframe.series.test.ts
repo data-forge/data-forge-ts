@@ -5,7 +5,7 @@ import { DataFrame } from '../lib/dataframe';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 import { Series } from '../lib/series';
 
-describe('DataFrame', () => {
+describe('DataFrame series', () => {
 
     it('can get series from dataframe', () => {
 

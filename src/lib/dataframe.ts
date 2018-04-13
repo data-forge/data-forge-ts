@@ -40,7 +40,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: string[] | Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
-    columns?: any,
+    columns?: any, //todo: This should be a column spec!
 };
 
 /** 
@@ -61,7 +61,7 @@ export interface IColumn {
 
 /** 
  * An object whose properties specify named columns.
-*/
+ */
 export interface IColumnSpec {
     [index: string]: ISeries<any, any> | SeriesSelectorFn<any, any, any>,
 }
@@ -215,6 +215,24 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns a new dataframe with columns remapped according to the specified column layout.   
      */
     reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
+
+    /**
+     * Bring the name column (or columns) to the front, making it (or them) the first column(s) in the data-frame.
+     *
+     * @param columnOrColumns - Specifies the column or columns to bring to the front.
+     *
+     * @returns Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
+     */
+    bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Bring the name column (or columns) to the back, making it (or them) the last column(s) in the data-frame.
+     *
+     * @param columnOrColumns - Specifies the column or columns to bring to the back.
+     *
+     * @returns Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
+     */
+    bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
 
     /**
      * Create a new data-frame with renamed series.
@@ -847,6 +865,16 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
         innerKeySelector: SelectorFn<InnerValueT, KeyT>, 
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             IDataFrame<number, ResultValueT>;
+
+    /**
+     * Reshape (or pivot) a table based on column values.
+     *
+     * @param column - Column name whose values make the new DataFrame's columns.
+     * @param value - Column name whose values populate the new DataFrame's values.
+     *
+     * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
+     */
+    pivot<NewValueT = ValueT> (column: string, value: string): IDataFrame<IndexT, NewValueT>;
 
     /**
      * Insert a pair at the start of the dataframe.
@@ -3205,6 +3233,50 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             .resetIndex();
     }    
 
+    /**
+     * Reshape (or pivot) a table based on column values.
+     *
+     * @param column - Column name whose values make the new DataFrame's columns.
+     * @param value - Column name whose values populate the new DataFrame's values.
+     *
+     * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
+     */
+    pivot<NewValueT = ValueT> (column: string, value: string): IDataFrame<IndexT, NewValueT> {
+
+        assert.isString(column, "Expected 'column' parameter to DataFrame.pivot to be a string that identifies the column whose values make the new DataFrame's columns.");
+        assert.isString(value, "Expected 'value' parameter to DataFrame.pivot to be a string that identifies the column whose values make the new DataFrame's values.");
+
+        if (!this.hasSeries(column)) {
+            throw new Error("Expected to find a column with name '" + column + "'.");
+        }
+
+        if (!this.hasSeries(value)) {
+            throw new Error("Expected to find a column with name '" + value + "'.");
+        }
+
+        return new DataFrame<IndexT, NewValueT>(() => {
+                const newColumnNames = this.getSeries(column).distinct().toArray();
+                const newSeries: ISeries<IndexT, any>[] = [];        
+        
+                for (const newColumnName of newColumnNames) {
+                    const extractedSeries = this
+                        .where((row: any) => row[column] === newColumnName)
+                        .deflate((row: any) => row[value]);
+                    newSeries.push(extractedSeries);
+                }
+        
+                const columns: any = {};
+        
+                for (let newColumnIndex = 0; newColumnIndex < newColumnNames.length; ++newColumnIndex) {
+                    columns[newColumnNames[newColumnIndex]] = newSeries[newColumnIndex];
+                }
+
+                return {
+                columns: columns
+            };
+        });
+    }
+    
     /**
      * Insert a pair at the start of the dataframe.
      *
