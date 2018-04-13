@@ -1570,6 +1570,100 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }),
             };
         });
+    }   
+
+    /**
+     * Bring the name column (or columns) to the front, making it (or them) the first column(s) in the data-frame.
+     *
+     * @param columnOrColumns - Specifies the column or columns to bring to the front.
+     *
+     * @returns Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
+     */
+    bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
+
+        if (Sugar.Object.isArray(columnOrColumns)) {
+            columnOrColumns.forEach(function (columnName) {
+                assert.isString(columnName, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");	
+            });
+        }
+        else {
+            assert.isString(columnOrColumns, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");
+
+            columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
+        }
+
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            const existingColumns = Array.from(content.columnNames);
+            const columnsToMove: string[] = [];
+            for (const columnToMove of columnOrColumns) {
+                if (existingColumns.indexOf(columnToMove) !== -1) {
+                    // The request column actually exists, so we will move it.
+                    columnsToMove.push(columnToMove);
+                }
+            }
+
+            const untouchedColumnNames: string[] = [];
+            for (const existingColumnName of existingColumns) {
+                if (columnOrColumns.indexOf(existingColumnName) === -1) {
+                    untouchedColumnNames.push(existingColumnName);
+                }
+            }
+            
+            return {
+                columnNames: columnsToMove.concat(untouchedColumnNames),
+                index: content.index,
+                values: content.values,
+                pairs: content.pairs,
+            };
+        })
+    }
+
+    /**
+     * Bring the name column (or columns) to the back, making it (or them) the last column(s) in the data-frame.
+     *
+     * @param columnOrColumns - Specifies the column or columns to bring to the back.
+     *
+     * @returns Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
+     */
+    bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
+
+        if (Sugar.Object.isArray(columnOrColumns)) {
+            columnOrColumns.forEach(function (columnName) {
+                assert.isString(columnName, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");	
+            });
+        }
+        else {
+            assert.isString(columnOrColumns, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");
+
+            columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
+        }
+
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            const existingColumns = Array.from(content.columnNames);
+            const columnsToMove: string[] = [];
+            for (const columnToMove of columnOrColumns) {
+                if (existingColumns.indexOf(columnToMove) !== -1) {
+                    // The request column actually exists, so we will move it.
+                    columnsToMove.push(columnToMove);
+                }
+            }
+
+            const untouchedColumnNames: string[] = [];
+            for (const existingColumnName of existingColumns) {
+                if (columnOrColumns.indexOf(existingColumnName) === -1) {
+                    untouchedColumnNames.push(existingColumnName);
+                }
+            }
+            
+            return {
+                columnNames: untouchedColumnNames.concat(columnsToMove),
+                index: content.index,
+                values: content.values,
+                pairs: content.pairs,
+            };
+        })
     }
     
     /**
@@ -1601,7 +1695,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 else {
                     renamedColumns.push(newColumnNames[existingColumnName]); // This column is renamed.
                 }
-                
             }
     
             //
