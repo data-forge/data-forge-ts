@@ -940,6 +940,13 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
      */
     asJSON (): IJsonSerializer;
+
+    /**
+     * Serialize the data frame to HTML.
+     * 
+     *  @returns Returns a HTML format string representing the dataframe.   
+     */
+    toHTML (): string;
 }
 
 /**
@@ -3399,6 +3406,48 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     asJSON (): IJsonSerializer {
         return new JsonSerializer<IndexT, ValueT>(this);        
     }
+
+    /**
+     * Serialize the data frame to HTML.
+     * 
+     *  @returns Returns a HTML format string representing the dataframe.   
+     */
+    toHTML (): string {
+
+        const columNames = this.getColumnNames();
+        const header = columNames.map(columnName => "            <th>" + columnName + "</th>").join("\n");
+        const pairs = this.toPairs();
+
+        return '<table border="1" class="dataframe">\n' + 
+            '    <thead>\n' +
+            '        <tr style="text-align: right;">\n' +
+            '            <th></th>\n' +
+
+            header +
+
+            '\n' +
+            '       </tr>\n' +
+            '    </thead>\n' +
+            '    <tbody>\n' +
+
+            pairs.map(pair => {
+                const index = pair[0];
+                const value: any = pair[1];
+                return '        <tr>\n' +
+                    '            <th>' + index + '</th>\n' +
+                    columNames.map(columName => {
+                            return '            <td>' + value[columName] + '</td>';
+                        })
+                        .join('\n') +
+                        '\n' +
+                        '        </tr>';
+                })
+                .join('\n') +
+
+            '\n' +
+            '    </tbody>\n' +
+            '</table>';
+    }    
 }
 
 /** 
