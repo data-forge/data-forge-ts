@@ -6,7 +6,7 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('DataFrame', () => {
 
-	it('can bake dataframe', function () {
+	it('can bake dataframe', () => {
 
 		var dataframe = new DataFrame({
             values: [10, 20],
@@ -17,7 +17,7 @@ describe('DataFrame', () => {
 		expect(baked).not.to.equal(dataframe);
 	});
 
-	it('baking a baked dataframe returns same', function () {
+	it('baking a baked dataframe returns same', () => {
 
 		var dataframe = new DataFrame({
             values: [10, 20],
@@ -164,32 +164,32 @@ describe('DataFrame', () => {
         expect(dataframe.count()).to.eql(3);
     });
 
-	it('can get first and last values', function () {
+	it('can get first and last values', () => {
 
 		var dataframe = new DataFrame(['A', 'B', 'C']);
 		expect(dataframe.first()).to.eql('A');
 		expect(dataframe.last()).to.eql('C');
 	});
 
-	it('getting first of empty dataframe throws exception', function () {
+	it('getting first of empty dataframe throws exception', () => {
 
 		var dataframe = new DataFrame();
 
-		expect(function () {
+		expect(() => {
 			dataframe.first();
 		}).to.throw();
     });
     
-	it('getting last of empty dataframe throws exception', function () {
+	it('getting last of empty dataframe throws exception', () => {
 
 		var dataframe = new DataFrame();
 
-		expect(function () {
+		expect(() => {
 			dataframe.last();
 		}).to.throw();
     });
 
-	it('can get value by index', function () {
+	it('can get value by index', () => {
 
 		var dataframe = new DataFrame({ 
 			index:  [100, 200, 300],
@@ -199,7 +199,7 @@ describe('DataFrame', () => {
 		expect(dataframe.at(200)).to.eql(20);
 	});
 
-	it('getting by index returns undefined when the requested index does not exist', function () {
+	it('getting by index returns undefined when the requested index does not exist', () => {
 
 		var dataframe = new DataFrame({ 
 			index:  [100, 300],
@@ -209,7 +209,7 @@ describe('DataFrame', () => {
 		expect(dataframe.at(200)).to.eql(undefined);
 	});
 
-	it('getting by index returns undefined when the dataframe is empty', function () {
+	it('getting by index returns undefined when the dataframe is empty', () => {
 
 		var dataframe = new DataFrame();
 		expect(dataframe.at(200)).to.eql(undefined);
@@ -229,7 +229,7 @@ describe('DataFrame', () => {
 		expect(head.toArray()).to.eql(['B', 'C']);
     });
 
-	it('for each', function () {
+	it('for each', () => {
 
 		var dataframe = new DataFrame([0, 1, 2]);
 		var count = 0;
@@ -241,7 +241,7 @@ describe('DataFrame', () => {
 		expect(count).to.eql(3);
 	});
 
-	it('all - zero elements', function () {
+	it('all - zero elements', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
@@ -250,7 +250,7 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});
 
-	it('all - no elements match', function () {
+	it('all - no elements match', () => {
 
 		var dataframe = new DataFrame({ values: [1, 2, 3, 4] });
 
@@ -259,7 +259,7 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});
 
-	it('all - some elements match', function () {
+	it('all - some elements match', () => {
 
 		var dataframe = new DataFrame({ values: [1, 3, 3, 4] });
 
@@ -268,7 +268,7 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});
 
-	it('all - all elements match', function () {
+	it('all - all elements match', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
@@ -277,7 +277,7 @@ describe('DataFrame', () => {
 			})).to.eql(true);
 	});
 
-	it('any - zero elements', function () {
+	it('any - zero elements', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
@@ -286,7 +286,7 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});
 
-	it('any - no elements match', function () {
+	it('any - no elements match', () => {
 
 		var dataframe = new DataFrame({ values: [1, 2, 3, 4] });
 
@@ -295,7 +295,7 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});
 
-	it('any - some elements match', function () {
+	it('any - some elements match', () => {
 
 		var dataframe = new DataFrame({ values: [1, 3, 3, 4] });
 
@@ -304,7 +304,7 @@ describe('DataFrame', () => {
 			})).to.eql(true);
 	});
 
-	it('any - all elements match', function () {
+	it('any - all elements match', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
@@ -313,21 +313,21 @@ describe('DataFrame', () => {
 			})).to.eql(true);
 	});	
 
-	it('any - with no predicate - no elements', function () {
+	it('any - with no predicate - no elements', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
 		expect(dataframe.any()).to.eql(false);
 	});
 
-	it('any - with no predicate - elements exist', function () {
+	it('any - with no predicate - elements exist', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
 		expect(dataframe.any()).to.eql(true);
 	});	
 
-	it('none - zero elements', function () {
+	it('none - zero elements', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
@@ -336,7 +336,7 @@ describe('DataFrame', () => {
 			})).to.eql(true);
 	});
 
-	it('none - no elements match', function () {
+	it('none - no elements match', () => {
 
 		var dataframe = new DataFrame({ values: [1, 2, 3, 4] });
 
@@ -345,7 +345,7 @@ describe('DataFrame', () => {
 			})).to.eql(true);
 	});
 
-	it('none - some elements match', function () {
+	it('none - some elements match', () => {
 
 		var dataframe = new DataFrame({ values: [1, 3, 3, 4] });
 
@@ -354,7 +354,7 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});
 
-	it('none - all elements match', function () {
+	it('none - all elements match', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
@@ -363,19 +363,19 @@ describe('DataFrame', () => {
 			})).to.eql(false);
 	});	
 
-	it('none - with no predicate - zero elements', function () {
+	it('none - with no predicate - zero elements', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 		expect(dataframe.none()).to.eql(true);
 	});
 
-	it('none - with no predicate - has existing elements', function () {
+	it('none - with no predicate - has existing elements', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 		expect(dataframe.none()).to.eql(false);
 	});	
 
-	it('can get dataframe starting at particular index - with integer index', function () {
+	it('can get dataframe starting at particular index - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -389,7 +389,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe starting before a particular index - with integer index', function () {
+	it('can get dataframe starting before a particular index - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -403,7 +403,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe starting at particular index - with date index', function () {
+	it('can get dataframe starting at particular index - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -421,7 +421,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe starting before a particular index - with date index', function () {
+	it('can get dataframe starting before a particular index - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -439,7 +439,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe ending at particular index - with integer index', function () {
+	it('can get dataframe ending at particular index - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -453,7 +453,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe ending before a particular index - with integer index', function () {
+	it('can get dataframe ending before a particular index - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -467,7 +467,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe ending at particular index - with date index', function () {
+	it('can get dataframe ending at particular index - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -485,7 +485,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe ending before a particular index - with date index', function () {
+	it('can get dataframe ending before a particular index - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -503,7 +503,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe before a particular index - with integer index', function () {
+	it('can get dataframe before a particular index - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -517,7 +517,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe before a particular index - with date index', function () {
+	it('can get dataframe before a particular index - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -535,7 +535,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe after a particular index - with integer index', function () {
+	it('can get dataframe after a particular index - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -549,7 +549,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe after a particular index - with date index', function () {
+	it('can get dataframe after a particular index - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -567,7 +567,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get dataframe between particular indices - with integer index', function () {
+	it('can get dataframe between particular indices - with integer index', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -580,7 +580,7 @@ describe('DataFrame', () => {
 		]); 	
 	});
 
-	it('can get slice of rows - with string indices', function () {
+	it('can get slice of rows - with string indices', () => {
 
 		var dataframe = new DataFrame({
 			index: ["a", "b", "c", "d", "e"], 
@@ -595,7 +595,7 @@ describe('DataFrame', () => {
 		]);
     });
         
-	it('can get dataframe between particular indices - with date index', function () {
+	it('can get dataframe between particular indices - with date index', () => {
 
 		var dataframe = new DataFrame({
 			index: [
@@ -612,7 +612,7 @@ describe('DataFrame', () => {
 		]); 	
     });
         
-	it('can transform a dataframe to a dataframe of pairs', function () {
+	it('can transform a dataframe to a dataframe of pairs', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -627,7 +627,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can transform dataframe of pairs to dataframe of values', function () {
+	it('can transform dataframe of pairs to dataframe of values', () => {
 
 		var dataframe = new DataFrame({
 			index: [10, 20, 30],
@@ -642,7 +642,30 @@ describe('DataFrame', () => {
 		]);
     });
 
-	it('can aggregate dataframe with no seed', function () {
+	it('can aggregate dataframe', () => {
+
+		var df = new DataFrame({
+				columnNames: ["Column1", "Column2"], 
+				rows: [
+					[1, 10],
+					[2, 20],
+					[3, 30],
+				],
+				index: [10, 11, 12]
+        });
+
+		var agg = df.aggregate({ Column1: 0, Column2: 1 }, function (prev, value) {
+				return {
+					Column1: prev.Column1 + value.Column1,
+					Column2: prev.Column2 * value.Column2,
+				};
+			});
+
+		expect(agg.Column1).to.eql(6);
+		expect(agg.Column2).to.eql(6000);
+	});
+    
+	it('can aggregate dataframe with no seed', () => {
 
 		var dataframe = new DataFrame({ index: [0, 1, 2], values: [4, 8, 16] });
 
@@ -653,7 +676,7 @@ describe('DataFrame', () => {
 		expect(agg).to.eql(28);
 	});
 
-	it('can aggregate dataframe with seed', function () {
+	it('can aggregate dataframe with seed', () => {
 
 		var dataframe = new DataFrame({ index: [0, 1, 2], values: [4, 8, 16] });
 
@@ -664,7 +687,7 @@ describe('DataFrame', () => {
 		expect(agg).to.eql(30);
 	});
 
-	it('can aggregate dataframe with a function as the seed', function () {
+	it('can aggregate dataframe with a function as the seed', () => {
 
 		var dataframe = new DataFrame({ index: [0, 1, 2], values: [4, 8, 16] });
 
@@ -681,7 +704,7 @@ describe('DataFrame', () => {
 		expect(agg()).to.eql(30);
 	});
     
-	it('can convert to javascript object', function () {
+	it('can convert to javascript object', () => {
 
 		var dataframe = new DataFrame({
             index: [0, 1], 
@@ -704,7 +727,7 @@ describe('DataFrame', () => {
 		});
 	});
 
-	it('can convert to javascript object - with duplicate keys', function () {
+	it('can convert to javascript object - with duplicate keys', () => {
 
         var dataframe = new DataFrame({
             index: [0, 1, 2], 
@@ -731,7 +754,7 @@ describe('DataFrame', () => {
 		});
 	});
 
-	it('can reverse', function () {
+	it('can reverse', () => {
 
 		var dataframe = new DataFrame({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
 		var reversed = dataframe.reverse();
@@ -741,7 +764,7 @@ describe('DataFrame', () => {
 		expect(reversed.getIndex().toArray()).to.eql([2, 1, 0]);
     });
     
-	it('can distinct items', function () {
+	it('can distinct items', () => {
 
 		var dataframe = new DataFrame({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -759,7 +782,7 @@ describe('DataFrame', () => {
         ]);
 	});
 
-	it('can distinct items with custom selector', function () {
+	it('can distinct items with custom selector', () => {
 
 		var dataframe = new DataFrame({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -779,7 +802,7 @@ describe('DataFrame', () => {
 		]);
     });
    
-	it('can truncate string values', function () {
+	it('can truncate string values', () => {
 
 		var df = new DataFrame({
 			columnNames: ["Col1", "Col2"],
@@ -796,7 +819,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('truncation ignores strings that are already short enough', function () {
+	it('truncation ignores strings that are already short enough', () => {
 
 		var df = new DataFrame({
 			columnNames: ["Col1", "Col2"],
@@ -813,7 +836,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('truncation passes through other values', function () {
+	it('truncation passes through other values', () => {
 
 		var df = new DataFrame({
 			columnNames: ["Col1", "Col2", "Col3"],
@@ -830,7 +853,7 @@ describe('DataFrame', () => {
 		]);
     });
 
-	it('can insert pair at start of empty dataframe', function () {
+	it('can insert pair at start of empty dataframe', () => {
 
 		var dataframe = new DataFrame();
 		var modified = dataframe.insertPair([10, 100]);
@@ -839,7 +862,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can insert pair at start of dataframe with existing items', function () {
+	it('can insert pair at start of dataframe with existing items', () => {
 
 		var dataframe = new DataFrame({
 			index:  [1,  2],
@@ -854,7 +877,7 @@ describe('DataFrame', () => {
 	});
 
 
-	it('can append pair to empty dataframe', function () {
+	it('can append pair to empty dataframe', () => {
 
 		var dataframe = new DataFrame();
 		var appended = dataframe.appendPair([10, 100]);
@@ -863,7 +886,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can append pair to dataframe with existing items', function () {
+	it('can append pair to dataframe with existing items', () => {
 
 		var dataframe = new DataFrame({
 			index:  [1,  2],
@@ -877,7 +900,7 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can fill gaps in dataframe - fill forward', function () {
+	it('can fill gaps in dataframe - fill forward', () => {
 
 		var dfWithGaps = new DataFrame({
 			index:  [1,  2,  6,  7,  10, 11],
@@ -915,21 +938,21 @@ describe('DataFrame', () => {
 		]);
 	});
 
-	it('can select default instead of empty dataframe - array', function () {
+	it('can select default instead of empty dataframe - array', () => {
 
 		var dataframe = new DataFrame();
 		var defaulted = dataframe.defaultIfEmpty([1, 2]);
 		expect(defaulted.toArray()).to.eql([1, 2]);
 	});
 
-	it('can select default instead of empty dataframe - dataframe', function () {
+	it('can select default instead of empty dataframe - dataframe', () => {
 
 		var dataframe = new DataFrame();
 		var defaulted = dataframe.defaultIfEmpty(new DataFrame({ values: [1, 2] }));
 		expect(defaulted.toArray()).to.eql([1, 2]);
 	});
 
-	it('default is ignored for non-empty dataframe', function () {
+	it('default is ignored for non-empty dataframe', () => {
 
 		var dataframe = new DataFrame({ values: [5, 6] });
 		var defaulted = dataframe.defaultIfEmpty([1, 2]);
