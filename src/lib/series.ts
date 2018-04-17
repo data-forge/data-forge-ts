@@ -92,6 +92,38 @@ export type SeriesConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>
 export type GapFillFn<ValueT, ResultT> = (a: ValueT, b: ValueT) => ResultT[];
 
 /**
+ * Represents the frequency of a type in a series or dataframe.
+ */
+export interface ITypeFrequency {
+
+    /**
+     * The name of the type.
+     */
+    Type: string; 
+
+    /**
+     * The frequency of the type's appearance in the series or dataframe.
+     */
+    Frequency: number;
+}
+
+/**
+ * Represents the frequency of a value in a series or dataframe.
+ */
+export interface IValueFrequency {
+
+    /**
+     * The value.
+     */
+    Value: any; 
+
+    /**
+     * The frequency of the value's appearance in the series or dataframe.
+     */
+    Frequency: number;
+}
+
+/**
  * Interface that represents a series containing a sequence of indexed values.
  */
 export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
@@ -782,6 +814,20 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns 'defaultSequence' if the series is empty. 
      */
     defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT>;
+
+    /** 
+     * Detect the types of the values in the sequence.
+     *
+     * @returns Returns a dataframe that describes the data types contained in the input series or dataframe.
+     */
+    detectTypes (): IDataFrame<number, ITypeFrequency>;
+
+    /** 
+     * Detect the frequency of values in the sequence.
+     *
+     * @returns Returns a dataframe that describes the values contained in the input sequence.
+     */
+    detectValues (): IDataFrame<number, IValueFrequency>;
 }
 
 /**
@@ -2532,7 +2578,91 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return this;
         }
     }
-    
+
+    /** 
+     * Detect the types of the values in the sequence.
+     *
+     * @returns Returns a dataframe that describes the data types contained in the input series or dataframe.
+     */
+    detectTypes (): IDataFrame<number, ITypeFrequency> {
+
+        return new DataFrame<number, ITypeFrequency>(() => {
+            const values = this.toArray();
+            const totalValues = values.length;
+
+            const typeFrequencies = this.select(value => {
+                    let valueType: string = typeof(value);
+                    if (valueType === "object") {
+                        if (Sugar.Object.isDate(value)) {
+                            valueType = "date";
+                        }
+                    }
+                    return valueType;
+                })
+                .aggregate({}, (accumulated: any, valueType: string) => {
+                    var typeInfo = accumulated[valueType];
+                    if (!typeInfo) {
+                        typeInfo = {
+                            count: 0
+                        };
+                        accumulated[valueType] = typeInfo;
+                    }
+                    ++typeInfo.count;
+                    return accumulated;
+                });
+
+                
+
+            return {
+                columnNames: ["Type", "Frequency"],
+                rows: Object.keys(typeFrequencies)
+                    .map(valueType => {
+                        return [
+                            valueType,
+                            (typeFrequencies[valueType].count / totalValues) * 100
+                        ];
+                    })
+            };
+        });
+    }
+
+    /** 
+     * Detect the frequency of values in the sequence.
+     *
+     * @returns Returns a dataframe that describes the values contained in the input sequence.
+     */
+    detectValues (): IDataFrame<number, IValueFrequency> {
+
+        return new DataFrame<number, IValueFrequency>(() => {
+            const values = this.toArray();
+            const totalValues = values.length;
+            const valueFrequencies = this.aggregate({}, (accumulated: any, value: any) => {
+                const valueKey = (value !== null && value.toString() || "null") + "-" + typeof(value);
+                let valueInfo = accumulated[valueKey];
+                if (!valueInfo) {
+                    valueInfo = {
+                        count: 0,
+                        value: value,
+                    };
+                    accumulated[valueKey] = valueInfo;
+                }
+                ++valueInfo.count;
+                return accumulated;
+            });
+
+            return {
+                columnNames: ["Value", "Frequency"],
+                rows: Object.keys(valueFrequencies)
+                    .map(valueKey => {
+                        const valueInfo = valueFrequencies[valueKey];
+                        return [
+                            valueInfo.value,
+                            (valueInfo.count / totalValues) * 100
+                        ];
+                    })
+            };
+        });
+    }
 }
 
 //
