@@ -92,6 +92,48 @@ export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame
 export type DataFrameConfigFn<IndexT, ValueT> = () => IDataFrameConfig<IndexT, ValueT>;
 
 /**
+ * Represents the frequency of a type in a series or dataframe.
+ */
+export interface ITypeFrequency {
+
+    /**
+     * Name of the column containing the value.
+     */
+    Column: string;
+
+    /**
+     * The name of the type.
+     */
+    Type: string; 
+
+    /**
+     * The frequency of the type's appearance in the series or dataframe.
+     */
+    Frequency: number;
+}
+
+/**
+ * Represents the frequency of a value in a series or dataframe.
+ */
+export interface IValueFrequency {
+
+    /**
+     * Name of the column containing the value.
+     */
+    Column: string;
+
+    /**
+     * The value.
+     */
+    Value: any; 
+
+    /**
+     * The frequency of the value's appearance in the series or dataframe.
+     */
+    Frequency: number;
+}
+
+/**
  * Interface that represents a dataframe containing a sequence of indexed rows of data.
  */
 export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<ValueT> {
@@ -912,7 +954,21 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns Returns 'defaultSequence' if the dataframe is empty. 
      */
     defaultIfEmpty (defaultSequence: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT>;
-    
+
+    /**
+     * Detect the types of the values in the dataframe.
+     *
+     * @returns Returns a dataframe that describes the data types contained in the input series or dataframe.
+     */
+    detectTypes (): IDataFrame<number, ITypeFrequency>;
+
+    /**
+     * Detect the frequency of the values in the dataframe.
+     *
+     * @returns Returns a dataframe that describes the values contained in the dataframe.
+     */
+    detectValues (): IDataFrame<number, IValueFrequency>;
+
     /**
      * Serialize the dataframe to JSON.
      * 
@@ -3367,6 +3423,52 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         else {
             return this;
         }
+    }
+
+    /**
+     * Detect the the frequency of the types of the values in the dataframe.
+     *
+     * @returns Returns a dataframe that describes the data types contained in the dataframe.
+     */
+    detectTypes (): IDataFrame<number, ITypeFrequency> {
+        return new DataFrame<number, ITypeFrequency>(() => {
+            const typeFrequencies = this.getColumns()
+                .selectMany(column => {
+                    return column.series.detectTypes()
+                        .select((typeFrequency: any) => {
+                            const output = Object.assign({}, typeFrequency);
+                            output.Column = column.name;
+                            return output;
+                        });
+                });
+            return {
+                columnNames: ["Type", "Frequency", "Column"],
+                values: typeFrequencies,
+            };
+        });
+    }
+    
+    /**
+     * Detect the frequency of the values in the dataframe.
+     *
+     * @returns Returns a dataframe that describes the values contained in the dataframe.
+     */
+    detectValues (): IDataFrame<number, IValueFrequency> {
+        return new DataFrame<number, IValueFrequency>(() => {
+            const valueFrequencies = this.getColumns()
+                .selectMany(column => {
+                    return column.series.detectValues()
+                        .select((valueFrequency: any) => {
+                            const output = Object.assign({}, valueFrequency);
+                            output.Column = column.name;
+                            return output;
+                        });
+                });
+            return {
+                columnNames: ["Value", "Frequency", "Column"],
+                values: valueFrequencies,
+            };
+        });
     }
 
     /**
