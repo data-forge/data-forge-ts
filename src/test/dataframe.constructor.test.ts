@@ -7,18 +7,27 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 describe('DataFrame constructor', () => {
 
     it('create dataframe from array of values', ()  => {
-        const dataFrame = new DataFrame([
+        const df = new DataFrame([
             { A: 10 }, 
             { A: 20 }, 
             { A: 30 }, 
         ]);
-        expect(dataFrame.toArray()).to.eql([
+        expect(df.toArray()).to.eql([
             { A: 10 }, 
             { A: 20 }, 
             { A: 30 }, 
         ]);
     });
 
+    it('dataframe automatically determines column names from objects', ()  => {
+        const df = new DataFrame([
+            { A: 10, B: 100 }, 
+            { A: 20, B: 200 }, 
+            { A: 30, B: 300 }, 
+        ]);
+        expect(df.getColumnNames()).to.eql(["A", "B"]);
+    });
+    
     it('create dataframe from empty array', ()  => {        
         expect(new DataFrame([]).toArray()).to.eql([]);
     });
