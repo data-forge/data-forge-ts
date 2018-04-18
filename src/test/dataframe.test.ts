@@ -55,6 +55,18 @@ describe('DataFrame', () => {
         ]);
     });
 
+	it('using select on a dataframe redefines the columns', () => {
+
+		var df = new DataFrame([
+            { A: 1, B: 10 },
+            { A: 2, B: 20 },
+        ]);
+
+		var modified = df.select(row => ({ X: row.A, Y: row.B }));
+		expect(df.getColumnNames()).to.eql(["A", "B"]);
+		expect(modified.getColumnNames()).to.eql(["X", "Y"]);
+    });
+        
     it('select ignores index', () => {
 
         var dataframe = new DataFrame({
@@ -233,7 +245,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame([0, 1, 2]);
 		var count = 0;
-		dataframe.forEach(function (v) {
+		dataframe.forEach(v => {
 			expect(v).to.eql(count);
 			++count;
 		});
@@ -245,7 +257,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
-		expect(dataframe.all(function (value) { 
+		expect(dataframe.all(value => { 
 				return value === 200; 
 			})).to.eql(false);
 	});
@@ -254,7 +266,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [1, 2, 3, 4] });
 
-		expect(dataframe.all(function (value) { 
+		expect(dataframe.all(value => { 
 				return value === 200; 
 			})).to.eql(false);
 	});
@@ -263,7 +275,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [1, 3, 3, 4] });
 
-		expect(dataframe.all(function (value) { 
+		expect(dataframe.all(value => { 
 				return value === 3; 
 			})).to.eql(false);
 	});
@@ -272,7 +284,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
-		expect(dataframe.all(function (value) { 
+		expect(dataframe.all(value => { 
 				return value === 5; 
 			})).to.eql(true);
 	});
@@ -281,7 +293,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
-		expect(dataframe.any(function (value) { 
+		expect(dataframe.any(value => { 
 				return value === 200; 
 			})).to.eql(false);
 	});
@@ -290,7 +302,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [1, 2, 3, 4] });
 
-		expect(dataframe.any(function (value) { 
+		expect(dataframe.any(value => { 
 				return value === 200; 
 			})).to.eql(false);
 	});
@@ -299,7 +311,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [1, 3, 3, 4] });
 
-		expect(dataframe.any(function (value) { 
+		expect(dataframe.any(value => { 
 				return value === 3; 
 			})).to.eql(true);
 	});
@@ -308,7 +320,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
-		expect(dataframe.any(function (value) { 
+		expect(dataframe.any(value => { 
 				return value === 5; 
 			})).to.eql(true);
 	});	
@@ -331,7 +343,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [] });
 
-		expect(dataframe.none(function (value) { 
+		expect(dataframe.none(value => { 
 				return value === 200; 
 			})).to.eql(true);
 	});
@@ -340,7 +352,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [1, 2, 3, 4] });
 
-		expect(dataframe.none(function (value) { 
+		expect(dataframe.none(value => { 
 				return value === 200; 
 			})).to.eql(true);
 	});
@@ -349,7 +361,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [1, 3, 3, 4] });
 
-		expect(dataframe.none(function (value) { 
+		expect(dataframe.none(value => { 
 				return value === 3; 
 			})).to.eql(false);
 	});
@@ -358,7 +370,7 @@ describe('DataFrame', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
 
-		expect(dataframe.none(function (value) { 
+		expect(dataframe.none(value => { 
 				return value === 5; 
 			})).to.eql(false);
 	});	
