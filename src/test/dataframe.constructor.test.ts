@@ -363,4 +363,59 @@ describe('DataFrame constructor', () => {
             [30, 300],
         ]);
     });
+
+	it('can initialize from array of objects with different fields', () => {
+
+		var dataFrame = new DataFrame({
+				values: [
+					{
+						Col1: 1,
+						Col2: 'hello',
+					},
+					{
+						Col3: 10,
+						Col4: 'computer',
+					}
+                ],
+                considerAllRows: true,
+			});
+
+		expect(dataFrame.getColumnNames()).to.eql(["Col1", "Col2", "Col3", "Col4"]);
+
+		expect(dataFrame.toRows()).to.eql([
+			[1, 'hello', undefined, undefined],
+			[undefined, undefined, 10, 'computer'],
+		]);
+		
+		var columns = dataFrame.getColumns();
+		expect(columns.count()).to.eql(4);
+
+		expect(columns.at(0)!.name).to.eql("Col1");
+		expect(columns.at(0)!.series.toArray()).to.eql([1]);
+
+		expect(columns.at(1)!.name).to.eql("Col2");
+		expect(columns.at(1)!.series.toArray()).to.eql(["hello"]);
+
+		expect(columns.at(2)!.name).to.eql("Col3");
+		expect(columns.at(2)!.series.toArray()).to.eql([10]);
+
+		expect(columns.at(3)!.name).to.eql("Col4");
+		expect(columns.at(3)!.series.toArray()).to.eql(["computer"]);
+	});
+
+	it('can initialize from array of objects with zero fields', () => {
+
+		var dataFrame = new DataFrame({
+				values: [
+					{},
+					{}
+				]
+			});
+
+		expect(dataFrame.getColumnNames()).to.eql([]);
+		expect(dataFrame.getColumns().count()).to.eql(0);
+		expect(dataFrame.toRows()).to.eql([[], []]);
+    });	
+    
+
 });
