@@ -23,13 +23,24 @@ describe('DataFrame constructor', () => {
         expect(new DataFrame([]).toArray()).to.eql([]);
     });
 
+    it('empty dataframe from empty array has no columns', ()  => {        
+        expect(new DataFrame([]).getColumnNames()).to.eql([]);
+    });
+    
     it('create empty dataframe with no params', ()  => {
-        
         expect(new DataFrame().toArray()).to.eql([]);
+    });
+
+    it('empty dataframe with no params has no columns', ()  => {        
+        expect(new DataFrame().getColumnNames()).to.eql([]);
     });
 
     it('create empty dataframe from empty config', ()  => {        
         expect(new DataFrame({}).toArray()).to.eql([]);
+    });
+
+    it('empty dataframe with emptu config has no columns', ()  => {        
+        expect(new DataFrame({}).getColumnNames()).to.eql([]);
     });
 
     it('create empty dataframe from config with no values, although index is set.', ()  => {        
