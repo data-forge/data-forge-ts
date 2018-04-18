@@ -81,6 +81,13 @@ export interface IColumnTransformSpec {
 }
 
 /**
+ * A spec for aggregating a collection of names columns.
+ */
+export interface IColumnAggregateSpec {
+    [index: string]: AggregateFn<any, any>;
+}
+
+/**
  * A selector function that can select a series from a dataframe.
  */
 export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame: IDataFrame<IndexT, DataFrameValueT>) => ISeries<IndexT, SeriesValueT>;
@@ -435,7 +442,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
      */
-    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT;
     
     /**
      * Skip a number of values in the dataframe.
@@ -2172,12 +2179,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
      */
-    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT {
 
         if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
         }
-        else {
+        else if (selector) {
             assert.isFunction(selector, "Expected 'selector' parameter to aggregate to be a function.");
 
             let accum = <ToT> seedOrSelector;
@@ -2188,7 +2195,20 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             return accum;
         }
-    };
+        else {
+            assert.isObject(seedOrSelector, "Expected 'seed' parameter to aggregate to be an object.");
+
+            const columnAggregateSpec = seedOrSelector as IColumnAggregateSpec;
+            const columnNames = Object.keys(columnAggregateSpec);
+            const aggregatedColumns = columnNames.map(columnName => {
+                var columnSelector = columnAggregateSpec[columnName];
+                assert.isFunction(columnSelector, "Expected column/selector pairs in 'seed' parameter to aggregate.");
+                return [columnName, this.getSeries(columnName).aggregate(columnSelector)];
+            });
+
+            return toMap(aggregatedColumns, pair => pair[0], pair => pair[1]);
+        }
+    }
     
     /**
      * Skip a number of values in the dataframe.

@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai';
 import 'mocha';
-import { Series, Index } from '../index';
+import { Series, Index, DataFrame } from '../index';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series', () => {
@@ -50,7 +50,7 @@ describe('Series', () => {
         ]);
     });
 
-	it('can inflate series to dataframe using selector', function () {
+	it('can inflate series to dataframe using selector', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
 		var dataFrame = series.inflate(value => {
@@ -167,32 +167,32 @@ describe('Series', () => {
         expect(series.count()).to.eql(3);
     });
 
-	it('can get first and last values', function () {
+	it('can get first and last values', () => {
 
 		var series = new Series(['A', 'B', 'C']);
 		expect(series.first()).to.eql('A');
 		expect(series.last()).to.eql('C');
 	});
 
-	it('getting first of empty series throws exception', function () {
+	it('getting first of empty series throws exception', () => {
 
 		var series = new Series();
 
-		expect(function () {
+		expect(() => {
 			series.first();
 		}).to.throw();
     });
     
-	it('getting last of empty series throws exception', function () {
+	it('getting last of empty series throws exception', () => {
 
 		var series = new Series();
 
-		expect(function () {
+		expect(() => {
 			series.last();
 		}).to.throw();
     });
 
-	it('can get value by index', function () {
+	it('can get value by index', () => {
 
 		var series = new Series({ 
 			index:  [100, 200, 300],
@@ -202,7 +202,7 @@ describe('Series', () => {
 		expect(series.at(200)).to.eql(20);
 	});
 
-	it('getting by index returns undefined when the requested index does not exist', function () {
+	it('getting by index returns undefined when the requested index does not exist', () => {
 
 		var series = new Series({ 
 			index:  [100, 300],
@@ -212,7 +212,7 @@ describe('Series', () => {
 		expect(series.at(200)).to.eql(undefined);
 	});
 
-	it('getting by index returns undefined when the series is empty', function () {
+	it('getting by index returns undefined when the series is empty', () => {
 
 		var series = new Series();
 		expect(series.at(200)).to.eql(undefined);
@@ -232,7 +232,7 @@ describe('Series', () => {
 		expect(head.toArray()).to.eql(['B', 'C']);
     });
 
-	it('for each', function () {
+	it('for each', () => {
 
 		var series = new Series([0, 1, 2]);
 		var count = 0;
@@ -244,7 +244,7 @@ describe('Series', () => {
 		expect(count).to.eql(3);
 	});
 
-	it('all - zero elements', function () {
+	it('all - zero elements', () => {
 
 		var series = new Series({ values: [] });
 
@@ -253,7 +253,7 @@ describe('Series', () => {
 			})).to.eql(false);
 	});
 
-	it('all - no elements match', function () {
+	it('all - no elements match', () => {
 
 		var series = new Series({ values: [1, 2, 3, 4] });
 
@@ -262,7 +262,7 @@ describe('Series', () => {
 			})).to.eql(false);
 	});
 
-	it('all - some elements match', function () {
+	it('all - some elements match', () => {
 
 		var series = new Series({ values: [1, 3, 3, 4] });
 
@@ -271,7 +271,7 @@ describe('Series', () => {
 			})).to.eql(false);
 	});
 
-	it('all - all elements match', function () {
+	it('all - all elements match', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });
 
@@ -280,7 +280,7 @@ describe('Series', () => {
 			})).to.eql(true);
 	});
 
-	it('any - zero elements', function () {
+	it('any - zero elements', () => {
 
 		var series = new Series({ values: [] });
 
@@ -289,7 +289,7 @@ describe('Series', () => {
 			})).to.eql(false);
 	});
 
-	it('any - no elements match', function () {
+	it('any - no elements match', () => {
 
 		var series = new Series({ values: [1, 2, 3, 4] });
 
@@ -298,7 +298,7 @@ describe('Series', () => {
 			})).to.eql(false);
 	});
 
-	it('any - some elements match', function () {
+	it('any - some elements match', () => {
 
 		var series = new Series({ values: [1, 3, 3, 4] });
 
@@ -307,7 +307,7 @@ describe('Series', () => {
 			})).to.eql(true);
 	});
 
-	it('any - all elements match', function () {
+	it('any - all elements match', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });
 
@@ -316,21 +316,21 @@ describe('Series', () => {
 			})).to.eql(true);
 	});	
 
-	it('any - with no predicate - no elements', function () {
+	it('any - with no predicate - no elements', () => {
 
 		var series = new Series({ values: [] });
 
 		expect(series.any()).to.eql(false);
 	});
 
-	it('any - with no predicate - elements exist', function () {
+	it('any - with no predicate - elements exist', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });
 
 		expect(series.any()).to.eql(true);
 	});	
 
-	it('none - zero elements', function () {
+	it('none - zero elements', () => {
 
 		var series = new Series({ values: [] });
 
@@ -339,7 +339,7 @@ describe('Series', () => {
 			})).to.eql(true);
 	});
 
-	it('none - no elements match', function () {
+	it('none - no elements match', () => {
 
 		var series = new Series({ values: [1, 2, 3, 4] });
 
@@ -348,7 +348,7 @@ describe('Series', () => {
 			})).to.eql(true);
 	});
 
-	it('none - some elements match', function () {
+	it('none - some elements match', () => {
 
 		var series = new Series({ values: [1, 3, 3, 4] });
 
@@ -357,7 +357,7 @@ describe('Series', () => {
 			})).to.eql(false);
 	});
 
-	it('none - all elements match', function () {
+	it('none - all elements match', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });
 
@@ -366,19 +366,19 @@ describe('Series', () => {
 			})).to.eql(false);
 	});	
 
-	it('none - with no predicate - zero elements', function () {
+	it('none - with no predicate - zero elements', () => {
 
 		var series = new Series({ values: [] });
 		expect(series.none()).to.eql(true);
 	});
 
-	it('none - with no predicate - has existing elements', function () {
+	it('none - with no predicate - has existing elements', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });
 		expect(series.none()).to.eql(false);
 	});	
 
-	it('can get series starting at particular index - with integer index', function () {
+	it('can get series starting at particular index - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -392,7 +392,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series starting before a particular index - with integer index', function () {
+	it('can get series starting before a particular index - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -406,7 +406,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series starting at particular index - with date index', function () {
+	it('can get series starting at particular index - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -424,7 +424,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series starting before a particular index - with date index', function () {
+	it('can get series starting before a particular index - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -442,7 +442,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series ending at particular index - with integer index', function () {
+	it('can get series ending at particular index - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -456,7 +456,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series ending before a particular index - with integer index', function () {
+	it('can get series ending before a particular index - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -470,7 +470,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series ending at particular index - with date index', function () {
+	it('can get series ending at particular index - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -488,7 +488,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series ending before a particular index - with date index', function () {
+	it('can get series ending before a particular index - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -506,7 +506,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series before a particular index - with integer index', function () {
+	it('can get series before a particular index - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -520,7 +520,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series before a particular index - with date index', function () {
+	it('can get series before a particular index - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -538,7 +538,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series after a particular index - with integer index', function () {
+	it('can get series after a particular index - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -552,7 +552,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series after a particular index - with date index', function () {
+	it('can get series after a particular index - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -570,7 +570,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get series between particular indices - with integer index', function () {
+	it('can get series between particular indices - with integer index', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -583,7 +583,7 @@ describe('Series', () => {
 		]); 	
 	});
 
-	it('can get slice of rows - with string indices', function () {
+	it('can get slice of rows - with string indices', () => {
 
 		var series = new Series({
 			index: ["a", "b", "c", "d", "e"], 
@@ -598,7 +598,7 @@ describe('Series', () => {
 		]);
     });
         
-	it('can get series between particular indices - with date index', function () {
+	it('can get series between particular indices - with date index', () => {
 
 		var series = new Series({
 			index: [
@@ -615,7 +615,7 @@ describe('Series', () => {
 		]); 	
     });
         
-	it('can transform a series to a series of pairs', function () {
+	it('can transform a series to a series of pairs', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -630,7 +630,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can transform series of pairs to series of values', function () {
+	it('can transform series of pairs to series of values', () => {
 
 		var series = new Series({
 			index: [10, 20, 30],
@@ -645,7 +645,7 @@ describe('Series', () => {
 		]);
     });
 
-	it('can aggregate series with no seed', function () {
+	it('can aggregate series with no seed', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
 
@@ -656,7 +656,7 @@ describe('Series', () => {
 		expect(agg).to.eql(28);
 	});
 
-	it('can aggregate series with seed', function () {
+	it('can aggregate series with seed', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
 
@@ -667,7 +667,7 @@ describe('Series', () => {
 		expect(agg).to.eql(30);
 	});
 
-	it('can aggregate series with a function as the seed', function () {
+	it('can aggregate series with a function as the seed', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
 
@@ -683,8 +683,8 @@ describe('Series', () => {
 
 		expect(agg()).to.eql(30);
 	});
-    
-	it('can convert to javascript object', function () {
+        
+	it('can convert to javascript object', () => {
 
 		var series = new Series({
             index: [0, 1], 
@@ -707,7 +707,7 @@ describe('Series', () => {
 		});
 	});
 
-	it('can convert to javascript object - with duplicate keys', function () {
+	it('can convert to javascript object - with duplicate keys', () => {
 
         var series = new Series({
             index: [0, 1, 2], 
@@ -734,7 +734,7 @@ describe('Series', () => {
 		});
 	});
 
-	it('can reverse', function () {
+	it('can reverse', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
 		var reversed = series.reverse();
@@ -744,7 +744,7 @@ describe('Series', () => {
 		expect(reversed.getIndex().toArray()).to.eql([2, 1, 0]);
     });
     
-	it('can distinct items', function () {
+	it('can distinct items', () => {
 
 		var series = new Series({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -762,7 +762,7 @@ describe('Series', () => {
         ]);
 	});
 
-	it('can distinct items with custom selector', function () {
+	it('can distinct items with custom selector', () => {
 
 		var series = new Series({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -782,7 +782,7 @@ describe('Series', () => {
 		]);
     });
 
-	it('can truncate string values', function () {
+	it('can truncate string values', () => {
 
 		var series = new Series({ index: [1, 2], values: ['foo', 'bar'] });
 		var truncated = series.truncateStrings(2);
@@ -791,7 +791,7 @@ describe('Series', () => {
 		expect(truncated.toArray()).to.eql(['fo', 'ba']);
 	});
 
-	it('truncation ignores strings that are already short enough', function () {
+	it('truncation ignores strings that are already short enough', () => {
 
 		var series = new Series({ index: [1, 2], values: ['foo', 'bar'] });
 		var truncated = series.truncateStrings(20);
@@ -799,7 +799,7 @@ describe('Series', () => {
 		expect(truncated.toArray()).to.eql(['foo', 'bar']);
 	});
 
-	it('truncation passes through other values', function () {
+	it('truncation passes through other values', () => {
 
 		var series = new Series({ index: [1, 2, 3, 4], values: [null, undefined, 1, new Date(2015, 1, 1)] });
 		var truncated = series.truncateStrings(20);
@@ -807,7 +807,7 @@ describe('Series', () => {
 		expect(truncated.toArray()).to.eql([null, 1, new Date(2015, 1, 1)]);
     });
     
-	it('can insert pair at start of empty series', function () {
+	it('can insert pair at start of empty series', () => {
 
 		var series = new Series();
 		var modified = series.insertPair([10, 100]);
@@ -816,7 +816,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can insert pair at start of series with existing items', function () {
+	it('can insert pair at start of series with existing items', () => {
 
 		var series = new Series({
 			index:  [1,  2],
@@ -831,7 +831,7 @@ describe('Series', () => {
 	});
 
 
-	it('can append pair to empty series', function () {
+	it('can append pair to empty series', () => {
 
 		var series = new Series();
 		var appended = series.appendPair([10, 100]);
@@ -840,7 +840,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can append pair to series with existing items', function () {
+	it('can append pair to series with existing items', () => {
 
 		var series = new Series({
 			index:  [1,  2],
@@ -854,7 +854,7 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can fill gaps in series - fill forward', function () {
+	it('can fill gaps in series - fill forward', () => {
 
 		var seriesWithGaps = new Series({
 			index:  [1,  2,  6,  7,  10, 11],
@@ -892,21 +892,21 @@ describe('Series', () => {
 		]);
 	});
 
-	it('can select default instead of empty series - array', function () {
+	it('can select default instead of empty series - array', () => {
 
 		var series = new Series();
 		var defaulted = series.defaultIfEmpty([1, 2]);
 		expect(defaulted.toArray()).to.eql([1, 2]);
 	});
 
-	it('can select default instead of empty series - series', function () {
+	it('can select default instead of empty series - series', () => {
 
 		var series = new Series();
 		var defaulted = series.defaultIfEmpty(new Series({ values: [1, 2] }));
 		expect(defaulted.toArray()).to.eql([1, 2]);
 	});
 
-	it('default is ignored for non-empty series', function () {
+	it('default is ignored for non-empty series', () => {
 
 		var series = new Series({ values: [5, 6] });
 		var defaulted = series.defaultIfEmpty([1, 2]);

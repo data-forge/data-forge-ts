@@ -702,6 +702,27 @@ describe('DataFrame', () => {
 			});
 
 		expect(agg()).to.eql(30);
+    });
+    
+	it('can aggregate dataframe with separate functions per column', () => {
+
+		var df = new DataFrame({
+		    columnNames: ["Column1", "Column2"], 
+			rows: [
+                [1, 10],
+                [2, 20],
+                [3, 30],
+            ],
+            index: [10, 11, 12]
+        });
+
+		var agg = df.aggregate({ 
+            Column1: (prev: number, value: number) => prev + value,
+            Column2: (prev: number, value: number) => prev * value,
+        });
+
+		expect(agg.Column1).to.eql(6);
+		expect(agg.Column2).to.eql(6000);
 	});
     
 	it('can convert to javascript object', () => {
