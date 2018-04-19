@@ -33,11 +33,11 @@ import { toMap, makeDistinct } from './utils';
  * DataFrame configuration.
  */
 export interface IDataFrameConfig<IndexT, ValueT> {
-    values?: ValueT[] | Iterable<ValueT>,
-    rows?: any[][] | Iterable<any[]>,
-    index?: IndexT[] | Iterable<IndexT>,
-    pairs?: [IndexT, ValueT][] | Iterable<[IndexT, ValueT]>,
-    columnNames?: string[] | Iterable<string>,
+    values?: Iterable<ValueT>,
+    rows?: Iterable<any[]>,
+    index?: Iterable<IndexT>,
+    pairs?: Iterable<[IndexT, ValueT]>,
+    columnNames?: Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
     columns?: any, //todo: This should be a column spec!
@@ -1067,10 +1067,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     private static readonly defaultEmptyIterable = new EmptyIterable();
     
     //
-    // Initialise dataframe content from an array of values.
+    // Initialise dataframe content from an iterable of values.
     //
-    private static initFromArray<IndexT, ValueT>(arr: ValueT[]): IDataFrameContent<IndexT, ValueT> {
-        const columnNames = arr.length > 0 ? Object.keys(arr[0]) : [];
+    private static initFromArray<IndexT, ValueT>(arr: Iterable<ValueT>): IDataFrameContent<IndexT, ValueT> {
+        const firstResult = arr[Symbol.iterator]().next();
+        const columnNames = !firstResult.done ? Object.keys(firstResult.value) : [];
         return {
             index: DataFrame.defaultCountIterable,
             values: arr,
@@ -1252,16 +1253,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *      index: Optional array or iterable of values that index the dataframe, defaults to a dataframe of integers from 1 and counting upward.
      *      pairs: Optional iterable of pairs (index and value) that the dataframe contains.
      */
-    constructor(config?: ValueT[] | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
+    constructor(config?: Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
         if (config) {
             if (Sugar.Object.isFunction(config)) {
                 this.configFn = config;
             }
-            else if (Sugar.Object.isArray(config)) {
-                this.content = DataFrame.initFromArray(config);
+            else if (Sugar.Object.isArray(config) || 
+                     Sugar.Object.isFunction((config as any)[Symbol.iterator])) {
+                this.content = DataFrame.initFromArray(config as Iterable<ValueT>);
             }
             else {
-                this.content = DataFrame.initFromConfig(config);
+                this.content = DataFrame.initFromConfig(config as IDataFrameConfig<IndexT, ValueT>);
             }
         }
         else {

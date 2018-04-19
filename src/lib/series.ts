@@ -30,9 +30,9 @@ import { toMap } from './utils';
  * Series configuration.
  */
 export interface ISeriesConfig<IndexT, ValueT> {
-    values?: ValueT[] | Iterable<ValueT>,
-    index?: IndexT[] | Iterable<IndexT>,
-    pairs?: [IndexT, ValueT][] | Iterable<[IndexT, ValueT]>
+    values?: Iterable<ValueT>,
+    index?: Iterable<IndexT>,
+    pairs?: Iterable<[IndexT, ValueT]>
     baked?: boolean,
 };
 
@@ -890,7 +890,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Initialise series content from an array of values.
     //
-    private static initFromArray<IndexT, ValueT>(arr: ValueT[]): ISeriesContent<IndexT, ValueT> {
+    private static initFromArray<IndexT, ValueT>(arr: Iterable<ValueT>): ISeriesContent<IndexT, ValueT> {
         return {
             index: Series.defaultCountIterable,
             values: arr,
@@ -991,16 +991,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      index: Optional array or iterable of values that index the series, defaults to a series of integers from 1 and counting upward.
      *      pairs: Optional iterable of pairs (index and value) that the series contains.
      */
-    constructor(config?: ValueT[] | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
+    constructor(config?: Iterable<ValueT> | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
         if (config) {
             if (Sugar.Object.isFunction(config)) {
                 this.configFn = config;
             }
-            else if (Sugar.Object.isArray(config)) {
-                this.content = Series.initFromArray(config);
+            else if (Sugar.Object.isArray(config) || 
+                     Sugar.Object.isFunction((config as any)[Symbol.iterator])) {
+                this.content = Series.initFromArray(config as Iterable<ValueT>);
             }
             else {
-                this.content = Series.initFromConfig(config);
+                this.content = Series.initFromConfig(config as ISeriesConfig<IndexT, ValueT>);
             }
         }
         else {
