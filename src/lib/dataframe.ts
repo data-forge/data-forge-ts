@@ -2812,7 +2812,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return new DataFrame({
             columnNames: this.getColumnNames(),
             values: this.toArray(),
-            index: this.getIndex().toArray(),
             pairs: this.toPairs(),
             baked: true,
         });

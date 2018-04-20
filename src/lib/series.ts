@@ -1877,6 +1877,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return new Series<IndexT, ValueT>({
+            values: this.toArray(),
             pairs: this.toPairs(),
             baked: true,
         });
