@@ -26,17 +26,12 @@ import { DataFrame, IDataFrame } from '.';
  * Deserialize a dataframe from a JSON text string.
  *
  * @param jsonTextString The JSON text to deserialize.
- * @param [config] Optional configuration option to pass to the dataframe.
  * 
  * @returns Returns a dataframe that has been deserialized from the JSON data.
  */
-export function fromJSON (jsonTextString: string, config?: any): IDataFrame<number, any> {
+export function fromJSON (jsonTextString: string): IDataFrame<number, any> {
     
     assert.isString(jsonTextString, "Expected 'jsonTextString' parameter to 'dataForge.fromJSON' to be a string containing data encoded in the JSON format.");
-
-    if (config) {
-        assert.isObject(config, "Expected 'config' parameter to 'dataForge.fromJSON' to be an object with configuration to pass to the DataFrame.");
-    }
 
     return new DataFrame<number, any>({
         values: JSON.parse(jsonTextString)
@@ -158,14 +153,9 @@ class AsyncFileReader implements IAsyncFileReader {
      * Deserialize a JSON file to a DataFrame.
      * Returns a promise that later resolves to a DataFrame.
      * 
-     * @param [config] Optional configuration file for parsing.
-     * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseJSON (config?: any): Promise<IDataFrame<number, any>> {
-        if (config) {
-            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseJSON(...) to be an object with configuration options for JSON parsing.");
-        }
+    parseJSON (): Promise<IDataFrame<number, any>> {
 
         return new Promise((resolve: Function, reject: Function) => {
             var fs = require('fs');
@@ -175,7 +165,7 @@ class AsyncFileReader implements IAsyncFileReader {
                     return;
                 }
 
-                resolve(fromJSON(jsonData, config));
+                resolve(fromJSON(jsonData));
             });
         });
     } 
@@ -254,14 +244,10 @@ class SyncFileReader implements ISyncFileReader {
      * 
      * @returns Returns a dataframe that was deserialized from the file.  
      */
-    parseJSON (config?: any): IDataFrame<number, any> {
-
-        if (config) {
-            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFileSync(...).parseJSON(...) to be an object with configuration options for JSON parsing.");
-        }
+    parseJSON (): IDataFrame<number, any> {
 
         const fs = require('fs');
-        return fromJSON(fs.readFileSync(this.filePath, 'utf8'), config);
+        return fromJSON(fs.readFileSync(this.filePath, 'utf8'));
     } 
 }
 

@@ -30,6 +30,10 @@ renameSeries no longer takes an array of strings for column names, just a column
 
 Removed getColumnIndex, getColumnName
 
+DataFrame no longer derives from Serires, so min/max/average/etc are not allowed.
+
+No config object is passed to fromJSON.
+
 
 **New feature**
 
