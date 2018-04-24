@@ -1,5 +1,6 @@
 (<any>Symbol)["asyncIterator"] = Symbol.asyncIterator || Symbol.for("asyncIterator");
 
+import * as Sugar from 'sugar';
 export { Index, IIndex } from './lib/index';
 export { AsyncIndex, IAsyncIndex } from './lib/async/async-index';
 export { Series, ISeries, SelectorWithIndexFn } from './lib/series';
