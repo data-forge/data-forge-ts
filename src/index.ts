@@ -39,29 +39,52 @@ export function fromJSON (jsonTextString: string): IDataFrame<number, any> {
 }
 
 /**
+ * Options for parsing CSV data.
+ */
+export interface ICSVOptions {
+    /**
+     * Optional column names to read from the CSV data.
+     */
+    columnNames?: Iterable<string>;
+
+    /**
+     * Automatically pick types based on what the value looks like.
+     */
+    dynamicTyping?: boolean;
+
+    /**
+     * Skip empty lines in the input.
+     */
+    skipEmptyLines?: boolean;
+}
+
+/**
  * Deserialize a DataFrame from a CSV text string.
  *
  * @param csvTextString The CSV text to deserialize.
- * @param [config] Optional configuration option to pass to the DataFrame.
+ * @param [config] Optional configuration options for parsing the CSV data.
  * 
  * @returns Returns a dataframe that has been deserialized from the CSV data.
  */
-export function fromCSV (csvTextString: string, config?: any) {
+export function fromCSV (csvTextString: string, config?: ICSVOptions) {
     assert.isString(csvTextString, "Expected 'csvTextString' parameter to 'dataForge.fromCSV' to be a string containing data encoded in the CSV format.");
 
     if (config) {
-        assert.isObject(config, "Expected 'config' parameter to 'dataForge.fromJSON' to be an object with configuration to pass to the DataFrame.");
+        assert.isObject(config, "Expected 'config' parameter to 'dataForge.fromCSV' to be an object with CSV parsing configuration options.");
 
         if (config.columnNames) {
-            assert.isArray(config.columnNames, "Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array of strings that specify column names.")
+            if (!Sugar.Object.isFunction(config.columnNames[Symbol.iterator])) {
+                assert.isArray(config.columnNames, "Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array or iterable of strings that specifies column names.")
+            }
 
-            config.columnNames.forEach((columnName: string) => {
+
+            for (const columnName of config.columnNames) {
                 assert.isString(columnName, "Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array of strings that specify column names.")
-            });
+            }
         }			
     }
 
-    const parsed = BabyParse.parse(csvTextString, config);
+    const parsed = BabyParse.parse(csvTextString, config as any);
     let rows = <string[][]> parsed.data;
 
     if (rows.length === 0) {
@@ -99,17 +122,15 @@ export interface IAsyncFileReader {
      * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseCSV (config?: any): Promise<IDataFrame<number, any>>;
+    parseCSV (config?: ICSVOptions): Promise<IDataFrame<number, any>>;
 
     /**
      * Deserialize a JSON file to a DataFrame.
      * Returns a promise that later resolves to a DataFrame.
      * 
-     * @param [config] Optional configuration file for parsing.
-     * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseJSON (config?: any): Promise<IDataFrame<number, any>>;
+    parseJSON (): Promise<IDataFrame<number, any>>;
 }
 
 /**
@@ -131,7 +152,7 @@ class AsyncFileReader implements IAsyncFileReader {
      * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseCSV (config?: any): Promise<IDataFrame<number, any>> {
+    parseCSV (config?: ICSVOptions): Promise<IDataFrame<number, any>> {
         if (config) {
             assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
         }
@@ -198,16 +219,14 @@ export interface ISyncFileReader {
      * 
      * @returns Returns a dataframe that was deserialized from the file.
      */
-    parseCSV (config?: any): IDataFrame<number, any>;
+    parseCSV (config?: ICSVOptions): IDataFrame<number, any>;
 
     /**
      * Deserialize a JSON file to a DataFrame.
      * 
-     * @param {object} [config] - Optional configuration file for parsing.
-     * 
      * @returns {DataFrame} Returns a dataframe that was deserialized from the file.  
      */
-    parseJSON (config?: any): IDataFrame<number, any>;
+    parseJSON (): IDataFrame<number, any>;
 }
 
 /**
@@ -228,7 +247,7 @@ class SyncFileReader implements ISyncFileReader {
      * 
      * @returns Returns a dataframe that was deserialized from the file.
      */
-    parseCSV (config?: any): IDataFrame<number, any> {
+    parseCSV (config?: ICSVOptions): IDataFrame<number, any> {
         if (config) {
             assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFileSync(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
         }
@@ -279,17 +298,15 @@ export interface IIncrementalFileReader {
      * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseCSV (config?: any): IAsyncDataFrame<number, any>;
+    parseCSV (config?: ICSVOptions): IAsyncDataFrame<number, any>;
 
     /**
      * Deserialize a JSON file to a DataFrame.
      * Returns a promise that later resolves to a DataFrame.
      * 
-     * @param [config] Optional configuration file for parsing.
-     * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseJSON (config?: any): IAsyncDataFrame<number, any>;
+    parseJSON (): IAsyncDataFrame<number, any>;
 }
 
 /**
@@ -311,7 +328,7 @@ class IncrementalFileReader implements IIncrementalFileReader {
      * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseCSV (config?: any): IAsyncDataFrame<number, any> {
+    parseCSV (config?: ICSVOptions): IAsyncDataFrame<number, any> {
         if (config) {
             assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
         }
@@ -325,7 +342,7 @@ class IncrementalFileReader implements IIncrementalFileReader {
         var streamIterable = new StreamIterable(streamFactory, this.filePath, config);
         return new AsyncDataFrame({
             values: streamIterable,
-            columnNames: config && config.columnNames || new StreamColumnNamesIterable(streamIterable),
+            columnNames: /*todo: config && config.columnNames || */ new StreamColumnNamesIterable(streamIterable),
         });
     }
 
@@ -333,14 +350,9 @@ class IncrementalFileReader implements IIncrementalFileReader {
      * Deserialize a JSON file to a DataFrame.
      * Returns a promise that later resolves to a DataFrame.
      * 
-     * @param [config] Optional configuration file for parsing.
-     * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseJSON (config?: any): IAsyncDataFrame<number, any> {
-        if (config) {
-            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseJSON(...) to be an object with configuration options for JSON parsing.");
-        }
+    parseJSON (): IAsyncDataFrame<number, any> {
 
         var streamFactory: IStreamFactory = {
             instantiate (inputFilePath: string, config?: any): IStream {
@@ -348,7 +360,7 @@ class IncrementalFileReader implements IIncrementalFileReader {
             }
         };
 
-        var streamIterable = new StreamIterable(streamFactory, this.filePath, config);
+        var streamIterable = new StreamIterable(streamFactory, this.filePath, {}); //todo: Does config even need to be passed in here?
         return new AsyncDataFrame({
             values: streamIterable,
             columnNames: new StreamColumnNamesIterable(streamIterable),
