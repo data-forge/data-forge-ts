@@ -40,6 +40,8 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
+
+    //todo: This should also be a iterable of IColumns.
     columns?: any, //todo: This should be a column spec!
 };
 
