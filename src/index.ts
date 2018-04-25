@@ -94,7 +94,7 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
 
     let columnNames;
     rows = rows.map(row => {
-            return row.map(cell => cell.trim()); // Trim each cell.
+            return row.map(cell => Sugar.Object.isString(cell) ? cell.trim() : cell); // Trim each cell that is still a string.
         });
 
     if (config && config.columnNames) {

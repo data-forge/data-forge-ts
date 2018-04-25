@@ -1,10 +1,11 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import * as dataForge from '../index';
+import * as moment from 'moment';
 
 describe('csv integration', () => {
 
-	it('can read data frame from CSV', function () {
+	it('can read data frame from CSV', () => {
 		
 		var csv =
 			"Date, Value1, Value2, Value3\n" +
@@ -37,7 +38,27 @@ describe('csv integration', () => {
 		]);
 	});
 
-	it('can read CSV with explicit header', function () {
+	it('can automatically choose types from CSV values', () => {
+		
+		var csv =
+			"Value1, Value2\n" +
+			"100, foo\n" +
+			"300, bar";
+
+		var dataFrame = dataForge.fromCSV(csv, { dynamicTyping: true });
+
+        expect(dataFrame.getSeries('Value1').toArray()).to.eql([
+			100,
+			300,
+		]);
+		
+		expect(dataFrame.getSeries('Value2').toArray()).to.eql([
+			'foo',
+			'bar',			
+		]);
+    });
+    
+	it('can read CSV with explicit header', () => {
 		
 		var csv =
 			"1975-2-24, 100, foo, 22\n" +
@@ -69,7 +90,7 @@ describe('csv integration', () => {
 		]);
 	});
 
-	it('can handle CSV with trailing commas', function () {
+	it('can handle CSV with trailing commas', () => {
 		
 		var csv =
 			"c1, c2,\n" +
@@ -92,7 +113,7 @@ describe('csv integration', () => {
 		]);
 	});
 
-	it('can handle CSV with quoted fields', function () {
+	it('can handle CSV with quoted fields', () => {
 		
 		var csv =
 			'"c1","c2"\n' +
@@ -115,7 +136,7 @@ describe('csv integration', () => {
 		]);
 	});	
 
-	it('can handle CSV with unix line endings', function () {
+	it('can handle CSV with unix line endings', () => {
 		
 		var csv =
 			'c1,c2\n' +
@@ -138,7 +159,7 @@ describe('csv integration', () => {
 		]);
 	});	
 
-	it('can handle CSV with windows line endings', function () {
+	it('can handle CSV with windows line endings', () => {
 		
 		var csv =
 			'c1,c2\r\n' +
@@ -161,7 +182,7 @@ describe('csv integration', () => {
 		]);
 	});	
 
-	it('can handle ASX share game CSV', function () {
+	it('can handle ASX share game CSV', () => {
 
 		var csv =
 			'"Company name","Code",\n' +
