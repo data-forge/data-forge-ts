@@ -2395,31 +2395,43 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /** 
-     * Get X values from the start of the series.
+     * Get X values from the start of the dataframe.
+     * Pass in a negative value to get all items at the head except X values at the tail.
      *
      * @param numValues - Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     * @returns Returns a new dataframe that has only the specified number of values taken from the start of the input sequence.  
      */
     head (numValues: number): IDataFrame<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'values' parameter to 'DataFrame.head' function to be a number.");
+        assert.isNumber(numValues, "Expected 'numValues' parameter to 'DataFrame.head' function to be a number.");
 
-        return this.take(numValues);
+        if (numValues === 0) {
+            return new DataFrame<IndexT, ValueT>(); // Empty dataframe.
+        }
+
+        const toTake = numValues < 0 ? this.count() - Math.abs(numValues) : numValues;
+        return this.take(toTake);
     }
 
     /** 
-     * Get X values from the end of the series.
+     * Get X values from the end of the dataframe.
+     * Pass in a negative value to get all items at the tail except X values at the head.
      *
      * @param numValues - Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     * @returns Returns a new dataframe that has only the specified number of values taken from the end of the input sequence.  
      */
     tail (numValues: number): IDataFrame<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'values' parameter to 'DataFrame.tail' function to be a number.");
+        assert.isNumber(numValues, "Expected 'numValues' parameter to 'DataFrame.tail' function to be a number.");
 
-        return this.skip(this.count() - numValues);
+        if (numValues === 0) {
+            return new DataFrame<IndexT, ValueT>(); // Empty dataframe.
+        }
+
+        const toSkip = numValues > 0 ? this.count() - numValues : Math.abs(numValues);
+        return this.skip(toSkip);
     }
 
     /**

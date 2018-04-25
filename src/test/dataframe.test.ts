@@ -227,18 +227,32 @@ describe('DataFrame', () => {
 		expect(dataframe.at(200)).to.eql(undefined);
 	});
     
-    it('can get head of dataframe', () =>  {
+    it('can get head', () =>  {
 
-		var dataframe = new DataFrame({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
-		var head = dataframe.head(2);
+		var df = new DataFrame(['A', 'B', 'C']);
+		var head = df.head(2);
 		expect(head.toArray()).to.eql(['A', 'B']);
 	});
 
-	it('can get tail of dataframe', () =>  {
+    it('can use negative with head to get all but the last X values', () =>  {
 
-		var dataframe = new DataFrame({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
-		var head = dataframe.tail(2);
-		expect(head.toArray()).to.eql(['B', 'C']);
+		var df = new DataFrame(['A', 'B', 'C']);
+		var head = df.head(-1);
+		expect(head.toArray()).to.eql(['A', 'B']);
+	});
+
+    it('can get tail', () =>  {
+
+		var df = new DataFrame(['A', 'B', 'C']);
+		var tail = df.tail(2);
+		expect(tail.toArray()).to.eql(['B', 'C']);
+    });
+
+    it('can use negative with tail to get all but the first X values', () =>  {
+
+		var df = new DataFrame(['A', 'B', 'C']);
+        var tail = df.tail(-1);
+		expect(tail.toArray()).to.eql(['B', 'C']);
     });
 
 	it('for each', () => {

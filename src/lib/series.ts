@@ -1478,6 +1478,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     
     /** 
      * Get X values from the start of the series.
+     * Pass in a negative value to get all items at the head except X values at the tail.
      *
      * @param numValues - Number of values to take.
      * 
@@ -1485,13 +1486,19 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     head (numValues: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'values' parameter to 'Series.head' function to be a number.");
+        assert.isNumber(numValues, "Expected 'numValues' parameter to 'Series.head' function to be a number.");
 
-        return this.take(numValues);
+        if (numValues === 0) {
+            return new Series<IndexT, ValueT>(); // Empty series.
+        }
+
+        const toTake = numValues < 0 ? this.count() - Math.abs(numValues) : numValues;
+        return this.take(toTake);
     }
 
     /** 
      * Get X values from the end of the series.
+     * Pass in a negative value to get all items at the tail except X values at the head.
      *
      * @param numValues - Number of values to take.
      * 
@@ -1499,9 +1506,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     tail (numValues: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'values' parameter to 'Series.tail' function to be a number.");
+        assert.isNumber(numValues, "Expected 'numValues' parameter to 'Series.tail' function to be a number.");
 
-        return this.skip(this.count() - numValues);
+        if (numValues === 0) {
+            return new Series<IndexT, ValueT>(); // Empty series.
+        }
+
+        const toSkip = numValues > 0 ? this.count() - numValues : Math.abs(numValues);
+        return this.skip(toSkip);
     }
 
     /**

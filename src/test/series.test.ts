@@ -218,18 +218,32 @@ describe('Series', () => {
 		expect(series.at(200)).to.eql(undefined);
 	});
     
-    it('can get head of series', () =>  {
+    it('can get head', () =>  {
 
-		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
+		var series = new Series(['A', 'B', 'C']);
 		var head = series.head(2);
 		expect(head.toArray()).to.eql(['A', 'B']);
 	});
 
-	it('can get tail of series', () =>  {
+    it('can use negative with head to get all but the last X values', () =>  {
 
-		var series = new Series({ index: [0, 1, 2], values: ['A', 'B', 'C'] });
-		var head = series.tail(2);
-		expect(head.toArray()).to.eql(['B', 'C']);
+		var series = new Series(['A', 'B', 'C']);
+		var head = series.head(-1);
+		expect(head.toArray()).to.eql(['A', 'B']);
+	});
+
+    it('can get tail', () =>  {
+
+		var series = new Series(['A', 'B', 'C']);
+		var tail = series.tail(2);
+		expect(tail.toArray()).to.eql(['B', 'C']);
+    });
+
+    it('can use negative with tail to get all but the first X values', () =>  {
+
+		var series = new Series(['A', 'B', 'C']);
+        var tail = series.tail(-1);
+		expect(tail.toArray()).to.eql(['B', 'C']);
     });
 
 	it('for each', () => {
