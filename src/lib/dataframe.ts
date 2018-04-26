@@ -2038,7 +2038,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             assert.isFunction(generator, "Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
 
             const selector = generator as SelectorWithIndexFn<any, any>;
-            const newColumns = this.select(selector); // Build a new dataframe.
+            const newColumns = this.select(selector) // Build a new dataframe.
+                .bake(); //TODO: Bake should be needed here, but it causes problems if not.
             const newColumnNames = newColumns.getColumnNames(); 
 
             let working: IDataFrame<IndexT, any> = this;
