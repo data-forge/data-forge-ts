@@ -29,6 +29,13 @@ import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import * as BabyParse from 'babyparse';
 import { toMap, makeDistinct } from './utils';
 
+/** 
+ * An object whose fields specify named columns.
+ */
+export interface IColumnSpec {
+    [index: string]: Iterable<any> | ISeries<any, any>,
+}
+
 /**
  * DataFrame configuration.
  */
@@ -40,9 +47,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
-
-    //todo: This should also be a iterable of IColumns.
-    columns?: any, //todo: This should be a column spec!
+    columns?: IColumnSpec, //todo: This should also be a iterable of IColumns.
 };
 
 /** 
@@ -62,9 +67,9 @@ export interface IColumn {
 }
 
 /** 
- * An object whose properties specify named columns.
+ * An object whose fields specify named columns or functions to generate columns.
  */
-export interface IColumnGenSpec {
+export interface IColumnGenSpec { //todo: this should allow iterable as well!
     [index: string]: ISeries<any, any> | SeriesSelectorFn<any, any, any>,
 }
 
