@@ -27,13 +27,28 @@ import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import * as BabyParse from 'babyparse';
-import { toMap, makeDistinct } from './utils';
+import { toMap, makeDistinct, mapIterable } from './utils';
 
 /** 
  * An object whose fields specify named columns.
  */
 export interface IColumnSpec {
     [index: string]: Iterable<any> | ISeries<any, any>,
+}
+
+/**
+ * Defines the configuration for a new column.
+ */
+export interface IColumnConfig {
+    /**
+     * The name of the new column.
+     */
+    name: string;
+
+    /**
+     * The series of values for the column.
+     */
+    series: Iterable<any> | ISeries<any, any>;
 }
 
 /**
@@ -47,7 +62,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
-    columns?: IColumnSpec, //todo: This should also be a iterable of IColumns.
+    columns?: Iterable<IColumnConfig> | IColumnSpec,
 };
 
 /** 
@@ -1177,13 +1192,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
         
         if (config.columns) {
-            assert.isObject(config.columns, "Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
+            let columnsConfig: any = config.columns;
 
-            columnNames = Object.keys(config.columns);
+            if (Sugar.Object.isArray(columnsConfig) ||
+                Sugar.Object.isFunction((columnsConfig as any)[Symbol.iterator])) {
+
+                const iterableColumnsConfig = columnsConfig as Iterable<IColumnConfig>;
+                columnNames = Array.from(iterableColumnsConfig).map(column => column.name);
+                columnsConfig = toMap(iterableColumnsConfig, column => column.name, column => column.series);
+            }
+            else {
+                assert.isObject(columnsConfig, "Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
+
+                columnNames = Object.keys(columnsConfig);
+            }
+
             let columnIterables: any[] = [];
             for (let columnName of columnNames) {
-                DataFrame.checkIterable(config.columns[columnName], columnName);
-                columnIterables.push(config.columns[columnName]);
+                DataFrame.checkIterable(columnsConfig[columnName], columnName);
+                columnIterables.push(columnsConfig[columnName]);
             }
 
             values = new CsvRowsIterable(columnNames, new MultiIterable(columnIterables));

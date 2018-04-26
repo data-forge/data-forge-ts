@@ -170,7 +170,7 @@ describe('DataFrame columns', () => {
         expect(dataFrame.getColumnNames()).to.eql(["X", "Y"]);
     });
 
-	it('creating from objects with variable fields - by default just uses first row to determine column names', function () {
+	it('creating from objects with variable fields - by default just uses first row to determine column names', () => {
 		
 		var dataFrame = new DataFrame({
 			values: [
@@ -187,7 +187,7 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
-	it('creating from objects with variable fields - can force all rows to be considered to determine column names', function () {
+	it('creating from objects with variable fields - can force all rows to be considered to determine column names', () => {
 		
 		var dataFrame = new DataFrame({
 			values: [
@@ -205,7 +205,7 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
-	it('can create data frame from column arrays with index', function () {
+	it('can create data frame from column arrays with index', () => {
 
 		var df = new DataFrame({
 			columns: {
@@ -225,7 +225,7 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
-	it('can create data frame from column arrays - array', function () {
+	it('can create data frame from column arrays - array', () => {
 
 		var df = new DataFrame({
 			columns: {
@@ -245,7 +245,7 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
-	it('can create dataframe from columns - with series', function () {
+	it('can create dataframe from columns - with series', () => {
 
 		var df = new DataFrame({
 			columns: {
@@ -263,7 +263,7 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
-	it('can create data frame from column arrays - default index', function () {
+	it('can create data frame from column arrays - default index', () => {
 
 		var df = new DataFrame({
 			columns: {
@@ -279,9 +279,33 @@ describe('DataFrame columns', () => {
 			[2, { A: 3, B: 'c' }],
 			[3, { A: 4, B: 'd' }],
 		]);
-	});
+    });
+    
+    it('can create dataframe with array of columns', () => {
 
-	it('duplicates columns are renamed to be unique - rows', function () {
+        var df = new DataFrame({
+            columns: [
+                {
+                    name: "A",
+                    series: [1, 2, 3, 4],
+                },
+                {
+                    name: "B",
+                    series: new Series(['a', 'b', 'c', 'd']),
+                },
+            ],
+        });
+
+        expect(df.getColumnNames()).to.eql(["A", "B"]);
+        expect(df.toRows()).to.eql([
+            [1, 'a'],
+            [2, 'b'],
+            [3, 'c'],
+            [4, 'd'],
+        ]);
+    })
+
+	it('duplicates columns are renamed to be unique - rows', () => {
 
 		var df = new DataFrame({
 			columnNames: [
@@ -307,7 +331,7 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
-	it('can check that column exists', function () {
+	it('can check that column exists', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Value1", "Value2", "VALUE3" ],
@@ -324,7 +348,7 @@ describe('DataFrame columns', () => {
 		expect(dataFrame.hasSeries('Value3')).to.eql(true);
 	});
 
-	it('can expect that a column exists', function () {
+	it('can expect that a column exists', () => {
 		
 		var dataFrame = new DataFrame({
 			columnNames: [ "Value1" ],
@@ -335,7 +359,7 @@ describe('DataFrame columns', () => {
 			index: [5, 6]
         });
 		
-		expect(function () {
+		expect(() => {
 				dataFrame.expectSeries('non-existing-column')
 			}).to.throw();
 
