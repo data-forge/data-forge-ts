@@ -2,6 +2,7 @@ import { assert, expect } from 'chai';
 import 'mocha';
 import { Series, Index, DataFrame } from '../index';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
+import * as moment from 'moment';
 
 describe('Series', () => {
     
@@ -217,6 +218,17 @@ describe('Series', () => {
 		var series = new Series();
 		expect(series.at(200)).to.eql(undefined);
 	});
+    
+    it('can get value by date index', () => {
+
+        var testDate = moment("2014-04-05").toDate();
+
+        var serires = new Series({
+            index: [moment("2013-03-04").toDate(), testDate, moment("2015-06-06").toDate()],
+            values: [1, 2, 3],
+        });
+        expect(serires.at(testDate)).to.eql(2);
+    })
     
     it('can get head', () =>  {
 
