@@ -64,7 +64,7 @@ export interface IColumn {
 /** 
  * An object whose properties specify named columns.
  */
-export interface IColumnSpec {
+export interface IColumnGenSpec {
     [index: string]: ISeries<any, any> | SeriesSelectorFn<any, any, any>,
 }
 
@@ -227,7 +227,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @returns Returns a new dataframe replacing or adding a particular named column.
      */
-    withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+    withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
     
     /**
      * Add a series if it doesn't already exist.
@@ -237,7 +237,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
      */
-    ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+    ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
      * Create a new data-frame from a subset of columns.
@@ -1440,7 +1440,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @returns Returns a new dataframe replacing or adding a particular named column.
      */
-    withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
+    withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
             assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
@@ -1453,7 +1453,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         if (Sugar.Object.isObject(columnNameOrSpec)) {
-            const columnSpec: IColumnSpec = <IColumnSpec> columnNameOrSpec;
+            const columnSpec: IColumnGenSpec = <IColumnGenSpec> columnNameOrSpec;
             const columnNames = Object.keys(columnSpec);
             let workingDataFrame: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of columnNames) {
@@ -1521,7 +1521,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
      */
-    ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
+    ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
             assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.ensureSeries' function to be a string that specifies the column to set or replace.");
@@ -1534,7 +1534,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         if (Sugar.Object.isObject(columnNameOrSpec)) {
-            const columnSpec: IColumnSpec = <IColumnSpec> columnNameOrSpec;
+            const columnSpec: IColumnGenSpec = <IColumnGenSpec> columnNameOrSpec;
             const columnNames = Object.keys(columnNameOrSpec);
             let workingDataFrame = <IDataFrame<IndexT,any>> this;
             for (const columnName of columnNames) {
