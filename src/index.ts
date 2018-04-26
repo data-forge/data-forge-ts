@@ -44,17 +44,20 @@ export function fromJSON (jsonTextString: string): IDataFrame<number, any> {
  */
 export interface ICSVOptions {
     /**
-     * Optional column names to read from the CSV data.
+     * Optionally specifies the column names (when enabled, assumes that the header row is not read from the CSV data).
+     * Default: undefined
      */
     columnNames?: Iterable<string>;
 
     /**
      * Automatically pick types based on what the value looks like.
+     * Default: false.
      */
     dynamicTyping?: boolean;
 
     /**
      * Skip empty lines in the input.
+     * Default: true
      */
     skipEmptyLines?: boolean;
 }
@@ -82,7 +85,17 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
             for (const columnName of config.columnNames) {
                 assert.isString(columnName, "Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array of strings that specify column names.")
             }
-        }			
+        }
+        
+        if (config.skipEmptyLines === undefined) {
+            config = Object.assign({}, config); // Clone the config. Don't want to modify the original.
+            config.skipEmptyLines = true;
+        }
+    }
+    else {
+        config = {
+            skipEmptyLines: true,
+        }
     }
 
     const parsed = BabyParse.parse(csvTextString, config as any);

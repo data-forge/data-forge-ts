@@ -38,7 +38,22 @@ describe('csv integration', () => {
 		]);
 	});
 
-	it('can automatically choose types from CSV values', () => {
+	it('blank lines in the CSV data are automatically skipped by default', () => {
+		
+		var csv =
+			"Date, Value1, Value2, Value3\n" +
+            "1975-2-24, 100, foo, 22\n" +
+            "\n" +
+			"2015-10-23, 300, bar, 23";
+
+		var df = dataForge.fromCSV(csv);
+		expect(df.toRows()).to.eql([
+			['1975-2-24', '100', "foo", '22'],
+			['2015-10-23', '300', "bar", '23'],
+		]);
+	});
+
+    it('can automatically choose types from CSV values', () => {
 		
 		var csv =
 			"Value1, Value2\n" +
@@ -196,7 +211,6 @@ describe('csv integration', () => {
 		expect(series1.toArray()).to.eql([
 			'AUSTRALIAN AGRICULTURAL COMPANY LIMITED.',
 			'ARDENT LEISURE GROUP',
-			'',
         ]);
 
 		var series2 = dataFrame.getSeries('Code');
