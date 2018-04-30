@@ -1,6 +1,6 @@
 {
-  "name": "data-forge-ts",
-  "version": "1.0.0",
+  "name": "data-forge-ts-beta-test",
+  "version": "1.0.2",
   "description": "TypeScript implementation of DataForge.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -11,7 +11,8 @@
     "build:watch": "tsc --watch",
     "clean-build:watch": "rm -rf build/* && tsc --watch",
     "test": "ts-mocha src/test/**/*.ts",
-    "test:watch": "ts-mocha src/test/**/*.ts --watch"
+    "test:watch": "ts-mocha src/test/**/*.ts --watch",
+    "publish": "tsc && npm publish"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "@types/mock-require": "2.0.0",
     "babyparse": "0.4.6",
     "bfj": "6.1.0",
+    "chai": "4.1.2",
     "easy-table": "1.1.0",
     "mock-require": "2.0.2",
     "moment": "2.22.1",
@@ -41,7 +43,6 @@
     "@types/mocha": "2.2.43",
     "@types/node": "8.0.28",
     "@types/sugar": "2.0.2",
-    "chai": "4.1.2",
     "mocha": "3.5.3",
     "ts-node": "3.3.0",
     "typescript": "2.5.2"
