@@ -1,6 +1,6 @@
 {
   "name": "data-forge-ts-beta-test",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "TypeScript implementation of DataForge.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -12,7 +12,8 @@
     "clean-build:watch": "rm -rf build/* && tsc --watch",
     "test": "ts-mocha src/test/**/*.ts",
     "test:watch": "ts-mocha src/test/**/*.ts --watch",
-    "publish": "tsc && npm publish"
+    "publish": "tsc && npm publish",
+    "api-docs": "typedoc --excludePrivate --mode file --out docs/api --name Data-Forge --readme README.MD --target ES5 ./src"
   },
   "repository": {
     "type": "git",
