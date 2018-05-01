@@ -13,7 +13,7 @@
     "test": "ts-mocha src/test/**/*.ts",
     "test:watch": "ts-mocha src/test/**/*.ts --watch",
     "publish": "tsc && npm publish",
-    "api-docs": "typedoc --excludePrivate --mode file --out docs/api --name Data-Forge --readme README.MD --target ES5 ./src"
+    "api-docs": "typedoc --out docs/api"
   },
   "repository": {
     "type": "git",
