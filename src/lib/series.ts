@@ -2680,7 +2680,7 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
         }
 
         valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, selector, direction));
-        pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, (pair: [IndexT, ValueT], index: number) => selector(pair[1], index), direction));
+        pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(selector), direction));
 
         super({
             values: new OrderedIterable(values, valueSortSpecs),
