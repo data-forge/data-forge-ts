@@ -7,31 +7,23 @@ describe('DataFrame window', () => {
     
 	it('can compute window - creates an empty series from an empty data set', () => {
 
-		var dataframe = new DataFrame();
-		var windowed = dataframe.window(2)
-			.asPairs()
-			.select((pair: any) => {
-                throw new Error("This shoudl never be executed.");
-			})
-			.asValues()
-			;
+		var df = new DataFrame();
+		var windowed = df.window(2)
+			.select(window => {
+                throw new Error("This should never be executed.");
+			});
 
 		expect(windowed.count()).to.eql(0);
 	});
 
 	it('can compute window - with even window size and even number of rows', () => {
 
-        var dataframe = new DataFrame({ index: [10, 20, 30, 40], values: [1, 2, 3, 4] });
-		var windowed = dataframe
+        var df = new DataFrame({ index: [10, 20, 30, 40], values: [1, 2, 3, 4] });
+		var windowed = df
 			.window(2)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-                var window = pair[1];
-                return [window.getIndex().last(), window.toArray()];
-			})
-			.asValues()
-            ;
+            .select(window => [window.getIndex().last(), window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
             
 		expect(windowed.toPairs()).to.eql([
 			[20, [1, 2]],
@@ -41,17 +33,12 @@ describe('DataFrame window', () => {
 
 	it('can compute window - with even window size and odd number of rows', () => {
 
-		var dataframe = new DataFrame({ index: [10, 20, 30, 40, 50], values: [1, 2, 3, 4, 5] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [10, 20, 30, 40, 50], values: [1, 2, 3, 4, 5] });
+		var windowed = df
 			.window(2)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().first(), window.toArray()];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().first(), window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
 			[10, [1, 2]],
@@ -62,17 +49,12 @@ describe('DataFrame window', () => {
 
 	it('can compute window - with odd window size and odd number of rows', () => {
 
-		var dataframe = new DataFrame({ values: [1, 2, 3, 4, 5, 6] });
-		var windowed = dataframe
+		var df = new DataFrame({ values: [1, 2, 3, 4, 5, 6] });
+		var windowed = df
 			.window(3)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
 			[0, [1, 2, 3]],
@@ -83,17 +65,12 @@ describe('DataFrame window', () => {
 
 	it('can compute window - with odd window size and even number of rows', () => {
 
-		var dataframe = new DataFrame({ values: [1, 2, 3, 4, 5] });
-		var windowed = dataframe
+		var df = new DataFrame({ values: [1, 2, 3, 4, 5] });
+		var windowed = df
 			.window(3)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
 			[0, [1, 2, 3]],
@@ -105,50 +82,36 @@ describe('DataFrame window', () => {
     
 	it('can compute rolling window - from empty data set', () => {
 
-		var dataframe = new DataFrame();
-		var windowed = dataframe
+		var df = new DataFrame();
+		var windowed = df
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toArray().length).to.eql(0);
 	});
 
 	it('rolling window returns 0 values when there are not enough values in the data set', () => {
 
-		var dataframe = new DataFrame({ index: [0, 1], values: [1, 2] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [0, 1], values: [1, 2] });
+		var windowed = df
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toArray().length).to.eql(0);
 	});
 
 	it('can compute rolling window - odd data set with even period', () => {
 
-		var dataframe = new DataFrame({ index: [10, 20, 30, 40, 50], values: [0, 1, 2, 3, 4] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [10, 20, 30, 40, 50], values: [0, 1, 2, 3, 4] });
+		var windowed = df
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair, index) => {
-				var window = pair[1];
-				return [window.getIndex().last(), window.toArray()];
-			})
-			.asValues()
-			;
+			.select(window => [window.getIndex().last(), window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
             [20, [0, 1]],
@@ -160,17 +123,12 @@ describe('DataFrame window', () => {
 
 	it('can compute rolling window - odd data set with odd period', () => {
 
-		var dataframe = new DataFrame({ index: [0, 1, 2, 3, 4], values: [0, 1, 2, 3, 4] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [0, 1, 2, 3, 4], values: [0, 1, 2, 3, 4] });
+		var windowed = df
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([0, 1, 2]);
@@ -184,17 +142,12 @@ describe('DataFrame window', () => {
 
 	it('can compute rolling window - even data set with even period', () => {
 
-		var dataframe = new DataFrame({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
+		var windowed = df
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex+10, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex+10, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([10, 11, 12, 13, 14]);
@@ -210,17 +163,12 @@ describe('DataFrame window', () => {
 
 	it('can compute rolling window - even data set with odd period', () => {
 
-		var dataframe = new DataFrame({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
+		var windowed = df
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([0, 1, 2, 3]);
@@ -235,17 +183,12 @@ describe('DataFrame window', () => {
 
 	it('can compute rolling window - can take last index and value from each window', () => {
 
-		var dataframe = new DataFrame({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
-		var windowed = dataframe
+		var df = new DataFrame({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
+		var windowed = df
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair, index) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().last(), window.last()];
-			})
-			.asValues()
-			;
+			.select(window => [window.getIndex().last(), window.last()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([2, 3, 4, 5]);
@@ -256,21 +199,16 @@ describe('DataFrame window', () => {
 
 	it('variable window', () => {
 
-		var dataframe = new DataFrame({ 
+		var df = new DataFrame({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 			values: [1, 1, 2, 1, 1, 2, 3, 4, 3, 3],
 		});
 
-		var aggregated = dataframe
+		var aggregated = df
 			.variableWindow((a, b) => a === b)
-			.asPairs()
-			.select(pair => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().first(), window.count()];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().first(), window.count()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(aggregated.toPairs()).to.eql([
 			[0, 2],
@@ -285,12 +223,12 @@ describe('DataFrame window', () => {
     
 	it('can collapse sequential duplicates and take first index', () => {
 
-		var dataframe = new DataFrame({ 
+		var df = new DataFrame({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 			values: [1, 1, 2, 3, 3, 3, 5, 6, 6, 7],
 		});
 
-		var collapsed = dataframe.sequentialDistinct();
+		var collapsed = df.sequentialDistinct();
 
 		expect(collapsed.toPairs()).to.eql([
 			[0, 1],
@@ -304,12 +242,12 @@ describe('DataFrame window', () => {
 
 	it('can collapse sequential duplicates with custom selector', () => {
 
-		var dataframe = new DataFrame({ 
+		var df = new DataFrame({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 			values: [{ A: 1 }, { A: 1 }, { A: 2 }, { A: 3 }, { A: 3 }, { A: 3 }, { A: 5 }, { A: 6 }, { A: 6 }, { A: 7 }],
 		});
 
-		var collapsed = dataframe
+		var collapsed = df
 			.sequentialDistinct(value => value.A)
 			.select(value => value.A)
 			;
@@ -326,28 +264,23 @@ describe('DataFrame window', () => {
 
 	it('rolling window', () => {
 
-		var dataFrame = new DataFrame({
+		var df = new DataFrame({
             columns: {
                 Value: dataForge.range(1, 12)
             },
             index: dataForge.range(10, 12),
 		});
 
-		var newSeries = dataFrame.getSeries('Value')
+		var newSeries = df.getSeries<number>('Value')
 			.rollingWindow(5)
-			.asPairs()
-			.select(function (pair) {
-				var windowIndex = pair[0]
-				var window = pair[1];
-				return [window.getIndex().last(), window.last()];
-			})
-			.asValues<number, any>()
-			;
+            .select(window => [window.getIndex().last(), window.last()])
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
 
 		expect(newSeries.getIndex().toArray()).to.eql([14, 15, 16, 17, 18, 19, 20, 21]);
 		expect(newSeries.toArray()).to.eql([5, 6, 7, 8, 9, 10, 11, 12]);
 
-		var newDataFrame = dataFrame.withSeries('Value2', newSeries);
+		var newDataFrame = df.withSeries('Value2', newSeries);
 
 		expect(newDataFrame.getIndex().toArray()).to.eql([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]);
 
@@ -411,16 +344,11 @@ describe('DataFrame window', () => {
 		var dataFrame = genDataFrame(2, 4);
 		var series = dataFrame
 			.window(2)
-			.asPairs()
-			.select((pair: any) => {
-				var windowIndex = pair[0]
-				var window = pair[1];
-				return [windowIndex, [window.getSeries("1").sum(), window.getSeries("2").sum()]];
-			})
-			.asValues()
-			.selectMany((value: any) => {
-				assert.isArray(value);
-				return value; // The value is already a list.
+            .select((window, windowIndex): [number, number[]] => [windowIndex, [window.getSeries("1").sum(), window.getSeries("2").sum()]])
+            .withIndex(pair => pair[0])
+			.selectMany(pair => {
+				assert.isArray(pair[1]);
+				return pair[1]; // The value is already a list.
 			});
 
 		expect(series.toPairs()).to.eql([
@@ -436,10 +364,7 @@ describe('DataFrame window', () => {
 		var dataFrame = genDataFrame(2, 4);
 		var series = dataFrame
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair: any) => {
-				var windowIndex = pair[0]
-				var window = pair[1];
+			.select((window, windowIndex): [number, number[]] => {
 				return [
 					windowIndex, 
 					[
@@ -447,11 +372,11 @@ describe('DataFrame window', () => {
 						window.getSeries("2").sum()
 					]
 				];
-			})
-			.asValues()
-			.selectMany((value: any) => {
-				assert.isArray(value);
-				return value; // The value is already a list.
+            })
+            .withIndex(pair => pair[0])
+			.selectMany(pair => {
+				assert.isArray(pair[1]);
+				return pair[1]; // The value is already a list.
 			});
 
 		expect(series.toPairs()).to.eql([

@@ -47,14 +47,9 @@ describe('Series group', () => {
 		});
 
 		var collapsed = series.groupSequentialBy()
-			.asPairs()
-			.select(function (pair) {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().first(), window.first()];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().first(), window.first()])
+            .withIndex(pair => pair[0])
+			.select(pair => pair[1]);
 
 		expect(collapsed.toPairs()).to.eql([
 			[0, 1],
@@ -74,14 +69,9 @@ describe('Series group', () => {
 		});
 
 		var collapsed = series.groupSequentialBy()
-			.asPairs()
-			.select(function (pair) {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().last(), window.last()];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().last(), window.last()])
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
 
 		expect(collapsed.toPairs()).to.eql([
 			[1, 1],
@@ -101,14 +91,9 @@ describe('Series group', () => {
 		});
 
 		var collapsed = series.groupSequentialBy(value => value.A)
-			.asPairs()
-			.select(function (pair) {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().last(), window.last().A];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().last(), window.last().A])
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
 
 		expect(collapsed.toPairs()).to.eql([
 			[1, 1],

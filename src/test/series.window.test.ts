@@ -8,12 +8,9 @@ describe('Series window', () => {
 
 		var series = new Series();
 		var windowed = series.window(2)
-			.asPairs()
-			.select((pair: any) => {
-                throw new Error("This shoudl never be executed.");
-			})
-			.asValues()
-			;
+        .select(window => {
+            throw new Error("This should never be executed.");
+        });
 
 		expect(windowed.count()).to.eql(0);
 	});
@@ -23,14 +20,9 @@ describe('Series window', () => {
         var series = new Series({ index: [10, 20, 30, 40], values: [1, 2, 3, 4] });
 		var windowed = series
 			.window(2)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-                var window = pair[1];
-                return [window.getIndex().last(), window.toArray()];
-			})
-			.asValues()
-            ;
+            .select(window => [window.getIndex().last(), window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
             
 		expect(windowed.toPairs()).to.eql([
 			[20, [1, 2]],
@@ -43,14 +35,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [10, 20, 30, 40, 50], values: [1, 2, 3, 4, 5] });
 		var windowed = series
 			.window(2)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().first(), window.toArray()];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().first(), window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
 			[10, [1, 2]],
@@ -64,14 +51,9 @@ describe('Series window', () => {
 		var series = new Series({ values: [1, 2, 3, 4, 5, 6] });
 		var windowed = series
 			.window(3)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
 			[0, [1, 2, 3]],
@@ -85,14 +67,9 @@ describe('Series window', () => {
 		var series = new Series({ values: [1, 2, 3, 4, 5] });
 		var windowed = series
 			.window(3)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
 			[0, [1, 2, 3]],
@@ -107,14 +84,9 @@ describe('Series window', () => {
 		var series = new Series();
 		var windowed = series
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toArray().length).to.eql(0);
 	});
@@ -124,14 +96,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [0, 1], values: [1, 2] });
 		var windowed = series
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toArray().length).to.eql(0);
 	});
@@ -141,13 +108,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [10, 20, 30, 40, 50], values: [0, 1, 2, 3, 4] });
 		var windowed = series
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var window = pair[1];
-				return [window.getIndex().last(), window.toArray()];
-			})
-			.asValues()
-			;
+			.select(window => [window.getIndex().last(), window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(windowed.toPairs()).to.eql([
             [20, [0, 1]],
@@ -162,14 +125,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [0, 1, 2, 3, 4], values: [0, 1, 2, 3, 4] });
 		var windowed = series
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([0, 1, 2]);
@@ -186,14 +144,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
 		var windowed = series
 			.rollingWindow(2)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex+10, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex+10, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([10, 11, 12, 13, 14]);
@@ -212,14 +165,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
 		var windowed = series
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [windowIndex, window.toArray()];
-			})
-			.asValues()
-			;
+            .select((window, windowIndex) => [windowIndex, window.toArray()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([0, 1, 2, 3]);
@@ -237,14 +185,9 @@ describe('Series window', () => {
 		var series = new Series({ index: [0, 1, 2, 3, 4, 5], values: [0, 1, 2, 3, 4, 5] });
 		var windowed = series
 			.rollingWindow(3)
-			.asPairs()
-			.select((pair: [number, ISeries<number, number>], index: number) => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().last(), window.last()];
-			})
-			.asValues()
-			;
+			.select(window => [window.getIndex().last(), window.last()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		var index = windowed.getIndex().toArray();
 		expect(index).to.eql([2, 3, 4, 5]);
@@ -270,14 +213,9 @@ describe('Series window', () => {
 
 		var aggregated = series
 			.variableWindow((a, b) => a === b)
-			.asPairs()
-			.select(pair => {
-				var windowIndex = pair[0];
-				var window = pair[1];
-				return [window.getIndex().first(), window.count()];
-			})
-			.asValues()
-			;
+            .select(window => [window.getIndex().first(), window.count()])
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
 
 		expect(aggregated.toPairs()).to.eql([
 			[0, 2],

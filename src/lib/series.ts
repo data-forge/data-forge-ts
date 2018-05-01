@@ -139,13 +139,13 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     getIndex (): IIndex<IndexT>;
 
     /**
-     * Apply a new index to the Series.
+     * Apply a new index to the series.
      * 
-     * @param newIndex The new index to apply to the Series.
+     * @param newIndex The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.
      * 
      * @returns Returns a new series with the specified index attached.
      */
-    withIndex<NewIndexT> (newIndex: NewIndexT[] | Iterable<NewIndexT>): ISeries<NewIndexT, ValueT>;
+    withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT>;
 
     /**
      * Resets the index of the series back to the default zero-based sequential integer index.
@@ -180,22 +180,6 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
-    /** 
-     * Convert a series or a dataframe to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
-     */
-    asPairs (): ISeries<number, [IndexT, ValueT]>;
-
-    /** 
-     * Convert a series of pairs to back to a regular series.
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns Returns a series of values where each pair has been extracted from the value of the input series.
-     */
-    asValues<NewIndexT, NewValueT> (): ISeries<NewIndexT, NewValueT>;
-    
     /**
      * Generate a new series based by calling the selector function on each value.
      *
@@ -1044,20 +1028,26 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Apply a new index to the Series.
      * 
-     * @param newIndex The new index to apply to the Series.
+     * @param newIndex The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.
      * 
      * @returns Returns a new series with the specified index attached.
      */
-    withIndex<NewIndexT> (newIndex: IIndex<NewIndexT> | ISeries<any, NewIndexT> | NewIndexT[]): ISeries<NewIndexT, ValueT> {
+    withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT> {
 
-        if (!Sugar.Object.isArray(newIndex)) {
-            assert.isObject(newIndex, "'Expected 'newIndex' parameter to 'Series.withIndex' to be an array, Series or Index.");
+        if (Sugar.Object.isFunction(newIndex)) {
+            return new Series<NewIndexT, ValueT>(() => ({
+                values: this.getContent().values,
+                index: this.select(newIndex),
+            }));
         }
-
-        return new Series<NewIndexT, ValueT>(() => ({
-            values: this.getContent().values,
-            index: newIndex,
-        }));
+        else {
+            Series.checkIterable(newIndex, 'newIndex');
+            
+            return new Series<NewIndexT, ValueT>(() => ({
+                values: this.getContent().values,
+                index: newIndex,
+            }));
+        }
     };
 
     /**
@@ -1118,33 +1108,6 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         assert.isFunction(valueSelector, "Expected 'valueSelector' parameter to Series.toObject to be a function.");
 
         return toMap(this, keySelector, valueSelector);
-    }
-    
-    /** 
-     * Convert a series to a series of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns {Pairs} Returns a series of pairs for each index and value pair in the input sequence.
-     */
-    asPairs (): ISeries<number, [IndexT, ValueT]> {
-        return new Series<number, [IndexT, ValueT]>(() => ({ values: this.getContent().pairs }));
-    }
-
-    /** 
-     * Convert a series of pairs to back to a regular series.
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns Returns a series of values where each pair has been extracted from the value of the input series.
-     */
-    asValues<NewIndexT = any, NewValueT = any> (): ISeries<NewIndexT, NewValueT> {
-
-        //TODO: This function didn't port well to TypeScript. It's deprecated though.
-        
-        return new Series<NewIndexT, NewValueT>(() => ({
-            index: new SelectIterable<any, NewIndexT>(this.getContent().values, (pair: [any, any], index: number) => <NewIndexT> pair[0]),
-            values: new SelectIterable<any, NewValueT>(this.getContent().values, (pair: [any, any], index: number) => <NewValueT> pair[1]),
-            pairs: <Iterable<[NewIndexT, NewValueT]>> <any> this.getContent().values,
-        }));
     }
     
     /**
@@ -1255,14 +1218,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             selector = (value: ValueT): ToT => <ToT> <any> value;
         }
 
-        return this.variableWindow((a: ValueT, b: ValueT): boolean => selector!(a) === selector!(b))
-            .asPairs()
-            .select(pair => {
-                const window = pair[1];
-                return [window.getIndex().first(), window.first()];
+        return this.variableWindow((a, b) => selector!(a) === selector!(b))
+            .select((window): [IndexT, ValueT] => {
+                return [window.getIndex().first(), window.first()]  ;
             })
-            .asValues() 
-            ;
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
     }
 
     /**
@@ -1301,15 +1262,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
             .rollingWindow(2)
-            .asPairs()
-            .select((pair: [number, ISeries<IndexT, number>]): [IndexT, number] => {
-                const window = pair[1];
+            .select((window): [IndexT, number] => {
                 const values = window.toArray();
                 const amountChange = values[1] - values[0]; // Compute amount of change.
                 const pctChange = amountChange / values[0]; // Compute % change.
                 return [window.getIndex().last(), pctChange]; // Return new index and value.
             })
-            .asValues<IndexT, number>(); // Result is always a series.
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
     }    
     
     /**
@@ -2550,11 +2510,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         assert.isFunction(generator, "Expected 'generator' parameter to 'Series.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
 
         return this.rollingWindow(2)
-            .asPairs()
-            .selectMany((pair: [number, ISeries<IndexT, ValueT>]) => {
-                const window = pair[1];
-                const pairA = window.asPairs().first();
-                const pairB = window.asPairs().last();
+            .selectMany((window): [IndexT, ValueT][] => {
+                const pairs = window.toPairs();
+                const pairA = pairs[0];
+                const pairB = pairs[1];
                 if (!comparer(pairA, pairB)) {
                     return [pairA];
                 }
@@ -2564,8 +2523,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
                 return [pairA].concat(generatedRows);
             })
-            .asValues<IndexT, ValueT>()
-            .appendPair(this.asPairs().last());
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1])
+            .concat(this.tail(1));
     }
 
     /**

@@ -55,6 +55,12 @@ describe('DataFrame index', () => {
 			[new Date(2015, 24, 2), 200, 'bar', 22],
 		]);
 	});
+   
+    it('can set new index using selector', () => {
+        var df = new DataFrame([10, 20, 30]);
+        var dfWithIndex = df.withIndex(value => value * 2);
+        expect(dfWithIndex.getIndex().toArray()).to.eql([20, 40, 60]);
+    });
     
     it('can reset index', () => {
         var dataframe = new DataFrame({

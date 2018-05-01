@@ -18,10 +18,9 @@ describe('window performance', () => {
 
 		var newSeries = series
 			.window(windowSize)
-			.asPairs()
-			.select((windowIndex, window) => [windowIndex, windowIndex])
-			.asValues()
-			;
+            .select((windowIndex, window) => [windowIndex, windowIndex])
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
 
 		stopwatch1.stop();
 		var time1 = stopwatch1.read();
@@ -54,10 +53,9 @@ describe('window performance', () => {
 
 		var newSeries = dataFrame
 			.window(windowSize)
-			.asPairs()
-			.select((windowIndex, window) => [windowIndex, windowIndex])
-			.asValues()
-			;
+            .select((windowIndex, window) => [windowIndex, windowIndex])
+            .withIndex(pair => pair[0])
+			.select(pair => pair[1]);
 
 		stopwatch1.stop();
 		var time1 = stopwatch1.read();

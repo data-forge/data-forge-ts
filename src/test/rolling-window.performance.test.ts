@@ -18,9 +18,9 @@ describe('rolling window performance', () => {
 
 		var newSeries = series
 			.rollingWindow(windowSize)
-			.asPairs()
-			.select((windowIndex, window) => [windowIndex, windowIndex])
-			.asValues();
+            .select((windowIndex, window) => [windowIndex, windowIndex])
+            .withIndex(pair => pair[0])
+			.select(pair => pair[1]);
 
 		stopwatch1.stop();
 		var time1 = stopwatch1.read();

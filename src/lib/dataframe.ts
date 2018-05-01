@@ -207,7 +207,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @returns Returns a new dataframe with the specified index attached.
      */
-    withIndex<NewIndexT> (newIndex: NewIndexT[] | Iterable<NewIndexT>): IDataFrame<NewIndexT, ValueT>;
+    withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT>;
 
     /**
      * Resets the index of the dataframe back to the default zero-based sequential integer index.
@@ -346,23 +346,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *  @returns Returns an array of rows. Each row is an array of values in column order.   
      */
     toRows (): any[][];
-
-    /** 
-     * Convert a dataframe to a DataFrame of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns {Pairs} Returns a dataframe of pairs for each index and value pair in the input sequence.
-     */
-    asPairs (): IDataFrame<number, [IndexT, ValueT]>;
-
-    /** 
-     * Convert a dataframe of pairs to back to a regular dataframe.
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns Returns a dataframe of values where each pair has been extracted from the value of the input dataframe.
-     */
-    asValues<NewIndexT = any, NewValueT = any> (): IDataFrame<NewIndexT, NewValueT>;
-    
+ 
     /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
@@ -1381,22 +1365,34 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Apply a new index to the dataframe.
      * 
-     * @param newIndex The new index to apply to the dataframe.
+     * @param newIndex The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.
      * 
      * @returns Returns a new dataframe or dataframe with the specified index attached.
      */
-    withIndex<NewIndexT> (newIndex: NewIndexT[] | Iterable<NewIndexT>): IDataFrame<NewIndexT, ValueT> {
+    withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT> {
 
-        DataFrame.checkIterable(newIndex, 'newIndex');
+        if (Sugar.Object.isFunction(newIndex)) {
+            return new DataFrame<NewIndexT, ValueT>(() => {
+                const content = this.getContent();
+                return {
+                    columnNames: content.columnNames,
+                    values: content.values,
+                    index: this.deflate(newIndex),
+                };
+            });
+        }
+        else {
+            DataFrame.checkIterable(newIndex, 'newIndex');
 
-        return new DataFrame<NewIndexT, ValueT>(() => {
-            const content = this.getContent();
-            return {
-                columnNames: content.columnNames,
-                values: content.values,
-                index: newIndex,    
-            };
-        });
+            return new DataFrame<NewIndexT, ValueT>(() => {
+                const content = this.getContent();
+                return {
+                    columnNames: content.columnNames,
+                    values: content.values,
+                    index: newIndex,    
+                };
+            });
+        }
     }
 
     /**
@@ -1925,33 +1921,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return rows;
     }
 
-    /** 
-     * Convert a dataframe to a DataFrame of pairs in the form [pair1, pair2, pair3, ...] where each pair is [index, value].
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns {Pairs} Returns a dataframe of pairs for each index and value pair in the input sequence.
-     */
-    asPairs (): IDataFrame<number, [IndexT, ValueT]> {
-        return new DataFrame<number, [IndexT, ValueT]>(() => ({ values: this.getContent().pairs }));
-    }
-
-    /** 
-     * Convert a dataframe of pairs to back to a regular dataframe.
-     * THIS FUNCTION IS DEPRECATED.
-     * 
-     * @returns Returns a dataframe of values where each pair has been extracted from the value of the input dataframe.
-     */
-    asValues<NewIndexT = any, NewValueT = any> (): IDataFrame<NewIndexT, NewValueT> {
-
-        //TODO: This function didn't port well to TypeScript. It's deprecated though.
-        
-        return new DataFrame<NewIndexT, NewValueT>(() => ({
-            index: new SelectIterable<any, NewIndexT>(this.getContent().values, (pair: [any, any], index: number) => <NewIndexT> pair[0]),
-            values: new SelectIterable<any, NewValueT>(this.getContent().values, (pair: [any, any], index: number) => <NewValueT> pair[1]),
-            pairs: <Iterable<[NewIndexT, NewValueT]>> <any> this.getContent().values,
-        }));
-    }    
-
     /**
      * Generate a new dataframe based by calling the selector function on each value.
      *
@@ -2198,14 +2167,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             selector = (value: ValueT): ToT => <ToT> <any> value;
         }
 
-        return this.variableWindow((a: ValueT, b: ValueT): boolean => selector!(a) === selector!(b))
-            .asPairs()
-            .select((pair: [number, IDataFrame<IndexT, ValueT>], index: number): [IndexT, ValueT] => {
-                const window = pair[1];
+        return this.variableWindow((a, b) => selector!(a) === selector!(b))
+            .select((window): [IndexT, ValueT] => {
                 return [window.getIndex().first(), window.first()];
             })
-            .asValues<IndexT, ValueT>() 
-            .inflate();
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1]);
     }
 
     /**
@@ -3449,11 +3416,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         assert.isFunction(generator, "Expected 'generator' parameter to 'DataFrame.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
 
         return this.rollingWindow(2)
-            .asPairs()
-            .selectMany((pair: [number, IDataFrame<IndexT, ValueT>]) => {
-                const window = pair[1];
-                const pairA = window.asPairs().first();
-                const pairB = window.asPairs().last();
+            .selectMany((window): [IndexT, ValueT][] => {
+                const pairs = window.toPairs();
+                const pairA = pairs[0];
+                const pairB = pairs[1];
                 if (!comparer(pairA, pairB)) {
                     return [pairA];
                 }
@@ -3463,9 +3429,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
                 return [pairA].concat(generatedRows);
             })
-            .asValues<IndexT, ValueT>()
-            .appendPair(this.asPairs().last())
-            .inflate();
+            .withIndex(pair => pair[0])
+            .inflate(pair => pair[1])
+            .concat(this.tail(1));
     }
 
     /**

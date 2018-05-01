@@ -32,6 +32,12 @@ describe('Series', () => {
         expect(newSeries.getIndex().toArray()).to.eql([11, 22, 33]);
     });
 
+    it('can set new index using selector', () => {
+        var series = new Series([10, 20, 30]);
+        var newSeries = series.withIndex(value => value * 2);
+        expect(newSeries.getIndex().toArray()).to.eql([20, 40, 60]);
+    });
+
     it('can reset index', () => {
         var series = new Series({
             values:  [10, 20, 30],

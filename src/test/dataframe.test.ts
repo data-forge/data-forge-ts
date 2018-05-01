@@ -650,36 +650,6 @@ describe('DataFrame', () => {
 		]); 	
     });
         
-	it('can transform a dataframe to a dataframe of pairs', () => {
-
-		var dataframe = new DataFrame({
-			index: [10, 20, 30],
-			values: [1, 2, 3],
-		});
-
-		var pairs = dataframe.asPairs().toArray();
-		expect(pairs).to.eql([
-			[10, 1],
-			[20, 2],
-			[30, 3],
-		]);
-	});
-
-	it('can transform dataframe of pairs to dataframe of values', () => {
-
-		var dataframe = new DataFrame({
-			index: [10, 20, 30],
-			values: [1, 2, 3],
-		});
-
-		var values = dataframe.asPairs().asValues();
-		expect(values.toPairs()).to.eql([
-			[10, 1],
-			[20, 2],
-			[30, 3],
-		]);
-    });
-
 	it('can aggregate dataframe', () => {
 
 		var df = new DataFrame({
