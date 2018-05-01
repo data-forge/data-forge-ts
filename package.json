@@ -12,8 +12,8 @@
     "clean-build:watch": "rm -rf build/* && tsc --watch",
     "test": "ts-mocha src/test/**/*.ts",
     "test:watch": "ts-mocha src/test/**/*.ts --watch",
-    "publish": "tsc && npm publish",
-    "api-docs": "typedoc --out docs/api"
+    "api-docs": "typedoc --json docs/api/api.json",
+    "prepublishOnly": "tsc"
   },
   "repository": {
     "type": "git",
