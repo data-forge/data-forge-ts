@@ -38,6 +38,8 @@ No config object is passed to fromJSON.
 asPairs/asValues
 Mostly affects windows or where you want to rewrite the index.
 
+orderBy/orderByDescending/thenBy/thenByDescending - now preserves the index.
+
 **Changes**
 
 Removed dependencies on linqjs.

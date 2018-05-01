@@ -2154,7 +2154,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
+        //TODO: Should pass a config fn to OrderedSeries. Could just pass in 'this'. The getContent() wouldn't have to be evaluated here.
         return new OrderedSeries<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Ascending, null);
     }
 

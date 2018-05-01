@@ -13,7 +13,7 @@ describe('Series sort', () => {
 
 	it('can sort nested objects using selector - ascending', function () {
 		var series = new Series({
-			index: [0, 1, 2, 3], 
+			index: [10, 11, 12, 13], 
 			values: [
 				{
 					i: 1,
@@ -35,8 +35,7 @@ describe('Series sort', () => {
         });
 		var sorted = series
 			.orderBy(row => row.v)
-			.thenBy(row => row.i);
-		expect(sorted.getIndex().toArray()).to.eql([3, 2, 1, 0]);
+            .thenBy(row => row.i);
 		expect(sorted.toArray()).to.eql([
 			{
 				i: 3,
@@ -54,12 +53,13 @@ describe('Series sort', () => {
 				i: 1,
 				v: 300,
 			},
-		]);
+        ]);
+        expect(sorted.getIndex().toArray()).to.eql([13, 12, 11, 10]);
     });
     
 	it('can sort nested objects using selector - descending', function () {
 		var series = new Series({
-			index: [0, 1, 2, 3], 
+			index: [10, 11, 12, 13], 
 			values: [
 				{
 					i: 1,
@@ -81,8 +81,7 @@ describe('Series sort', () => {
         });
 		var sorted = series
 			.orderByDescending(row => row.v)
-			.thenByDescending(row => row.i);
-		expect(sorted.getIndex().toArray()).to.eql([0, 1, 2, 3]);
+            .thenByDescending(row => row.i);
 		expect(sorted.toArray()).to.eql([
 			{
 				i: 1,
@@ -100,7 +99,8 @@ describe('Series sort', () => {
 				i: 3,
 				v: 5
 			},
-		]);
+        ]);
+        expect(sorted.getIndex().toArray()).to.eql([10, 11, 12, 13]);
 	});
 
 });
