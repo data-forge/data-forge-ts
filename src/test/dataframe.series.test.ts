@@ -826,7 +826,8 @@ describe('DataFrame series', () => {
             });
 
 		var series = df.deflate(row => row.Column1 + row.Column2);
-		expect(series.toArray()).to.eql([11, 22, 33]);
+        expect(series.toArray()).to.eql([11, 22, 33]);
+        expect(series.getIndex().head(3).toArray()).to.eql([10, 11, 12]);
     });
 
 	it('can deflate dataframe to series with no selector', () => {
@@ -987,7 +988,8 @@ describe('DataFrame series', () => {
 			rows: [
 				[1, { X: 2, Y: 3 }], 
 				[4, { X: 5, Y: 6 }],
-			]
+            ],
+            index: [100, 200]
         });
 
 		var inflated = df.inflateSeries("b");
@@ -995,7 +997,8 @@ describe('DataFrame series', () => {
 		expect(inflated.toRows()).to.eql([
 			[1, { X: 2, Y: 3 }, 2, 3],
 			[4, { X: 5, Y: 6 }, 5, 6],
-		]);
+        ]);
+        expect(inflated.getIndex().head(2).toArray()).to.eql([100, 200]);
 	});
 
 	it('can bring column to front', function () {
