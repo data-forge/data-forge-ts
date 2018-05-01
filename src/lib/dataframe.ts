@@ -3773,7 +3773,7 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
         }
 
         valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, selector, direction));
-        pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, (pair: [IndexT, ValueT], index: number) => selector(pair[1], index), direction));
+        pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(selector), direction));
 
         super({
             values: new OrderedIterable(values, valueSortSpecs),
