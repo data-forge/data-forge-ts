@@ -1,1 +1,7 @@
 docs/
+src/
+node_modules/
+.vscode/
+.gitignore
+*.log
+r.bat
