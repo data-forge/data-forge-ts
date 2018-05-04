@@ -2,7 +2,7 @@
     "name": "Data-Forge",
     "readme": "none",
     "mode": "file",
-    "exclude": "./src/node_modules",
+    "exclude": "./node_modules",
     "out": "docs/api-docs",
     "theme": "default",
     "ignoreCompilerErrors": "true",
