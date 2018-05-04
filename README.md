@@ -2,7 +2,7 @@
 
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
-Implemented in TypeScript, use in JavaScript and TypeScript.
+Implemented in TypeScript, used in JavaScript or TypeScript.
 
 Why not do your data wrangling, analysis and visualization entirely in JavaScript? To support my effort please buy or help promote my book 
 [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2).
@@ -67,6 +67,7 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
 - Great for slicing and dicing tabular data:
     - Add, remove, transform and generate named columns (series) of data.
 - Great for working with time series data.
+- Your data is indexed so you have the ability to merge and aggregate.
 - Your data is immutable! Transformations and modifications produce a new dataset.
 - Build data pipeline that are evaluated lazily.
 - Inspired by Pandas and LINQ, so it might feel familiar!
@@ -76,6 +77,7 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
 
 - [Changes](docs/changes.md)
 - [The guide](docs/guide.md)
+- [Key concepts](docs/concepts.md)
 - [API docs](docs/guide.md)
 - [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2)
 
