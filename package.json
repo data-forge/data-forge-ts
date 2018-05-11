@@ -1,7 +1,7 @@
 {
-  "name": "data-forge-ts-beta-test",
-  "version": "1.0.3",
-  "description": "TypeScript implementation of DataForge.",
+  "name": "data-forge",
+  "version": "1.0.0",
+  "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {

@@ -2,7 +2,7 @@
 
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
-Implemented in TypeScript, used in JavaScript or TypeScript.
+Implemented in TypeScript, used in JavaScript ES5+ or TypeScript.
 
 Why not do your data wrangling, analysis and visualization entirely in JavaScript? To support my effort please buy or help promote my book 
 [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2).
@@ -13,7 +13,7 @@ Or check out my blog: [The Data Wrangler](http://www.the-data-wrangler.com/).
 [![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/data-forge/data-forge-ts/issues/)
 
 <!--todo:
-!! Made with TypeScript.s
+!! Made with TypeScript.
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Linux Build][travis-image]][travis-url]
