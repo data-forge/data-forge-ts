@@ -7,6 +7,8 @@ Implemented in TypeScript, used in JavaScript or TypeScript.
 Why not do your data wrangling, analysis and visualization entirely in JavaScript? To support my effort please buy or help promote my book 
 [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2).
 
+Or check out my blog: [The Data Wrangler](http://www.the-data-wrangler.com/).
+
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/data-forge/data-forge-ts/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/data-forge/data-forge-ts/issues/)
 
@@ -79,6 +81,10 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
 - [The guide](docs/guide.md)
 - [Key concepts](docs/concepts.md)
 - [API docs](docs/guide.md)
+
+## Resources
+
+- [The Data Wrangler](http://www.the-data-wrangler.com/)
 - [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2)
 
 
