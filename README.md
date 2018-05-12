@@ -80,7 +80,7 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
 - [Changes](docs/changes.md)
 - [The guide](docs/guide.md)
 - [Key concepts](docs/concepts.md)
-- [API docs](docs/guide.md)
+- [API docs](https://data-forge.github.io/data-forge-ts/)
 
 ## Resources
 
