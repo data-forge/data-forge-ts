@@ -6,3 +6,5 @@ node_modules/
 .gitignore
 *.log
 r.bat
+tsconfig.json
+typedoc.json
