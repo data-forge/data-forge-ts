@@ -1041,6 +1041,7 @@ export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> e
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 }
+
 //
 // Represents the contents of a dataframe.
 //
@@ -3610,9 +3611,10 @@ export interface ICsvSerializer {
     writeFileSync (filePath: string): void;
 }
 
-//
-// Packages a dataframe ready for CSV serialization.
-//
+/**
+ * @hidden
+ * Packages a dataframe ready for CSV serialization.
+ */
 class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
 
     dataframe: IDataFrame<IndexT, ValueT>;
@@ -3683,9 +3685,10 @@ export interface IJsonSerializer {
     writeFileSync (filePath: string): void;
 }
 
-//
-// Packages a dataframe ready for JSON serialization.
-//
+/**
+ * @hidden
+ * Packages a dataframe ready for JSON serialization.
+ */
 class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
 
     dataframe: IDataFrame<IndexT, ValueT>;
@@ -3732,9 +3735,10 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
     }
 }
 
-//
-// A dataframe that has been ordered.
-//
+/**
+ * @hidden
+ * A dataframe that has been ordered.
+ */
 class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any> 
     extends DataFrame<IndexT, ValueT>
     implements IOrderedDataFrame<IndexT, ValueT, SortT> {

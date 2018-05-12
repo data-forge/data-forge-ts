@@ -138,6 +138,7 @@ export interface IAsyncFileReader {
 }
 
 /**
+ * @hidden
  * Reads a file asynchonrously to a dataframe.
  */
 class AsyncFileReader implements IAsyncFileReader {
@@ -234,6 +235,7 @@ export interface ISyncFileReader {
 }
 
 /**
+ * @hidden
  * Reads a file synchonrously to a dataframe.
  */
 class SyncFileReader implements ISyncFileReader {
@@ -375,44 +377,3 @@ export function matrix (numColumns: number, numRows: number, start: number, incr
         rows: rows,
     });
 }
-
-/*
-var dr = new DataFrame([
-    {
-        A: 1,
-        B: 2,
-    },
-    {
-        A: 10,
-        B: 20,
-    }
-]);
-
-console.log(dr.toString());
-*/
-
-//var s = await readFileStream("C:\projects\github\nodejs-chart-rendering-example-data\data\example-data.csv")
-
-/*
-async function main () {
-
-    try {
-        var s = await readFileIncremental("./src/test/data/example-data.csv")
-            .parseCSV()
-            .toString();
-        console.log(s);
-
-        var s = await readFileIncremental("./src/test/data/example-data.json")
-            .parseJSON()
-            .toString();
-
-        console.log(s);
-    }
-    catch (err) {
-        console.error(err); 
-    }
-
-}
-
-main();
-*/

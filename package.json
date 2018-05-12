@@ -12,7 +12,7 @@
     "clean-build:watch": "rm -rf build/* && tsc --watch",
     "test": "ts-mocha src/test/**/*.ts",
     "test:watch": "ts-mocha src/test/**/*.ts --watch",
-    "api-docs": "typedoc --json docs/api/api.json",
+    "api-docs": "typedoc --options typedoc.json --out docs/api ./src/index.ts ./src/lib/dataframe.ts ./src/lib/series.ts ./src/lib/index.ts",
     "prepublishOnly": "tsc"
   },
   "repository": {

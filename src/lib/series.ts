@@ -2639,9 +2639,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 }
 
-//
-// A series that has been ordered.
-//
+/**
+ * @hidden
+ * A series that has been ordered.
+ */
 class OrderedSeries<IndexT = number, ValueT = any, SortT = any> 
     extends Series<IndexT, ValueT>
     implements IOrderedSeries<IndexT, ValueT, SortT> {
