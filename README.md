@@ -12,6 +12,8 @@ Or check out my blog: [The Data Wrangler](http://www.the-data-wrangler.com/).
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/data-forge/data-forge-ts/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/data-forge/data-forge-ts/issues/)
 
+**Please note** that this repository replaces the [old version of Data-Forge](https://github.com/data-forge/data-forge-js).
+
 <!--todo:
 !! Made with TypeScript.
 [![NPM Version][npm-image]][npm-url]
