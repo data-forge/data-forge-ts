@@ -77,6 +77,14 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
 - Inspired by Pandas and LINQ, so it might feel familiar!
 
 
+## Platforms
+
+- Node.js (npm install --save data-forge)
+- Browser
+    - Via bower (bower install --save data-forge)
+    - Via Browserify ([see example here](https://github.com/data-forge/data-forge-examples-and-tests/tree/master/examples/2.%20plot%20-%20in%20browser))
+    - Via Webpack ([see example here](https://github.com/data-forge/data-forge-examples-and-tests/tree/master/examples/3.%20plot%20-%20in%20browser%20-%20with%20dates))
+
 ## Documentation
 
 - [Changes](docs/changes.md)
