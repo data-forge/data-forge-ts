@@ -1215,11 +1215,16 @@ For a more concrete example, let's fill gaps in daily stock-market data (with so
 	var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
 	
 
-# Other Node.js examples
+# Node.js examples
+
+## Install
+
+    npm install --save data-forge
 
 ## Working with a MongoDB collection
 
     var mongodb = require('mongodb');
+    var dataForge = require('data-forge);
 
     mongodb.MongoClient.connect("mongodb://localhost")
         .then(client => {
@@ -1246,6 +1251,7 @@ For a more concrete example, let's fill gaps in daily stock-market data (with so
 ## Working with HTTP
 
 	var request = require('request-promise');
+    var dataForge = require('data-forge');
 
 	request({
 			method: 'GET',
@@ -1274,11 +1280,15 @@ For a more concrete example, let's fill gaps in daily stock-market data (with so
 
 # Browser examples
 
+## Install
+
+    bower install --save data-forge
+
 ## Working with HTTP in the browser
 
 This example depends on the [jQuery](http://jquery.com/) [get function](https://api.jquery.com/jquery.get/). 
 
-**HTML**
+**Include in HTML**
 
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/data-forge/data-forge.js"></script>
@@ -1312,7 +1322,11 @@ This example depends on the [jQuery](http://jquery.com/) [get function](https://
 
 ## Working with HTTP in AngularJS
 
-**HTML**
+**Install**
+
+    bower install --save data-forge
+
+**Include in HTML**
 
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/data-forge/data-forge.js"></script>
