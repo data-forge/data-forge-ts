@@ -57,6 +57,28 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
     });
 ```
 
+## From the browser
+
+Data-Forge also works in the browser (just don't try call readFile, etc - some functions only work under Node.js).
+
+### Install
+
+Install via Bower (you can also use Browserify or Webpack, see below).
+
+    bower install --save data-forge
+
+### Include
+
+Include the code in your HTML
+
+    <script language="javascript" type="text/javascript" src="bower_components/data-forge/data-forge.js"></script>
+
+### Use
+
+Use it via the `dataForge` global variable.
+
+    var myDataframe = new dataForge.DataFrame(... your data here ...);
+
 ## Features
 
 - Import and export CSV and JSON data and text files.
@@ -79,9 +101,9 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
 
 ## Platforms
 
-- Node.js (npm install --save data-forge)
+- Node.js (npm install --save data-forge) ([see example here](https://github.com/data-forge/data-forge-examples-and-tests/tree/master/package-test/npm))
 - Browser
-    - Via bower (bower install --save data-forge)
+    - Via bower (bower install --save data-forge) ([see example here](https://github.com/data-forge/data-forge-examples-and-tests/tree/master/package-test/bower))
     - Via Browserify ([see example here](https://github.com/data-forge/data-forge-examples-and-tests/tree/master/examples/2.%20plot%20-%20in%20browser))
     - Via Webpack ([see example here](https://github.com/data-forge/data-forge-examples-and-tests/tree/master/examples/3.%20plot%20-%20in%20browser%20-%20with%20dates))
 
