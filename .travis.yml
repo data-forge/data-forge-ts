@@ -1,3 +1,6 @@
 language: node_js
 node_js:
   - "8.9.1"
+before_script:
+  - echo 'Australia/Brisbane' | sudo tee /etc/timezone
+  - sudo dpkg-reconfigure --frontend noninteractive tzdata
