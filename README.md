@@ -10,10 +10,7 @@ Why not do your data wrangling, analysis and visualization entirely in JavaScrip
 Or check out my blog: [The Data Wrangler](http://www.the-data-wrangler.com/).
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
-
-[![NPM Version](https://img.shields.io/npm/v/express.svg))](https://travis-ci.org/data-forge/data-forge-ts)
-
-
+[![npm version](https://badge.fury.io/js/data-forge.svg)](https://badge.fury.io/js/data-forge)
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/data-forge/data-forge-ts/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/data-forge/data-forge-ts/issues/)
 
