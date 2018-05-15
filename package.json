@@ -13,7 +13,8 @@
     "test": "nyc mocha --opts ./src/test/mocha.opts",
     "test:watch": "nyc mocha --watch --opts ./src/test/mocha.opts",
     "api-docs": "typedoc --options typedoc.json --out docs/api ./src/index.ts ./src/lib/dataframe.ts ./src/lib/series.ts ./src/lib/index.ts",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "tsc",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -41,23 +42,11 @@
     "@types/chai": "4.0.4",
     "@types/mocha": "2.2.43",
     "@types/node": "8.0.28",
+    "coveralls": "3.0.1",
     "mocha": "3.5.3",
     "nyc": "11.7.3",
     "source-map-support": "0.5.6",
     "ts-node": "6.0.2",
     "typescript": "2.8.3"
-  },
-  "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "exclude": [
-      "**/*.d.ts"
-    ],
-    "reporter": [
-        "text-summary",
-        "html"
-    ],
-    "all": true
   }
 }

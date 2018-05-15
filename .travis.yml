@@ -4,3 +4,4 @@ node_js:
 before_script:
   - export TZ=Australia/Brisbane
   - date
+after_success: "npm run coveralls"
