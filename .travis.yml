@@ -2,4 +2,5 @@ language: node_js
 node_js:
   - "8.9.1"
 before_script:
-  - sudo timedatectl set-timezone Australia/Brisbane
+  - export TZ=Australia/Brisbane
+  - date
