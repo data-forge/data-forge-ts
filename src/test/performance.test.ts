@@ -50,7 +50,7 @@ describe('performance', () => {
 		stopwatch.stop();
 		var time = stopwatch.read();
 		//console.log('t ' + time);
-		expect(time).to.be.at.most(3);
+		expect(time).to.be.at.most(20);
 	});
 
 	it('calling last on an expensive DataFrame should have good performance', () => {
@@ -97,6 +97,6 @@ describe('performance', () => {
 		stopwatch.stop();
 		var time = stopwatch.read();
 		//console.log('t ' + time);
-		expect(time).to.be.at.most(3);
+		expect(time).to.be.at.most(20);
 	});
 });
