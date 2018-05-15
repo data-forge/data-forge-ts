@@ -43,12 +43,12 @@ If you notice any problems in this documentation [please log an issue](https://g
     - [Writing JSON files](#writing-json-files)
       - [Syncrhonous version](#syncrhonous-version)
       - [Asynchronous version](#asynchronous-version-3)
-  - [Working with JSON data](#working-with-json-data)
+    - [Working with JSON data](#working-with-json-data)
   - [Parsing column values](#parsing-column-values)
   - [Automatic column parsing](#automatic-column-parsing)
   - [Stringifying column values](#stringifying-column-values)
 - [Working with data](#working-with-data)
-  - [Extracting rows from a data-frame](#extracting-rows-from-a-data-frame)
+  - [Extracting rows from a dataframe](#extracting-rows-from-a-dataframe)
   - [Extracting columns and series from a dataframe](#extracting-columns-and-series-from-a-dataframe)
   - [Extract values from a series](#extract-values-from-a-series)
   - [Extract values from an index](#extract-values-from-an-index)
@@ -63,7 +63,7 @@ If you notice any problems in this documentation [please log an issue](https://g
   - [Console output](#console-output)
 - [Sorting](#sorting)
 - [Transformation](#transformation)
-  - [Data frame transformation](#data-frame-transformation)
+  - [Dataframe transformation](#dataframe-transformation)
   - [Series transformation](#series-transformation)
   - [Transform a series in a dataframe](#transform-a-series-in-a-dataframe)
 - [Filtering](#filtering)
@@ -523,7 +523,7 @@ NOTE: Data-Forge uses the NodeJS `fs` module, so this doesn't work in the browse
             // Some error occurred.
         });
 
-## Working with JSON data
+### Working with JSON data
 
 If you already have JSON data (loaded into a string) you can parse it into a dataframe via `fromJSON`:
 
@@ -592,7 +592,7 @@ Data-Forge uses [Moment.js](http://momentjs.com/) under the hood, please see its
 
 # Working with data
 
-## Extracting rows from a data-frame
+## Extracting rows from a dataframe
 
 Values can be extracted from a dataframe in several ways.
 
@@ -610,7 +610,7 @@ To extracts index + row pairs:
 
 	var arrayOfPairs = df.toPairs();
 
-A new data-frame can also be created from the values *between* a pair of indicies:
+A new dataframe can also be created from the values *between* a pair of indicies:
 
 	var startIndex = ... // Starting row index to include in subset. 
 	var endIndex = ... // Ending row index to include in subset.
@@ -846,7 +846,7 @@ Use `thenBy` and `thenByDescending` to specify additional sorting criteria:
 
 # Transformation
 
-## Data frame transformation
+## Dataframe transformation
 
 A dataframe can be transformed using the [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query)-style [`select`](http://www.dotnetperls.com/select) function:
 
@@ -867,7 +867,7 @@ A series can be transformed using `select`:
 
 	var series = df.getSeries("SomeColumn");
 	var newSeries = series.select(value => transform(value)); // Apply a transformation to each value in the column.
-	var newDf = df.withSeries("SomeColumn", newSeries); // Plug the modified series back into the data-frame.
+	var newDf = df.withSeries("SomeColumn", newSeries); // Plug the modified series back into the dataframe.
 
 The source index is preserved to the transformed series which is what allows the resulting series to be merged back into the dataframe.
 
