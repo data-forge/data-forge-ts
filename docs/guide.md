@@ -29,17 +29,21 @@ If you notice any problems in this documentation [please log an issue](https://g
     - [Series](#series-1)
   - [Setting an index](#setting-an-index)
   - [Working with CSV files](#working-with-csv-files)
-    - [Reading CSV files (synchronous version)](#reading-csv-files-synchronous-version)
-  - [Reading CSV files (asynchronous version)](#reading-csv-files-asynchronous-version)
-    - [Writing CSV files (synchronous version)](#writing-csv-files-synchronous-version)
-    - [Writing CSV files (asynchronous version)](#writing-csv-files-asynchronous-version)
+    - [Reading CSV files](#reading-csv-files)
+      - [Synchronous version](#synchronous-version)
+      - [Asynchronous version](#asynchronous-version)
+    - [Writing CSV files](#writing-csv-files)
+      - [Synchronous version](#synchronous-version-1)
+      - [Asynchronous version](#asynchronous-version-1)
     - [Working with CSV data](#working-with-csv-data)
   - [Working with JSON files](#working-with-json-files)
-    - [Reading JSON files (syncrhonous version)](#reading-json-files-syncrhonous-version)
-  - [Reading JSON files (asynchronous version)](#reading-json-files-asynchronous-version)
-    - [Writing JSON files (syncrhonous version)](#writing-json-files-syncrhonous-version)
-    - [Writing JSON files (asynchronous version)](#writing-json-files-asynchronous-version)
-    - [Working with JSON data](#working-with-json-data)
+    - [Reading JSON files](#reading-json-files)
+      - [Ayncrhonous version](#ayncrhonous-version)
+      - [Asynchronous version](#asynchronous-version-2)
+    - [Writing JSON files](#writing-json-files)
+      - [Syncrhonous version](#syncrhonous-version)
+      - [Asynchronous version](#asynchronous-version-3)
+  - [Working with JSON data](#working-with-json-data)
   - [Parsing column values](#parsing-column-values)
   - [Automatic column parsing](#automatic-column-parsing)
   - [Stringifying column values](#stringifying-column-values)
@@ -428,7 +432,9 @@ Note an index is required for certain operations like `join` and `withSeries`.
 
 NOTE: Data-Forge uses the NodeJS `fs` module, so this doesn't work in the browser which has no access to the local file system.
 
-### Reading CSV files (synchronous version)
+### Reading CSV files
+
+#### Synchronous version
 
 If your CSV has a header with column names:
 
@@ -438,7 +444,7 @@ If your CSV doesn't have a header you must specify the column names:
 
 	var df = dataForge.readFileSync('some-csv-file.csv').parseCSV({ columnNames: ["some", "explicit", "column", "names"] });
 
-## Reading CSV files (asynchronous version)
+#### Asynchronous version
 
 	dataForge.readFile('some-csv-file.csv').parseCSV()
         .then(df => {
@@ -448,11 +454,13 @@ If your CSV doesn't have a header you must specify the column names:
             // Some error occurred.
         });
 
-### Writing CSV files (synchronous version)
+### Writing CSV files
+
+#### Synchronous version
 
 	df.asCSV().writeFileSync('some-other-csv-file.csv');
 
-### Writing CSV files (asynchronous version)
+#### Asynchronous version
 
 	df.asCSV().writeFile('some-other-csv-file.csv')
         .then(() => {
@@ -482,11 +490,13 @@ You can stringify a dataframe to CSV by calling `toCSV`:
 
 NOTE: Data-Forge uses the NodeJS `fs` module, so this doesn't work in the browser which has no access to the local file system.
 
-### Reading JSON files (syncrhonous version)
+### Reading JSON files
+
+#### Ayncrhonous version
 
 	var df = dataForge.readFileSync('some-json-file.json').parseJSON();
 
-## Reading JSON files (asynchronous version)
+#### Asynchronous version
 
 	dataForge.readFile('some-json-file.json')
 		.parseJSON()
@@ -497,11 +507,13 @@ NOTE: Data-Forge uses the NodeJS `fs` module, so this doesn't work in the browse
             // Some error occurred.
         });
 
-### Writing JSON files (syncrhonous version)
+### Writing JSON files 
+
+#### Syncrhonous version
 
 	dataFrame.asJSON().writeFileSync('some-json-file.json');
 
-### Writing JSON files (asynchronous version)
+#### Asynchronous version
 
 	df.asJSON().writeFile('some-other-json-file.json')
         .then(() => {
@@ -511,7 +523,7 @@ NOTE: Data-Forge uses the NodeJS `fs` module, so this doesn't work in the browse
             // Some error occurred.
         });
 
-### Working with JSON data
+## Working with JSON data
 
 If you already have JSON data (loaded into a string) you can parse it into a dataframe via `fromJSON`:
 
