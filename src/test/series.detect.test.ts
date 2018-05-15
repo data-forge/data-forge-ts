@@ -1,7 +1,7 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import { Index } from '../lib/index';
-import { Series } from '../lib/Series';
+import { Series } from '../lib/series';
 
 describe('DataFrame detect', () => {
 
