@@ -133,13 +133,16 @@ describe('Series parse', () => {
 		var converted = series.toStrings();
 
 		expect(converted.getIndex().toArray()).to.eql([1, 2, 3, 4, 5, 6]);
-		expect(converted.toArray()).to.eql([
-			'1', 
-			null, 
-			"foo", 
-			'5.5', 
-			'Sun Feb 01 2015 00:00:00 GMT+1000 (E. Australia Standard Time)'
-		]);
+		const row = converted.toArray();
+        expect(row.length).to.eql(5);
+        expect(row[0]).to.eql("1");
+        expect(row[1]).to.eql(null);
+        expect(row[2]).to.eql("foo");
+        expect(row[3]).to.eql("5.5");
+        expect(row[4]).to.satisfy((value: string) => {
+            return value === "Sun Feb 01 2015 00:00:00 GMT+1000 (E. Australia Standard Time)" ||
+                value === "Sun Feb 01 2015 00:00:00 GMT+1000 (AEST)";
+        });
 	});
 
 	it('can specify format string for date series', () => {
