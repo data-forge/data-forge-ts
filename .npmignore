@@ -8,3 +8,4 @@ node_modules/
 r.bat
 tsconfig.json
 typedoc.json
+.travis.yml
