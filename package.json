@@ -44,22 +44,28 @@
     "@types/node": "8.0.28",
     "coveralls": "3.0.1",
     "mocha": "3.5.3",
-    "mocha-lcov-reporter": "1.3.0",
     "nyc": "11.7.3",
     "source-map-support": "0.5.6",
     "ts-node": "6.0.2",
     "typescript": "2.8.3"
   },
-    "nyc": {
-        "extension": [
-            ".ts"
-        ],
-        "exclude": [
-            "**/*.d.ts"
-        ],
-        "reporter": [
-            "text-summary"
-        ],
-        "all": true
-    }
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "src/lib/iterators/**/*",
+      "src/lib/iterables/**/*",
+      "src/test/**/*",
+      "build/**/*",
+      "docs/**/*",
+      "coverage/**/*"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "all": true
+  }
 }
