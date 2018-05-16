@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -20,7 +20,25 @@
     "type": "git",
     "url": "https://github.com/data-forge/data-forge-ts.git"
   },
-  "keywords": [],
+  "keywords": [
+      "data-wrangling",
+      "data-forge",
+      "data",
+      "data-analysis",
+      "linq",
+      "pandas",
+      "Python",
+      "visualization",
+      "data-visualization",
+      "data-management",
+      "data-manipulation",
+      "csv",
+      "json",
+      "data-munging",
+      "data-cleaning",
+      "data-science",
+      "data-clensing"
+  ],
   "author": "ashley@codecapers.com.au",
   "license": "MIT",
   "bugs": {
