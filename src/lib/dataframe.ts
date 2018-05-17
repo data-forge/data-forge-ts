@@ -924,12 +924,17 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Reshape (or pivot) a table based on column values.
      *
-     * @param column - Column name whose values make the new DataFrame's columns.
-     * @param value - Column name whose values populate the new DataFrame's values.
+     * @param columnOrColumns - Column name whose values make the new DataFrame's columns.
+     * @param valueColumnName - Column name whose values populate the new DataFrame's values.
+     * @param aggregator - Function used to aggregate pivotted vales. 
      *
      * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
      */
-    pivot<NewValueT = ValueT> (column: string, value: string): IDataFrame<IndexT, NewValueT>;
+    pivot<NewValueT = ValueT, PivotValueT = any, AggregatedValueT = any> (
+        columnOrColumns: string | Iterable<string>, 
+        valueColumnName: string, 
+        aggregator: (values: ISeries<number, PivotValueT>) => AggregatedValueT
+            ): IDataFrame<number, NewValueT>;
 
     /**
      * Insert a pair at the start of the dataframe.
@@ -3334,47 +3339,78 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Reshape (or pivot) a table based on column values.
+     * This effiectively a short-hand for multiple grouping operations and an aggregation.
      *
-     * @param column - Column name whose values make the new DataFrame's columns.
-     * @param value - Column name whose values populate the new DataFrame's values.
+     * @param columnOrColumns - Column name whose values make the new DataFrame's columns.
+     * @param valueColumnName - Column name whose values populate the new DataFrame's values.
+     * @param aggregator - Function used to aggregate pivotted vales. 
      *
      * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
      */
-    pivot<NewValueT = ValueT> (column: string, value: string): IDataFrame<IndexT, NewValueT> {
+    pivot<NewValueT = ValueT, PivotValueT = any, AggregatedValueT = any> (
+        columnOrColumns: string | Iterable<string>, 
+        valueColumnName: string, 
+        aggregator: (values: ISeries<number, PivotValueT>) => AggregatedValueT
+            ): IDataFrame<number, NewValueT> {
 
-        assert.isString(column, "Expected 'column' parameter to DataFrame.pivot to be a string that identifies the column whose values make the new DataFrame's columns.");
-        assert.isString(value, "Expected 'value' parameter to DataFrame.pivot to be a string that identifies the column whose values make the new DataFrame's values.");
+        let columnNames: string[];
 
-        if (!this.hasSeries(column)) {
-            throw new Error("Expected to find a column with name '" + column + "'.");
+        if (Sugar.Object.isString(columnOrColumns)) {
+            columnNames = [columnOrColumns];
+        }
+        else {
+            assert.isArray(columnOrColumns, "Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to be a string or an array of strings that identifies the column(s) whose values make the new DataFrame's columns.");
+
+            columnNames = Array.from(columnOrColumns);
+
+            assert(columnNames.length > 0, "Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to contain at least one string.");
+
+            for (const columnName of columnNames) {
+                assert.isString(columnName, "Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to be an array of strings, each string identifies a column in the DataFrame on which to pivot.");
+            }
         }
 
-        if (!this.hasSeries(value)) {
-            throw new Error("Expected to find a column with name '" + value + "'.");
+        assert.isString(valueColumnName, "Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values make the new DataFrame's values.");
+        assert.isFunction(aggregator, "Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
+
+        const firstColumnName = columnNames[0];
+        let working = this.groupBy((row: any) => row[firstColumnName])
+            .select(group => {
+                const output: any = {};
+                output[firstColumnName] = (group.first() as any)[firstColumnName];
+                output.src = group;
+                return output;
+            });
+
+        for (let columnNameIndex = 1; columnNameIndex < columnNames.length; ++columnNameIndex) {
+            const nextColumnName = columnNames[columnNameIndex];
+            working = working.selectMany(parentGroup => {
+                    const src: IDataFrame<IndexT, ValueT> = parentGroup.src;
+                    return src.groupBy((row: any) => row[nextColumnName])
+                        .select(subGroup => {
+                            const output = Object.assign({}, parentGroup);
+                            output[nextColumnName] = (subGroup.first() as any)[nextColumnName];
+                            output.src = subGroup;
+                            return output;
+                        });
+                });
         }
 
-        return new DataFrame<IndexT, NewValueT>(() => {
-                const newColumnNames = this.getSeries(column).distinct().toArray();
-                const newSeries: ISeries<IndexT, any>[] = [];        
-        
-                for (const newColumnName of newColumnNames) {
-                    const extractedSeries = this
-                        .where((row: any) => row[column] === newColumnName)
-                        .deflate((row: any) => row[value]);
-                    newSeries.push(extractedSeries);
-                }
-        
-                const columns: any = {};
-        
-                for (let newColumnIndex = 0; newColumnIndex < newColumnNames.length; ++newColumnIndex) {
-                    columns[newColumnNames[newColumnIndex]] = newSeries[newColumnIndex];
-                }
-
-                return {
-                columns: columns
-            };
+        const pivotted = working.inflate<NewValueT>((row: any) => {
+            row[valueColumnName] = aggregator(row.src.deflate((srcRow: any) => srcRow[valueColumnName]));
+            delete row.src;
+            return row;
         });
+
+        let ordered = pivotted.orderBy((row: any) => row[firstColumnName]);
+        for (let columnNameIndex = 1; columnNameIndex < columnNames.length; ++columnNameIndex) {
+            const nextColumnName = columnNames[columnNameIndex];
+            ordered = ordered.thenBy((row: any) => row[nextColumnName]);
+        }
+
+        return ordered;
     }
+    
     
     /**
      * Insert a pair at the start of the dataframe.
