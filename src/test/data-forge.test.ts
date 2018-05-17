@@ -102,4 +102,29 @@ describe('data-forge', () => {
 		]);
     });
 
+    it('can convert object to dataframe', () => {
+
+        const df = dataForge.fromObject({
+            Value1: 5,
+            Value2: "foo",
+            Value3: 2.5
+        });
+
+        expect(df.getColumnNames()).to.eql(["Field", "Value"]);
+        expect(df.toArray()).to.eql([
+            {
+                Field: "Value1",
+                Value: 5,
+            },
+            {
+                Field: "Value2",
+                Value: "foo",
+            },
+            {
+                Field: "Value3",
+                Value: 2.5,
+            },
+        ]);
+    });
+
 });

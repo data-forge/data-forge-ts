@@ -12,6 +12,39 @@ import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
 
 /**
+ * Represents a field from a JavaScript object.
+ */
+export interface IFieldRecord {
+    /**
+     * The name of the field.
+     */
+    Field: string;
+
+    /**
+     * The value of the field.
+     */
+    Value: any;
+};
+
+/**
+ * Convert a regular JavaScript obejct to a dataframe.
+ * Each row in the dataframe represents a field from the object.
+ * 
+ * @param obj - The JavaScript object to convert to a dataframe.
+ * 
+ * @returns Returns a dataframe that lists the fields in the pass-in object.
+ */
+export function fromObject (obj: any): IDataFrame<number, IFieldRecord> {
+    return new DataFrame<number, IFieldRecord>(
+        Object.keys(obj)
+            .map(fieldName => ({
+                Field: fieldName,
+                Value: obj[fieldName],
+            }))
+    );
+}
+
+/**
  * Deserialize a dataframe from a JSON text string.
  *
  * @param jsonTextString The JSON text to deserialize.

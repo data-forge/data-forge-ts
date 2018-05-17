@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ICSVOptions | Data-Forge</title>
+	<title>IFieldRecord | Data-Forge</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="icsvoptions.html">ICSVOptions</a>
+					<a href="ifieldrecord.html">IFieldRecord</a>
 				</li>
 			</ul>
-			<h1>Interface ICSVOptions</h1>
+			<h1>Interface IFieldRecord</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Options for parsing CSV data.</p>
+						<p>Represents a field from a JavaScript object.</p>
 					</div>
 				</div>
 			</section>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ICSVOptions</span>
+						<span class="target">IFieldRecord</span>
 					</li>
 				</ul>
 			</section>
@@ -84,9 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="icsvoptions.html#columnnames" class="tsd-kind-icon">column<wbr>Names</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="icsvoptions.html#dynamictyping" class="tsd-kind-icon">dynamic<wbr>Typing</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="icsvoptions.html#skipemptylines" class="tsd-kind-icon">skip<wbr>Empty<wbr>Lines</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ifieldrecord.html#field" class="tsd-kind-icon">Field</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ifieldrecord.html#value" class="tsd-kind-icon">Value</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,50 +94,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="columnnames" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> column<wbr>Names</h3>
-					<div class="tsd-signature tsd-kind-icon">column<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="field" class="tsd-anchor"></a>
+					<h3>Field</h3>
+					<div class="tsd-signature tsd-kind-icon">Field<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/ddeb7e7/src/index.ts#L71">index.ts:71</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/ddeb7e7/src/index.ts#L21">index.ts:21</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Optionally specifies the column names (when enabled, assumes that the header row is not read from the CSV data).
-							Default: undefined</p>
+							<p>The name of the field.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="dynamictyping" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> dynamic<wbr>Typing</h3>
-					<div class="tsd-signature tsd-kind-icon">dynamic<wbr>Typing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="value" class="tsd-anchor"></a>
+					<h3>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/ddeb7e7/src/index.ts#L77">index.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/ddeb7e7/src/index.ts#L26">index.ts:26</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Automatically pick types based on what the value looks like.
-							Default: false.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="skipemptylines" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> skip<wbr>Empty<wbr>Lines</h3>
-					<div class="tsd-signature tsd-kind-icon">skip<wbr>Empty<wbr>Lines<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/ddeb7e7/src/index.ts#L83">index.ts:83</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Skip empty lines in the input.
-							Default: true</p>
+							<p>The value of the field.</p>
 						</div>
 					</div>
 				</section>
@@ -157,16 +138,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="icsvoptions.html" class="tsd-kind-icon">ICSVOptions</a>
+						<a href="ifieldrecord.html" class="tsd-kind-icon">IField<wbr>Record</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="icsvoptions.html#columnnames" class="tsd-kind-icon">column<wbr>Names</a>
+								<a href="ifieldrecord.html#field" class="tsd-kind-icon">Field</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="icsvoptions.html#dynamictyping" class="tsd-kind-icon">dynamic<wbr>Typing</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="icsvoptions.html#skipemptylines" class="tsd-kind-icon">skip<wbr>Empty<wbr>Lines</a>
+								<a href="ifieldrecord.html#value" class="tsd-kind-icon">Value</a>
 							</li>
 						</ul>
 					</li>
