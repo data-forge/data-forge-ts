@@ -116,6 +116,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#after" class="tsd-kind-icon">after</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="series.html#aggregate" class="tsd-kind-icon">aggregate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#all" class="tsd-kind-icon">all</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#amountchange" class="tsd-kind-icon">amount<wbr>Change</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#any" class="tsd-kind-icon">any</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#appendpair" class="tsd-kind-icon">append<wbr>Pair</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#at" class="tsd-kind-icon">at</a></li>
@@ -156,6 +157,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#parsefloats" class="tsd-kind-icon">parse<wbr>Floats</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#parseints" class="tsd-kind-icon">parse<wbr>Ints</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#percentchange" class="tsd-kind-icon">percent<wbr>Change</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#proportionchange" class="tsd-kind-icon">proportion<wbr>Change</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#resetindex" class="tsd-kind-icon">reset<wbr>Index</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#reverse" class="tsd-kind-icon">reverse</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#rollingwindow" class="tsd-kind-icon">rolling<wbr>Window</a></li>
@@ -206,7 +208,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L966">lib/series.ts:966</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L987">lib/series.ts:987</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -248,7 +250,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#___iterator">__@iterator</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1017">lib/series.ts:1017</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1038">lib/series.ts:1038</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -272,7 +274,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#after">after</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1670">lib/series.ts:1670</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1725">lib/series.ts:1725</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -305,7 +307,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1237">lib/series.ts:1237</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1258">lib/series.ts:1258</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -347,7 +349,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#all">all</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1524">lib/series.ts:1524</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1579">lib/series.ts:1579</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -373,6 +375,36 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="amountchange" class="tsd-anchor"></a>
+					<h3>amount<wbr>Change</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">amount<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#amountchange">amountChange</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1283">lib/series.ts:1283</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compute the amount of change between each pair of values.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> period: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new series where each value indicates the amount of change from the previous number value in the original series.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="any" class="tsd-anchor"></a>
 					<h3>any</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -383,7 +415,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#any">any</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1550">lib/series.ts:1550</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1605">lib/series.ts:1605</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -416,7 +448,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2493">lib/series.ts:2493</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2548">lib/series.ts:2548</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -449,7 +481,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#at">at</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1419">lib/series.ts:1419</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1474">lib/series.ts:1474</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -485,7 +517,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#average">average</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1905">lib/series.ts:1905</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1960">lib/series.ts:1960</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -509,7 +541,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1844">lib/series.ts:1844</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1899">lib/series.ts:1899</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -533,7 +565,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#before">before</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1653">lib/series.ts:1653</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1708">lib/series.ts:1708</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -566,7 +598,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#between">between</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1688">lib/series.ts:1688</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1743">lib/series.ts:1743</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -605,7 +637,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2080">lib/series.ts:2080</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2135">lib/series.ts:2135</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -638,7 +670,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1369">lib/series.ts:1369</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1424">lib/series.ts:1424</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -662,7 +694,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2538">lib/series.ts:2538</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2593">lib/series.ts:2593</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -695,7 +727,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2561">lib/series.ts:2561</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2616">lib/series.ts:2616</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -719,7 +751,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2608">lib/series.ts:2608</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2663">lib/series.ts:2663</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -743,7 +775,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1988">lib/series.ts:1988</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2043">lib/series.ts:2043</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -782,7 +814,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1636">lib/series.ts:1636</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1691">lib/series.ts:1691</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -815,7 +847,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#except">except</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2240">lib/series.ts:2240</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2295">lib/series.ts:2295</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -866,7 +898,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2508">lib/series.ts:2508</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2563">lib/series.ts:2563</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -905,7 +937,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#first">first</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1383">lib/series.ts:1383</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1438">lib/series.ts:1438</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -929,7 +961,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1503">lib/series.ts:1503</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1558">lib/series.ts:1558</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -962,7 +994,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#getindex">getIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1024">lib/series.ts:1024</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1045">lib/series.ts:1045</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -985,7 +1017,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2003">lib/series.ts:2003</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2058">lib/series.ts:2058</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1024,7 +1056,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2041">lib/series.ts:2041</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2096">lib/series.ts:2096</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1063,7 +1095,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#head">head</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1447">lib/series.ts:1447</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1502">lib/series.ts:1502</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1097,7 +1129,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#inflate">inflate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1865">lib/series.ts:1865</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1920">lib/series.ts:1920</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1133,7 +1165,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2479">lib/series.ts:2479</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2534">lib/series.ts:2534</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1166,7 +1198,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2202">lib/series.ts:2202</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2257">lib/series.ts:2257</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1217,7 +1249,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#join">join</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2280">lib/series.ts:2280</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2335">lib/series.ts:2335</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1283,7 +1315,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2337">lib/series.ts:2337</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2392">lib/series.ts:2392</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1353,7 +1385,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2384">lib/series.ts:2384</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2439">lib/series.ts:2439</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1423,7 +1455,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2425">lib/series.ts:2425</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2480">lib/series.ts:2480</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1493,7 +1525,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#last">last</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1397">lib/series.ts:1397</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1452">lib/series.ts:1452</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1517,7 +1549,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#max">max</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1961">lib/series.ts:1961</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2016">lib/series.ts:2016</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1541,7 +1573,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#median">median</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1921">lib/series.ts:1921</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1976">lib/series.ts:1976</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1565,7 +1597,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#min">min</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1950">lib/series.ts:1950</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2005">lib/series.ts:2005</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1589,7 +1621,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#none">none</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1586">lib/series.ts:1586</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1641">lib/series.ts:1641</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1623,7 +1655,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2156">lib/series.ts:2156</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2211">lib/series.ts:2211</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1662,7 +1694,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2168">lib/series.ts:2168</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2223">lib/series.ts:2223</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1701,7 +1733,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1793">lib/series.ts:1793</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1848">lib/series.ts:1848</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1731,7 +1763,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1764">lib/series.ts:1764</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1819">lib/series.ts:1819</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1755,7 +1787,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1737">lib/series.ts:1737</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1792">lib/series.ts:1792</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1772,24 +1804,61 @@
 					<a name="percentchange" class="tsd-anchor"></a>
 					<h3>percent<wbr>Change</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">percent<wbr>Change<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">percent<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#percentchange">percentChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1261">lib/series.ts:1261</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1326">lib/series.ts:1326</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Compute the percent change between each pair of values.
-									Percentages are expressed as 0-1 values.</p>
+									Percentages are expressed as 0-100 values.</p>
 								</div>
 							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> period: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series where each value indicates the percent change from the previous number value in the original series.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="proportionchange" class="tsd-anchor"></a>
+					<h3>proportion<wbr>Change</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">proportion<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#proportionchange">proportionChange</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1304">lib/series.ts:1304</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compute the proportion change between each pair of values.
+									Proportions are expressed as 0-1 values.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> period: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new series where each value indicates the proportion change from the previous number value in the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1804,7 +1873,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#resetindex">resetIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1058">lib/series.ts:1058</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1079">lib/series.ts:1079</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1828,7 +1897,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1972">lib/series.ts:1972</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2027">lib/series.ts:2027</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1852,7 +1921,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1180">lib/series.ts:1180</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1201">lib/series.ts:1201</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1885,7 +1954,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#select">select</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1120">lib/series.ts:1120</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1141">lib/series.ts:1141</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1924,7 +1993,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1136">lib/series.ts:1136</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1157">lib/series.ts:1157</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1963,7 +2032,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1212">lib/series.ts:1212</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1233">lib/series.ts:1233</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1999,7 +2068,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1281">lib/series.ts:1281</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1336">lib/series.ts:1336</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2032,7 +2101,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1312">lib/series.ts:1312</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1367">lib/series.ts:1367</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2065,7 +2134,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1296">lib/series.ts:1296</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1351">lib/series.ts:1351</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2098,7 +2167,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1619">lib/series.ts:1619</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1674">lib/series.ts:1674</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2131,7 +2200,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#sum">sum</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1890">lib/series.ts:1890</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1945">lib/series.ts:1945</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2155,7 +2224,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1467">lib/series.ts:1467</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1522">lib/series.ts:1522</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2189,7 +2258,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#take">take</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1325">lib/series.ts:1325</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1380">lib/series.ts:1380</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2222,7 +2291,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1358">lib/series.ts:1358</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1413">lib/series.ts:1413</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2255,7 +2324,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1342">lib/series.ts:1342</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1397">lib/series.ts:1397</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2288,7 +2357,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#toarray">toArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1070">lib/series.ts:1070</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1091">lib/series.ts:1091</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2312,7 +2381,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1105">lib/series.ts:1105</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1126">lib/series.ts:1126</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2399,7 +2468,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#topairs">toPairs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1087">lib/series.ts:1087</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1108">lib/series.ts:1108</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2425,7 +2494,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1698">lib/series.ts:1698</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1753">lib/series.ts:1753</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2450,7 +2519,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1830">lib/series.ts:1830</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1885">lib/series.ts:1885</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2480,7 +2549,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2457">lib/series.ts:2457</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2512">lib/series.ts:2512</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2513,7 +2582,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#union">union</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2181">lib/series.ts:2181</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2236">lib/series.ts:2236</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2555,7 +2624,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1196">lib/series.ts:1196</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1217">lib/series.ts:1217</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2588,7 +2657,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#where">where</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1486">lib/series.ts:1486</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1541">lib/series.ts:1541</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2621,7 +2690,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#window">window</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1164">lib/series.ts:1164</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1185">lib/series.ts:1185</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2655,7 +2724,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#withindex">withIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1035">lib/series.ts:1035</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1056">lib/series.ts:1056</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2696,7 +2765,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2139">lib/series.ts:2139</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2194">lib/series.ts:2194</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2736,7 +2805,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2140">lib/series.ts:2140</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2195">lib/series.ts:2195</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -2775,7 +2844,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2141">lib/series.ts:2141</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2196">lib/series.ts:2196</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -2831,7 +2900,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2060">lib/series.ts:2060</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2115">lib/series.ts:2115</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2872,7 +2941,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1771">lib/series.ts:1771</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1826">lib/series.ts:1826</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2904,7 +2973,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1744">lib/series.ts:1744</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1799">lib/series.ts:1799</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2933,7 +3002,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1717">lib/series.ts:1717</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1772">lib/series.ts:1772</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2962,7 +3031,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L1805">lib/series.ts:1805</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L1860">lib/series.ts:1860</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2993,7 +3062,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bd9d56a/src/lib/series.ts#L2106">lib/series.ts:2106</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/23badad/src/lib/series.ts#L2161">lib/series.ts:2161</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3065,6 +3134,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#all" class="tsd-kind-icon">all</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="series.html#amountchange" class="tsd-kind-icon">amount<wbr>Change</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#any" class="tsd-kind-icon">any</a>
@@ -3185,6 +3257,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#percentchange" class="tsd-kind-icon">percent<wbr>Change</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="series.html#proportionchange" class="tsd-kind-icon">proportion<wbr>Change</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#resetindex" class="tsd-kind-icon">reset<wbr>Index</a>
