@@ -17,6 +17,7 @@ This is a non-exhaused list of breaking changes.
 
 For the most part when you upgrade to Data-Forge v1 your code should still work with few changes required. But please let me know if you hit problems.
 
+- The `percentChange` function now actually returns percentages (eg numbers in the range 0-100). If you want the old behaviour please call the new `proportionChange` function instead.
 - The `pivot` function has been modified to work like Pandas. There might still need to be  more work done on this.
 - `DataFrame` no longer derives from `Series`, so a few of the `Series` functions that you used to be able to call through `DataFrame` are no longer available (eg `min`, `max` and `average`).
 - Removed HTTP and MongoDB support. It wasn't a good idea to make Data-Forge dependent on such specific 3rd party libraries.

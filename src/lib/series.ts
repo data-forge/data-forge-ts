@@ -246,12 +246,33 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
 
     /**
+     * Compute the amount of change between each pair of values.
+     * 
+     * @param [period] - Optional period for computing the change - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
+     */
+    amountChange (period?: number): ISeries<IndexT, number>;
+
+    /**
+     * Compute the proportion change between each pair of values.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param [period] - Optional period for computing the proportion - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.  
+     */
+    proportionChange (period?: number): ISeries<IndexT, number>;
+
+    /**
      * Compute the percent change between each pair of values.
-     * Percentages are expressed as 0-1 values.
+     * Percentages are expressed as 0-100 values.
+     * 
+     * @param [period] - Optional period for computing the percentage - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.  
      */
-    percentChange (): ISeries<IndexT, number>;
+    percentChange (period?: number): ISeries<IndexT, number>;
 
     /**
      * Skip a number of values in the series.
@@ -1250,26 +1271,60 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
             return accum;
         }
-    };
-    
+    }
+   
     /**
-     * Compute the percent change between each pair of values.
-     * Percentages are expressed as 0-1 values.
+     * Compute the amount of change between each pair of values.
      * 
-     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.  
+     * @param [period] - Optional period for computing the change - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
      */
-    percentChange (): ISeries<IndexT, number> {
-
+    amountChange (period?: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
-            .rollingWindow(2)
+            .rollingWindow(period === undefined ? 2 : period)
             .select((window): [IndexT, number] => {
-                const values = window.toArray();
-                const amountChange = values[1] - values[0]; // Compute amount of change.
-                const pctChange = amountChange / values[0]; // Compute % change.
+                const first = window.first();
+                const last = window.last();
+                const amountChange = last - first; // Compute amount of change.
+                return [window.getIndex().last(), amountChange]; // Return new index and value.
+            })
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
+    }   
+
+    /**
+     * Compute the proportion change between each pair of values.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param [period] - Optional period for computing the proportion - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.  
+     */
+    proportionChange (period?: number): ISeries<IndexT, number> {
+        return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
+            .rollingWindow(period === undefined ? 2 : period)
+            .select((window): [IndexT, number] => {
+                const first = window.first();
+                const last = window.last();
+                const amountChange = last - first; // Compute amount of change.
+                const pctChange = amountChange / first; // Compute proportion change.
                 return [window.getIndex().last(), pctChange]; // Return new index and value.
             })
             .withIndex(pair => pair[0])
             .select(pair => pair[1]);
+    }    
+
+    /**
+     * Compute the percent change between each pair of values.
+     * Percentages are expressed as 0-100 values.
+     * 
+     * @param [period] - Optional period for computing the percentage - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.  
+     */
+    percentChange (period?: number): ISeries<IndexT, number> {
+        return this.proportionChange(period).select(v => v * 100);
     }    
     
     /**

@@ -196,14 +196,54 @@ describe('Series window', () => {
 		expect(values).to.eql([2, 3, 4, 5]);
 	});
 
+    it('can compute amount changed', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.amountChange();
+		expect(modified.getIndex().toArray()).to.eql([1, 2, 3]);
+		expect(modified.toArray()).to.eql([1, 2, 4]);
+    });
+
+	it('can compute amount changed with custom period', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.amountChange(3);
+		expect(modified.getIndex().toArray()).to.eql([2, 3]);
+		expect(modified.toArray()).to.eql([3, 6]);
+    });    
+
+	it('can compute proportion changed', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.proportionChange();
+		expect(modified.getIndex().toArray()).to.eql([1, 2, 3]);
+		expect(modified.toArray()).to.eql([1, 1, 1]);
+    });
+
+	it('can compute proportion changed with custom period', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.proportionChange(3);
+		expect(modified.getIndex().toArray()).to.eql([2, 3]);
+		expect(modified.toArray()).to.eql([3, 3]);
+    });
+    
 	it('can compute pct changed', function () {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
-		var pctChanged = series.percentChange();
-		expect(pctChanged.getIndex().toArray()).to.eql([1, 2, 3]);
-		expect(pctChanged.toArray()).to.eql([1, 1, 1]);
+		var modified = series.percentChange();
+		expect(modified.getIndex().toArray()).to.eql([1, 2, 3]);
+		expect(modified.toArray()).to.eql([100, 100, 100]);
     });
 
+	it('can compute pct changed with custom period', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.percentChange(3);
+		expect(modified.getIndex().toArray()).to.eql([2, 3]);
+		expect(modified.toArray()).to.eql([300, 300]);
+    });
+    
 	it('variable window', function () {
 
 		var series = new Series({ 
