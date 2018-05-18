@@ -6,81 +6,57 @@ This document explains the key concepts of *Data-Forge*.
 
 A series is an indexed sequence of values and is implemented by the `Series` class. By default a series has an integer index starting at 0 and counting up (just like arrays). Series will often be used with a date-time index, something usually known as a [time series](https://en.wikipedia.org/wiki/Time_series).
 
-All values in a series are generally expected to have the same type, although this is not specifically a requirement of *data-forge-js*.
+All values in a series are generally expected to have the same type, although this is not specifically a requirement of Data-Forge.
+
+A series can easily be constructed from a JavaScript array of data. It is also easily exported back to a JavaScript array. We can also extract a series from a column in a dataframe. Or plug a series into an existing dataframe to create a new column.
 
 ## DataFrame
 
-A dataframe is the *main* concept and type of data structure in data-forge. It is implemented by the `DataFrame`. It is a sequence of rows. It can also be considered a matrix (rows and columns) of structured data. Think of it as a spreadsheet in memory.
+A dataframe is really the *main* concept. It is implemented by the `DataFrame` class. 
 
-A *data-frame* can be easily constructed from various formats and it can be exported to various formats.
+A dataframe contains a sequence of rows. Each row is just a JavaScript object but each field presents the value for a column of data at that row. You might also think of it as a matrix (rows and columns) of structured data. You can also think of it as a spreadsheet in memory.
 
-`DataFrame` is actually a sub-class of `Series`, so it inherits all the functions of `Series`. 
+Although a dataframe ostensibly represents tabular data, it's actually pretty flexible and different rows can contain different data types and field values can contain deeply nested data.
 
-## Value / row
+A dataframe is composed of multiple series`, where each series has a name and represents a column of tabular data.
 
-A single piece of data in a sequence. 
+A dataframe can be easily constructed from a JavaScript array containing data or parsed from CSV and JSON data formats. A dataframe can be exported back to a JavaScript array or serialized/stringified to CSV or JSON.
 
-For `DataFrame` a value is a JavaScript object, each field of which represents a column in the dataframe. 
-
-For `Series` each value can be any valid JavaScript value. 
+`DataFrame` and `Series` are very similar although not exactly the same. For example, because a dataframe has columns it therefore has functions such as `getSeries` for working with its columns. Series on the hand is specialised for working a series of values and thus function that dataframe does not have, such as `average` which computes the value number value of the series.
 
 ## Column
 
-A column is a single *named* series of data in a data-frame. Each column is simply a series with a name, the values of the series are the values of the column. A column is a slice of data through all rows.
+A column is a single *named* series of data in a dataframe. Each column is simply a series with a name, the values of the series are the values of the column. 
+
+A column can be through of a as a slice of data that cuts through all rows of the dataframe.
 
 ## Index 
 
-An index sequence of values that is used to index a data-frame or series. When the data is a *time-series* the index is expected to contain *Date* values.
+An index is sequence of values that is used to index a dataframe or series. When the data is a *time-series* the index is expected to contain *Date* values.
  
-Used for operations that search and merge data-farmes and series. 
+An index is Used for operations that search and merge data-farmes and series. 
 
-If not specified an integer index (starting at 0) is generated based on row position. An index can be explicitly by specifying a column by name.
+If not specified an integer index (starting at 0) is generated based on row position. An index can be explicitly by specifying a column by name, from a JavaScript array of data or generated on the fly from another column or series.
 
 ## Pair
 
-Through this documentation and the Data-Forge code you will occasionally see a reference to a *pair* or *pairs*. Series and DataFrames are actually sequences of *pairs*, where each pair contains a index and a value or row.  
+Through this documentation and the Data-Forge code you will occasionally see a reference to a *pair* or *pairs*. Series and dataframes are actually sequences of *pairs*, where each pair contains a index and a value or row.  
 
 ## Lazy Evaluation
 
-Data-frames, series and index are only fully evaluated when necessary. Operations are queued up and only fully evaluated as needed and when required, for example when serializing to csv or json (`toCSV` or `toJSON`) or when baking to values (`toArray` or `toRows`). 
+Dataframe, series and index are only fully evaluated when necessary. Operations are queued up (like a *data-pipeline*) and only fully evaluated as needed and when required, for example when serializing to csv or json (`toCSV` or `toJSON`) or when baking to values (`toArray` or `toRows`). 
 
-A data-frame, series or index can be forcibly evaluated by calling the `bake` function. 
+A dataframe, series or index can be forcibly evaluated and *baked* into memory by calling the `bake` function. 
 
-## Iterator
+## Iterable / Iterator
 
-Iterates the rows of a data-frame, series or index. Iterators allow lazy evaluation (row by row evaluation) of data frames, series and index. This is the same concept as an [iterator in JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators) or an [enumerator in C#](https://msdn.microsoft.com/en-us/library/system.collections.ienumerator(v=vs.110).aspx).
+These are JavaScript concepts defined in ES6 and they are at the core of Data-Forge. To use Data-Forge you don't really need to know about these - but it's useful to understand them to understand the internals of Data-Forge and how lazy evaluation is implemented.
 
-The specification for an iterator is simple:
-
-	var anIterator = {
-
-		moveNext: function () {
-			// Move to the next element in the sequence.
-			// Return true if the sequence contains more elements.
-			// Return false when the sequence is exhausted.
-		},
-
-		getCurrent: function () {
-			// Return the current element in the sequence. 
-		},
-
-	};
-
-## Iterable
-
-An *iterable* is an anonymous function that instantiates and returns an *iterator*. A iterable conceptually represents *a sequence that can be iterated*.
-
-An example iterable:
-
-	var myIterable = function () {
-		var myIterator = ... create an iterator for the sequence ...
-		return myIterator;
-	};
-
+An iterator allows the rows of a dataframe, series or index to be iterated. Iterators allow lazy evaluation (row by row evaluation) of data frames, series and index. This is the same concept as an [enumerator in C#](https://msdn.microsoft.com/en-us/library/system.collections.ienumerator(v=vs.110).aspx), the concept that powers lazy evaluation in LINQ.
 
 ## Selector
 
-A *selector* is a user-defined function (usually anonymous) that is passed to Data-Forge functions to process or transform each value in the sequence. Selectors are also used to instruct Data-Forge on which part of the data to work with.
+A *selector* is a user-defined function (usually anonymous) that is passed to various Data-Forge functions to process or transform each value in the sequence. Selectors are also used to instruct Data-Forge on which part of the data to work with.
 
 For example say you have a row that looks as follows:
 
@@ -91,17 +67,17 @@ For example say you have a row that looks as follows:
 
 Here is an example a *selector* that identifies *Column2*:
 
-	var mySelector = function (row) {
-		return row.Column2;
-	};
+	var mySelector = row => {
+        return row.Column2;
+    };
 
-Selectors are usually passed each row in the Data-Frame or each value in the Series. 
+Selectors are usually applied to each row in the series or dataframe. 
 
-Selectors are usually also passed the *index* for the value (although you can ignore this as demonstrated in the previous snippet).
+Selectors are often also applied to the *index* (although we ignored this in the previous snippet).
 
 An example of a selector that works with index rather than row: 
 
-	var mySelector = function (row, index) {
+	var mySelector = (row, index) => {
 		return index;
 	};
 
@@ -111,14 +87,8 @@ A *predicate* function is similar to a *selector*, but returns a boolean value (
 
 An example predicate function:
 
-	var myPredicate = function (row) {
+	var myPredicate = row => {
 		return row.Column2 >= 42;	
-	};
-
-Predicates can also take the index: 
-
-	var myPredicate = function (row, index) {
-		return index > 20;
 	};
 
 ## Comparer
@@ -127,7 +97,7 @@ A *comparer* method is used to compare to values for equality. It returns true (
 
 An example:
 
-	var myComparer = function (row1, row2) {
+	var myComparer = (row1, row2) => {
 		return row1.ClientName === row.ClientName; // Row comparison based on client name.
 	}; 
 
@@ -157,5 +127,5 @@ Alternatively (to support lazy evaluation) a generator may return a lazily evalu
 
 ## Group / Window
 
-A Series where each value in the series is itself another Series or DataFrame. Think of it as a sequence of groups. This concept is used by the multiple Data-Forge functions that create groups and windows, for example `groupBy`, `window` and `rollingWindow`.
+A series where each value in the series is itself another series or dataframe. Think of it as a sequence of groups or batches of data. This concept is used by the multiple Data-Forge functions that create groups and windows, for example `groupBy`, `window` and `rollingWindow`.
 
