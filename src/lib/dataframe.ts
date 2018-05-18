@@ -26,8 +26,9 @@ import { assert } from 'chai';
 import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
-import * as PapaParse from 'papaparse';
 import { toMap, makeDistinct, mapIterable } from './utils';
+
+const PapaParse = require('papaparse');
 
 /** 
  * An object whose fields specify named columns.

@@ -5,11 +5,12 @@ export { DataFrame, IDataFrame } from './lib/dataframe';
 
 import { assert } from 'chai';
 import * as fs from 'fs';
-import * as PapaParse from 'papaparse';
 import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
 import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
+
+const PapaParse = require('papaparse');
 
 /**
  * Represents a field from a JavaScript object.
