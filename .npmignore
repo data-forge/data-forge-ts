@@ -9,3 +9,5 @@ r.bat
 tsconfig.json
 typedoc.json
 .travis.yml
+todo.txt
+.nyc_output/
