@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -46,20 +46,20 @@
   },
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
-    "@types/babyparse": "0.0.30",
-    "@types/mock-require": "2.0.0",
-    "babyparse": "0.4.6",
     "chai": "4.1.2",
     "easy-table": "1.1.0",
     "mock-require": "2.0.2",
     "moment": "2.22.1",
+    "papaparse": "4.4.0",
     "statman-stopwatch": "2.7.0",
     "sugar": "2.0.4"
   },
   "devDependencies": {
     "@types/chai": "4.0.4",
     "@types/mocha": "2.2.43",
+    "@types/mock-require": "2.0.0",
     "@types/node": "8.0.28",
+    "@types/papaparse": "4.1.34",
     "coveralls": "3.0.1",
     "mocha": "3.5.3",
     "nyc": "11.7.3",

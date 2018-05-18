@@ -26,7 +26,7 @@ import { assert } from 'chai';
 import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
-import * as BabyParse from 'babyparse';
+import * as PapaParse from 'papaparse';
 import { toMap, makeDistinct, mapIterable } from './utils';
 
 /** 
@@ -3559,7 +3559,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     toCSV (): string {
 
         const data = [this.getColumnNames()].concat(this.toRows());
-        return BabyParse.unparse(data);
+        return PapaParse.unparse(data);
     }
 
     /**

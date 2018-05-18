@@ -5,7 +5,7 @@ export { DataFrame, IDataFrame } from './lib/dataframe';
 
 import { assert } from 'chai';
 import * as fs from 'fs';
-import * as BabyParse from 'babyparse';
+import * as PapaParse from 'papaparse';
 import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
 import { Series, ISeries } from '.';
@@ -119,7 +119,7 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
         }
     }
 
-    const parsed = BabyParse.parse(csvTextString, config as any);
+    const parsed = PapaParse.parse(csvTextString, config as any);
     let rows = <string[][]> parsed.data;
 
     if (rows.length === 0) {
