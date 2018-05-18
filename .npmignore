@@ -11,3 +11,4 @@ typedoc.json
 .travis.yml
 todo.txt
 .nyc_output/
+tsconfig.json
