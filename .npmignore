@@ -12,3 +12,4 @@ typedoc.json
 todo.txt
 .nyc_output/
 tsconfig.json
+coverage/
