@@ -205,6 +205,26 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
+	it('creating from objects with variable fields - can handle extra columns at end', () => {
+		
+		var dataFrame = new DataFrame({
+			values: [
+				{ c1: 1, c2: 2 },
+                { c1: 3, c2: 4 },
+                { c1: 5, c2: 6, c3: "x" },
+			],
+			considerAllRows: true,
+		});
+
+		var columnNames = ["c1", "c2", "c3"];
+		expect(dataFrame.getColumnNames()).to.eql(columnNames);
+		expect(dataFrame.toPairs()).to.eql([
+			[0, { c1: 1, c2: 2 }],
+            [1, { c1: 3, c2: 4 }],
+            [2, { c1: 5, c2: 6, c3: "x" }],
+		]);
+    });
+    
 	it('can create data frame from column arrays with index', () => {
 
 		var df = new DataFrame({
