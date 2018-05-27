@@ -27,6 +27,7 @@ import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import { toMap, makeDistinct, mapIterable } from './utils';
+import { Utils } from 'handlebars';
 
 const PapaParse = require('papaparse');
 
@@ -35,6 +36,20 @@ const PapaParse = require('papaparse');
  */
 export interface IColumnSpec {
     [index: string]: Iterable<any> | ISeries<any, any>,
+}
+
+/**
+ * Specification that defines output columns for a pivot.
+ */
+export interface IAggregatorSpec {
+    [index: string]: (values: ISeries<number, any>) => any
+} 
+
+/**
+ * Specification for pivoting values in named columns..
+ */
+export interface IPivotAggregateSpec {
+    [index: string]: IAggregatorSpec;
 }
 
 /**
@@ -924,17 +939,18 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Reshape (or pivot) a table based on column values.
+     * This effiectively a short-hand for multiple grouping operations and an aggregation.
      *
      * @param columnOrColumns - Column name whose values make the new DataFrame's columns.
-     * @param valueColumnName - Column name whose values populate the new DataFrame's values.
-     * @param aggregator - Function used to aggregate pivotted vales. 
+     * @param valueColumnNameOrSpec - Column name or column spec that defines the columns whose values should be aggregated.
+     * @param [aggregator] - Optional function used to aggregate pivotted vales. 
      *
      * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
      */
-    pivot<NewValueT = ValueT, PivotValueT = any, AggregatedValueT = any> (
+    pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
-        valueColumnName: string, 
-        aggregator: (values: ISeries<number, PivotValueT>) => AggregatedValueT
+        valueColumnNameOrSpec: string | IPivotAggregateSpec, 
+        aggregator?: (values: ISeries<number, any>) => any
             ): IDataFrame<number, NewValueT>;
 
     /**
@@ -3343,15 +3359,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * This effiectively a short-hand for multiple grouping operations and an aggregation.
      *
      * @param columnOrColumns - Column name whose values make the new DataFrame's columns.
-     * @param valueColumnName - Column name whose values populate the new DataFrame's values.
-     * @param aggregator - Function used to aggregate pivotted vales. 
+     * @param valueColumnNameOrSpec - Column name or column spec that defines the columns whose values should be aggregated.
+     * @param [aggregator] - Optional function used to aggregate pivotted vales. 
      *
      * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
      */
-    pivot<NewValueT = ValueT, PivotValueT = any, AggregatedValueT = any> (
+    pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
-        valueColumnName: string, 
-        aggregator: (values: ISeries<number, PivotValueT>) => AggregatedValueT
+        valueColumnNameOrSpec: string | IPivotAggregateSpec, 
+        aggregator?: (values: ISeries<number, any>) => any
             ): IDataFrame<number, NewValueT> {
 
         let columnNames: string[];
@@ -3371,8 +3387,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }
         }
 
-        assert.isString(valueColumnName, "Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values make the new DataFrame's values.");
-        assert.isFunction(aggregator, "Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
+        let aggSpec: IPivotAggregateSpec;
+
+        if (!Sugar.Object.isObject(valueColumnNameOrSpec)) {
+            assert.isString(valueColumnNameOrSpec, "Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values to aggregate or a column spec that defines which column contains the value ot aggregate and the ways to aggregate that value.");
+            assert.isFunction(aggregator, "Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
+
+            const aggColumnName = valueColumnNameOrSpec as string;
+
+            const outputSpec: IAggregatorSpec = {};
+            outputSpec[aggColumnName] = aggregator!;
+
+            aggSpec = {};
+            aggSpec[aggColumnName] = outputSpec;
+        }
+        else {
+            aggSpec = valueColumnNameOrSpec as IPivotAggregateSpec;
+        }
 
         const firstColumnName = columnNames[0];
         let working = this.groupBy((row: any) => row[firstColumnName])
@@ -3397,8 +3428,22 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 });
         }
 
+        const valueColumnNames = Object.keys(aggSpec);
+        const outputColumnsMap = toMap(
+            valueColumnNames, 
+            valueColumnName => valueColumnName, 
+            valueColumnName => Object.keys(aggSpec[valueColumnName])
+        );
+        
         const pivotted = working.inflate<NewValueT>((row: any) => {
-            row[valueColumnName] = aggregator(row.src.deflate((srcRow: any) => srcRow[valueColumnName]));
+            for (const valueColumnName of valueColumnNames) {
+                const outputColumnNames = outputColumnsMap[valueColumnName];
+                for (const outputColumName of outputColumnNames) {
+                    const aggregatorFn = aggSpec[valueColumnName][outputColumName];
+                    row[outputColumName] = aggregatorFn(row.src.deflate((srcRow: any) => srcRow[valueColumnName])) 
+                }
+            }
+
             delete row.src;
             return row;
         });

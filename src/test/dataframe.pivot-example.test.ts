@@ -25,6 +25,148 @@ describe('DataFrame pivot examples', () => {
         });
     })
 
+	it('Create a pivot table of group means, by company and regiment', () => {
+
+        const pivotted = df.pivot(["regiment", "company"], "TestScore", testScores => testScores.average());
+                
+        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "TestScore"]);
+		expect(pivotted.toArray()).to.eql([
+            {
+                regiment: "Dragoons",
+                company: "1st",
+                TestScore: 3.5,
+            },
+            {
+                regiment: "Dragoons",
+                company: "2nd",
+                TestScore: 27.5,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "1st",
+                TestScore: 14.0,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "2nd",
+                TestScore: 16.5,
+            },
+            {
+                regiment: "Scouts",
+                company: "1st",
+                TestScore: 2.5,
+            },
+            {
+                regiment: "Scouts",
+                company: "2nd",
+                TestScore: 2.5,
+            },
+        ]);
+	});
+
+	it('Create a pivot table of group score counts, by company and regiments', () => {
+
+        const pivotted = df.pivot(["regiment", "company"], "TestScore", testScores => testScores.count());
+        
+        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "TestScore"]);
+		expect(pivotted.toArray()).to.eql([
+            {
+                regiment: "Dragoons",
+                company: "1st",
+                TestScore: 2,
+            },
+            {
+                regiment: "Dragoons",
+                company: "2nd",
+                TestScore: 2,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "1st",
+                TestScore: 2,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "2nd",
+                TestScore: 2,
+            },
+            {
+                regiment: "Scouts",
+                company: "1st",
+                TestScore: 2,
+            },
+            {
+                regiment: "Scouts",
+                company: "2nd",
+                TestScore: 2,
+            },
+        ]);
+    });
+
+    it('pivot can produce multiple output values', () => {
+
+        const pivotted = df.pivot(["regiment", "company"], {
+            TestScore: {
+                count: testScores => testScores.count(),
+                avg: testScores => testScores.average(),
+                min: testScores => testScores.min(),
+                max: testScores => testScores.max(),
+            }
+        });
+
+        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "count", "avg", "min", "max"]);
+		expect(pivotted.toArray()).to.eql([
+            {
+                regiment: "Dragoons",
+                company: "1st",
+                avg: 3.5,
+                count: 2,
+                min: 3,
+                max: 4,
+            },
+            {
+                regiment: "Dragoons",
+                company: "2nd",
+                avg: 27.5,
+                count: 2,
+                min: 24,
+                max: 31,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "1st",
+                avg: 14.0,
+                count: 2,
+                min: 4,
+                max: 24,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "2nd",
+                avg: 16.5,
+                count: 2,
+                min: 2,
+                max: 31,
+            },
+            {
+                regiment: "Scouts",
+                company: "1st",
+                avg: 2.5,
+                count: 2,
+                min: 2,
+                max: 3,
+            },
+            {
+                regiment: "Scouts",
+                company: "2nd",
+                avg: 2.5,
+                count: 2,
+                min: 2,
+                max: 3,
+            },
+        ]);
+    });
+
 	it('Create a pivot table of group means, by company and regiment - manual pivot', () => {
 
         const pivotted = df.groupBy(row => row.regiment)
@@ -124,85 +266,5 @@ describe('DataFrame pivot examples', () => {
             },
         ])
 	});
-
-	it('Create a pivot table of group means, by company and regiment - auto pivot', () => {
-
-        const pivotted = df.pivot(["regiment", "company"], "TestScore", testScores => testScores.average());
-                
-        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "TestScore"]);
-		expect(pivotted.toArray()).to.eql([
-            {
-                regiment: "Dragoons",
-                company: "1st",
-                TestScore: 3.5,
-            },
-            {
-                regiment: "Dragoons",
-                company: "2nd",
-                TestScore: 27.5,
-            },
-            {
-                regiment: "Nighthawks",
-                company: "1st",
-                TestScore: 14.0,
-            },
-            {
-                regiment: "Nighthawks",
-                company: "2nd",
-                TestScore: 16.5,
-            },
-            {
-                regiment: "Scouts",
-                company: "1st",
-                TestScore: 2.5,
-            },
-            {
-                regiment: "Scouts",
-                company: "2nd",
-                TestScore: 2.5,
-            },
-        ])
-	});
-
-
-	it('Create a pivot table of group score counts, by company and regiments - auto pivot', () => {
-
-        const pivotted = df.pivot(["regiment", "company"], "TestScore", testScores => testScores.count());
-        
-        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "TestScore"]);
-		expect(pivotted.toArray()).to.eql([
-            {
-                regiment: "Dragoons",
-                company: "1st",
-                TestScore: 2,
-            },
-            {
-                regiment: "Dragoons",
-                company: "2nd",
-                TestScore: 2,
-            },
-            {
-                regiment: "Nighthawks",
-                company: "1st",
-                TestScore: 2,
-            },
-            {
-                regiment: "Nighthawks",
-                company: "2nd",
-                TestScore: 2,
-            },
-            {
-                regiment: "Scouts",
-                company: "1st",
-                TestScore: 2,
-            },
-            {
-                regiment: "Scouts",
-                company: "2nd",
-                TestScore: 2,
-            },
-        ])
-    });
-
 });	
 
