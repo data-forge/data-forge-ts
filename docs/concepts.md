@@ -4,7 +4,7 @@ This document explains the key concepts of *Data-Forge*.
 
 ## Series
 
-A series is an indexed sequence of values and is implemented by the `Series` class. By default a series has an integer index starting at 0 and counting up (just like arrays). Series will often be used with a date-time index, something usually known as a [time series](https://en.wikipedia.org/wiki/Time_series).
+A series is an indexed sequence of values and is implemented by the `Series` class. By default a series has an integer index starting at 0 and counting up (just like a JavaScript array). Series will often be used with a date-time index, something usually known as a [time series](https://en.wikipedia.org/wiki/Time_series).
 
 All values in a series are generally expected to have the same type, although this is not specifically a requirement of Data-Forge.
 
@@ -14,37 +14,37 @@ A series can easily be constructed from a JavaScript array of data. It is also e
 
 A dataframe is really the *main* concept. It is implemented by the `DataFrame` class. 
 
-A dataframe contains a sequence of rows. Each row is just a JavaScript object but each field presents the value for a column of data at that row. You might also think of it as a matrix (rows and columns) of structured data. You can also think of it as a spreadsheet in memory.
+A dataframe contains a sequence of rows. Each row is just a JavaScript object where each field contains the value for a column of data at that row. You might also think of it as a matrix (rows and columns) of structured data. You can also think of it as a spreadsheet in memory.
 
 Although a dataframe ostensibly represents tabular data, it's actually pretty flexible and different rows can contain different data types and field values can contain deeply nested data.
 
-A dataframe is composed of multiple series`, where each series has a name and represents a column of tabular data.
+A dataframe is composed of multiple series, where each series has a name and represents a column of tabular data.
 
 A dataframe can be easily constructed from a JavaScript array containing data or parsed from CSV and JSON data formats. A dataframe can be exported back to a JavaScript array or serialized/stringified to CSV or JSON.
 
-`DataFrame` and `Series` are very similar although not exactly the same. For example, because a dataframe has columns it therefore has functions such as `getSeries` for working with its columns. Series on the hand is specialised for working a series of values and thus function that dataframe does not have, such as `average` which computes the value number value of the series.
+`DataFrame` and `Series` are very similar although not exactly the same. For example, because a dataframe has columns it therefore has functions such as `getSeries` for working with its columns. Series on the hand is specialised for working with a sequence of values and thus has functions that dataframe does not have, such as `average` which computes the average value of the series.
 
 ## Column
 
-A column is a single *named* series of data in a dataframe. Each column is simply a series with a name, the values of the series are the values of the column. 
+A column is a single *named* series of data contained within a dataframe. Each column is simply a series with a name, the values of the series are the values of the column. 
 
-A column can be through of a as a slice of data that cuts through all rows of the dataframe.
+A column can be thought of a as a slice of data that cuts through all rows of the dataframe.
 
 ## Index 
 
-An index is sequence of values that is used to index a dataframe or series. When the data is a *time-series* the index is expected to contain *Date* values.
+An index is a sequence of values that is used to index a dataframe or series. When the data is a *time-series* the index is expected to contain *Date* values.
  
-An index is Used for operations that search and merge data-farmes and series. 
+An index is used for operations that search and merge data-farmes and series. 
 
 If not specified an integer index (starting at 0) is generated based on row position. An index can be explicitly by specifying a column by name, from a JavaScript array of data or generated on the fly from another column or series.
 
 ## Pair
 
-Through this documentation and the Data-Forge code you will occasionally see a reference to a *pair* or *pairs*. Series and dataframes are actually sequences of *pairs*, where each pair contains a index and a value or row.  
+Through the documentation and the code you will occasionally see a reference to a *pair* or *pairs*. Series and dataframes are actually sequences of *pairs*, where each pair contains a index and a value or row.  
 
-## Lazy Evaluation
+## Lazy evaluation
 
-Dataframe, series and index are only fully evaluated when necessary. Operations are queued up (like a *data-pipeline*) and only fully evaluated as needed and when required, for example when serializing to csv or json (`toCSV` or `toJSON`) or when baking to values (`toArray` or `toRows`). 
+Dataframe, series and index are only fully evaluated when necessary. Operations are queued up (like a *data-pipeline*) and only fully evaluated as needed and when required, for example when serializing to csv or json (eg `toCSV` or `toJSON`) or when baking to values (eg `toArray` or `toRows`). 
 
 A dataframe, series or index can be forcibly evaluated and *baked* into memory by calling the `bake` function. 
 
