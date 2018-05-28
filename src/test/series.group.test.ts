@@ -5,7 +5,7 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series group', () => {
     
-	it('can group by value', function () {
+	it('can group by value', () =>  {
 
 		var series = new Series({
 			index:  [0, 1, 2, 3, 4, 5, 6],
@@ -38,8 +38,22 @@ describe('Series group', () => {
 			[6, 5],
 		]);
     });
+
+    it('group by preserves index', () => {
+		var series = new Series({
+			index:  [10, 20, 30, 40, 50, 60, 70],
+			values: [1,  2,  2,  3,  2,  3,  5],
+		});
+
+        var grouped = series.groupBy(value => value);
+
+        expect(grouped.at(0)!.getIndex().toArray()).to.eql([10]);
+        expect(grouped.at(1)!.getIndex().toArray()).to.eql([20, 30, 50]);
+        expect(grouped.at(2)!.getIndex().toArray()).to.eql([40, 60]);
+        expect(grouped.at(3)!.getIndex().toArray()).to.eql([70]);
+    });
     
-	it('can group sequential duplicates and take first index', function () {
+	it('can group sequential duplicates and take first index', () =>  {
 
 		var series = new Series({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -61,7 +75,7 @@ describe('Series group', () => {
 		]);
 	});
 
-	it('can group sequential duplicates and take last index', function () {
+	it('can group sequential duplicates and take last index', () =>  {
 
 		var series = new Series({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -83,7 +97,7 @@ describe('Series group', () => {
 		]);
 	});
 
-	it('can group sequential with custom selector', function () {
+	it('can group sequential with custom selector', () =>  {
 
 		var series = new Series({ 
 			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],

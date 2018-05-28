@@ -25,6 +25,7 @@ import { assert } from 'chai';
 import { IDataFrame, DataFrame } from './dataframe';
 import * as moment from 'moment';
 import { toMap } from './utils';
+import { range, replicate } from '..';
 
 /**
  * Series configuration.
@@ -568,6 +569,14 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @returns Returns the maximum of the number values in the series.
      */
     max (): number;
+
+    /**
+     * Invert the sign of every number value in the series.
+     * This assumes that the input series contains numbers.
+     * 
+     * @returns Returns a new series with all number values inverted.
+     */
+    invert (): ISeries<IndexT, number>;
 
     /** 
      * Reverse the series.
@@ -2017,6 +2026,45 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
         return numberSeries.aggregate((prev, value) => Math.max(prev, value));
+    }
+    
+    /**
+     * Invert the sign of every number value in the series.
+     * This assumes that the input series contains numbers.
+     * 
+     * @returns Returns a new series with all number values inverted.
+     */
+    invert (): ISeries<IndexT, number> {
+        const inputSeries = this as any as ISeries<IndexT, number>;
+        return inputSeries.select(value => -value);
+    }
+
+    /**
+     * Counts the number of sequential values where the predicate evaluates to truthy.
+     * Outputs 0 values when the predicate evaluates to falsy.
+     * 
+     * @param predicate User-defined function. Should evaluate to truthy to activate the counter or falsy to deactivate it.
+     * 
+     * @returns Returns a new series that counts up the number of sequential values where the predicate evaluates to truthy. 0 values appear when the prediate evaluates to falsy.
+     */
+    counter (predicate: PredicateFn<ValueT>): ISeries<IndexT, number> {
+        return this.groupSequentialBy(predicate)
+            .selectMany((group, i) => {
+                if (predicate(group.first())) {
+                    // This group matches the predicate.
+                    return range(1, group.count())
+                        .withIndex(group.getIndex())
+                        .toPairs(); //TODO: selectMany wipes the index. It needs to respect it!
+                }
+                else {
+                    // This group doesn't match the predicate.
+                    return replicate(0, group.count())
+                        .withIndex(group.getIndex())
+                        .toPairs(); //TODO: selectMany wipes the index. It needs to respect it!
+                }
+            }) 
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]) as any as ISeries<IndexT, number>;
     }
     
     /** 

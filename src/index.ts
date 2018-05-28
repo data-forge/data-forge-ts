@@ -370,6 +370,23 @@ export function range (start: number, count: number): ISeries<number, number> {
 }
 
 /**
+ * Replicate a particular value N times to create a series.
+ * 
+ * @param value The value to replicate.
+ * @param count The number of times to replicate the value.
+ * 
+ * @returns Returns a new series that contains N copies of the value.
+ */
+export function replicate<ValueT> (value: ValueT, count: number): ISeries<number, ValueT> {
+    const values: ValueT[] = [];
+    for (let i = 0; i < count; ++i) {
+        values.push(value);
+    }
+
+    return new Series<number, ValueT>(values);
+}
+
+/**
  * Generate a data-frame containing a matrix of values.
  *
  * @param numColumns - The number of columns in the data-frame.

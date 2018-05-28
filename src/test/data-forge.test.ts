@@ -83,8 +83,22 @@ describe('data-forge', () => {
 			[3, 13],
 			[4, 14],
 		]);
+    });
+    
+    it('can replicate a value to create a series', () => {
 
-	});
+        var series = dataForge.replicate(5, 3);
+        expect(series.toPairs()).to.eql([
+            [0, 5],
+            [1, 5],
+            [2, 5],
+        ]);
+    })
+
+    it('can replicate value to empty series', () => {
+        var series = dataForge.replicate(5, 0);
+        expect(series.toPairs()).to.eql([]);  
+    })
 
 	it('can generate data-frame from matrix', () => {
 

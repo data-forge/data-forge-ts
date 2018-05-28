@@ -38,6 +38,20 @@ describe('DataFrame group', () => {
 		]);
     });
     
+    it('group by preserves index', () => {
+		var df = new DataFrame({
+			index:  [10, 20, 30, 40, 50, 60, 70],
+			values: [1,  2,  2,  3,  2,  3,  5],
+		});
+
+        var grouped = df.groupBy(value => value);
+
+        expect(grouped.at(0)!.getIndex().toArray()).to.eql([10]);
+        expect(grouped.at(1)!.getIndex().toArray()).to.eql([20, 30, 50]);
+        expect(grouped.at(2)!.getIndex().toArray()).to.eql([40, 60]);
+        expect(grouped.at(3)!.getIndex().toArray()).to.eql([70]);
+    });
+    
 	it('can group by single column', function () {
 		var df = new DataFrame([
             {
