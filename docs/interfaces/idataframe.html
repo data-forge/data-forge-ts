@@ -65,8 +65,13 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Interface that represents a dataframe containing a sequence of indexed rows of data.</p>
+						<p>Interface that represents a dataframe.
+							A dataframe contains an indexed sequence of data records.
+						Think of it as a spreadsheet or CSV file in memory.</p>
 					</div>
+					<p>Each data record contains multiple named fields, the value of each field represents one row in a column of data.
+						Each column of data is a named <a href="../classes/series.html">Series</a>.
+					You think of a dataframe a collection of named data series.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-type-parameters">
@@ -74,9 +79,19 @@
 				<ul class="tsd-type-parameters">
 					<li>
 						<h4>IndexT</h4>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The type to use for the index.</p>
+							</div>
+						</div>
 					</li>
 					<li>
 						<h4>ValueT</h4>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>The type to use for each row/data record.</p>
+							</div>
+						</div>
 					</li>
 				</ul>
 			</section>
@@ -218,7 +233,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Iterable.[Symbol.iterator]</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L189">lib/dataframe.ts:189</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L198">lib/dataframe.ts:198</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -240,7 +255,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L659">lib/dataframe.ts:659</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L668">lib/dataframe.ts:668</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -272,7 +287,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L467">lib/dataframe.ts:467</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L476">lib/dataframe.ts:476</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -313,7 +328,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L598">lib/dataframe.ts:598</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L607">lib/dataframe.ts:607</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -348,7 +363,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L610">lib/dataframe.ts:610</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L619">lib/dataframe.ts:619</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -380,7 +395,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L972">lib/dataframe.ts:972</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L981">lib/dataframe.ts:981</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -412,7 +427,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L1026">lib/dataframe.ts:1026</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1035">lib/dataframe.ts:1035</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -435,7 +450,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L1033">lib/dataframe.ts:1033</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1042">lib/dataframe.ts:1042</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -458,7 +473,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L550">lib/dataframe.ts:550</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L559">lib/dataframe.ts:559</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -493,7 +508,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L731">lib/dataframe.ts:731</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L740">lib/dataframe.ts:740</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -516,7 +531,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L650">lib/dataframe.ts:650</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L659">lib/dataframe.ts:659</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -548,7 +563,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L669">lib/dataframe.ts:669</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L678">lib/dataframe.ts:678</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -586,7 +601,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L322">lib/dataframe.ts:322</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L331">lib/dataframe.ts:331</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -618,7 +633,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L313">lib/dataframe.ts:313</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L322">lib/dataframe.ts:322</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -650,7 +665,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L774">lib/dataframe.ts:774</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L783">lib/dataframe.ts:783</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -682,7 +697,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L527">lib/dataframe.ts:527</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L536">lib/dataframe.ts:536</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -705,7 +720,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L991">lib/dataframe.ts:991</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1000">lib/dataframe.ts:1000</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -737,7 +752,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L410">lib/dataframe.ts:410</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L419">lib/dataframe.ts:419</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -772,7 +787,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L998">lib/dataframe.ts:998</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1007">lib/dataframe.ts:1007</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -795,7 +810,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L1005">lib/dataframe.ts:1005</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1014">lib/dataframe.ts:1014</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -818,7 +833,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L747">lib/dataframe.ts:747</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L756">lib/dataframe.ts:756</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -856,7 +871,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L294">lib/dataframe.ts:294</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L303">lib/dataframe.ts:303</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -894,7 +909,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L641">lib/dataframe.ts:641</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L650">lib/dataframe.ts:650</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -926,7 +941,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L276">lib/dataframe.ts:276</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L285">lib/dataframe.ts:285</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -970,7 +985,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L846">lib/dataframe.ts:846</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L855">lib/dataframe.ts:855</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1020,7 +1035,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L256">lib/dataframe.ts:256</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L265">lib/dataframe.ts:265</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1058,7 +1073,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L982">lib/dataframe.ts:982</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L991">lib/dataframe.ts:991</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1096,7 +1111,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L534">lib/dataframe.ts:534</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L543">lib/dataframe.ts:543</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1119,7 +1134,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L586">lib/dataframe.ts:586</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L595">lib/dataframe.ts:595</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1151,7 +1166,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L401">lib/dataframe.ts:401</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L410">lib/dataframe.ts:410</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1189,7 +1204,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L196">lib/dataframe.ts:196</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L205">lib/dataframe.ts:205</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1212,7 +1227,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L203">lib/dataframe.ts:203</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L212">lib/dataframe.ts:212</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1235,7 +1250,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L208">lib/dataframe.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L217">lib/dataframe.ts:217</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1257,7 +1272,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L240">lib/dataframe.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L249">lib/dataframe.ts:249</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1294,7 +1309,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L756">lib/dataframe.ts:756</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L765">lib/dataframe.ts:765</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1332,7 +1347,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L765">lib/dataframe.ts:765</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L774">lib/dataframe.ts:774</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1370,7 +1385,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L247">lib/dataframe.ts:247</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L256">lib/dataframe.ts:256</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1401,7 +1416,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L559">lib/dataframe.ts:559</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L568">lib/dataframe.ts:568</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1433,7 +1448,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L420">lib/dataframe.ts:420</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L429">lib/dataframe.ts:429</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1474,7 +1489,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L963">lib/dataframe.ts:963</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L972">lib/dataframe.ts:972</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1506,7 +1521,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L830">lib/dataframe.ts:830</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L839">lib/dataframe.ts:839</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1556,7 +1571,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L863">lib/dataframe.ts:863</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L872">lib/dataframe.ts:872</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1621,7 +1636,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L886">lib/dataframe.ts:886</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L895">lib/dataframe.ts:895</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1690,7 +1705,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L910">lib/dataframe.ts:910</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L919">lib/dataframe.ts:919</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1759,7 +1774,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L933">lib/dataframe.ts:933</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L942">lib/dataframe.ts:942</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1828,7 +1843,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L541">lib/dataframe.ts:541</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L550">lib/dataframe.ts:550</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1851,7 +1866,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L623">lib/dataframe.ts:623</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L632">lib/dataframe.ts:632</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1884,7 +1899,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L797">lib/dataframe.ts:797</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L806">lib/dataframe.ts:806</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1922,7 +1937,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L806">lib/dataframe.ts:806</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L815">lib/dataframe.ts:815</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1960,7 +1975,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L705">lib/dataframe.ts:705</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L714">lib/dataframe.ts:714</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1995,7 +2010,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L695">lib/dataframe.ts:695</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L704">lib/dataframe.ts:704</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2027,7 +2042,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L686">lib/dataframe.ts:686</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L695">lib/dataframe.ts:695</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2059,7 +2074,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L950">lib/dataframe.ts:950</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L959">lib/dataframe.ts:959</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2107,7 +2122,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L331">lib/dataframe.ts:331</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L340">lib/dataframe.ts:340</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2145,7 +2160,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L304">lib/dataframe.ts:304</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L313">lib/dataframe.ts:313</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2184,7 +2199,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L233">lib/dataframe.ts:233</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L242">lib/dataframe.ts:242</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2207,7 +2222,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L738">lib/dataframe.ts:738</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L747">lib/dataframe.ts:747</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2230,7 +2245,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L439">lib/dataframe.ts:439</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L448">lib/dataframe.ts:448</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2262,7 +2277,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L373">lib/dataframe.ts:373</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L382">lib/dataframe.ts:382</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2300,7 +2315,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L382">lib/dataframe.ts:382</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L391">lib/dataframe.ts:391</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2338,7 +2353,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L457">lib/dataframe.ts:457</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L466">lib/dataframe.ts:466</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2373,7 +2388,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L217">lib/dataframe.ts:217</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L226">lib/dataframe.ts:226</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2411,7 +2426,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L475">lib/dataframe.ts:475</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L484">lib/dataframe.ts:484</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2443,7 +2458,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L493">lib/dataframe.ts:493</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L502">lib/dataframe.ts:502</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2475,7 +2490,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L484">lib/dataframe.ts:484</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L493">lib/dataframe.ts:493</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2507,7 +2522,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L632">lib/dataframe.ts:632</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L641">lib/dataframe.ts:641</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2539,7 +2554,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L285">lib/dataframe.ts:285</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L294">lib/dataframe.ts:294</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2577,7 +2592,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L568">lib/dataframe.ts:568</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L577">lib/dataframe.ts:577</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2609,7 +2624,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L502">lib/dataframe.ts:502</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L511">lib/dataframe.ts:511</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2641,7 +2656,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L520">lib/dataframe.ts:520</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L529">lib/dataframe.ts:529</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2673,7 +2688,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L511">lib/dataframe.ts:511</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L520">lib/dataframe.ts:520</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2705,7 +2720,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L339">lib/dataframe.ts:339</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L348">lib/dataframe.ts:348</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2729,7 +2744,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L1019">lib/dataframe.ts:1019</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1028">lib/dataframe.ts:1028</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2752,7 +2767,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L1040">lib/dataframe.ts:1040</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1049">lib/dataframe.ts:1049</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2775,7 +2790,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L1012">lib/dataframe.ts:1012</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1021">lib/dataframe.ts:1021</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2798,7 +2813,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L357">lib/dataframe.ts:357</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L366">lib/dataframe.ts:366</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2884,7 +2899,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L347">lib/dataframe.ts:347</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L356">lib/dataframe.ts:356</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2908,7 +2923,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L364">lib/dataframe.ts:364</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L373">lib/dataframe.ts:373</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2931,7 +2946,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L677">lib/dataframe.ts:677</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L686">lib/dataframe.ts:686</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2955,7 +2970,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L715">lib/dataframe.ts:715</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L724">lib/dataframe.ts:724</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2990,7 +3005,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L392">lib/dataframe.ts:392</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L401">lib/dataframe.ts:401</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3029,7 +3044,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L724">lib/dataframe.ts:724</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L733">lib/dataframe.ts:733</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3061,7 +3076,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L816">lib/dataframe.ts:816</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L825">lib/dataframe.ts:825</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3102,7 +3117,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L448">lib/dataframe.ts:448</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L457">lib/dataframe.ts:457</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3134,7 +3149,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L577">lib/dataframe.ts:577</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L586">lib/dataframe.ts:586</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3166,7 +3181,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L430">lib/dataframe.ts:430</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L439">lib/dataframe.ts:439</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3199,7 +3214,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L226">lib/dataframe.ts:226</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L235">lib/dataframe.ts:235</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3237,7 +3252,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L266">lib/dataframe.ts:266</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L275">lib/dataframe.ts:275</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3281,7 +3296,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L785">lib/dataframe.ts:785</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L794">lib/dataframe.ts:794</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3320,7 +3335,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L786">lib/dataframe.ts:786</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L795">lib/dataframe.ts:795</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3358,7 +3373,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L787">lib/dataframe.ts:787</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L796">lib/dataframe.ts:796</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3405,7 +3420,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/fb8178f/src/lib/dataframe.ts#L788">lib/dataframe.ts:788</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L797">lib/dataframe.ts:797</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
