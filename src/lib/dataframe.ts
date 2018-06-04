@@ -179,7 +179,16 @@ export interface IValueFrequency {
 }
 
 /**
- * Interface that represents a dataframe containing a sequence of indexed rows of data.
+ * Interface that represents a dataframe.
+ * A dataframe contains an indexed sequence of data records.
+ * Think of it as a spreadsheet or CSV file in memory.
+ * 
+ * Each data record contains multiple named fields, the value of each field represents one row in a column of data.
+ * Each column of data is a named {@link Series}.
+ * You think of a dataframe a collection of named data series.
+ * 
+ * @typeparam IndexT The type to use for the index.
+ * @typeparam ValueT The type to use for each row/data record.
  */
 export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<ValueT> {
 
@@ -1077,7 +1086,16 @@ interface IDataFrameContent<IndexT, ValueT> {
 }
 
 /**
- * Class that represents a dataframe containing a sequence of indexed rows of data.
+ * Class that represents a dataframe.
+ * A dataframe contains an indexed sequence of data records.
+ * Think of it as a spreadsheet or CSV file in memory.
+ * 
+ * Each data record contains multiple named fields, the value of each field represents one row in a column of data.
+ * Each column of data is a named {@link Series}.
+ * You think of a dataframe a collection of named data series.
+ * 
+ * @typeparam IndexT The type to use for the index.
+ * @typeparam ValueT The type to use for each row/data record.
  */
 export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<IndexT, ValueT> {
 
@@ -1287,12 +1305,26 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Create a dataframe.
      * 
-     * @param config This can be either an array or a config object the sets the values that the dataframe contains.
-     * If it is an array it specifies the values that the dataframe contains.
-     * If it is a config object that can contain:
-     *      values: Optional array or iterable of values that the dataframe contains.
-     *      index: Optional array or iterable of values that index the dataframe, defaults to a dataframe of integers from 1 and counting upward.
-     *      pairs: Optional iterable of pairs (index and value) that the dataframe contains.
+     * @param config This can be an array, a configuration object or a function that lazily produces a configuration object. 
+     * 
+     * It can be an array that specifies the data records that the dataframe contains.
+     * 
+     * It can be a {@link IDataFrameConfig} that defines the data and configuration of the dataframe.
+     * 
+     * Or it can be a function that lazily produces a {@link IDataFrameConfig}.
+     * 
+     * @example
+     * const df = new DataFrame();
+     * @example
+     * const df = new DataFrame([10, 20, 30, 40]);
+     * @example
+     * const df = new DataFrame({ index: [1, 2, 3, 4], values: [10, 20, 30, 40]});
+     * @example
+     * <br/>
+     * <pre>
+     * const lazyInit = () => ({ index: [1, 2, 3, 4], values: [10, 20, 30, 40] });
+     * const df = new DataFrame(lazyInit);
+     * </pre>
      */
     constructor(config?: Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
         if (config) {
@@ -1332,6 +1364,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Get an iterator to enumerate the values of the dataframe.
      * Enumerating the iterator forces lazy evaluation to complete.
+     * This function is automatically called by `for...of`.
+     * 
+     * @returns An iterator for the dataframe.
+     * 
+     * @example
+     * <br/>
+     * <pre>
+     * for (const row of df) {
+     *     // ... do something with the row ...
+     * }
+     * </pre>
      */
     [Symbol.iterator](): Iterator<any> {
         return this.getContent().values[Symbol.iterator]();
@@ -1341,6 +1384,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Get the names of the columns in the dataframe.
      * 
      * @returns Returns an array of the column names in the dataframe.  
+     * 
+     * @example
+     * console.log(df.getColumnNames());
      */
     getColumnNames (): string[] {
         return Array.from(this.getContent().columnNames);
