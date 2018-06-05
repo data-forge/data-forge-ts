@@ -26,6 +26,7 @@ import { IDataFrame, DataFrame } from './dataframe';
 import * as moment from 'moment';
 import { toMap } from './utils';
 import { range, replicate } from '..';
+import * as numeral from 'numeral';
 
 /**
  * Series configuration.
@@ -519,7 +520,13 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Convert a series of values of different types to a series of string values.
      *
-     * @param [formatString] Optional formatting string for dates.
+     * @param [formatString] Optional formatting string for numbers and dates.
+     * 
+     * Numeral.js is used for number formatting.
+     * http://numeraljs.com/
+     * 
+     * Moment is used for date formatting.
+     * https://momentjs.com/docs/#/parsing/string-format/
      * 
      * @returns Returns a new series where the values from the original series have been stringified. 
      */
@@ -1893,6 +1900,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         else if (formatString && moment.isMoment(value)) {
             return value.format(formatString);
         }
+        else if (formatString && Sugar.Object.isNumber(value)) {
+            return numeral(value).format(formatString);
+        }
         else {
             return value.toString();	
         }		
@@ -1901,7 +1911,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Convert a series of values of different types to a series of string values.
      *
-     * @param [formatString] Optional formatting string for dates.
+     * @param [formatString] Optional formatting string for numbers and dates.
+     * 
+     * Numeral.js is used for number formatting.
+     * http://numeraljs.com/
+     * 
+     * Moment is used for date formatting.
+     * https://momentjs.com/docs/#/parsing/string-format/
      * 
      * @returns Returns a new series where the values from the original series have been stringified. 
      */

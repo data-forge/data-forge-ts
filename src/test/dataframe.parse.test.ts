@@ -76,4 +76,37 @@ describe('DataFrame parse', () => {
 
     });
 
+    it('can use format spec to convert columns to strings', () => {
+
+        var df = new DataFrame({
+            columnNames: ["V1", "V2"],
+            rows: [
+                [1, 2],
+                [10, 11],
+            ],
+        });
+
+        var converted = df.toStrings({ V1: "0.00", V2: "0.00" });
+        expect(converted.toRows()).to.eql([
+            ['1', '2'],
+            ['10', '11'],
+        ]);
+    });
+
+    it('when using a format spec to convert columns to strings - unspecified columns are ignored', () => {
+
+        var df = new DataFrame({
+            columnNames: ["V1", "V2"],
+            rows: [
+                [1, 2],
+                [10, 11],
+            ],
+        });
+
+        var converted = df.toStrings({ V2: "0.00" });
+        expect(converted.toRows()).to.eql([
+            [1, '2'],
+            [10, '11'],
+        ]);
+    });
 });

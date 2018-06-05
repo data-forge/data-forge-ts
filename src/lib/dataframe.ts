@@ -39,6 +39,13 @@ export interface IColumnSpec {
 }
 
 /**
+ * Specifes the format per column when converting columns to strings.
+ */
+export interface IFormatSpec {
+    [index: string]: string;
+}
+
+/**
  * Specification that defines output columns for a pivot.
  */
 export interface IAggregatorSpec {
@@ -722,12 +729,18 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Convert a column of values of different types to a column of string values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to convert to strings.
+     * @param columnNames - Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
      * @param [formatString] - Optional formatting string for dates.
      * 
+     * Numeral.js is used for number formatting.
+     * http://numeraljs.com/
+     * 
+     * Moment is used for date formatting.
+     * https://momentjs.com/docs/#/parsing/string-format/
+
      * @returns Returns a new dataframe with a particular named column convert to strings.  
      */
-    toStrings (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT>;    
+    toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT>;    
 
     /**
      * Produces a new data frame with all string values truncated to the requested maximum length.
@@ -2845,27 +2858,56 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Convert a column of values of different types to a column of string values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to convert to strings.
+     * @param columnNames - Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
      * @param [formatString] - Optional formatting string for dates.
+     * 
+     * Numeral.js is used for number formatting.
+     * http://numeraljs.com/
+     * 
+     * Moment is used for date formatting.
+     * https://momentjs.com/docs/#/parsing/string-format/
      * 
      * @returns Returns a new dataframe with a particular named column convert to strings.  
      */
-    toStrings (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT> {
+    toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT> {
 
-        if (formatString) {
-            assert.isString(formatString, "Expected optional 'formatString' parameter to 'DataFrame.parseDates' to be a string (if specified).");
+        if (Sugar.Object.isObject(columnNames)) {
+            for (const columnName of Object.keys(columnNames)) {
+                assert.isString((columnNames as any)[columnName], "Expected values of 'columnNames' parameter to be strings when a format spec is passed in.");
+            }
+
+            assert.isUndefined(formatString, "Optional 'formatString' parameter to 'DataFrame.toStrings' should not be set when passing in a format spec.");
+        }
+        else {
+            if (!Sugar.Object.isArray(columnNames)) {
+                assert.isString(columnNames, "Expected 'columnNames' parameter to 'DataFrame.toStrings' to be a string, array of strings or format spec that specifes which columns should be converted to strings.");
+            }
+
+            if (formatString) {
+                assert.isString(formatString, "Expected optional 'formatString' parameter to 'DataFrame.toStrings' to be a string (if specified).");
+            }    
         }
 
-        if (Sugar.Object.isArray(columnNameOrNames)) {
+        if (Sugar.Object.isObject(columnNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
-            for (const columnName of columnNameOrNames) {
+            for (const columnName of Object.keys(columnNames)) {
                 working = working.toStrings(columnName, formatString);
             }
             
             return working;
         }
+        else if (Sugar.Object.isArray(columnNames)) {
+            let working: IDataFrame<IndexT, ValueT> = this;
+            for (const columnName of columnNames) {
+                const columnFormatString = (columnNames as any)[columnName];
+                working = working.toStrings(columnName, columnFormatString);
+            }
+            
+            return working;
+        }
         else {
-            return this.withSeries(columnNameOrNames, this.getSeries(columnNameOrNames).toStrings(formatString));
+            const singleColumnName = columnNames as string;
+            return this.withSeries(singleColumnName, this.getSeries(singleColumnName).toStrings(formatString));
         }
     }
 

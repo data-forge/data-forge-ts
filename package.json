@@ -50,6 +50,7 @@
     "easy-table": "1.1.0",
     "mock-require": "2.0.2",
     "moment": "2.22.1",
+    "numeral": "^2.0.6",
     "papaparse": "4.4.0",
     "statman-stopwatch": "2.7.0",
     "sugar": "2.0.4"
@@ -59,6 +60,7 @@
     "@types/mocha": "2.2.43",
     "@types/mock-require": "2.0.0",
     "@types/node": "8.0.28",
+    "@types/numeral": "0.0.22",
     "coveralls": "3.0.1",
     "mocha": "3.5.3",
     "nyc": "11.7.3",

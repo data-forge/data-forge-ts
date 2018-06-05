@@ -166,5 +166,14 @@ describe('Series parse', () => {
 			'2015-03-02',
 		]);
     });
+
+    it('can specify format string for number series', () => {
+
+        var series = new Series({ index: [10], values: [1000.1234] });
+        var converted = series.toStrings("0,000.00");
+
+        expect(converted.getIndex().toArray()).to.eql([10]);
+        expect(converted.toArray()).to.eql(["1,000.12"]);
+    });
     
 });
