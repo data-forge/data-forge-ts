@@ -1,6 +1,7 @@
 import { ISeries, Series, SeriesConfigFn } from './series';
 import * as Sugar from 'sugar';
 import * as moment from 'moment';
+import { determineType } from './utils';
 
 /**
  * A predicate function for testing a value against another.
@@ -68,19 +69,7 @@ export class Index<IndexT> extends Series<number, IndexT> implements IIndex<Inde
             // Detect the type.
             //
             if (this.any()) {
-                var firstValue = this.first();
-                if (Sugar.Object.isNumber(firstValue)) {
-                    this._type = 'number';
-                }
-                else if (Sugar.Object.isString(firstValue)) {
-                    this._type = 'string';
-                }
-                else if (firstValue instanceof Date) {
-                    this._type = 'date';
-                }
-                else {
-                    this._type = 'unsupported';
-                }
+                this._type = determineType(this.first());
             }
             else {
                 this._type = 'empty';

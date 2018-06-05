@@ -1,3 +1,6 @@
+import * as moment from 'moment';
+import * as Sugar from 'sugar';
+
 //
 // Various shared utility functions.
 //
@@ -41,4 +44,28 @@ export function toMap<InT, KeyT, ValueT>(items: Iterable<InT>, keySelector: (ite
         output[key] = valueSelector(item);
     }
     return output;
+}
+
+//
+// Determine the type of a value.
+//
+export function determineType (value: any): string {
+    if (Sugar.Object.isNumber(value)) {
+        return "number";
+    }
+    else if (Sugar.Object.isString(value)) {
+        return "string";
+    }
+    else if (value instanceof Date) {
+        return "date";
+    }
+    else if (moment.isMoment(value)) {
+        return "date";
+    }
+    else if (Sugar.Object.isBoolean(value)) {
+        return "boolean";
+    }
+    else {
+        return "unsupported";
+    }
 }

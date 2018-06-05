@@ -26,7 +26,7 @@ import { assert } from 'chai';
 import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
-import { toMap, makeDistinct, mapIterable } from './utils';
+import { toMap, makeDistinct, mapIterable, determineType } from './utils';
 import { Utils } from 'handlebars';
 
 const PapaParse = require('papaparse');
@@ -97,6 +97,11 @@ export interface IColumn {
      * The name of the column.
      */
     name: string;
+
+    /**
+     * The data type of the column.
+     */
+    type: string;
 
     /**
      * The data series from the column.
@@ -1061,11 +1066,16 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     asJSON (): IJsonSerializer;
 
     /**
-     * Serialize the data frame to HTML.
+     * Serialize the dataframe to HTML.
      * 
      *  @returns Returns a HTML format string representing the dataframe.   
      */
     toHTML (): string;
+    
+    /**
+     * Serialize the dataframe to an ordinary JavaScript data structure.
+     */
+    serialize (): any;
 }
 
 /**
@@ -1421,9 +1431,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const columnNames = this.getColumnNames();
             return {
                 values: columnNames.map(columnName => {
+                    const series = this.getSeries(columnName);
                     return {
                         name: columnName,
-                        series: this.getSeries(columnName),
+                        type: determineType(series.first()), //TODO: Should cache the type.
+                        series: series,
                     };
                 }),
             };
@@ -3769,6 +3781,71 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             '    </tbody>\n' +
             '</table>';
     }    
+
+    /**
+     * Serialize the dataframe to an ordinary JavaScript data structure.
+     */
+    serialize (): any {
+        const values = this.toArray();
+        const index = this.getIndex();
+        const indices = index.head(values.length).toArray();
+        const columns = this.getColumns();
+        const serializedColumns = toMap(columns, column => column.name, column => column.type);
+        
+        if (values.length > 0) {
+            serializedColumns.__index__ = index.getType();
+        }
+
+        const serializedValues = values.map((value, valueindex) => 
+            Object.assign({}, value, { __index__: indices[valueindex] })
+        );
+
+        // Serialize date values.
+        for (const column of columns) {
+            if (column.type === "date") {
+                for (const serializedValue of serializedValues) {
+                    serializedValue[column.name] = moment(serializedValue[column.name]).toISOString(true);
+                }
+            }
+        }
+        
+        return {
+            columnOrder: this.getColumnNames(),
+            columns: serializedColumns,
+            values: serializedValues,
+        };
+    }
+
+    /**
+     * Deserialize the dataframe from an ordinary JavaScript data structure.
+     */
+    static deserialize<IndexT = any,  ValueT = any> (input: any): IDataFrame<IndexT, ValueT> {
+
+        const deserializedValues = input.values && input.values.map((row: any) => {
+                const clone = Object.assign({}, row);
+                delete clone.__index__;
+                return clone;
+            }) || [];
+
+        // Deserialize dates.
+        if (input.columns) {
+            for (const columnName of Object.keys(input.columns)) {
+                if (input.columns[columnName] !== "date") {
+                    continue; // No need to process other types, they are natively supporte dby JSON.
+                }
+    
+                for (const deserializedValue of deserializedValues) {
+                    deserializedValue[columnName] = moment(deserializedValue[columnName], moment.ISO_8601).toDate();
+                }
+            }
+        }
+
+        return new DataFrame<IndexT, ValueT>({
+            columnNames: input.columnOrder || [],
+            index: input.values && input.values.map((row: any) => row.__index__) || [],
+            values: deserializedValues,
+        });
+    }
 }
 
 /** 
