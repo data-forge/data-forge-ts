@@ -135,6 +135,12 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     [Symbol.iterator](): Iterator<ValueT>;
 
     /**
+     * Cast the value of the series to a new type.
+     * This operation has no effect but to retype the value that the series contains.
+     */
+    cast<NewValueT> (): ISeries<IndexT, NewValueT>;
+
+    /**
      * Get the index for the series.
      */
     getIndex (): IIndex<IndexT>;
@@ -1048,6 +1054,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return this.getContent().values[Symbol.iterator]();
     }
 
+    /**
+     * Cast the value of the series to a new type.
+     * This operation has no effect but to retype the value that the series contains.
+     */
+    cast<NewValueT> (): ISeries<IndexT, NewValueT> {
+        return this as any as ISeries<IndexT, NewValueT>;
+    }
+    
     /**
      * Get the index for the series.
      */

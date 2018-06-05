@@ -212,6 +212,12 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     getColumns (): ISeries<number, IColumn>;
 
     /**
+     * Cast the value of the dataframe to a new type.
+     * This operation has no effect but to retype the value that the dataframe contains.
+     */
+    cast<NewValueT> (): IDataFrame<IndexT, NewValueT>;
+    
+    /**
      * Get the index for the dataframe.
      */
     getIndex (): IIndex<IndexT>;
@@ -1410,6 +1416,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             };
         });
     }    
+
+    /**
+     * Cast the value of the dataframe to a new type.
+     * This operation has no effect but to retype the value that the dataframe contains.
+     */
+    cast<NewValueT> (): IDataFrame<IndexT, NewValueT> {
+        return this as any as IDataFrame<IndexT, NewValueT>;
+    }
     
     /**
      * Get the index for the dataframe.
