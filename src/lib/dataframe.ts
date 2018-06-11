@@ -206,6 +206,18 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Get an iterator to enumerate the values of the dataframe.
+     * Enumerating the iterator forces lazy evaluation to complete.
+     * This function is automatically called by `for...of`.
+     * 
+     * @returns An iterator for the dataframe.
+     * 
+     * @example
+     * <br/>
+     * <pre>
+     * for (const row of df) {
+     *     // ... do something with the row ...
+     * }
+     * </pre>
      */
     [Symbol.iterator](): Iterator<ValueT>;
 
@@ -1422,9 +1434,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /** 
-     * Retreive a collection of all columns in the dataframe.
+     * Retreive the collection of all columns in the dataframe.
      * 
-     * @returns Returns a series the columns in the dataframe.
+     * @returns Returns a {@link Series} containing the names of the columns in the dataframe.
      */
     getColumns (): ISeries<number, IColumn> {
         return new Series<number, IColumn>(() => {
@@ -1445,6 +1457,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Cast the value of the dataframe to a new type.
      * This operation has no effect but to retype the value that the dataframe contains.
+     * 
+     * @returns The same dataframe, but with the type changed.
      */
     cast<NewValueT> (): IDataFrame<IndexT, NewValueT> {
         return this as any as IDataFrame<IndexT, NewValueT>;
@@ -1452,17 +1466,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     
     /**
      * Get the index for the dataframe.
+     * 
+     * @returns The {@link Index} for the dataframe.
+     * 
+     * @example
+     * const index = df.getIndex();
      */
     getIndex (): IIndex<IndexT> {
         return new Index<IndexT>(() => ({ values: this.getContent().index }));
     }
 
     /**
-     * Set a named column as the index of the data-frame.
+     * Set a named column as the {@link Index} of the dataframe.
      *
-     * @param columnName - Name or index of the column to set as the index.
+     * @param columnName Name of the column to use as the new {@link Index} of the returned dataframe.
      *
-     * @returns Returns a new dataframe with the values of a particular named column as the index.  
+     * @returns Returns a new dataframe with the values of the specified column as the new {@link Index}.
+     * 
+     * @example
+     * const indexedDf = df.setIndex("SomeColumn");
      */
     setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT> {
         assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.setIndex' to be a string that specifies the name of the column to set as the index for the dataframe.");
@@ -1471,11 +1493,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Apply a new index to the dataframe.
+     * Apply a new {@link Index} to the dataframe.
      * 
-     * @param newIndex The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.
+     * @param newIndex The new array or iterable to be the new {@link Index} of the dataframe. Can also be a selector to choose the {@link Index} for each row in the dataframe.
      * 
-     * @returns Returns a new dataframe or dataframe with the specified index attached.
+     * @returns Returns a new dataframe or dataframe with the specified {@link Index} attached.
+     * 
+     * @example
+     * const indexedDf = df.withIndex([10, 20, 30]);
+     * 
+     * @example
+     * const indexedDf = df.withIndex(df.getSeries("SomeColumn"));
+     * 
+     * @example
+     * const indexedDf = df.withIndex(row => row.SomeColumn);
+     * 
+     * @example
+     * const indexedDf = df.withIndex(row => row.SomeColumn + 20);
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT> {
 
@@ -1504,9 +1538,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Resets the index of the dataframe back to the default zero-based sequential integer index.
+     * Resets the {@link Index} of the dataframe back to the default zero-based sequential integer index.
      * 
-     * @returns Returns a new dataframe with the index reset to the default zero-based index. 
+     * @returns Returns a new dataframe with the {@link Index} reset to the default zero-based index. 
+     * 
+     * @example
+     * const dfWithResetIndex = df.resetIndex();
      */
     resetIndex (): IDataFrame<number, ValueT> {
         return new DataFrame<number, ValueT>(() => {

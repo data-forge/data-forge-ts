@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IValueFrequency | Data-Forge</title>
+	<title>IFormatSpec | Data-Forge</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="ivaluefrequency.html">IValueFrequency</a>
+					<a href="iformatspec.html">IFormatSpec</a>
 				</li>
 			</ul>
-			<h1>Interface IValueFrequency</h1>
+			<h1>Interface IFormatSpec</h1>
 		</div>
 	</div>
 </header>
@@ -65,8 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Represents the frequency of a value in a series or dataframe.
-						Represents the frequency of a value in a series or dataframe.</p>
+						<p>Specifes the format per column when converting columns to strings.</p>
 					</div>
 				</div>
 			</section>
@@ -74,76 +73,18 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IValueFrequency</span>
+						<span class="target">IFormatSpec</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#column" class="tsd-kind-icon">Column</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#frequency" class="tsd-kind-icon">Frequency</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#value" class="tsd-kind-icon">Value</a></li>
-							</ul>
-						</section>
+			<section class="tsd-panel tsd-kind-interface">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>index: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></div>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Specifes the format per column when converting columns to strings.</p>
 					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="column" class="tsd-anchor"></a>
-					<h3>Column</h3>
-					<div class="tsd-signature tsd-kind-icon">Column<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L180">lib/dataframe.ts:180</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Name of the column containing the value.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="frequency" class="tsd-anchor"></a>
-					<h3>Frequency</h3>
-					<div class="tsd-signature tsd-kind-icon">Frequency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L190">lib/dataframe.ts:190</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/series.ts#L125">lib/series.ts:125</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The frequency of the value&#39;s appearance in the series or dataframe.
-							The frequency of the value&#39;s appearance in the series or dataframe.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="value" class="tsd-anchor"></a>
-					<h3>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L185">lib/dataframe.ts:185</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/series.ts#L120">lib/series.ts:120</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The value.
-							The value.</p>
-						</div>
-					</div>
-				</section>
+				</div>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -159,18 +100,7 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ivaluefrequency.html" class="tsd-kind-icon">IValue<wbr>Frequency</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#column" class="tsd-kind-icon">Column</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#frequency" class="tsd-kind-icon">Frequency</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#value" class="tsd-kind-icon">Value</a>
-							</li>
-						</ul>
+						<a href="iformatspec.html" class="tsd-kind-icon">IFormat<wbr>Spec</a>
 					</li>
 				</ul>
 				<ul class="after-current">

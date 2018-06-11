@@ -117,6 +117,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#between" class="tsd-kind-icon">between</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#bringtoback" class="tsd-kind-icon">bring<wbr>ToBack</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#bringtofront" class="tsd-kind-icon">bring<wbr>ToFront</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iordereddataframe.html#cast" class="tsd-kind-icon">cast</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#concat" class="tsd-kind-icon">concat</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#count" class="tsd-kind-icon">count</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#defaultifempty" class="tsd-kind-icon">default<wbr>IfEmpty</a></li>
@@ -164,6 +165,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iordereddataframe.html#select" class="tsd-kind-icon">select</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iordereddataframe.html#selectmany" class="tsd-kind-icon">select<wbr>Many</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iordereddataframe.html#sequentialdistinct" class="tsd-kind-icon">sequential<wbr>Distinct</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#serialize" class="tsd-kind-icon">serialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iordereddataframe.html#setindex" class="tsd-kind-icon">set<wbr>Index</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#skip" class="tsd-kind-icon">skip</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iordereddataframe.html#skipuntil" class="tsd-kind-icon">skip<wbr>Until</a></li>
@@ -213,15 +215,28 @@
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#___iterator">__@iterator</a></p>
 								<p>Overrides Iterable.[Symbol.iterator]</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L198">lib/dataframe.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L222">lib/dataframe.ts:222</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get an iterator to enumerate the values of the dataframe.</p>
+									<p>Get an iterator to enumerate the values of the dataframe.
+										Enumerating the iterator forces lazy evaluation to complete.
+									This function is automatically called by <code>for...of</code>.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p><br/></p>
+										<pre>
+for (const row of df) {
+    // ... do something with the row ...
+}
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>An iterator for the dataframe.</p>
 						</li>
 					</ul>
 				</section>
@@ -236,7 +251,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#after">after</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L668">lib/dataframe.ts:668</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L698">lib/dataframe.ts:698</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -269,7 +284,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L476">lib/dataframe.ts:476</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L506">lib/dataframe.ts:506</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -311,7 +326,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#all">all</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L607">lib/dataframe.ts:607</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L637">lib/dataframe.ts:637</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -347,7 +362,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#any">any</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L619">lib/dataframe.ts:619</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L649">lib/dataframe.ts:649</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -380,7 +395,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L981">lib/dataframe.ts:981</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1017">lib/dataframe.ts:1017</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -413,7 +428,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#ascsv">asCSV</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1035">lib/dataframe.ts:1035</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1071">lib/dataframe.ts:1071</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -437,7 +452,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#asjson">asJSON</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1042">lib/dataframe.ts:1042</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1078">lib/dataframe.ts:1078</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -461,7 +476,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#at">at</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L559">lib/dataframe.ts:559</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L589">lib/dataframe.ts:589</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -497,7 +512,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L740">lib/dataframe.ts:740</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L776">lib/dataframe.ts:776</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -521,7 +536,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#before">before</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L659">lib/dataframe.ts:659</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L689">lib/dataframe.ts:689</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -554,7 +569,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#between">between</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L678">lib/dataframe.ts:678</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L708">lib/dataframe.ts:708</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -593,7 +608,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#bringtoback">bringToBack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L331">lib/dataframe.ts:331</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L361">lib/dataframe.ts:361</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -626,7 +641,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#bringtofront">bringToFront</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L322">lib/dataframe.ts:322</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L352">lib/dataframe.ts:352</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -648,6 +663,36 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
+					<a name="cast" class="tsd-anchor"></a>
+					<h3>cast</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">cast&lt;NewValueT&gt;<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">NewValueT</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#cast">cast</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L242">lib/dataframe.ts:242</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Cast the value of the dataframe to a new type.
+									This operation has no effect but to retype the value that the dataframe contains.</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>NewValueT</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">NewValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a name="concat" class="tsd-anchor"></a>
 					<h3>concat</h3>
@@ -659,7 +704,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L783">lib/dataframe.ts:783</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L819">lib/dataframe.ts:819</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -692,7 +737,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L536">lib/dataframe.ts:536</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L566">lib/dataframe.ts:566</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -716,7 +761,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1000">lib/dataframe.ts:1000</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1036">lib/dataframe.ts:1036</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -749,7 +794,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#deflate">deflate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L419">lib/dataframe.ts:419</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L449">lib/dataframe.ts:449</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -785,7 +830,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1007">lib/dataframe.ts:1007</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1043">lib/dataframe.ts:1043</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -809,7 +854,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1014">lib/dataframe.ts:1014</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1050">lib/dataframe.ts:1050</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -833,7 +878,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L756">lib/dataframe.ts:756</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L792">lib/dataframe.ts:792</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -872,7 +917,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#dropseries">dropSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L303">lib/dataframe.ts:303</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L333">lib/dataframe.ts:333</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -911,7 +956,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L650">lib/dataframe.ts:650</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L680">lib/dataframe.ts:680</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -944,7 +989,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#ensureseries">ensureSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L285">lib/dataframe.ts:285</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L315">lib/dataframe.ts:315</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -989,7 +1034,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#except">except</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L855">lib/dataframe.ts:855</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L891">lib/dataframe.ts:891</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1040,7 +1085,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#expectseries">expectSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L265">lib/dataframe.ts:265</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L295">lib/dataframe.ts:295</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1079,7 +1124,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L991">lib/dataframe.ts:991</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1027">lib/dataframe.ts:1027</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1118,7 +1163,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#first">first</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L543">lib/dataframe.ts:543</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L573">lib/dataframe.ts:573</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1142,7 +1187,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L595">lib/dataframe.ts:595</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L625">lib/dataframe.ts:625</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1175,7 +1220,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#generateseries">generateSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L410">lib/dataframe.ts:410</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L440">lib/dataframe.ts:440</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1214,7 +1259,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#getcolumnnames">getColumnNames</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L205">lib/dataframe.ts:205</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L229">lib/dataframe.ts:229</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1238,7 +1283,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#getcolumns">getColumns</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L212">lib/dataframe.ts:212</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L236">lib/dataframe.ts:236</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1262,7 +1307,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#getindex">getIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L217">lib/dataframe.ts:217</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L247">lib/dataframe.ts:247</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1285,7 +1330,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#getseries">getSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L249">lib/dataframe.ts:249</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L279">lib/dataframe.ts:279</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1323,7 +1368,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L765">lib/dataframe.ts:765</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L801">lib/dataframe.ts:801</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1362,7 +1407,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L774">lib/dataframe.ts:774</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L810">lib/dataframe.ts:810</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1401,7 +1446,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#hasseries">hasSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L256">lib/dataframe.ts:256</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L286">lib/dataframe.ts:286</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1433,7 +1478,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#head">head</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L568">lib/dataframe.ts:568</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L598">lib/dataframe.ts:598</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1466,7 +1511,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#inflateseries">inflateSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L429">lib/dataframe.ts:429</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L459">lib/dataframe.ts:459</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1508,7 +1553,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L972">lib/dataframe.ts:972</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1008">lib/dataframe.ts:1008</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1541,7 +1586,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L839">lib/dataframe.ts:839</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L875">lib/dataframe.ts:875</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1592,7 +1637,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#join">join</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L872">lib/dataframe.ts:872</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L908">lib/dataframe.ts:908</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1658,7 +1703,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L895">lib/dataframe.ts:895</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L931">lib/dataframe.ts:931</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1728,7 +1773,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L919">lib/dataframe.ts:919</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L955">lib/dataframe.ts:955</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1798,7 +1843,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L942">lib/dataframe.ts:942</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L978">lib/dataframe.ts:978</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1868,7 +1913,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#last">last</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L550">lib/dataframe.ts:550</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L580">lib/dataframe.ts:580</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1892,7 +1937,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#none">none</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L632">lib/dataframe.ts:632</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L662">lib/dataframe.ts:662</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1926,7 +1971,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L806">lib/dataframe.ts:806</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L842">lib/dataframe.ts:842</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1965,7 +2010,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L815">lib/dataframe.ts:815</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L851">lib/dataframe.ts:851</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2004,7 +2049,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L714">lib/dataframe.ts:714</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L744">lib/dataframe.ts:744</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2040,7 +2085,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L704">lib/dataframe.ts:704</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L734">lib/dataframe.ts:734</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2073,7 +2118,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L695">lib/dataframe.ts:695</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L725">lib/dataframe.ts:725</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2106,7 +2151,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#pivot">pivot</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L959">lib/dataframe.ts:959</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L995">lib/dataframe.ts:995</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2155,7 +2200,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#renameseries">renameSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L340">lib/dataframe.ts:340</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L370">lib/dataframe.ts:370</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2194,7 +2239,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#reorderseries">reorderSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L313">lib/dataframe.ts:313</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L343">lib/dataframe.ts:343</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2234,7 +2279,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#resetindex">resetIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L242">lib/dataframe.ts:242</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L272">lib/dataframe.ts:272</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2258,7 +2303,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L747">lib/dataframe.ts:747</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L783">lib/dataframe.ts:783</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2282,7 +2327,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L448">lib/dataframe.ts:448</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L478">lib/dataframe.ts:478</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2315,7 +2360,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#select">select</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L382">lib/dataframe.ts:382</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L412">lib/dataframe.ts:412</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2354,7 +2399,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L391">lib/dataframe.ts:391</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L421">lib/dataframe.ts:421</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2393,7 +2438,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L466">lib/dataframe.ts:466</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L496">lib/dataframe.ts:496</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2418,6 +2463,29 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a name="serialize" class="tsd-anchor"></a>
+					<h3>serialize</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">serialize<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#serialize">serialize</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1090">lib/dataframe.ts:1090</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Serialize the dataframe to an ordinary JavaScript data structure.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
 					<a name="setindex" class="tsd-anchor"></a>
 					<h3>set<wbr>Index</h3>
@@ -2429,7 +2497,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#setindex">setIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L226">lib/dataframe.ts:226</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L256">lib/dataframe.ts:256</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2468,7 +2536,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L484">lib/dataframe.ts:484</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L514">lib/dataframe.ts:514</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2501,7 +2569,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L502">lib/dataframe.ts:502</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L532">lib/dataframe.ts:532</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2534,7 +2602,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L493">lib/dataframe.ts:493</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L523">lib/dataframe.ts:523</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2567,7 +2635,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L641">lib/dataframe.ts:641</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L671">lib/dataframe.ts:671</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2600,7 +2668,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#subset">subset</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L294">lib/dataframe.ts:294</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L324">lib/dataframe.ts:324</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2639,7 +2707,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L577">lib/dataframe.ts:577</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L607">lib/dataframe.ts:607</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2672,7 +2740,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#take">take</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L511">lib/dataframe.ts:511</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L541">lib/dataframe.ts:541</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2705,7 +2773,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L529">lib/dataframe.ts:529</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L559">lib/dataframe.ts:559</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2738,7 +2806,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L520">lib/dataframe.ts:520</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L550">lib/dataframe.ts:550</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2770,7 +2838,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1064">lib/dataframe.ts:1064</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1105">lib/dataframe.ts:1105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2808,7 +2876,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1073">lib/dataframe.ts:1073</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1114">lib/dataframe.ts:1114</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2847,7 +2915,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#toarray">toArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L348">lib/dataframe.ts:348</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L378">lib/dataframe.ts:378</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2872,7 +2940,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tocsv">toCSV</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1028">lib/dataframe.ts:1028</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1064">lib/dataframe.ts:1064</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2896,12 +2964,12 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tohtml">toHTML</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1049">lib/dataframe.ts:1049</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1085">lib/dataframe.ts:1085</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Serialize the data frame to HTML.</p>
+									<p>Serialize the dataframe to HTML.</p>
 								</div>
 								<p> @returns Returns a HTML format string representing the dataframe.</p>
 							</div>
@@ -2920,7 +2988,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tojson">toJSON</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L1021">lib/dataframe.ts:1021</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L1057">lib/dataframe.ts:1057</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2944,7 +3012,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#toobject">toObject</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L366">lib/dataframe.ts:366</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L396">lib/dataframe.ts:396</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3031,7 +3099,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#topairs">toPairs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L356">lib/dataframe.ts:356</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L386">lib/dataframe.ts:386</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3056,7 +3124,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#torows">toRows</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L373">lib/dataframe.ts:373</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L403">lib/dataframe.ts:403</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3080,7 +3148,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L686">lib/dataframe.ts:686</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L716">lib/dataframe.ts:716</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3098,14 +3166,14 @@
 					<a name="tostrings" class="tsd-anchor"></a>
 					<h3>to<wbr>Strings</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Strings<span class="tsd-signature-symbol">(</span>columnNameOrNames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, formatString<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Strings<span class="tsd-signature-symbol">(</span>columnNames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><a href="iformatspec.html" class="tsd-signature-type">IFormatSpec</a>, formatString<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L724">lib/dataframe.ts:724</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L760">lib/dataframe.ts:760</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3116,9 +3184,9 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>columnNameOrNames: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>columnNames: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><a href="iformatspec.html" class="tsd-signature-type">IFormatSpec</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Specifies the column name or array of column names to convert to strings.</p>
+										<p>Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be.</p>
 									</div>
 								</li>
 								<li>
@@ -3141,7 +3209,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#transformseries">transformSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L401">lib/dataframe.ts:401</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L431">lib/dataframe.ts:431</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3181,7 +3249,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L733">lib/dataframe.ts:733</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L769">lib/dataframe.ts:769</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3214,7 +3282,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#union">union</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L825">lib/dataframe.ts:825</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L861">lib/dataframe.ts:861</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3256,7 +3324,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L457">lib/dataframe.ts:457</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L487">lib/dataframe.ts:487</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3289,7 +3357,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#where">where</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L586">lib/dataframe.ts:586</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L616">lib/dataframe.ts:616</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3322,7 +3390,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#window">window</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L439">lib/dataframe.ts:439</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L469">lib/dataframe.ts:469</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3356,7 +3424,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#withindex">withIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L235">lib/dataframe.ts:235</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L265">lib/dataframe.ts:265</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3395,7 +3463,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#withseries">withSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L275">lib/dataframe.ts:275</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L305">lib/dataframe.ts:305</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3440,7 +3508,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L794">lib/dataframe.ts:794</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L830">lib/dataframe.ts:830</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3480,7 +3548,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L795">lib/dataframe.ts:795</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L831">lib/dataframe.ts:831</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3519,7 +3587,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L796">lib/dataframe.ts:796</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L832">lib/dataframe.ts:832</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3567,7 +3635,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/26b217b/src/lib/dataframe.ts#L797">lib/dataframe.ts:797</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/8abff0b/src/lib/dataframe.ts#L833">lib/dataframe.ts:833</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3644,6 +3712,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="iordereddataframe.html#bringtofront" class="tsd-kind-icon">bring<wbr>ToFront</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
+								<a href="iordereddataframe.html#cast" class="tsd-kind-icon">cast</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="iordereddataframe.html#concat" class="tsd-kind-icon">concat</a>
@@ -3785,6 +3856,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
 								<a href="iordereddataframe.html#sequentialdistinct" class="tsd-kind-icon">sequential<wbr>Distinct</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+								<a href="iordereddataframe.html#serialize" class="tsd-kind-icon">serialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
 								<a href="iordereddataframe.html#setindex" class="tsd-kind-icon">set<wbr>Index</a>
