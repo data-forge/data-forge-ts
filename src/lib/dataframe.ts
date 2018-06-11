@@ -31,6 +31,13 @@ import { Utils } from 'handlebars';
 
 const PapaParse = require('papaparse');
 
+/** 
+ * An object whose fields specify named columns.
+ */
+export interface IColumnSpec {
+    [index: string]: Iterable<any> | ISeries<any, any>,
+}
+
 /**
  * Specifes the format per column when converting columns to strings.
  */
@@ -78,7 +85,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     columnNames?: Iterable<string>,
     baked?: boolean,
     considerAllRows?: boolean,
-    columns?: Iterable<IColumnConfig> | Map<string, Iterable<any> | ISeries<any, any>>,
+    columns?: Iterable<IColumnConfig> | IColumnSpec,
 };
 
 /** 
