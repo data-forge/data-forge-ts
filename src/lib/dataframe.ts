@@ -212,8 +212,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @returns An iterator for the dataframe.
      * 
      * @example
-     * <br/>
      * <pre>
+     * 
      * for (const row of df) {
      *     // ... do something with the row ...
      * }
@@ -1355,14 +1355,26 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Or it can be a function that lazily produces a {@link IDataFrameConfig}.
      * 
      * @example
-     * const df = new DataFrame();
-     * @example
-     * const df = new DataFrame([10, 20, 30, 40]);
-     * @example
-     * const df = new DataFrame({ index: [1, 2, 3, 4], values: [10, 20, 30, 40]});
-     * @example
-     * <br/>
      * <pre>
+     * 
+     * const df = new DataFrame();
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame([10, 20, 30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ index: [1, 2, 3, 4], values: [10, 20, 30, 40]});
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
      * const lazyInit = () => ({ index: [1, 2, 3, 4], values: [10, 20, 30, 40] });
      * const df = new DataFrame(lazyInit);
      * </pre>
@@ -1410,8 +1422,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns An iterator for the dataframe.
      * 
      * @example
-     * <br/>
      * <pre>
+     * 
      * for (const row of df) {
      *     // ... do something with the row ...
      * }
@@ -1427,7 +1439,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns an array of the column names in the dataframe.  
      * 
      * @example
+     * <pre>
+     * 
      * console.log(df.getColumnNames());
+     * </pre>
      */
     getColumnNames (): string[] {
         return Array.from(this.getContent().columnNames);
@@ -1437,6 +1452,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Retreive the collection of all columns in the dataframe.
      * 
      * @returns Returns a {@link Series} containing the names of the columns in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * for (const column in df.getColummns()) {
+     *      console.log("Column name: ");
+     *      console.log(column.name);
+     * 
+     *      console.log("Data:");
+     *      console.log(column.series.toArray());
+     * }
+     * </pre>
      */
     getColumns (): ISeries<number, IColumn> {
         return new Series<number, IColumn>(() => {
@@ -1459,6 +1486,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * This operation has no effect but to retype the value that the dataframe contains.
      * 
      * @returns The same dataframe, but with the type changed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const castDf = df.cast<SomeOtherType>();
+     * </pre>
      */
     cast<NewValueT> (): IDataFrame<IndexT, NewValueT> {
         return this as any as IDataFrame<IndexT, NewValueT>;
@@ -1470,7 +1503,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns The {@link Index} for the dataframe.
      * 
      * @example
+     * <pre>
+     * 
      * const index = df.getIndex();
+     * </pre>
      */
     getIndex (): IIndex<IndexT> {
         return new Index<IndexT>(() => ({ values: this.getContent().index }));
@@ -1484,7 +1520,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe with the values of the specified column as the new {@link Index}.
      * 
      * @example
+     * <pre>
+     * 
      * const indexedDf = df.setIndex("SomeColumn");
+     * </pre>
      */
     setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT> {
         assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.setIndex' to be a string that specifies the name of the column to set as the index for the dataframe.");
@@ -1500,16 +1539,28 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe or dataframe with the specified {@link Index} attached.
      * 
      * @example
+     * <pre>
+     * 
      * const indexedDf = df.withIndex([10, 20, 30]);
+     * </pre>
      * 
      * @example
+     * <pre>
+     * 
      * const indexedDf = df.withIndex(df.getSeries("SomeColumn"));
+     * </pre>
      * 
      * @example
+     * <pre>
+     * 
      * const indexedDf = df.withIndex(row => row.SomeColumn);
+     * </pre>
      * 
      * @example
+     * <pre>
+     * 
      * const indexedDf = df.withIndex(row => row.SomeColumn + 20);
+     * </pre>
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT> {
 
@@ -1543,7 +1594,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @returns Returns a new dataframe with the {@link Index} reset to the default zero-based index. 
      * 
      * @example
+     * <pre>
+     * 
      * const dfWithResetIndex = df.resetIndex();
+     * </pre>
      */
     resetIndex (): IDataFrame<number, ValueT> {
         return new DataFrame<number, ValueT>(() => {
@@ -1557,9 +1611,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Retreive a series from a column of the dataframe.
+     * Extract a {@link Series} from a named column in the dataframe.
      *
-     * @param columnName Specifies the name of the column that contains the series to retreive.
+     * @param columnName Specifies the name of the column that contains the {@link Series} to retreive.
+     * 
+     * @returns Returns the {@link Series} extracted from the named column in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = df.getSeries("SomeColumn");
+     * </pre>
      */
     getSeries<SeriesValueT = any> (columnName: string): ISeries<IndexT, SeriesValueT> {
 
@@ -1574,10 +1636,20 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }));
     }
 
-        /**
-     * Returns true if the column with the requested name exists in the dataframe.
+    /**
+     * Determine if the dataframe contains a {@link Series} the specified named column.
      *
-     * @param columnName - Name of the column to check.
+     * @param columnName Name of the column to check for.
+     * 
+     * @returns Returns true if the dataframe contains the requested {@link Series}, otherwise returns false.
+     * 
+     * @example
+     * <pre>
+     * 
+     * if (df.hasSeries("SomeColumn")) {
+     *      // ... the dataframe contains a series with the specified column name ...
+     * }
+     * </pre>
      */
     hasSeries (columnName: string): boolean {
         const columnNameLwr = columnName.toLowerCase();
@@ -1592,10 +1664,24 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     
     /**
      * 
-     * Verify the existance of a column and return it.
-     * Throws an exception if the column doesn't exist.
+     * Verify the existence of a name column and extracts the {@link Series} for it.
+     * Throws an exception if the requested column doesn't exist.
      *
-     * @param columnName - Name or index of the column to retreive.
+     * @param columnName Name of the column to extract.
+     * 
+     * @returns Returns the {@link Series} for the column if it exists, otherwise it throws an exception.
+     * 
+     * @example
+     * <pre>
+     * 
+     * try {
+     *      const series = df.expectSeries("SomeColumn");
+     *      // ... do something with the series ...
+     * }
+     * catch (err) {
+     *      // ... the dataframe doesn't contain the column "SomeColumn" ...
+     * }
+     * </pre>
      */
     expectSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT> {
         if (!this.hasSeries(columnName)) {
@@ -1606,12 +1692,43 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Create a new dataframe with an additional column specified by the passed-in series.
+     * Create a new dataframe with a replaced or additional column specified by the passed-in series.
      *
-     * @param columnNameOrSpec - The name of the column to add or replace.
-     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     * @param columnNameOrSpec The name of the column to add or replace or a {@link IColumnGenSpec} that defines the columns to add.
+     * @param [series] When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
      *
      * @returns Returns a new dataframe replacing or adding a particular named column.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries("ANewColumn", new Series([1, 2, 3]));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries("ANewColumn", df => 
+     *      df.getSeries("SourceData").select(aTransformation)
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries({
+     *      ANewColumn: new Series([1, 2, 3]),
+     *      SomeOtherColumn: new Series([10, 20, 30])
+     * });
+     * <pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries({
+     *      ANewColumn: df => df.getSeries("SourceData").select(aTransformation))
+     * });
+     * <pre>
      */
     withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
@@ -1687,13 +1804,44 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Add a series if it doesn't already exist.
+     * Add a series to the dataframe, but only if it doesn't already exist.
      * 
-     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
-     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     * @param columnNameOrSpec The name of the series to add or a {@link IColumnGenSpec} that specifies the columns to add.
+     * @param [series] If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
      * 
-     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
-     */
+     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const updatedDf = df.ensureSeries("ANewColumn", new Series([1, 2, 3]));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const updatedDf = df.ensureSeries("ANewColumn", df => 
+     *      df.getSeries("AnExistingSeries").select(aTransformation)
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.ensureSeries({
+     *      ANewColumn: new Series([1, 2, 3]),
+     *      SomeOtherColumn: new Series([10, 20, 30])
+     * });
+     * <pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.ensureSeries({
+     *      ANewColumn: df => df.getSeries("SourceData").select(aTransformation))
+     * });
+     * <pre>
+     * */
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
