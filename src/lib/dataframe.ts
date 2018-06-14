@@ -4031,6 +4031,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             values: deserializedValues,
         });
     }
+
+    getTypeCode (): string {
+        return "dataframe";
+    }
 }
 
 /** 
@@ -4104,10 +4108,6 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
 
         var fs = require('fs');	
         fs.writeFileSync(filePath, this.dataframe.toCSV());
-    }
-
-    getTypeCode (): string {
-        return "dataframe";
     }
 }
 
