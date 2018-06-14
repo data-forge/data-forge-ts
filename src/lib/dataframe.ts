@@ -4105,6 +4105,10 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
         var fs = require('fs');	
         fs.writeFileSync(filePath, this.dataframe.toCSV());
     }
+
+    getTypeCode (): string {
+        return "dataframe";
+    }
 }
 
 /**
