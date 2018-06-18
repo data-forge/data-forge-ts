@@ -4,10 +4,14 @@ The JavaScript data transformation and analysis toolkit inspired by Pandas and L
 
 Implemented in TypeScript, used in JavaScript ES5+ or TypeScript.
 
+Need to plot charts? Check out [my new API that goes hand-in-hand with Data-Forge](http://www.the-data-wrangler.com/introducing-data-forge-plot/).
+
 Why not do your data wrangling, analysis and visualization entirely in JavaScript? To support my effort please buy or help promote my book 
 [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2).
 
 Or check out my blog: [The Data Wrangler](http://www.the-data-wrangler.com/).
+
+Do your prototyping and exploratory data analysis in JavaScript with [Data-Forge Notebook](http://www.data-forge-notebook.com/).
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
 [![Coverage Status](https://coveralls.io/repos/github/data-forge/data-forge-ts/badge.svg?branch=master)](https://coveralls.io/github/data-forge/data-forge-ts?branch=master)

@@ -2770,6 +2770,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             };
         });
     }
+
+    getTypeCode (): string {
+        return "series";
+    }    
 }
 
 /**

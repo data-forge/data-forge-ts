@@ -4181,6 +4181,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             values: deserializedValues,
         });
     }
+
+    getTypeCode (): string {
+        return "dataframe";
+    }
 }
 
 /** 
