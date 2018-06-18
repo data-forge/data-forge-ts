@@ -1875,11 +1875,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
-     * Create a new data-frame from a subset of columns.
+     * Create a new dataframe with just a subset of columns.
      *
-     * @param columnNames - Array of column names to include in the new data-frame.
+     * @param columnNames Array of column names to include in the new dataframe.
      * 
-     * @returns Returns a dataframe with a subset of columns from the input dataframe.
+     * @returns Returns a dataframe with a subset of columns from the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * const subsetDf = df.subset(["ColumnA", "ColumnB"]);
+     * </pre>
      */
     subset<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT> {
         assert.isArray(columnNames, "Expected 'columnNames' parameter to 'DataFrame.subset' to be an array of column names to keep.");	
@@ -1909,11 +1914,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
     
     /**
-     * Create a new data frame with the requested column or columns dropped.
+     * Create a new dataframe with the requested column or columns dropped.
      *
-     * @param columnOrColumns - Specifies the column name (a string) or columns (array of column names) to drop.
+     * @param columnOrColumns Specifies the column name (a string) or columns (array of strings) to drop.
      * 
-     * @returns Returns a new dataframe with a particular name column or columns removed.
+     * @returns Returns a new dataframe with a particular named column or columns removed.
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.dropSeries("SomeColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.dropSeries(["ColumnA", "ColumnB"]);
+     * </pre>
      */
     dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT> {
 
@@ -1954,12 +1969,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
         
     /**
-     * Create a new data frame with columns reordered.
+     * Create a new dataframe with columns reordered.
      * New column names create new columns (with undefined values), omitting existing column names causes those columns to be dropped.
      * 
-     * @param columnNames - The new order for columns.
+     * @param columnNames Specifies the new order for columns.
      * 
-     * @returns Returns a new dataframe with columns remapped according to the specified column layout.   
+     * @returns Returns a new dataframe with columns reodered according to the order of the array of column names that is passed in.
+     * 
+     * @example
+     * <pre>
+     * const reorderedDf = df.reorderSeries(["FirstColumn", "SecondColumn", "etc"]);
+     * </pre>
      */
     reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT> {
 
@@ -1996,11 +2016,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }   
 
     /**
-     * Bring the name column (or columns) to the front, making it (or them) the first column(s) in the data-frame.
+     * Bring the column(s) with specified name(s) to the front of the column order, making it (or them) the first column(s) in the output dataframe.
      *
-     * @param columnOrColumns - Specifies the column or columns to bring to the front.
+     * @param columnOrColumns Specifies the column or columns to bring to the front.
      *
      * @returns Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToFront("NewFirstColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToFront(["NewFirstColumn", "NewSecondColumn"]);
+     * </pre>
      */
     bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
 
@@ -2043,11 +2073,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Bring the name column (or columns) to the back, making it (or them) the last column(s) in the data-frame.
+     * Bring the column(s) with specified name(s) to the back of the column order, making it (or them) the last column(s) in the output dataframe.
      *
-     * @param columnOrColumns - Specifies the column or columns to bring to the back.
+     * @param columnOrColumns Specifies the column or columns to bring to the back.
      *
      * @returns Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToBack("NewLastColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToBack(["NewSecondLastCollumn, ""NewLastColumn"]);
+     * </pre>
      */
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
 
@@ -2090,11 +2130,26 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Create a new data-frame with renamed series.
+     * Create a new dataframe with 1 or more columns renamed.
      *
-     * @param newColumnNames - A column rename spec - maps existing column names to new column names.
+     * @param newColumnNames A column rename spec - a JavaScript hash that maps existing column names to new column names.
      * 
-     * @returns Returns a new dataframe with columns renamed.
+     * @returns Returns a new dataframe with specified columns renamed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const renamedDf = df.renameSeries({ OldColumnName, NewColumnName });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const renamedDf = df.renameSeries({ 
+     *      Column1: ColumnA,
+     *      Column2: ColumnB
+     * });
+     * </pre>
      */
     renameSeries<NewValueT = ValueT> (newColumnNames: IColumnRenameSpec): IDataFrame<IndexT, NewValueT> {
 
@@ -2149,7 +2204,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     * 
-    * @returns Returns an array of values contained within the dataframe. 
+    * @returns Returns an array of the values contained within the dataframe. 
+    * 
+    * @example
+    * <pre>
+    * const values = df.toArray();
+    * </pre>
     */
     toArray (): any[] {
         const values = [];
@@ -2162,11 +2222,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Retreive the index and values from the DataFrame as an array of pairs.
+     * Retreive the index and values pairs from the dataframe as an array.
      * Each pair is [index, value].
      * This forces lazy evaluation to complete.
      * 
      * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
+     * 
+     * @example
+     * <pre>
+     * const pairs = df.toPairs();
+     * </pre>
      */
     toPairs (): ([IndexT, ValueT])[] {
         const pairs = [];
@@ -2181,10 +2246,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Convert the dataframe to a JavaScript object.
      *
-     * @param keySelector - Function that selects keys for the resulting object.
-     * @param valueSelector - Function that selects values for the resulting object.
+     * @param keySelector Function that selects keys for the resulting object.
+     * @param valueSelector Function that selects values for the resulting object.
      * 
-     * @returns Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     * @returns Returns a JavaScript object generated from the dataframe by applying the key and value selector functions. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const someObject = df.toObject(
+     *      row => row.SomeColumn, // Specify the column to use for fields in the object.
+     *      row => row.SomeOtherColumn // Specifi the column to use as the value for each field.
+     * );
+     * </pre>
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
 
@@ -2195,9 +2269,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Bake the data frame to an array of rows.
+     * Bake the data frame to an array of rows were each rows is an array of values in column order.
      * 
-     *  @returns Returns an array of rows. Each row is an array of values in column order.   
+     * @returns Returns an array of rows. Each row is an array of values in column order.
+     * 
+     * @example
+     * <pre>
+     * const rows = df.toRows();
+     * </pre>
      */
     toRows (): any[][] {
         const columnNames = this.getColumnNames();
@@ -2215,11 +2294,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Generate a new dataframe based by calling the selector function on each value.
+     * Generates a new dataframe by repeatedly calling a selector function on each row in the original dataframe.
      *
-     * @param selector Selector function that transforms each value to create a new dataframe.
+     * @param selector Selector function that transforms each row to create the new dataframe.
      * 
      * @returns Returns a new dataframe that has been transformed by the selector function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function transformRow (inputRow) {
+     *      const outputRow = {
+     *          // ... construct output row derived from input row ...
+     *      };
+     *
+     *      return outputRow;
+     * }
+     *  
+     * const modifiedDf = df.select(row => transformRow(row));
+     * </pre>
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
@@ -2234,11 +2327,27 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Generate a new dataframe based on the results of the selector function.
+     * Generates a new dataframe by repeatedly calling a selector function on each row in the original dataframe.
+     * In this case the selector functions a collection of output rows that are flattened to create the new dataframe.
      *
-     * @param selector Selector function that transforms each value into a list of values.
+     * @param selector Selector function that transforms each row into a collection of output rows.
      * 
-     * @returns  Returns a new dataframe with values that have been produced by the selector function. 
+     * @returns  Returns a new dataframe with rows that have been produced by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * function produceOutputRows (inputRow) {
+     *      const outputRows = [];
+     *      while (someCondition) {     *      
+     *          // ... generate zero or more output rows ...
+     *          outputRows.push(... some generated row ...);
+     *      }
+     *      return outputRows;
+     * }
+     * 
+     * const modifiedDf = df.selectMany(row => produceOutputRows(row));
+     * </pre>
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.selectMany' to be a function.");
@@ -2261,12 +2370,29 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Transform one or more columns. This is equivalent to extracting a column, calling 'select' on it,
-     * then plugging it back in as the same column.
+     * Transform one or more columns. This is equivalent to extracting a column with {@link getSeries}, then transforming it with {@link select},
+     * and finally plugging it back in as the same column name using {@link withSeries}.
      *
-     * @param columnSelectors - Object with field names for each column to be transformed. Each field you be a selector that transforms that column.
+     * @param columnSelectors Object with field names for each column to be transformed. Each field specifies a selector function that transforms that column.
      * 
-     * @returns Returns a new dataframe with 1 or more columns transformed.   
+     * @returns Returns a new dataframe with 1 or more columns transformed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.transformSeries({ 
+     *      AColumnToTransform: columnValue => transformRow(columnValue) 
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.transformSeries({ 
+     *      ColumnA: columnValue => transformColumnA(columnValue),
+     *      ColumnB: columnValue => transformColumnB(columnValue)
+     * });
+     * </pre>
      */
     transformSeries<NewValueT = ValueT> (columnSelectors: IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
@@ -2290,9 +2416,33 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /** 
      * Generate new columns based on existing rows.
      *
-     * @param generator - Generator function that transforms each row to a new set of columns.
+     * @param generator Generator function that transforms each row to produce 1 or more new columns.
+     * Or use a column spec that has fields for each column, the fields specify a generate function that produces the value for each new column.
      * 
      * @returns Returns a new dataframe with 1 or more new columns.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function produceNewColumns (inputRow) {
+     *      const newColumns = {
+     *          // ... specify new columns and their values based on the input row ...
+     *      };
+     * 
+     *      return newColumns;
+     * };
+     * 
+     * const dfWithNewSeries = df.generateSeries(row => produceNewColumns(row));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithNewSeries = df.generateSeries({ 
+     *      NewColumnA: row => produceNewColumnA(row),
+     *      NewColumnB: row => produceNewColumnB(row),
+     * })
+     * </pre>
      */
     generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
