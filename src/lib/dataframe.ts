@@ -2328,7 +2328,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Generates a new dataframe by repeatedly calling a selector function on each row in the original dataframe.
-     * In this case the selector functions a collection of output rows that are flattened to create the new dataframe.
+     * 
+     * In this case the selector function produces a collection of output rows that are flattened to create the new dataframe.
      *
      * @param selector Selector function that transforms each row into a collection of output rows.
      * 
@@ -2370,8 +2371,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Transform one or more columns. This is equivalent to extracting a column with {@link getSeries}, then transforming it with {@link select},
-     * and finally plugging it back in as the same column name using {@link withSeries}.
+     * Transform one or more columns. 
+     * 
+     * This is equivalent to extracting a {@link Series} with {@link getSeries}, then transforming it with {@link Series.select},
+     * and finally plugging it back in as the same column using {@link withSeries}.
      *
      * @param columnSelectors Object with field names for each column to be transformed. Each field specifies a selector function that transforms that column.
      * 
@@ -2415,6 +2418,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /** 
      * Generate new columns based on existing rows.
+     * 
+     * This is equivalent to calling {@link select} to transform the original dataframe to a new dataframe with different column,
+     * then using {@link withSeries} to merge each the of both the new and original dataframes.
      *
      * @param generator Generator function that transforms each row to produce 1 or more new columns.
      * Or use a column spec that has fields for each column, the fields specify a generate function that produces the value for each new column.
@@ -2478,11 +2484,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /** 
-     * Deflate a data-frame to a series.
+     * Converts (deflates) a dataframe to a {@link Series}.
      *
-     * @param [selector] - Optional selector function that transforms each row to a new sequence of values.
+     * @param [selector] Optional selector function that transforms each row to produce the series.
      *
-     * @returns Returns a series that was created from the input dataframe.
+     * @returns Returns a series that was created from the deflated from  the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = df.deflate(); // Deflate to a series of object.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = df.deflate(row => row.SomeColumn); // Extract a particular column.
+     * </pre>
      */
     deflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
 
@@ -2515,12 +2533,30 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /** 
-     * Inflate a named series in the data-frame to 1 or more new series in the new dataframe.
+     * Inflate a named {@link Series} in the dataframe to 1 or more new series in the new dataframe.
+     * 
+     * This is the equivalent of extracting the series using {@link getSeries}, transforming them with {@link Series.select}
+     * and then running {@link Series.inflate} to create a new dataframe, then merging each column of the new dataframe
+     *  into the original dataframe using {@link withSeries}.
      *
-     * @param columnName - Name or index of the column to retreive.
-     * @param [selector] - Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
+     * @param columnName Name of the series to inflate.
+     * @param [selector] Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
      * 
      * @returns Returns a new dataframe with a column inflated to 1 or more new columns.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function newColumnGenerator (row) {
+     *      const newColumns = {
+     *          // ... create 1 field per new column ...
+     *      };
+     * 
+     *      return row;
+     * }
+     * 
+     * const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
+     * </pre>
      */
     inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
 
@@ -2537,12 +2573,28 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Segment a dataframe into 'windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original dataframe.
-     * Use select or selectPairs to aggregate.
+     * Partition a dataframe into a {@link Series} of *data windows*. 
+     * Each value in the new series is a rolling chunk of data from the original dataframe.
      *
-     * @param period - The number of values in the window.
+     * @param period The number of data rows to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     * @returns Returns a new series, each value of which is a chunk of the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const windows = df.window(2); // Get values in pairs.
+     * const pctIncrease = windows.select(pair => (pair.last() - pair.first()) / pair.first());
+     * console.log(pctIncrease.toString());
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... // Daily sales data.
+     * const weeklySales = salesDf.window(7); // Partition up into weekly data sets.
+     * console.log(weeklySales.toString());
+     * </pre>
      */
     window (period: number): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
@@ -2557,11 +2609,20 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /** 
-     * Segment a dataframe into 'rolling windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original series.
-    *
-     * @param period - The number of values in the window.
+     * Partition a dataframe into a {@link Series} of *rolling data windows*. 
+     * Each value in the new series is a rolling chunk of data from the original dataframe.
+     *
+     * @param period The number of data rows to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     * @returns Returns a new series, each value of which is a rolling chunk of the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... // Daily sales data.
+     * const rollingWeeklySales = salesDf.rollingWindow(7); // Get rolling window over weekly sales data.
+     * console.log(rollingWeeklySales.toString());
+     * </pre>
      */
     rollingWindow (period: number): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
@@ -2576,11 +2637,27 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Groups sequential values into variable length 'windows'.
-     *
-     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * Partition a dataframe into a {@link Series} of variable-length *data windows* 
+     * where the divisions between the data chunks are
+     * defined by a user-provided *comparer* function.
      * 
-     * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
+     * @param comparer Function that compares two adjacent data rows and returns true if they should be in the same window.
+     * 
+     * @returns Returns a new series, each value of which is a chunk of data from the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function rowComparer (rowA, rowB) {
+     *      if (... rowA should be in the same data window as rowB ...) {
+     *          return true;
+     *      }
+     *      else {
+     *          return false;
+     *      }
+     * };
+     * 
+     * const variableWindows = df.variableWindow(rowComparer);
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
         
