@@ -2672,11 +2672,20 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Group sequential duplicate values into a series of windows.
-     *
-     * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
+     * Eliminates adjacent duplicate rows.
      * 
-     * @returns Returns a series of groups. Each group is itself a series. 
+     * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
+     * thus ajacent equivalent rows are collapsed down to the last row.
+     *
+     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * 
+     * @returns Returns a new dataframe with groups of adjacent duplicate rows collapsed to a single row per group.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithDuplicateRowsRemoved = df.sequentialDistinct(row => row.ColumnA);
+     * </pre>
      */
     sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT> {
         
@@ -2692,17 +2701,48 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 return [window.getIndex().first(), window.first()];
             })
             .withIndex(pair => pair[0])
-            .inflate(pair => pair[1]);
+            .inflate(pair => pair[1]); //TODO: Should this be select?
     }
 
     /**
-     * Aggregate the values in the dataframe.
+     * Aggregate the rows in the dataframe to a single result.
      *
-     * @param [seed] - Optional seed value for producing the aggregation.
-     * @param selector - Function that takes the seed and then each value in the dataframe and produces the aggregate value.
+     * @param [seed] Optional seed value for producing the aggregation.
+     * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregate value.
      * 
-     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
-     */
+     * @returns Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailySalesDf = ... daily sales figures for the past month ...
+     * const totalSalesForthisMonth = dailySalesDf.aggregate(
+     *      0, // Seed - the starting value.
+     *      (accumulator, row) => accumulator + row.SalesAmount // Aggregation function.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+     * const dailySalesDf = ... daily sales figures for the past month ...
+     * const updatedTotalSalesAllTime = dailySalesDf.aggregate(
+     *      totalSalesAllTime, 
+     *      (accumulator, row) => accumulator + row.SalesAmount
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * var salesDataSummary = salesDataDf.aggregate({
+     *      TotalSales: df => df.count(),
+     *      AveragePrice: df => df.deflate(row => row.Price).average(),
+     *      TotalRevenue: df => df.deflate(row => row.Revenue).sum(), 
+     * });
+     * </pre>
+    */
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT {
 
         if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
@@ -2735,12 +2775,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Skip a number of values in the dataframe.
+     * Skip a number of rows in the dataframe.
      *
-     * @param numValues - Number of values to skip.
-     * @returns Returns a new dataframe or dataframe with the specified number of values skipped. 
+     * @param numValues Number of rows to skip.
+     * 
+     * @returns Returns a new dataframe with the specified number of rows skipped. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsSkipped = df.skip(10); // Skip 10 rows in the original dataframe.
+     * </pre>
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT> {
+        assert.isNumber(numValues, "Expected 'numValues' parameter to 'DataFrame.skip' to be a number.");
+
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
             return {
@@ -2753,11 +2802,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Skips values in the series while a condition is met.
+     * Skips values in the dataframe while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to skip rows in the original dataframe.
      * 
-     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     * @returns Returns a new dataframe with all initial sequential rows removed while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsSkipped = df.skipWhile(row => row.CustomerName === "Fred"); // Skip initial customers named Fred.
+     * </pre>
      */
     skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipWhile' function to be a predicate function that returns true/false.");
@@ -2773,11 +2828,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Skips values in the series until a condition is met.
+     * Skips values in the dataframe untils a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop skipping rows in the original dataframe.
      * 
-     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     * @returns Returns a new dataframe with all initial sequential rows removed until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsSkipped = df.skipUntil(row => row.CustomerName === "Fred"); // Skip initial customers until we find Fred.
+     * </pre>
      */
     skipUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipUntil' function to be a predicate function that returns true/false.");
@@ -2786,11 +2847,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Take a number of rows in the series.
+     * Take a number of rows in the dataframe.
      *
-     * @param numRows - Number of rows to take.
+     * @param numValues Number of rows to take.
      * 
-     * @returns Returns a new series with up to the specified number of values included.
+     * @returns Returns a new dataframe with only the specified number of rows taken from the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsTaken = df.take(15); // Take only the first 15 rows from the original dataframe.
+     * </pre>
      */
     take (numRows: number): IDataFrame<IndexT, ValueT> {
         assert.isNumber(numRows, "Expected 'numRows' parameter to 'DataFrame.take' function to be a number.");
@@ -2807,11 +2874,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /**
-     * Take values from the series while a condition is met.
+     * Takes values from the dataframe while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to take rows from the original dataframe.
      * 
-     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     * @returns Returns a new dataframe with only the initial sequential rows that were taken while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsTaken = df.takeWhile(row => row.CustomerName === "Fred"); // Take only initial customers named Fred.
+     * </pre>
      */
     takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeWhile' function to be a predicate function that returns true/false.");
@@ -2827,11 +2900,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Take values from the series until a condition is met.
+     * Takes values from the dataframe untils a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop taking rows in the original dataframe.
      * 
-     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     * @returns Returns a new dataframe with only the initial sequential rows taken until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsTaken = df.takeUntil(row => row.CustomerName === "Fred"); // Take all initial customers until we find Fred.
+     * </pre>
      */
     takeUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeUntil' function to be a predicate function that returns true/false.");
@@ -2840,9 +2919,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Count the number of values in the series.
+     * Count the number of rows in the dataframe
      *
-     * @returns Returns the count of all values in the series.
+     * @returns Returns the count of all rows.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const numRows = df.count();
+     * </pre>
      */
     count (): number {
 
