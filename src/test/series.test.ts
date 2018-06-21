@@ -349,6 +349,13 @@ describe('Series', () => {
 		expect(series.any()).to.eql(false);
 	});
 
+	it('any - with no predicate - has falsy elements', () => {
+
+		var series = new Series({ values: [ false, false, false ] });
+
+		expect(series.any()).to.eql(true);
+    });
+    
 	it('any - with no predicate - elements exist', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });
@@ -398,6 +405,12 @@ describe('Series', () => {
 		expect(series.none()).to.eql(true);
 	});
 
+	it('none - with no predicate - has falsy elements', () => {
+
+		var series = new Series({ values: [false, false, false] });
+		expect(series.none()).to.eql(false);
+    });
+    
 	it('none - with no predicate - has existing elements', () => {
 
 		var series = new Series({ values: [5, 5, 5, 5] });

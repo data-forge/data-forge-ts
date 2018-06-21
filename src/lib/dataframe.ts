@@ -2939,9 +2939,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get the first value of the series.
+     * Get the first row of the dataframe.
      *
-     * @returns Returns the first value of the series.
+     * @returns Returns the first row of the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const firstRow = df.first();
+     * </pre>
      */
     first (): ValueT {
 
@@ -2953,9 +2959,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get the last value of the series.
+     * Get the last row of the dataframe.
      *
-     * @returns Returns the last value of the series.
+     * @returns Returns the last row of the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const lastRow = df.last();
+     * </pre>
      */
     last (): ValueT {
 
@@ -2973,11 +2985,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
     
     /**
-     * Get the value at a specified index.
+     * Get the row, if there is one, with the specified index.
      *
-     * @param index - Index to for which to retreive the value.
+     * @param index Index to for which to retreive the row.
      *
-     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     * @returns Returns the row from the specified index in the dataframe or undefined if there is no such index in the present in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const row = df.at(5); // Get the row at index 5 (with a default 0-based index).
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const date = ... some date ...
+     * // Retreive the row with specified date from a time-series dataframe (assuming date indexed has been applied).
+     * const row = df.at(date); 
+     * </pre>
      */
     at (index: IndexT): ValueT | undefined {
 
@@ -3000,12 +3026,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /** 
-     * Get X values from the start of the dataframe.
-     * Pass in a negative value to get all items at the head except X values at the tail.
+     * Get X rows from the start of the dataframe.
+     * Pass in a negative value to get all rows at the head except for X rows at the tail.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of rows to take.
      * 
-     * @returns Returns a new dataframe that has only the specified number of values taken from the start of the input sequence.  
+     * @returns Returns a new dataframe that has only the specified number of rows taken from the start of the original dataframe.  
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = df.head(10); // Take a sample of 10 rows from the start of the dataframe.
+     * </pre>
      */
     head (numValues: number): IDataFrame<IndexT, ValueT> {
 
@@ -3020,12 +3052,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /** 
-     * Get X values from the end of the dataframe.
-     * Pass in a negative value to get all items at the tail except X values at the head.
+     * Get X rows from the end of the dataframe.
+     * Pass in a negative value to get all rows at the tail except X rows at the head.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of rows to take.
      * 
-     * @returns Returns a new dataframe that has only the specified number of values taken from the end of the input sequence.  
+     * @returns Returns a new dataframe that has only the specified number of rows taken from the end of the original dataframe.  
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = df.tail(12); // Take a sample of 12 rows from the end of the dataframe.
+     * </pre>
      */
     tail (numValues: number): IDataFrame<IndexT, ValueT> {
 
@@ -3040,11 +3078,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Filter a series by a predicate selector.
+     * Filter the dataframe using user-defined predicate function.
      *
-     * @param predicate - Predicte function to filter rows of the series.
+     * @param predicate Predicte function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
      * 
-     * @returns Returns a new series containing only the values that match the predicate. 
+     * @returns Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we only have customers named Fred.
+     * </pre>
      */
     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
 
@@ -3061,11 +3105,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Invoke a callback function for each value in the series.
+     * Invoke a callback function for each roew in the dataframe.
      *
-     * @param callback - The calback to invoke for each value.
+     * @param callback The calback function to invoke for each row.
      * 
-     * @returns Returns the input series with no modifications.
+     * @returns Returns the original dataframe with no modifications.
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.forEach(row => {
+     *      // ... do something with the row ...
+     * });
+     * </pre>
      */
     forEach (callback: CallbackFn<ValueT>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(callback, "Expected 'callback' parameter to 'DataFrame.forEach' to be a function.");
@@ -3079,14 +3131,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Determine if the predicate returns truthy for all values in the series.
-     * Returns false as soon as the predicate evaluates to falsy.
-     * Returns true if the predicate returns truthy for all values in the series.
-     * Returns false if the series is empty.
+     * Evaluates a predicate function for every row in the dataframe to determine 
+     * if some condition is true/truthy for **all** rows in the dataframe.
+     * 
+     * @param predicate Predicate function that receives each row. It should returns true/truthy for a match, otherwise false/falsy.
      *
-     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
-     *
-     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     * @returns Returns true if the predicate has returned true or truthy for every row in the dataframe, otherwise returns false. Returns false for an empty dataframe. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const everyoneIsNamedFred = df.all(row => row.CustomerName === "Fred"); // Check if all customers are named Fred.
+     * </pre>
      */
     all (predicate: PredicateFn<ValueT>): boolean {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.all' to be a function.")
@@ -3105,18 +3161,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Determine if the predicate returns truthy for any of the values in the series.
-     * Returns true as soon as the predicate returns truthy.
-     * Returns false if the predicate never returns truthy.
-     * If no predicate is specified the value itself is checked. 
+     * Evaluates a predicate function for every row in the dataframe to determine 
+     * if some condition is true/truthy for **any** of rows in the dataframe.
+     * 
+     * If no predicate is specified then it simply checks if the dataframe contains more than zero rows.
      *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     * @returns Returns true if the predicate has returned truthy for any row in the sequence, otherwise returns false. 
+     * If no predicate is passed it returns true if the dataframe contains any rows at all. 
+     * Returns false for an empty dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const anyFreds = df.any(row => row.CustomerName === "Fred"); // Do we have any customers named Fred?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const anyCustomers = df.any(); // Do we have any customers at all?
+     * </pre>
      */
     any (predicate?: PredicateFn<ValueT>): boolean {
         if (predicate) {
-            assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.any' to be a function.")
+            assert.isFunction(predicate, "Expected optional 'predicate' parameter to 'DataFrame.any' to be a function.")
         }
 
         if (predicate) {
@@ -3128,27 +3198,35 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }
         }
         else {
-            // Check each value directly.
-            for (const value of this) {
-                if (value) {
-                    return true;
-                }
-            }
+            // Just check if there is at least one item.
+            const iterator = this[Symbol.iterator]()
+            return !iterator.next().done;
         }
 
         return false; // Nothing passed.
     }
 
     /**
-     * Determine if the predicate returns truthy for none of the values in the series.
-     * Returns true for an empty series.
-     * Returns true if the predicate always returns falsy.
-     * Otherwise returns false.
-     * If no predicate is specified the value itself is checked.
-     *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * Evaluates a predicate function for every row in the dataframe to determine 
+     * if some condition is true/truthy for **none** of rows in the dataframe.
      * 
-     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     * If no predicate is specified then it simply checks if the dataframe contains zero rows.
+     *
+     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
+     *
+     * @returns Returns true if the predicate has returned truthy for zero rows in the dataframe, otherwise returns false. Returns false for an empty dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const noFreds = df.none(row => row.CustomerName === "Fred"); // Do we have zero customers named Fred?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const noCustomers = df.none(); // Do we have zero customers?
+     * </pre>
      */
     none (predicate?: PredicateFn<ValueT>): boolean {
 
@@ -3165,12 +3243,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }
         }
         else {
-            // Check each value directly.
-            for (const value of this) {
-                if (value) {
-                    return false;
-                }
-            }
+            // Just check if empty.
+            const iterator = this[Symbol.iterator]()
+            return iterator.next().done;
         }
 
         return true; // Nothing failed the predicate.

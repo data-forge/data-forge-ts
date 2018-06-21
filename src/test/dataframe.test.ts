@@ -358,6 +358,13 @@ describe('DataFrame', () => {
 		expect(dataframe.any()).to.eql(false);
 	});
 
+	it('any - with no predicate - no elements - has falsy elements', () => {
+
+		var dataframe = new DataFrame({ values: [ false, false, false ] });
+
+		expect(dataframe.any()).to.eql(true);
+    });
+    
 	it('any - with no predicate - elements exist', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });
@@ -407,6 +414,12 @@ describe('DataFrame', () => {
 		expect(dataframe.none()).to.eql(true);
 	});
 
+	it('none - with no predicate - has falsy elements', () => {
+
+		var dataframe = new DataFrame({ values: [ false, false, false ] });
+		expect(dataframe.none()).to.eql(false);
+	});
+    
 	it('none - with no predicate - has existing elements', () => {
 
 		var dataframe = new DataFrame({ values: [5, 5, 5, 5] });

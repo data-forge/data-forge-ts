@@ -1189,7 +1189,7 @@ A dataframe can be aggregated in the same way, for example summarizing sales dat
             }
         );
 
-I'm considering a new structure as well that will make `aggregate` more convenient for summarizing dataframes. Please let me know if this would be useful to you and I'll implement it:
+Individual columns can also be aggregated using a column spec:
 
     var summary = salesData.aggregate({
         TotalSales: df => df.count(),
@@ -1197,13 +1197,6 @@ I'm considering a new structure as well that will make `aggregate` more convenie
         TotalRevenue: df => df.deflate(row => row.Revenue).sum(), 
     });
 
-Or even better if I could make it work something like this:
-
-    var summary = salesData.aggregate({
-        TotalSales: count,
-        AveragePrice: average,
-        TotalRevenue: sum, 
-    });
 
 ## Group and Aggregate
 

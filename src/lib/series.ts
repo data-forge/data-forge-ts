@@ -1646,12 +1646,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             }
         }
         else {
-            // Check each value directly.
-            for (const value of this) {
-                if (value) {
-                    return true;
-                }
-            }
+            // Just check if there is at least one item.
+            const iterator = this[Symbol.iterator]()
+            return !iterator.next().done;
         }
 
         return false; // Nothing passed.
@@ -1683,12 +1680,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             }
         }
         else {
-            // Check each value directly.
-            for (const value of this) {
-                if (value) {
-                    return false;
-                }
-            }
+            // Just check if empty.
+            const iterator = this[Symbol.iterator]()
+            return iterator.next().done;
         }
 
         return true; // Nothing failed the predicate.
