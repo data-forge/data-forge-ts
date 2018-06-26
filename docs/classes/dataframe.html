@@ -234,7 +234,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1344">lib/dataframe.ts:1344</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1344">lib/dataframe.ts:1344</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -301,7 +301,7 @@ const df = new DataFrame(lazyInit);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#___iterator">__@iterator</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1432">lib/dataframe.ts:1432</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1432">lib/dataframe.ts:1432</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -337,25 +337,48 @@ for (const row of df) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#after">after</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3321">lib/dataframe.ts:3321</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3405">lib/dataframe.ts:3405</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values after the specified index value (exclusive).</p>
+									<p>Gets a new dataframe containing all rows after the specified index value (exclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const df = new DataFrame({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const lastHalf = df.before(1);
+expect(lastHalf.toArray()).to.eql([30, 40]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeriesDf = ... a dataframe indexed by date/time ...
+
+// Get all rows after the specified date.
+const allRowsAfterStartDate = df.after(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">IndexT</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for.</p>
+										<p>The index value after which to start the new dataframe.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing all values after the specified index value.</p>
+							<p>Returns a new dataframe containing all rows after the specified index value.</p>
 						</li>
 					</ul>
 				</section>
@@ -370,7 +393,7 @@ for (const row of df) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2746">lib/dataframe.ts:2746</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2746">lib/dataframe.ts:2746</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -445,7 +468,7 @@ var salesDataSummary = salesDataDf.aggregate({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#all">all</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3147">lib/dataframe.ts:3147</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3147">lib/dataframe.ts:3147</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -487,7 +510,7 @@ const everyoneIsNamedFred = df.all(row => row.CustomerName === "Fred"); // Check
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#any">any</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3187">lib/dataframe.ts:3187</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3187">lib/dataframe.ts:3187</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -535,7 +558,7 @@ const anyCustomers = df.any(); // Do we have any customers at all?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4168">lib/dataframe.ts:4168</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4354">lib/dataframe.ts:4354</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -568,7 +591,7 @@ const anyCustomers = df.any(); // Do we have any customers at all?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#ascsv">asCSV</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4302">lib/dataframe.ts:4302</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4488">lib/dataframe.ts:4488</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -592,7 +615,7 @@ const anyCustomers = df.any(); // Do we have any customers at all?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#asjson">asJSON</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4311">lib/dataframe.ts:4311</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4497">lib/dataframe.ts:4497</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -616,7 +639,7 @@ const anyCustomers = df.any(); // Do we have any customers at all?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#at">at</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3008">lib/dataframe.ts:3008</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3008">lib/dataframe.ts:3008</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -668,13 +691,21 @@ const row = df.at(date);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3528">lib/dataframe.ts:3528</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3700">lib/dataframe.ts:3700</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Forces lazy evaluation to complete and &#39;bakes&#39; the dataframe into memory.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const bakedDf = df.bake();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a dataframe that has been &#39;baked&#39;, all lazy evaluation has completed.</p>
@@ -692,25 +723,48 @@ const row = df.at(date);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#before">before</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3301">lib/dataframe.ts:3301</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3364">lib/dataframe.ts:3364</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values up to the specified index value (exclusive).</p>
+									<p>Gets a new dataframe containing all rows up to the specified index value (exclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const df = new DataFrame({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const firstHalf = df.before(2);
+expect(firstHalf.toArray()).to.eql([10, 20]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeriesDf = ... a dataframe indexed by date/time ...
+
+// Get all rows before the specified date.
+const allRowsBeforeEndDate = df.before(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">IndexT</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for before ending the new series.</p>
+										<p>The index value at which to end the new dataframe.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing all values up to the specified inde value.</p>
+							<p>Returns a new dataframe containing all rows up to (but not including) the specified index value.</p>
 						</li>
 					</ul>
 				</section>
@@ -725,26 +779,49 @@ const row = df.at(date);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#between">between</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3341">lib/dataframe.ts:3341</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3446">lib/dataframe.ts:3446</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new dataframe containing all values between the specified index values (inclusive).</p>
+									<p>Gets a new dataframe containing all rows between the specified index values (inclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const df = new DataFrame({
+     index: [0, 1, 2, 3, 4, 6], // This is the default index.
+     values: [10, 20, 30, 40, 50, 60],
+});
+
+const middleSection = df.between(1, 4);
+expect(middleSection.toArray()).to.eql([20, 30, 40, 50]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeriesDf = ... a dataframe indexed by date/time ...
+
+// Get all rows between the start and end dates (inclusive).
+const allRowsBetweenDates = df.after(new Date(2016, 5, 4), new Date(2016, 5, 22));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>startIndexValue: <span class="tsd-signature-type">IndexT</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index where the new sequence starts.</p>
+										<p>The index at which to start the new dataframe.</p>
 									</div>
 								</li>
 								<li>
 									<h5>endIndexValue: <span class="tsd-signature-type">IndexT</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index where the new sequence ends.</p>
+										<p>The index at which to end the new dataframe.</p>
 									</div>
 								</li>
 							</ul>
@@ -764,7 +841,7 @@ const row = df.at(date);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#bringtoback">bringToBack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2092">lib/dataframe.ts:2092</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2092">lib/dataframe.ts:2092</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -809,7 +886,7 @@ const modifiedDf = df.bringToBack(["NewSecondLastCollumn, ""NewLastColumn"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#bringtofront">bringToFront</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2035">lib/dataframe.ts:2035</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2035">lib/dataframe.ts:2035</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -854,7 +931,7 @@ const modifiedDf = df.bringToFront(["NewFirstColumn", "NewSecondColumn"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#cast">cast</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1496">lib/dataframe.ts:1496</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1496">lib/dataframe.ts:1496</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -893,7 +970,7 @@ const castDf = df.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3673">lib/dataframe.ts:3673</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3859">lib/dataframe.ts:3859</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -926,7 +1003,7 @@ const castDf = df.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2932">lib/dataframe.ts:2932</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2932">lib/dataframe.ts:2932</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -958,7 +1035,7 @@ const numRows = df.count();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4213">lib/dataframe.ts:4213</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4399">lib/dataframe.ts:4399</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -991,7 +1068,7 @@ const numRows = df.count();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#deflate">deflate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2505">lib/dataframe.ts:2505</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2505">lib/dataframe.ts:2505</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1041,7 +1118,7 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4236">lib/dataframe.ts:4236</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4422">lib/dataframe.ts:4422</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1065,7 +1142,7 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4259">lib/dataframe.ts:4259</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4445">lib/dataframe.ts:4445</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1089,13 +1166,23 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3567">lib/dataframe.ts:3567</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3753">lib/dataframe.ts:3753</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns only values in the dataframe that are distinct.</p>
+									<p>Returns only the set of rows in the dataframe that are distinct according some criteria.
+									This can be used to remove duplicate rows from the dataframe.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Remove duplicate rows by customer id. Will return only a single row per customer.
+const distinctCustomers = salesDf.distinct(sale => sale.CustomerId);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1108,7 +1195,7 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> selector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selects the value used to compare for duplicates.</p>
+										<p>User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.</p>
 									</div>
 								</li>
 							</ul>
@@ -1128,7 +1215,7 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#dropseries">dropSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1933">lib/dataframe.ts:1933</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1933">lib/dataframe.ts:1933</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1179,25 +1266,48 @@ const modifiedDf = df.dropSeries(["ColumnA", "ColumnB"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3281">lib/dataframe.ts:3281</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3323">lib/dataframe.ts:3323</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values up until and including the specified index value (inclusive).</p>
+									<p>Gets a new dataframe containing all rows up until and including the specified index value (inclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const df = new DataFrame({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const firstHalf = df.endAt(1);
+expect(firstHalf.toArray()).to.eql([10, 20]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeriesDf = ... a dataframe indexed by date/time ...
+
+// Get all rows ending at a particular date.
+const allRowsUpToAndIncludingTheExactEndDate = df.endAt(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">IndexT</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for before ending the new series.</p>
+										<p>The index value at which to end the new dataframe.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing all values up until and including the specified index value.</p>
+							<p>Returns a new dataframe containing all rows up until and including the specified index value.</p>
 						</li>
 					</ul>
 				</section>
@@ -1212,7 +1322,7 @@ const modifiedDf = df.dropSeries(["ColumnA", "ColumnB"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#ensureseries">ensureSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1845">lib/dataframe.ts:1845</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1845">lib/dataframe.ts:1845</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1300,7 +1410,7 @@ const updatedDf = df.ensureSeries("ANewColumn", df =>
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#except">except</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3833">lib/dataframe.ts:3833</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4019">lib/dataframe.ts:4019</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1367,7 +1477,7 @@ const updatedDf = df.ensureSeries("ANewColumn", df =>
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#expectseries">expectSeries</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1686">lib/dataframe.ts:1686</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1686">lib/dataframe.ts:1686</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1422,7 +1532,7 @@ catch (err) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4183">lib/dataframe.ts:4183</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4369">lib/dataframe.ts:4369</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1461,7 +1571,7 @@ catch (err) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#first">first</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2952">lib/dataframe.ts:2952</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2952">lib/dataframe.ts:2952</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1493,7 +1603,7 @@ const firstRow = df.first();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3122">lib/dataframe.ts:3122</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3122">lib/dataframe.ts:3122</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1536,7 +1646,7 @@ df.forEach(row => {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#generateseries">generateSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2453">lib/dataframe.ts:2453</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2453">lib/dataframe.ts:2453</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1603,7 +1713,7 @@ const dfWithNewSeries = df.generateSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getcolumnnames">getColumnNames</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1447">lib/dataframe.ts:1447</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1447">lib/dataframe.ts:1447</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1635,7 +1745,7 @@ console.log(df.getColumnNames());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getcolumns">getColumns</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1468">lib/dataframe.ts:1468</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1468">lib/dataframe.ts:1468</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1673,7 +1783,7 @@ for (const column in df.getColummns()) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getindex">getIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1511">lib/dataframe.ts:1511</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1511">lib/dataframe.ts:1511</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1705,7 +1815,7 @@ const index = df.getIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getseries">getSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1626">lib/dataframe.ts:1626</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1626">lib/dataframe.ts:1626</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1751,7 +1861,7 @@ const series = df.getSeries("SomeColumn");
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4422">lib/dataframe.ts:4422</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4608">lib/dataframe.ts:4608</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -1769,7 +1879,7 @@ const series = df.getSeries("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3585">lib/dataframe.ts:3585</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3771">lib/dataframe.ts:3771</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1808,7 +1918,7 @@ const series = df.getSeries("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3623">lib/dataframe.ts:3623</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3809">lib/dataframe.ts:3809</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1847,7 +1957,7 @@ const series = df.getSeries("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#hasseries">hasSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1654">lib/dataframe.ts:1654</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1654">lib/dataframe.ts:1654</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1890,7 +2000,7 @@ if (df.hasSeries("SomeColumn")) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#head">head</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3042">lib/dataframe.ts:3042</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3042">lib/dataframe.ts:3042</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1932,7 +2042,7 @@ const sample = df.head(10); // Take a sample of 10 rows from the start of the da
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#inflateseries">inflateSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2561">lib/dataframe.ts:2561</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2561">lib/dataframe.ts:2561</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1993,7 +2103,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4154">lib/dataframe.ts:4154</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4340">lib/dataframe.ts:4340</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2026,7 +2136,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3795">lib/dataframe.ts:3795</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3981">lib/dataframe.ts:3981</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2077,7 +2187,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#join">join</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3873">lib/dataframe.ts:3873</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4059">lib/dataframe.ts:4059</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2143,7 +2253,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3930">lib/dataframe.ts:3930</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4116">lib/dataframe.ts:4116</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2213,7 +2323,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3977">lib/dataframe.ts:3977</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4163">lib/dataframe.ts:4163</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2283,7 +2393,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4018">lib/dataframe.ts:4018</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4204">lib/dataframe.ts:4204</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2353,7 +2463,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#last">last</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2972">lib/dataframe.ts:2972</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2972">lib/dataframe.ts:2972</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2385,7 +2495,7 @@ const lastRow = df.last();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#none">none</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3231">lib/dataframe.ts:3231</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3231">lib/dataframe.ts:3231</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2431,7 +2541,7 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3749">lib/dataframe.ts:3749</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3935">lib/dataframe.ts:3935</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2470,7 +2580,7 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3761">lib/dataframe.ts:3761</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3947">lib/dataframe.ts:3947</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2509,20 +2619,34 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3423">lib/dataframe.ts:3423</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3570">lib/dataframe.ts:3570</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Parse a column with string values to a column with date values.</p>
+									<p>Parse a column with string values and convert it to a column with date values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const withParsedColumn = df.parseDates("MyDateColumn");
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const withParsedColumns = df.parseDates(["MyDateColumnA", "MyDateColumnA"]);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>columnNameOrNames: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Specifies the column name or array of column names to parse.</p>
+										<p>-Specifies the column name or array of column names to parse.</p>
 									</div>
 								</li>
 								<li>
@@ -2545,13 +2669,27 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3400">lib/dataframe.ts:3400</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3535">lib/dataframe.ts:3535</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Parse a column with string values to a column with float values.</p>
+									<p>Parse a column with string values and convert it to a column with float values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const withParsedColumn = df.parseFloats("MyFloatColumn");
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const withParsedColumns = df.parseFloats(["MyFloatColumnA", "MyFloatColumnA"]);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2578,13 +2716,27 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3378">lib/dataframe.ts:3378</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3501">lib/dataframe.ts:3501</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Parse a column with string values to a column with int values.</p>
+									<p>Parse a column with string values and convert it to a column with int values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const withParsedColumn = df.parseInts("MyIntColumn");
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const withParsedColumns = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2610,7 +2762,7 @@ const noCustomers = df.none(); // Do we have zero customers?
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4053">lib/dataframe.ts:4053</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4239">lib/dataframe.ts:4239</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2659,7 +2811,7 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#renameseries">renameSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2154">lib/dataframe.ts:2154</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2154">lib/dataframe.ts:2154</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2715,7 +2867,7 @@ const renamedDf = df.renameSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#reorderseries">reorderSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1984">lib/dataframe.ts:1984</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1984">lib/dataframe.ts:1984</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2762,7 +2914,7 @@ const reorderedDf = df.reorderSeries(["FirstColumn", "SecondColumn", "etc"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#resetindex">resetIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1602">lib/dataframe.ts:1602</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1602">lib/dataframe.ts:1602</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2794,13 +2946,21 @@ const dfWithResetIndex = df.resetIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3548">lib/dataframe.ts:3548</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3726">lib/dataframe.ts:3726</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Reverse the dataframe.</p>
+									<p>Gets a new dataframe in reverse order.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const reversedDf = df.reverse();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new dataframe that is the reverse of the input.</p>
@@ -2818,7 +2978,7 @@ const dfWithResetIndex = df.resetIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2627">lib/dataframe.ts:2627</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2627">lib/dataframe.ts:2627</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2862,7 +3022,7 @@ console.log(rollingWeeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#select">select</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2317">lib/dataframe.ts:2317</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2317">lib/dataframe.ts:2317</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2917,7 +3077,7 @@ const modifiedDf = df.select(row => transformRow(row));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2353">lib/dataframe.ts:2353</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2353">lib/dataframe.ts:2353</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2974,7 +3134,7 @@ const modifiedDf = df.selectMany(row => produceOutputRows(row));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2690">lib/dataframe.ts:2690</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2690">lib/dataframe.ts:2690</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3020,7 +3180,7 @@ const dfWithDuplicateRowsRemoved = df.sequentialDistinct(row => row.ColumnA);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4360">lib/dataframe.ts:4360</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4546">lib/dataframe.ts:4546</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3043,7 +3203,7 @@ const dfWithDuplicateRowsRemoved = df.sequentialDistinct(row => row.ColumnA);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#setindex">setIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1528">lib/dataframe.ts:1528</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1528">lib/dataframe.ts:1528</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3090,7 +3250,7 @@ const indexedDf = df.setIndex("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2790">lib/dataframe.ts:2790</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2790">lib/dataframe.ts:2790</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3131,7 +3291,7 @@ const dfWithRowsSkipped = df.skip(10); // Skip 10 rows in the original dataframe
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2843">lib/dataframe.ts:2843</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2843">lib/dataframe.ts:2843</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3172,7 +3332,7 @@ const dfWithRowsSkipped = df.skipUntil(row => row.CustomerName === "Fred"); // S
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2817">lib/dataframe.ts:2817</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2817">lib/dataframe.ts:2817</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3213,25 +3373,48 @@ const dfWithRowsSkipped = df.skipWhile(row => row.CustomerName === "Fred"); // S
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3261">lib/dataframe.ts:3261</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3282">lib/dataframe.ts:3282</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values starting at and after the specified index value.</p>
+									<p>Gets a new dataframe containing all rows starting at and after the specified index value.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const df = new DataFrame({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const lastHalf = df.startAt(2);
+expect(lastHalf.toArray()).to.eql([30, 40]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeriesDf = ... a dataframe indexed by date/time ...
+
+// Get all rows starting at (or after) a particular date.
+const allRowsFromStartDate = df.startAt(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">IndexT</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for before starting the new series.</p>
+										<p>The index value at which to start the new dataframe.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing all values starting at and after the specified index value.</p>
+							<p>Returns a new dataframe containing all rows starting at and after the specified index value.</p>
 						</li>
 					</ul>
 				</section>
@@ -3246,7 +3429,7 @@ const dfWithRowsSkipped = df.skipWhile(row => row.CustomerName === "Fred"); // S
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#subset">subset</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1889">lib/dataframe.ts:1889</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1889">lib/dataframe.ts:1889</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3292,7 +3475,7 @@ const subsetDf = df.subset(["ColumnA", "ColumnB"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3068">lib/dataframe.ts:3068</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3068">lib/dataframe.ts:3068</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3334,7 +3517,7 @@ const sample = df.tail(12); // Take a sample of 12 rows from the end of the data
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#take">take</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2862">lib/dataframe.ts:2862</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2862">lib/dataframe.ts:2862</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3372,7 +3555,7 @@ const dfWithRowsTaken = df.take(15); // Take only the first 15 rows from the ori
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2915">lib/dataframe.ts:2915</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2915">lib/dataframe.ts:2915</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3413,7 +3596,7 @@ const dfWithRowsTaken = df.takeUntil(row => row.CustomerName === "Fred"); // Tak
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2889">lib/dataframe.ts:2889</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2889">lib/dataframe.ts:2889</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3454,7 +3637,7 @@ const dfWithRowsTaken = df.takeWhile(row => row.CustomerName === "Fred"); // Tak
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#toarray">toArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2214">lib/dataframe.ts:2214</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2214">lib/dataframe.ts:2214</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3486,7 +3669,7 @@ const values = df.toArray();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tocsv">toCSV</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4291">lib/dataframe.ts:4291</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4477">lib/dataframe.ts:4477</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3510,7 +3693,7 @@ const values = df.toArray();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tohtml">toHTML</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4320">lib/dataframe.ts:4320</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4506">lib/dataframe.ts:4506</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3534,7 +3717,7 @@ const values = df.toArray();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tojson">toJSON</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4282">lib/dataframe.ts:4282</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4468">lib/dataframe.ts:4468</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3557,7 +3740,7 @@ const values = df.toArray();
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2263">lib/dataframe.ts:2263</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2263">lib/dataframe.ts:2263</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3655,7 +3838,7 @@ const someObject = df.toObject(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#topairs">toPairs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2236">lib/dataframe.ts:2236</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2236">lib/dataframe.ts:2236</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3688,7 +3871,7 @@ const pairs = df.toPairs();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#torows">toRows</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2281">lib/dataframe.ts:2281</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2281">lib/dataframe.ts:2281</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3719,7 +3902,7 @@ const rows = df.toRows();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3351">lib/dataframe.ts:3351</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3462">lib/dataframe.ts:3462</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3727,6 +3910,14 @@ const rows = df.toRows();
 									<p>Format the dataframe for display as a string.
 									This forces lazy evaluation to complete.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+console.log(df.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 							<p>Generates and returns a string representation of the dataframe or dataframe.</p>
@@ -3744,13 +3935,27 @@ const rows = df.toRows();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3456">lib/dataframe.ts:3456</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3615">lib/dataframe.ts:3615</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Convert a column of values of different types to a column of string values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const withStringColumn = df.toStrings("MyDateColumn", "YYYY-MM-DD");
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const withStringColumn = df.toStrings("MyFloatColumn", "0.00");
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -3780,7 +3985,7 @@ const rows = df.toRows();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#transformseries">transformSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2400">lib/dataframe.ts:2400</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2400">lib/dataframe.ts:2400</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3840,13 +4045,22 @@ const modifiedDf = df.transformSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3505">lib/dataframe.ts:3505</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3671">lib/dataframe.ts:3671</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Produces a new data frame with all string values truncated to the requested maximum length.</p>
+									<p>Produces a new dataframe with all string values truncated to the requested maximum length.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Truncate all string columns to 100 characters maximum.
+const truncatedDf = df.truncateString(100);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -3873,7 +4087,7 @@ const modifiedDf = df.transformSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#union">union</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3774">lib/dataframe.ts:3774</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3960">lib/dataframe.ts:3960</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3915,7 +4129,7 @@ const modifiedDf = df.transformSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2662">lib/dataframe.ts:2662</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2662">lib/dataframe.ts:2662</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3977,7 +4191,7 @@ const modifiedDf = df.transformSeries({
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#where">where</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3093">lib/dataframe.ts:3093</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3093">lib/dataframe.ts:3093</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -4019,7 +4233,7 @@ const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#window">window</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L2599">lib/dataframe.ts:2599</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L2599">lib/dataframe.ts:2599</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4071,7 +4285,7 @@ console.log(weeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#withindex">withIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1565">lib/dataframe.ts:1565</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1565">lib/dataframe.ts:1565</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4136,7 +4350,7 @@ const indexedDf = df.withIndex(row => row.SomeColumn + 20);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#withseries">withSeries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L1733">lib/dataframe.ts:1733</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L1733">lib/dataframe.ts:1733</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4226,7 +4440,7 @@ const modifiedDf = df.withSeries("ANewColumn", df =>
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#zip">zip</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3732">lib/dataframe.ts:3732</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3918">lib/dataframe.ts:3918</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -4277,7 +4491,7 @@ Preserves the index of the first dataframe.</p>
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#zip">zip</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3733">lib/dataframe.ts:3733</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3919">lib/dataframe.ts:3919</a></li>
         </ul>
 </aside>
 
@@ -4326,7 +4540,7 @@ Preserves the index of the first dataframe.</p>
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#zip">zip</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3734">lib/dataframe.ts:3734</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3920">lib/dataframe.ts:3920</a></li>
         </ul>
 </aside>
 
@@ -4397,7 +4611,7 @@ Preserves the index of the first dataframe.</p>
         <li class="tsd-description">
                 <aside class="tsd-sources">
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3642">lib/dataframe.ts:3642</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3828">lib/dataframe.ts:3828</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -4450,7 +4664,7 @@ Preserves the index of the first dataframe.</p>
         <li class="tsd-description">
                 <aside class="tsd-sources">
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L4394">lib/dataframe.ts:4394</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L4580">lib/dataframe.ts:4580</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -4497,7 +4711,7 @@ Preserves the index of the first dataframe.</p>
         <li class="tsd-description">
                 <aside class="tsd-sources">
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/6629721/src/lib/dataframe.ts#L3699">lib/dataframe.ts:3699</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/98e7ddc/src/lib/dataframe.ts#L3885">lib/dataframe.ts:3885</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">

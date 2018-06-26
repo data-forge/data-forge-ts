@@ -3252,11 +3252,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get a new series containing all values starting at and after the specified index value.
+     * Gets a new dataframe containing all rows starting at and after the specified index value.
      * 
-     * @param indexValue - The index value to search for before starting the new series.
+     * @param indexValue The index value at which to start the new dataframe.
      * 
-     * @returns Returns a new series containing all values starting at and after the specified index value. 
+     * @returns Returns a new dataframe containing all rows starting at and after the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = df.startAt(2);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows starting at (or after) a particular date.
+     * const allRowsFromStartDate = df.startAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
 
@@ -3272,11 +3293,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get a new series containing all values up until and including the specified index value (inclusive).
+     * Gets a new dataframe containing all rows up until and including the specified index value (inclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new dataframe.
      * 
-     * @returns Returns a new series containing all values up until and including the specified index value. 
+     * @returns Returns a new dataframe containing all rows up until and including the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = df.endAt(1);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows ending at a particular date.
+     * const allRowsUpToAndIncludingTheExactEndDate = df.endAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
 
@@ -3292,11 +3334,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get a new series containing all values up to the specified index value (exclusive).
+     * Gets a new dataframe containing all rows up to the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new dataframe.
      * 
-     * @returns Returns a new series containing all values up to the specified inde value. 
+     * @returns Returns a new dataframe containing all rows up to (but not including) the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = df.before(2);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows before the specified date.
+     * const allRowsBeforeEndDate = df.before(new Date(2016, 5, 4)); 
+     * </pre>
      */
     before (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
 
@@ -3312,11 +3375,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get a new series containing all values after the specified index value (exclusive).
+     * Gets a new dataframe containing all rows after the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for.
+     * @param indexValue The index value after which to start the new dataframe.
      * 
-     * @returns Returns a new series containing all values after the specified index value.
+     * @returns Returns a new dataframe containing all rows after the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = df.before(1);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows after the specified date.
+     * const allRowsAfterStartDate = df.after(new Date(2016, 5, 4)); 
+     * </pre>
      */
     after (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
         return new DataFrame<IndexT, ValueT>(() => {
@@ -3331,12 +3415,33 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Get a new dataframe containing all values between the specified index values (inclusive).
+     * Gets a new dataframe containing all rows between the specified index values (inclusive).
      * 
-     * @param startIndexValue - The index where the new sequence starts. 
-     * @param endIndexValue - The index where the new sequence ends.
+     * @param startIndexValue The index at which to start the new dataframe.
+     * @param endIndexValue The index at which to end the new dataframe.
      * 
      * @returns Returns a new dataframe containing all values between the specified index values (inclusive).
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3, 4, 6], // This is the default index.
+     *      values: [10, 20, 30, 40, 50, 60],
+     * });
+     * 
+     * const middleSection = df.between(1, 4);
+     * expect(middleSection.toArray()).to.eql([20, 30, 40, 50]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows between the start and end dates (inclusive).
+     * const allRowsBetweenDates = df.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
+     * </pre>
      */
     between (startIndexValue: IndexT, endIndexValue: IndexT): IDataFrame<IndexT, ValueT> {
         return this.startAt(startIndexValue).endAt(endIndexValue); 
@@ -3347,6 +3452,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * This forces lazy evaluation to complete.
      * 
      * @returns Generates and returns a string representation of the dataframe or dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * console.log(df.toString());
+     * </pre>
      */
     toString (): string {
 
@@ -3369,11 +3480,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Parse a column with string values to a column with int values.
+     * Parse a column with string values and convert it to a column with int values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
      * @returns Returns a new dataframe with a particular named column parsed as ints.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumn = df.parseInts("MyIntColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumns = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
+     * </pre>
      */
     parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
 
@@ -3391,11 +3514,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Parse a column with string values to a column with float values.
+     * Parse a column with string values and convert it to a column with float values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
      * @returns  Returns a new dataframe with a particular named column parsed as floats.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumn = df.parseFloats("MyFloatColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumns = df.parseFloats(["MyFloatColumnA", "MyFloatColumnA"]);
+     * </pre>
      */
     parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
 
@@ -3413,12 +3548,24 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Parse a column with string values to a column with date values.
+     * Parse a column with string values and convert it to a column with date values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
-     * @param [formatString] - Optional formatting string for dates.
+     * @param columnNameOrNames -Specifies the column name or array of column names to parse.
+     * @param [formatString] Optional formatting string for dates.
      * 
-     * @returns Returns a new dataframe with a particular named column parsed as dates.  
+     * @returns Returns a new dataframe with a particular named column parsed as dates.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumn = df.parseDates("MyDateColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumns = df.parseDates(["MyDateColumnA", "MyDateColumnA"]);
+     * </pre>
      */
     parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT> {
 
@@ -3442,8 +3589,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Convert a column of values of different types to a column of string values.
      *
-     * @param columnNames - Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
-     * @param [formatString] - Optional formatting string for dates.
+     * @param columnNames Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
+     * @param [formatString] Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -3451,7 +3598,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
      * 
-     * @returns Returns a new dataframe with a particular named column convert to strings.  
+     * @returns Returns a new dataframe with a particular named column convert to strings.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withStringColumn = df.toStrings("MyDateColumn", "YYYY-MM-DD");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withStringColumn = df.toStrings("MyFloatColumn", "0.00");
+     * </pre>
      */
     toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT> {
 
@@ -3496,11 +3655,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Produces a new data frame with all string values truncated to the requested maximum length.
+     * Produces a new dataframe with all string values truncated to the requested maximum length.
      *
-     * @param maxLength - The maximum length of the string values after truncation.
+     * @param maxLength The maximum length of the string values after truncation.
      * 
      * @returns Returns a new dataframe with all strings truncated to the specified maximum length.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Truncate all string columns to 100 characters maximum.
+     * const truncatedDf = df.truncateString(100);
+     * </pre>
      */
     truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT> {
         assert.isNumber(maxLength, "Expected 'maxLength' parameter to 'truncateStrings' to be an integer.");
@@ -3524,6 +3690,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      * 
      * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const bakedDf = df.bake();
+     * </pre>
      */
     bake (): IDataFrame<IndexT, ValueT> {
 
@@ -3541,9 +3713,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /** 
-     * Reverse the dataframe.
+     * Gets a new dataframe in reverse order.
      * 
      * @returns Returns a new dataframe that is the reverse of the input.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const reversedDf = df.reverse();
+     * </pre>
      */
     reverse (): IDataFrame<IndexT, ValueT> {
         return new DataFrame<IndexT, ValueT>(() => {
@@ -3558,11 +3736,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Returns only values in the dataframe that are distinct.
+     * Returns only the set of rows in the dataframe that are distinct according to some criteria.
+     * This can be used to remove duplicate rows from the dataframe.
      *
-     * @param selector - Selects the value used to compare for duplicates.
+     * @param selector User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.
      * 
      * @returns Returns a dataframe containing only unique values as determined by the 'selector' function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Remove duplicate rows by customer id. Will return only a single row per customer.
+     * const distinctCustomers = salesDf.distinct(sale => sale.CustomerId);
+     * </pre>
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT> {
         return new DataFrame<IndexT, ValueT>(() => {
