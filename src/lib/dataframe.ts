@@ -3762,11 +3762,24 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Groups the dataframe according to the selector.
+     * Collects rows in the dataframe into a series of groups according to the user-defined selector function that defines the group for each row.
      *
-     * @param selector - Selector that defines the value to group by.
+     * @param selector User-defined selector function that defines the value to group by.
      *
-     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * @returns Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... product sales ...
+     * const salesByProduct = salesDf.groupBy(sale => sale.ProductId);
+     * for (const productSalesGroup of salesByProduct) {
+     *      // ... do something with each product group ...
+     *      const productId = productSalesGroup.first().ProductId;
+     *      const totalSalesForProduct = productSalesGroup.deflate(sale => sale.Amount).sum();
+     *      console.log(totalSalesForProduct);
+     * }
+     * </pre>
      */
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
@@ -3800,11 +3813,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Group sequential values into a series of windows.
+     * Collects rows in the dataframe into a series of groups according to a user-defined selector function that identifies adjacent rows that should be in the same group.
      *
-     * @param selector - Optional selector that defines the value to group by.
+     * @param selector Optional selector that defines the value to group by.
      *
-     * @returns Returns a series of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @returns Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Some ultra simple stock trading strategy backtesting...
+     * const dailyStockPriceDf = ... daily stock price for a company ...
+     * const priceGroups  = dailyStockPriceDf.groupBy(day => day.close > day.movingAverage);
+     * for (const priceGroup of priceGroups) {
+     *      // ... do something with each stock price group ...
+     * 
+     *      const firstDay = priceGroup.first();
+     *      if (firstDay.close > movingAverage) {
+     *          // This group of days has the stock price above its moving average.
+     *          // ... maybe enter a long trade here ...
+     *      }
+     *      else {
+     *          // This group of days has the stock price below its moving average.
+     *          // ... maybe enter a short trade here ...
+     *      }
+     * }
+     * </pre>
      */
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
@@ -3821,9 +3855,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Concatenate multiple dataframes into a single dataframe.
      *
-     * @param dataframes - Array of dataframes to concatenate.
+     * @param dataframes Array of dataframes to concatenate.
      * 
      * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df1 = ...
+     * const df2 = ...
+     * const df3 = ...
+     * const concatenatedDf = DataFrame.concat([df1, df2, df3]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfs = [... array of dataframes...];
+     * const concatenatedDf = DataFrame.concat(dfs);
+     * </pre>
      */
     static concat<IndexT = any, ValueT = any> (dataframes: IDataFrame<IndexT, ValueT>[]): IDataFrame<IndexT, ValueT > {
         assert.isArray(dataframes, "Expected 'dataframes' parameter to 'DataFrame.concat' to be an array of dataframes.");
@@ -3852,9 +3902,40 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Concatenate multiple other dataframes onto this dataframe.
      * 
-     * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
+     * @param dataframes Multiple arguments. Each can be either a dataframe or an array of dataframes.
      * 
      * @returns Returns a single dataframes concatenated from multiple input dataframes. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat(dfB, dfC);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat([dfB, dfC]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat(dfB, [dfC, dfD]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const otherDfs = [... array of dataframes...];
+     * const concatenatedDf = dfA.concat(otherDfs);
+     * </pre>
      */    
     concat (...dataframes: (IDataFrame<IndexT, ValueT>[] | IDataFrame<IndexT, ValueT>)[]): IDataFrame<IndexT, ValueT> {
         const concatInput: IDataFrame<IndexT, ValueT>[] = [this];
@@ -3874,13 +3955,44 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
    
     /**
-    * Zip together multiple dataframes to create a new dataframe.
+    * Zip (or merge) together multiple dataframes to create a new dataframe.
     * Preserves the index of the first dataframe.
     *
-    * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
-    * @param zipper - Selector function that produces a new dataframe based on the input dataframes.
+    * @param dataframes Array of input dataframes to be zipped together.
+    * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
-    * @returns Returns a single dataframe zipped from multiple input dataframes. 
+    * @returns Returns a single dataframe zipped (or merged) from multiple input dataframes. 
+    * 
+    * @example
+    * <pre>
+    * 
+    * function produceNewRow (rowA, rowB) {
+    *       const outputRow = {
+    *           // Produce output row based on the contents of the input rows.
+    *       };
+    *       return outputRow;
+    * }
+    * 
+    * const inputDfs = [... array of input dataframes ...];
+    * const zippedDf = DataFrame.zip(inputDfs, produceNewRow);
+    * 
+    * </pre>
+    * 
+    * @example
+    * <pre>
+    * 
+    * function produceNewRow (rowA, rowB) {
+    *       const outputRow = {
+    *           ValueA: rowA.Value,
+    *           ValueB: rowB.Value,
+    *       };
+    *       return outputRow;
+    * }
+    * 
+    * const dfA = new DataFrame([ { Value: 10 }, { Value: 20 }, { Value: 30 }]);
+    * const dfB = new DataFrame([ { Value: 100 }, { Value: 200 }, { Value: 300 }]);
+    * const zippedDf = DataFrame.zip([dfA, dfB], produceNewRow);
+    * </pre>
     */
     static zip<IndexT = any, ValueT = any, ResultT = any> (dataframes: IDataFrame<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): IDataFrame<IndexT, ResultT> {
 
@@ -3907,13 +4019,29 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-    * Zip together multiple dataframes to create a new dataframe.
+    * Zip (or merge) together multiple dataframes to create a new dataframe.
     * Preserves the index of the first dataframe.
     * 
-    * @param s2, s3, s4, s4 - Multiple dataframes to zip.
-    * @param zipper - Zipper function that produces a new dataframe based on the input dataframes.
+    * @param s2, s3, s4, s4 Multiple dataframes to zip.
+    * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
-    * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+    * @returns Returns a single dataframe zipped (or merged) from multiple input dataframes. 
+    * 
+    * @example
+    * <pre>
+    * 
+    * function produceNewRow (rowA, rowB) {
+    *       const outputRow = {
+    *           ValueA: rowA.Value,
+    *           ValueB: rowB.Value,
+    *       };
+    *       return outputRow;
+    * }
+    * 
+    * const dfA = new DataFrame([ { Value: 10 }, { Value: 20 }, { Value: 30 }]);
+    * const dfB = new DataFrame([ { Value: 100 }, { Value: 200 }, { Value: 300 }]);
+    * const zippedDf = dfA.zip(dfB, produceNewRow);
+    * </pre>
     */    
     zip<Index2T, Value2T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): IDataFrame<IndexT, ResultT>;
     zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
