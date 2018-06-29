@@ -4054,11 +4054,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
-     * Sorts the dataframe by a value defined by the selector (ascending). 
+     * Sorts the dataframe in ascending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     * @returns Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by amount from least to most.
+     * const orderedDf = salesDf.orderBy(sale => sale.Amount); 
+     * </pre>
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
@@ -4066,11 +4073,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Sorts the dataframe by a value defined by the selector (descending). 
+     * Sorts the dataframe in descending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     * @returns Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by amount from most to least
+     * const orderedDf = salesDf.orderByDescending(sale => sale.Amount); 
+     * </pre>
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
@@ -4078,12 +4092,54 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
         
     /**
-     * Returns the unique union of values between two dataframes.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains the union of rows from the two input dataframes.
+     * These are the unique combination of rows in both dataframe.
+     * This is basically a concatenation and then elimination of duplicates.
      *
-     * @param other - The other dataframes to combine.
-     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * @param other The other dataframes to merge.
+     * @param [selector] Optional user-defined selector function that selects the value to compare to detemrine distinctness.
      * 
-     * @returns Returns the union of two dataframes.
+     * @returns Returns the union of the two dataframes.
+     * 
+     * @example
+     * <pre>
+     *
+     * const dfA = ...
+     * const dfB = ...
+     * const merged = dfA.union(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records that may contain the same
+     * // customer record in each set. This is basically a concatenation
+     * // of the dataframes and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA.union(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
+     * 
+     * 
+     * @example
+     * <pre>
+     *
+     * // Note that you can achieve the exact same result as the previous
+     * // example by doing a {@link DataFrame.concat) and {@link DataFrame.distinct}
+     * // of the dataframes and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA
+     *      .concat(customerRecordsB)
+     *      .distinct(customerRecord => customerRecord.CustomerId);
+     * </pre>
+     * 
      */
     union<KeyT = ValueT> (
         other: IDataFrame<IndexT, ValueT>, 
@@ -4098,14 +4154,37 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /**
-     * Returns the intersection of values between two dataframes.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains the intersection of rows from the two input dataframes.
+     * These are only the rows that appear in both dataframes.
      *
-     * @param inner - The other dataframe to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
-     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
-     * @returns Returns the intersection of two series.
-     */
+     * @returns Returns a new dataframe that contains the intersection of rows from the two input dataframes.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfA = ...
+     * const dfB = ...
+     * const mergedDf = dfA.intersection(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records to find only the
+     * // customers that appears in both.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const intersectionOfCustomerRecords = customerRecordsA.intersection(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>     
+     * */
     intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
         outerSelector?: SelectorFn<ValueT, KeyT>,
@@ -4136,13 +4215,35 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /**
-     * Returns the exception of values between two dataframes.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
+     * This is essentially subtracting the rows from the 2nd dataframe from the 1st and creating a new dataframe with the remaining rows.
      *
-     * @param inner - The other dataframe to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
-     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
-     * @returns Returns the difference between the two series.
+     * @returns Returns a new dataframe that contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfA = ...
+     * const dfB = ...
+     * const remainingDf = dfA.except(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Find the list of customers haven't bought anything recently.
+     * const allCustomers = ... list of all customers ...
+     * const recentCustomers = ... list of customers who have purchased recently ...
+     * const remainingCustomers = allCustomers.except(
+     *      recentCustomers, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
      */
     except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
