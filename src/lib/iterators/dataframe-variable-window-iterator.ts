@@ -34,11 +34,11 @@ export class DataFrameVariableWindowIterator<IndexT, ValueT> implements Iterator
             return ({ done: true } as IteratorResult<IDataFrame<IndexT, ValueT>>)  // <= explicit cast here!;
         }
 
-        var pairs = [
+        const pairs = [
             this.nextValue.value,
         ];
 
-        var prevValue = this.nextValue.value;
+        let prevValue = this.nextValue.value;
 
         // Pull values until there is one that doesn't compare.
         while (true) {
@@ -48,10 +48,12 @@ export class DataFrameVariableWindowIterator<IndexT, ValueT> implements Iterator
             }
 
             if (!this.comparer(prevValue[1], this.nextValue.value[1])) {
+                prevValue = this.nextValue.value;   
                 break; // Doesn't compare. Start a new window.
             }      
             
             pairs.push(this.nextValue.value);
+            prevValue = this.nextValue.value;
         }
 
         const window = new DataFrame<IndexT, ValueT>({

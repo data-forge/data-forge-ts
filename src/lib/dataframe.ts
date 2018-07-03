@@ -4304,15 +4304,34 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
    /**
-     * Correlates the elements of two dataframes on matching keys.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that have matching keys in both input dataframes.
      *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
-     * @returns Returns the joined dataframe. 
+     * @returns Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -4356,20 +4375,38 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Performs an outer join on two series. Correlates the elements based on matching keys.
-     * Includes elements from both series that have no correlation in the other series.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that are only present in or or the other of the dataframes, not both.
      *
-     * @param this - The outer series to join. 
-     * @param inner - The inner series to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined series. 
+     * @returns Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either product A or product B, not not both.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -4403,20 +4440,38 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /**
-     * Performs a left outer join on two dataframes. Correlates the elements based on matching keys.
-     * Includes left elements that have no correlation.
-     *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that present either in both dataframes or only in the outer (left) dataframe.
+     * 
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined dataframes. 
+     * @returns Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product A or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -4444,20 +4499,38 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /**
-     * Performs a right outer join on two dataframes. Correlates the elements based on matching keys.
-     * Includes right elements that have no correlation.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that present either in both dataframes or only in the inner (right) dataframe.
      *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined dataframes. 
+     * @returns Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product B or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
