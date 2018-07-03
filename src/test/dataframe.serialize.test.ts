@@ -1,7 +1,7 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import { Index } from '../lib/index';
-import { DataFrame } from '../lib/dataframe';
+import { DataFrame, IDataFrame, ISerializedDataFrame } from '../lib/dataframe';
 import * as moment from 'moment';
 
 describe('DataFrame serialization', () => {
@@ -66,13 +66,13 @@ describe('DataFrame serialization', () => {
 
     it ('can deserialize empty dataframe', () => {
 
-        const df = DataFrame.deserialize({ columns: {}, values: [] });
+        const df = DataFrame.deserialize({ columnOrder: [], columns: {}, values: [] });
         expect(df.count()).to.eql(0);
     });
 
     it ('can deserialize empty dataframe 2', () => {
 
-        const df = DataFrame.deserialize({});
+        const df = DataFrame.deserialize({} as ISerializedDataFrame);
         expect(df.count()).to.eql(0);
     });
     
