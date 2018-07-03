@@ -204,13 +204,13 @@ describe('DataFrame window', () => {
 			values: [1, 1, 2, 1, 1, 2, 3, 4, 3, 3],
 		});
 
-		var aggregated = df
+		var windowed = df
 			.variableWindow((a, b) => a === b)
             .select(window => [window.getIndex().first(), window.count()])
             .withIndex(pair => pair[0])
             .inflate(pair => pair[1]);
 
-		expect(aggregated.toPairs()).to.eql([
+		expect(windowed.toPairs()).to.eql([
 			[0, 2],
 			[2, 1],
 			[3, 2],
@@ -218,6 +218,26 @@ describe('DataFrame window', () => {
 			[6, 1],
 			[7, 1],
 			[8, 2]
+		]);
+	});
+
+	it('variable window compares each adjacent pair', () => {
+
+		var df = new DataFrame({ 
+			index:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+			values: [1, 2, 3, 4, 3, 3, 3, 4, 5, 8, 9],
+		});
+
+		var windowed = df
+			.variableWindow((a, b) => a === b-1)
+            .select(window => window.toArray());
+
+		expect(windowed.toArray()).to.eql([
+            [1, 2, 3, 4],
+            [3],
+            [3],
+            [3, 4, 5],
+            [8, 9],
 		]);
 	});
     

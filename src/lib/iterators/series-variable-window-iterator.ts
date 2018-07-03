@@ -32,11 +32,11 @@ export class SeriesVariableWindowIterator<IndexT, ValueT> implements Iterator<IS
             return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>)  // <= explicit cast here!;
         }
 
-        var pairs = [
+        const pairs = [
             this.nextValue.value,
         ];
 
-        var prevValue = this.nextValue.value;
+        let prevValue = this.nextValue.value;
 
         // Pull values until there is one that doesn't compare.
         while (true) {
@@ -46,10 +46,12 @@ export class SeriesVariableWindowIterator<IndexT, ValueT> implements Iterator<IS
             }
 
             if (!this.comparer(prevValue[1], this.nextValue.value[1])) {
+                prevValue = this.nextValue.value;
                 break; // Doesn't compare. Start a new window.
             }      
             
             pairs.push(this.nextValue.value);
+            prevValue = this.nextValue.value;
         }
 
         const window = new Series<IndexT, ValueT>({
