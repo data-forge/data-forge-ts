@@ -191,6 +191,35 @@ export interface IValueFrequency {
 }
 
 /**
+ * Records column types in a serialized dataframe.
+ */
+export interface IColumnTypes {
+    [index: string]: string;
+}
+
+/**
+ * The serialized form of a DataFrame. 
+ * This is an ordinary JavaScript data structure that can be used to transfer a dataframe across the wire and
+ * reinstantiate it on the otherside (this is necessary to maintain a stable column ordering).
+ */
+export interface ISerializedDataFrame {
+    /**
+     * The order of columns in the dataframe.
+     */
+    columnOrder: string[];
+
+    /**
+     * Records the columns and their types.
+     */
+    columns: IColumnTypes;
+
+    /**
+     * Rows/values contained in the dataframe..
+     */
+    values: any[];
+}
+
+/**
  * Interface that represents a dataframe.
  * A dataframe contains an indexed sequence of data records.
  * Think of it as a spreadsheet or CSV file in memory.
@@ -4902,7 +4931,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Serialize the dataframe to an ordinary JavaScript data structure.
      */
-    serialize (): any {
+    serialize (): ISerializedDataFrame {
         const values = this.toArray();
         const index = this.getIndex();
         const indices = index.head(values.length).toArray();
@@ -4936,7 +4965,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Deserialize the dataframe from an ordinary JavaScript data structure.
      */
-    static deserialize<IndexT = any,  ValueT = any> (input: any): IDataFrame<IndexT, ValueT> {
+    static deserialize<IndexT = any,  ValueT = any> (input: ISerializedDataFrame): IDataFrame<IndexT, ValueT> {
 
         const deserializedValues = input.values && input.values.map((row: any) => {
                 const clone = Object.assign({}, row);
