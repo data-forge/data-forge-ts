@@ -4529,14 +4529,71 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
-     * Reshape (or pivot) a table based on column values.
-     * This effiectively a short-hand for multiple grouping operations and an aggregation.
+     * Reshape (or pivot) a dataframe based on column values.
+     * This is short-hand that combines grouping, aggregation and sorting.
      *
-     * @param columnOrColumns - Column name whose values make the new DataFrame's columns.
-     * @param valueColumnNameOrSpec - Column name or column spec that defines the columns whose values should be aggregated.
-     * @param [aggregator] - Optional function used to aggregate pivotted vales. 
+     * @param columnOrColumns Column name whose values make the new DataFrame's columns.
+     * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
+     * @param [aggregator] Optional function used to aggregate pivotted vales. 
      *
      * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Simplest example.
+     * // Group by the values in 'PivotColumn'.
+     * // The unique set of values in 'PivotColumn' becomes the columns in the resulting dataframe.
+     * // The column 'ValueColumn' is averaged for each group and this becomes the 
+     * // values in the new column.
+     * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multi-value column example.
+     * // Similar to the previous example except now we are aggregating multiple value columns.
+     * // Each group has the average computed for 'ValueColumnA' and the sum for 'ValueColumnB'.
+     * const pivottedDf = df.pivot("PivotColumn", { 
+     *      "ValueColumnA": aValues => aValues.average(),
+     *      "ValueColumnB":  bValues => bValues.sum(),
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Full multi-column example.
+     * // Similar to the previous example now we are pivotting on multiple columns.
+     * // We now group by the 'PivotColumnA' and then by 'PivotColumnB', effectively creating a 
+     * // multi-level group.
+     * const pivottedDf = df.pivot(["PivotColumnA", "PivotColumnB" ], { 
+     *      "ValueColumnA": aValues => aValues.average(),
+     *      "ValueColumnB":  bValues => bValues.sum(),
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // To help understand the pivot function, let's look at what it does internally.
+     * // Take the simplest example:
+     * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
+     * 
+     * // If we expand out the internals of the pivot function, it will look something like this:
+     * const pivottedDf = df.groupBy(row => row.PivotColumn)
+     *          .select(group => ({
+     *              PivotColumn: group.deflate(row.ValueColumn).average()
+     *          }))
+     *          .orderBy(row  => row.PivotColumn);
+     * 
+     * // You can see that pivoting a dataframe is the same as grouping, aggregating and sorting it.
+     * // Does pivoting seem simpler now?
+     * 
+     * // It gets more complicated than that of course, because the pivot function supports multi-level nested 
+     * // grouping and aggregation of multiple columns. So a full expansion of the pivot function is rather complex.
+     * </pre>
      */
     pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
