@@ -1228,12 +1228,13 @@ The function `fillGaps` works the same for both series and dataframes:
 
     // Generator function that produces new rows to fill the game.
     var gapFiller = (pairA, pairB) => {
+        // Create an array of index, value pairs that fill the gaps between pairA and pairB.        
         return [
             newPair1,
             newPair2,
             newPair3,
         ];
-    }
+    };
 
     var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
 

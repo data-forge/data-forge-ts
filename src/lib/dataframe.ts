@@ -238,7 +238,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Enumerating the iterator forces lazy evaluation to complete.
      * This function is automatically called by `for...of`.
      * 
-     * @returns An iterator for the dataframe.
+     * @return An iterator for the dataframe.
      * 
      * @example
      * <pre>
@@ -253,14 +253,14 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Get the names of the columns in the dataframe.
      * 
-     * @returns Returns an array of the column names in the dataframe.  
+     * @return Returns an array of the column names in the dataframe.  
      */
     getColumnNames (): string[];
 
     /** 
      * Retreive a collection of all columns in the dataframe.
      * 
-     * @returns Returns a series the columns in the dataframe.
+     * @return Returns a series the columns in the dataframe.
      */
     getColumns (): ISeries<number, IColumn>;
 
@@ -280,7 +280,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnName - Name or index of the column to set as the index.
      *
-     * @returns Returns a new dataframe with the values of a particular named column as the index.  
+     * @return Returns a new dataframe with the values of a particular named column as the index.  
      */
     setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT>;
     
@@ -289,14 +289,14 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param newIndex The new index to apply to the dataframe.
      * 
-     * @returns Returns a new dataframe with the specified index attached.
+     * @return Returns a new dataframe with the specified index attached.
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT>;
 
     /**
      * Resets the index of the dataframe back to the default zero-based sequential integer index.
      * 
-     * @returns Returns a new dataframe with the index reset to the default zero-based index. 
+     * @return Returns a new dataframe with the index reset to the default zero-based index. 
      */
     resetIndex (): IDataFrame<number, ValueT>;
     
@@ -329,7 +329,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param columnNameOrSpec - The name of the column to add or replace.
      * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
      *
-     * @returns Returns a new dataframe replacing or adding a particular named column.
+     * @return Returns a new dataframe replacing or adding a particular named column.
      */
     withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
     
@@ -339,7 +339,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
      * @param series - The series to add to the dataframe. Can also be a function that returns the series.
      * 
-     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
+     * @return Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
      */
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
 
@@ -348,7 +348,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnNames - Array of column names to include in the new data-frame.
      * 
-     * @returns Returns a dataframe with a subset of columns from the input dataframe.
+     * @return Returns a dataframe with a subset of columns from the input dataframe.
      */
     subset<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
 
@@ -357,7 +357,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnOrColumns - Specifies the column name (a string) or columns (array of column names) to drop.
      * 
-     * @returns Returns a new dataframe with a particular name column or columns removed.
+     * @return Returns a new dataframe with a particular name column or columns removed.
      */
     dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT>;
 
@@ -367,7 +367,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param columnNames - The new order for columns.
      * 
-     * @returns Returns a new dataframe with columns remapped according to the specified column layout.   
+     * @return Returns a new dataframe with columns remapped according to the specified column layout.   
      */
     reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
 
@@ -376,7 +376,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnOrColumns - Specifies the column or columns to bring to the front.
      *
-     * @returns Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
+     * @return Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
      */
     bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
 
@@ -385,7 +385,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnOrColumns - Specifies the column or columns to bring to the back.
      *
-     * @returns Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
+     * @return Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
      */
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
 
@@ -394,7 +394,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param newColumnNames - A column rename spec - maps existing column names to new column names.
      * 
-     * @returns Returns a new dataframe with columns renamed.
+     * @return Returns a new dataframe with columns renamed.
      */
     renameSeries<NewValueT = ValueT> (newColumnNames: IColumnRenameSpec): IDataFrame<IndexT, NewValueT>;
 
@@ -402,7 +402,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     * 
-    * @returns Returns an array of values contained within the dataframe. 
+    * @return Returns an array of values contained within the dataframe. 
     */
     toArray (): ValueT[];
 
@@ -410,7 +410,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Retreive the index and values from the DataFrame as an array of pairs.
      * Each pairs is [index, value].
      * 
-     * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
+     * @return Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
      */
     toPairs (): ([IndexT, ValueT])[];
 
@@ -420,14 +420,14 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param {function} keySelector - Function that selects keys for the resulting object.
      * @param {valueSelector} keySelector - Function that selects values for the resulting object.
      * 
-     * @returns {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     * @return {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /**
      * Bake the data frame to an array of rows.
      * 
-     *  @returns Returns an array of rows. Each row is an array of values in column order.   
+     * @return Returns an array of rows. Each row is an array of values in column order.   
      */
     toRows (): any[][];
  
@@ -436,7 +436,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param selector Selector function that transforms each value to create a new dataframe.
      * 
-     * @returns Returns a new dataframe that has been transformed by the selector function.
+     * @return Returns a new dataframe that has been transformed by the selector function.
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
 
@@ -445,7 +445,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param selector Selector function that transforms each value into a list of values.
      * 
-     * @returns  Returns a new dataframe with values that have been produced by the selector function. 
+     * @return  Returns a new dataframe with values that have been produced by the selector function. 
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT>;
 
@@ -455,7 +455,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnSelectors - Object with field names for each column to be transformed. Each field you be a selector that transforms that column.
      * 
-     * @returns Returns a new dataframe with 1 or more columns transformed.   
+     * @return Returns a new dataframe with 1 or more columns transformed.   
      */
     transformSeries<NewValueT = ValueT> (columnSelectors: IColumnTransformSpec): IDataFrame<IndexT, NewValueT>;
 
@@ -464,7 +464,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param generator - Generator function that transforms each row to a new set of columns.
      * 
-     * @returns Returns a new dataframe with 1 or more new columns.
+     * @return Returns a new dataframe with 1 or more new columns.
      */
     generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT>;
 
@@ -473,7 +473,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param [selector] - Optional selector function that transforms each row to a new sequence of values.
      *
-     * @returns Returns a series that was created from the input dataframe.
+     * @return Returns a series that was created from the input dataframe.
      */
     deflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
 
@@ -483,7 +483,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param columnName - Name or index of the column to retreive.
      * @param [selector] - Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
      * 
-     * @returns Returns a new dataframe with a column inflated to 1 or more new columns.
+     * @return Returns a new dataframe with a column inflated to 1 or more new columns.
      */
     inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT>;
 
@@ -493,7 +493,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param period - The number of values in the window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     * @return Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
      */
     window (period: number): ISeries<number, IDataFrame<IndexT, ValueT>>;
 
@@ -502,7 +502,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     *
      * @param period - The number of values in the window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     * @return Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
      */
     rollingWindow (period: number): ISeries<number, IDataFrame<IndexT, ValueT>>;
 
@@ -511,7 +511,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
      * 
-     * @returns Returns a series of groups. Each group is itself a dataframe that contains the values in the 'window'. 
+     * @return Returns a series of groups. Each group is itself a dataframe that contains the values in the 'window'. 
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
 
@@ -520,7 +520,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
      * 
-     * @returns Returns a new dataframe with duplicate values that are sequential removed.
+     * @return Returns a new dataframe with duplicate values that are sequential removed.
      */
     sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
 
@@ -530,7 +530,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param [seed] - Optional seed value for producing the aggregation.
      * @param selector - Function that takes the seed and then each value in the dataframe and produces the aggregate value.
      * 
-     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
+     * @return Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
      */
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT;
     
@@ -538,7 +538,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Skip a number of values in the dataframe.
      *
      * @param numValues - Number of values to skip.     * 
-     * @returns Returns a new dataframe or dataframe with the specified number of values skipped. 
+     * @return Returns a new dataframe or dataframe with the specified number of values skipped. 
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT>;
 
@@ -547,7 +547,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param predicate - Return true to indicate the condition met.
      * 
-     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     * @return Returns a new series with all initial sequential values removed that match the predicate.  
      */
     skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
@@ -556,7 +556,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param predicate - Return true to indicate the condition met.
      * 
-     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     * @return Returns a new series with all initial sequential values removed that don't match the predicate.
      */
     skipUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
@@ -565,7 +565,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param numRows - Number of rows to take.
      * 
-     * @returns Returns a new series with up to the specified number of values included.
+     * @return Returns a new series with up to the specified number of values included.
      */
     take (numRows: number): IDataFrame<IndexT, ValueT>;
 
@@ -574,7 +574,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param predicate - Return true to indicate the condition met.
      * 
-     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     * @return Returns a new series that only includes the initial sequential values that have matched the predicate.
      */
     takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
@@ -583,28 +583,28 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param predicate - Return true to indicate the condition met.
      * 
-     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     * @return Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
      */
     takeUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
      * Count the number of values in the series.
      *
-     * @returns Returns the count of all values in the series.
+     * @return Returns the count of all values in the series.
      */
     count (): number;
 
     /**
      * Get the first value of the series.
      *
-     * @returns Returns the first value of the series.
+     * @return Returns the first value of the series.
      */
     first (): ValueT;
 
     /**
      * Get the last value of the series.
      *
-     * @returns Returns the last value of the series.
+     * @return Returns the last value of the series.
      */
     last (): ValueT;
     
@@ -613,7 +613,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param index - Index to for which to retreive the value.
      *
-     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     * @return Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
      */
     at (index: IndexT): ValueT | undefined;
     
@@ -622,7 +622,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param numValues - Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     * @return Returns a new series that has only the specified number of values taken from the start of the input sequence.  
      */
     head (numValues: number): IDataFrame<IndexT, ValueT>;
 
@@ -631,7 +631,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param numValues - Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     * @return Returns a new series that has only the specified number of values taken from the end of the input sequence.  
      */
     tail (numValues: number): IDataFrame<IndexT, ValueT>;
 
@@ -640,7 +640,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param predicate - Predicte function to filter rows of the series.
      * 
-     * @returns Returns a new series containing only the values that match the predicate. 
+     * @return Returns a new series containing only the values that match the predicate. 
      */
     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
@@ -649,7 +649,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param callback - The calback to invoke for each value.
      * 
-     * @returns Returns the input series with no modifications.
+     * @return Returns the input series with no modifications.
      */
     forEach (callback: CallbackFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
@@ -661,7 +661,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
      *
-     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     * @return {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
      */
     all (predicate: PredicateFn<ValueT>): boolean;
 
@@ -673,7 +673,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
      *
-     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
      */
     any (predicate?: PredicateFn<ValueT>): boolean;
 
@@ -686,7 +686,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
      * 
-     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
      */
     none (predicate?: PredicateFn<ValueT>): boolean;
 
@@ -695,7 +695,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param indexValue - The index value to search for before starting the new series.
      * 
-     * @returns Returns a new series containing all values starting at and after the specified index value. 
+     * @return Returns a new series containing all values starting at and after the specified index value. 
      */
     startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
@@ -704,7 +704,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param indexValue - The index value to search for before ending the new series.
      * 
-     * @returns Returns a new series containing all values up until and including the specified index value. 
+     * @return Returns a new series containing all values up until and including the specified index value. 
      */
     endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
@@ -713,7 +713,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param indexValue - The index value to search for before ending the new series.
      * 
-     * @returns Returns a new series containing all values up to the specified inde value. 
+     * @return Returns a new series containing all values up to the specified inde value. 
      */
     before (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
@@ -722,7 +722,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param indexValue - The index value to search for.
      * 
-     * @returns Returns a new series containing all values after the specified index value.
+     * @return Returns a new series containing all values after the specified index value.
      */
     after (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
@@ -732,7 +732,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param startIndexValue - The index where the new sequence starts. 
      * @param endIndexValue - The index where the new sequence ends.
      * 
-     * @returns Returns a new dataframe containing all values between the specified index values (inclusive).
+     * @return Returns a new dataframe containing all values between the specified index values (inclusive).
      */
     between (startIndexValue: IndexT, endIndexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
@@ -740,7 +740,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Format the dataframe for display as a string.
      * This forces lazy evaluation to complete.
      * 
-     * @returns Generates and returns a string representation of the dataframe or dataframe.
+     * @return Generates and returns a string representation of the dataframe or dataframe.
      */
     toString (): string;
 
@@ -749,7 +749,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnNameOrNames - Specifies the column name or array of column names to parse.
      * 
-     * @returns Returns a new dataframe with a particular named column parsed as ints.  
+     * @return Returns a new dataframe with a particular named column parsed as ints.  
      */
     parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT>;
 
@@ -758,7 +758,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnNameOrNames - Specifies the column name or array of column names to parse.
      * 
-     * @returns  Returns a new dataframe with a particular named column parsed as floats.  
+     * @return  Returns a new dataframe with a particular named column parsed as floats.  
      */
     parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT>;
 
@@ -768,7 +768,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param columnNameOrNames - Specifies the column name or array of column names to parse.
      * @param [formatString] - Optional formatting string for dates.
      * 
-     * @returns Returns a new dataframe with a particular named column parsed as dates.  
+     * @return Returns a new dataframe with a particular named column parsed as dates.  
      */
     parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT>;
 
@@ -784,7 +784,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
 
-     * @returns Returns a new dataframe with a particular named column convert to strings.  
+     * @return Returns a new dataframe with a particular named column convert to strings.  
      */
     toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT>;    
 
@@ -793,21 +793,21 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param maxLength - The maximum length of the string values after truncation.
      * 
-     * @returns Returns a new dataframe with all strings truncated to the specified maximum length.
+     * @return Returns a new dataframe with all strings truncated to the specified maximum length.
      */
     truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT>;
 
     /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      * 
-     * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
+     * @return Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
      */
     bake (): IDataFrame<IndexT, ValueT>;
 
     /** 
      * Reverse the dataframe.
      * 
-     * @returns Returns a new dataframe that is the reverse of the input.
+     * @return Returns a new dataframe that is the reverse of the input.
      */
     reverse (): IDataFrame<IndexT, ValueT>;
 
@@ -816,7 +816,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param selector - Selects the value used to compare for duplicates.
      * 
-     * @returns Returns a dataframe containing only unique values as determined by the 'selector' function. 
+     * @return Returns a dataframe containing only unique values as determined by the 'selector' function. 
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
 
@@ -825,7 +825,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param selector - Selector that defines the value to group by.
      *
-     * @returns Returns a series of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @return Returns a series of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
      */
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
     
@@ -834,7 +834,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param selector - Optional selector that defines the value to group by.
      *
-     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * @return Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
      */
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
     
@@ -843,7 +843,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
      * 
-     * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+     * @return Returns a single dataframe concatenated from multiple input dataframes. 
      */    
     concat (...dataframes: (IDataFrame<IndexT, ValueT>[] | IDataFrame<IndexT, ValueT>)[]): IDataFrame<IndexT, ValueT>;
     
@@ -854,7 +854,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     * @param s2, s3, s4, s4 - Multiple dataframes to zip.
     * @param zipper - Zipper function that produces a new dataframe based on the input dataframes.
     * 
-    * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+    * @return Returns a single dataframe concatenated from multiple input dataframes. 
     */    
     zip<Index2T, Value2T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): IDataFrame<IndexT, ResultT>;
     zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
@@ -866,7 +866,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param selector Selects the value to sort by.
      * 
-     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     * @return Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 
@@ -875,7 +875,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param selector Selects the value to sort by.
      * 
-     * @returns Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     * @return Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
         
@@ -885,7 +885,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param other - The other dataframe to combine.
      * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
      * 
-     * @returns Returns the union of two dataframes.
+     * @return Returns the union of two dataframes.
      */
     union<KeyT = ValueT> (
         other: IDataFrame<IndexT, ValueT>, 
@@ -899,7 +899,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
      * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
      * 
-     * @returns Returns the intersection of two dataframes.
+     * @return Returns the intersection of two dataframes.
      */
     intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -915,7 +915,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
      * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
      * 
-     * @returns Returns the difference between the two dataframes.
+     * @return Returns the difference between the two dataframes.
      */
     except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -932,7 +932,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
      * @param resultSelector - Selector that defines how to merge outer and inner values.
      * 
-     * @returns Returns the joined dataframe. 
+     * @return Returns the joined dataframe. 
      */
     join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -955,7 +955,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined dataframe. 
+     * @return Returns the joined dataframe. 
      */
     joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -979,7 +979,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined dataframe. 
+     * @return Returns the joined dataframe. 
      */
     joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -1002,7 +1002,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined dataframe. 
+     * @return Returns the joined dataframe. 
      */
     joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -1019,7 +1019,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param valueColumnNameOrSpec - Column name or column spec that defines the columns whose values should be aggregated.
      * @param [aggregator] - Optional function used to aggregate pivotted vales. 
      *
-     * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
+     * @return Returns a new dataframe that has been pivoted based on a particular column's values. 
      */
     pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
@@ -1032,7 +1032,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param pair - The pair to insert.
      * 
-     * @returns Returns a new dataframe with the specified pair inserted.
+     * @return Returns a new dataframe with the specified pair inserted.
      */
     insertPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
 
@@ -1041,7 +1041,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param pair - The pair to append.
      *  
-     * @returns Returns a new dataframe with the specified pair appended.
+     * @return Returns a new dataframe with the specified pair appended.
      */
     appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
 
@@ -1051,7 +1051,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
      * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
      *
-     * @returns Returns a new dataframe with gaps filled in.
+     * @return Returns a new dataframe with gaps filled in.
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT>;
 
@@ -1060,56 +1060,56 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param defaultSequence - Default sequence to return if the dataframe is empty.
      * 
-     * @returns Returns 'defaultSequence' if the dataframe is empty. 
+     * @return Returns 'defaultSequence' if the dataframe is empty. 
      */
     defaultIfEmpty (defaultSequence: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
      * Detect the types of the values in the dataframe.
      *
-     * @returns Returns a dataframe that describes the data types contained in the input series or dataframe.
+     * @return Returns a dataframe that describes the data types contained in the input series or dataframe.
      */
     detectTypes (): IDataFrame<number, ITypeFrequency>;
 
     /**
      * Detect the frequency of the values in the dataframe.
      *
-     * @returns Returns a dataframe that describes the values contained in the dataframe.
+     * @return Returns a dataframe that describes the values contained in the dataframe.
      */
     detectValues (): IDataFrame<number, IValueFrequency>;
 
     /**
      * Serialize the dataframe to JSON.
      * 
-     *  @returns Returns a JSON format string representing the dataframe.   
+     * @return Returns a JSON format string representing the dataframe.   
      */
     toJSON (): string;
 
     /**
      * Serialize the dataframe to CSV.
      * 
-     *  @returns Returns a CSV format string representing the dataframe.   
+     * @return Returns a CSV format string representing the dataframe.   
      */
     toCSV (): string;
 
     /**
      * Treat the dataframe as CSV data for purposes of serialization.
      * 
-     * @returns Returns an object that represents the dataframe for serialization in the CSV format. Call `writeFile`, `writeFileSync` to output the dataframe via different media.
+     * @return Returns an object that represents the dataframe for serialization in the CSV format. Call `writeFile`, `writeFileSync` to output the dataframe via different media.
      */
     asCSV (): ICsvSerializer;
 
     /**
      * Treat the dataframe as JSON data for purposes of serialization.
      * 
-     * @returns Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
+     * @return Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
      */
     asJSON (): IJsonSerializer;
 
     /**
      * Serialize the dataframe to HTML.
      * 
-     *  @returns Returns a HTML format string representing the dataframe.   
+     * @return Returns a HTML format string representing the dataframe.   
      */
     toHTML (): string;
     
@@ -1129,7 +1129,7 @@ export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> e
      * 
      * @param selector Selects the value to sort by.
      * 
-     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 
@@ -1138,7 +1138,7 @@ export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> e
      * 
      * @param selector Selects the value to sort by.
      * 
-     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 }
@@ -1448,7 +1448,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Enumerating the iterator forces lazy evaluation to complete.
      * This function is automatically called by `for...of`.
      * 
-     * @returns An iterator for the dataframe.
+     * @return An iterator for the dataframe.
      * 
      * @example
      * <pre>
@@ -1465,7 +1465,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Get the names of the columns in the dataframe.
      * 
-     * @returns Returns an array of the column names in the dataframe.  
+     * @return Returns an array of the column names in the dataframe.  
      * 
      * @example
      * <pre>
@@ -1480,7 +1480,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /** 
      * Retreive the collection of all columns in the dataframe.
      * 
-     * @returns Returns a {@link Series} containing the names of the columns in the dataframe.
+     * @return Returns a {@link Series} containing the names of the columns in the dataframe.
      * 
      * @example
      * <pre>
@@ -1514,7 +1514,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Cast the value of the dataframe to a new type.
      * This operation has no effect but to retype the value that the dataframe contains.
      * 
-     * @returns The same dataframe, but with the type changed.
+     * @return The same dataframe, but with the type changed.
      * 
      * @example
      * <pre>
@@ -1529,7 +1529,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Get the index for the dataframe.
      * 
-     * @returns The {@link Index} for the dataframe.
+     * @return The {@link Index} for the dataframe.
      * 
      * @example
      * <pre>
@@ -1546,7 +1546,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnName Name of the column to use as the new {@link Index} of the returned dataframe.
      *
-     * @returns Returns a new dataframe with the values of the specified column as the new {@link Index}.
+     * @return Returns a new dataframe with the values of the specified column as the new {@link Index}.
      * 
      * @example
      * <pre>
@@ -1565,7 +1565,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param newIndex The new array or iterable to be the new {@link Index} of the dataframe. Can also be a selector to choose the {@link Index} for each row in the dataframe.
      * 
-     * @returns Returns a new dataframe or dataframe with the specified {@link Index} attached.
+     * @return Returns a new dataframe or dataframe with the specified {@link Index} attached.
      * 
      * @example
      * <pre>
@@ -1620,7 +1620,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Resets the {@link Index} of the dataframe back to the default zero-based sequential integer index.
      * 
-     * @returns Returns a new dataframe with the {@link Index} reset to the default zero-based index. 
+     * @return Returns a new dataframe with the {@link Index} reset to the default zero-based index. 
      * 
      * @example
      * <pre>
@@ -1644,7 +1644,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnName Specifies the name of the column that contains the {@link Series} to retreive.
      * 
-     * @returns Returns the {@link Series} extracted from the named column in the dataframe.
+     * @return Returns the {@link Series} extracted from the named column in the dataframe.
      * 
      * @example
      * <pre>
@@ -1670,7 +1670,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnName Name of the column to check for.
      * 
-     * @returns Returns true if the dataframe contains the requested {@link Series}, otherwise returns false.
+     * @return Returns true if the dataframe contains the requested {@link Series}, otherwise returns false.
      * 
      * @example
      * <pre>
@@ -1698,7 +1698,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnName Name of the column to extract.
      * 
-     * @returns Returns the {@link Series} for the column if it exists, otherwise it throws an exception.
+     * @return Returns the {@link Series} for the column if it exists, otherwise it throws an exception.
      * 
      * @example
      * <pre>
@@ -1726,7 +1726,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param columnNameOrSpec The name of the column to add or replace or a {@link IColumnGenSpec} that defines the columns to add.
      * @param [series] When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
      *
-     * @returns Returns a new dataframe replacing or adding a particular named column.
+     * @return Returns a new dataframe replacing or adding a particular named column.
      * 
      * @example
      * <pre>
@@ -1838,7 +1838,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param columnNameOrSpec The name of the series to add or a {@link IColumnGenSpec} that specifies the columns to add.
      * @param [series] If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
      * 
-     * @returns Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
+     * @return Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
      * 
      * @example
      * <pre>
@@ -1908,7 +1908,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnNames Array of column names to include in the new dataframe.
      * 
-     * @returns Returns a dataframe with a subset of columns from the original dataframe.
+     * @return Returns a dataframe with a subset of columns from the original dataframe.
      * 
      * @example
      * <pre>
@@ -1947,7 +1947,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnOrColumns Specifies the column name (a string) or columns (array of strings) to drop.
      * 
-     * @returns Returns a new dataframe with a particular named column or columns removed.
+     * @return Returns a new dataframe with a particular named column or columns removed.
      * 
      * @example
      * <pre>
@@ -2003,7 +2003,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param columnNames Specifies the new order for columns.
      * 
-     * @returns Returns a new dataframe with columns reodered according to the order of the array of column names that is passed in.
+     * @return Returns a new dataframe with columns reodered according to the order of the array of column names that is passed in.
      * 
      * @example
      * <pre>
@@ -2049,7 +2049,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnOrColumns Specifies the column or columns to bring to the front.
      *
-     * @returns Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
+     * @return Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
      * 
      * @example
      * <pre>
@@ -2106,7 +2106,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnOrColumns Specifies the column or columns to bring to the back.
      *
-     * @returns Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
+     * @return Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
      * 
      * @example
      * <pre>
@@ -2163,7 +2163,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param newColumnNames A column rename spec - a JavaScript hash that maps existing column names to new column names.
      * 
-     * @returns Returns a new dataframe with specified columns renamed.
+     * @return Returns a new dataframe with specified columns renamed.
      * 
      * @example
      * <pre>
@@ -2233,7 +2233,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * Extract values from the dataframe as an array.
     * This forces lazy evaluation to complete.
     * 
-    * @returns Returns an array of the values contained within the dataframe. 
+    * @return Returns an array of the values contained within the dataframe. 
     * 
     * @example
     * <pre>
@@ -2255,7 +2255,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Each pair is [index, value].
      * This forces lazy evaluation to complete.
      * 
-     * @returns Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
+     * @return Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
      * 
      * @example
      * <pre>
@@ -2278,7 +2278,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param keySelector Function that selects keys for the resulting object.
      * @param valueSelector Function that selects values for the resulting object.
      * 
-     * @returns Returns a JavaScript object generated from the dataframe by applying the key and value selector functions. 
+     * @return Returns a JavaScript object generated from the dataframe by applying the key and value selector functions. 
      * 
      * @example
      * <pre>
@@ -2300,7 +2300,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Bake the data frame to an array of rows were each rows is an array of values in column order.
      * 
-     * @returns Returns an array of rows. Each row is an array of values in column order.
+     * @return Returns an array of rows. Each row is an array of values in column order.
      * 
      * @example
      * <pre>
@@ -2327,7 +2327,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param selector Selector function that transforms each row to create the new dataframe.
      * 
-     * @returns Returns a new dataframe that has been transformed by the selector function.
+     * @return Returns a new dataframe that has been transformed by the selector function.
      * 
      * @example
      * <pre>
@@ -2362,7 +2362,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param selector Selector function that transforms each row into a collection of output rows.
      * 
-     * @returns  Returns a new dataframe with rows that have been produced by the selector function. 
+     * @return  Returns a new dataframe with rows that have been produced by the selector function. 
      * 
      * @example
      * <pre>
@@ -2407,7 +2407,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnSelectors Object with field names for each column to be transformed. Each field specifies a selector function that transforms that column.
      * 
-     * @returns Returns a new dataframe with 1 or more columns transformed.
+     * @return Returns a new dataframe with 1 or more columns transformed.
      * 
      * @example
      * <pre>
@@ -2454,7 +2454,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param generator Generator function that transforms each row to produce 1 or more new columns.
      * Or use a column spec that has fields for each column, the fields specify a generate function that produces the value for each new column.
      * 
-     * @returns Returns a new dataframe with 1 or more new columns.
+     * @return Returns a new dataframe with 1 or more new columns.
      * 
      * @example
      * <pre>
@@ -2517,7 +2517,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param [selector] Optional selector function that transforms each row to produce the series.
      *
-     * @returns Returns a series that was created from the deflated from  the original dataframe.
+     * @return Returns a series that was created from the deflated from  the original dataframe.
      * 
      * @example
      * <pre>
@@ -2571,7 +2571,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param columnName Name of the series to inflate.
      * @param [selector] Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
      * 
-     * @returns Returns a new dataframe with a column inflated to 1 or more new columns.
+     * @return Returns a new dataframe with a column inflated to 1 or more new columns.
      * 
      * @example
      * <pre>
@@ -2607,7 +2607,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param period The number of data rows to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a chunk of the original dataframe.
+     * @return Returns a new series, each value of which is a chunk of the original dataframe.
      * 
      * @example
      * <pre>
@@ -2643,7 +2643,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param period The number of data rows to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a rolling chunk of the original dataframe.
+     * @return Returns a new series, each value of which is a rolling chunk of the original dataframe.
      * 
      * @example
      * <pre>
@@ -2672,7 +2672,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param comparer Function that compares two adjacent data rows and returns true if they should be in the same window.
      * 
-     * @returns Returns a new series, each value of which is a chunk of data from the original dataframe.
+     * @return Returns a new series, each value of which is a chunk of data from the original dataframe.
      * 
      * @example
      * <pre>
@@ -2708,7 +2708,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param [selector] Optional selector function to determine the value used to compare for equivalence.
      * 
-     * @returns Returns a new dataframe with groups of adjacent duplicate rows collapsed to a single row per group.
+     * @return Returns a new dataframe with groups of adjacent duplicate rows collapsed to a single row per group.
      * 
      * @example
      * <pre>
@@ -2739,7 +2739,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param [seed] Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregate value.
      * 
-     * @returns Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
+     * @return Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
      * 
      * @example
      * <pre>
@@ -2808,7 +2808,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param numValues Number of rows to skip.
      * 
-     * @returns Returns a new dataframe with the specified number of rows skipped. 
+     * @return Returns a new dataframe with the specified number of rows skipped. 
      * 
      * @example
      * <pre>
@@ -2835,7 +2835,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param predicate Returns true/truthy to continue to skip rows in the original dataframe.
      * 
-     * @returns Returns a new dataframe with all initial sequential rows removed while the predicate returned true/truthy.
+     * @return Returns a new dataframe with all initial sequential rows removed while the predicate returned true/truthy.
      * 
      * @example
      * <pre>
@@ -2861,7 +2861,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param predicate Return true/truthy to stop skipping rows in the original dataframe.
      * 
-     * @returns Returns a new dataframe with all initial sequential rows removed until the predicate returned true/truthy.
+     * @return Returns a new dataframe with all initial sequential rows removed until the predicate returned true/truthy.
      * 
      * @example
      * <pre>
@@ -2880,7 +2880,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param numValues Number of rows to take.
      * 
-     * @returns Returns a new dataframe with only the specified number of rows taken from the original dataframe.
+     * @return Returns a new dataframe with only the specified number of rows taken from the original dataframe.
      * 
      * @example
      * <pre>
@@ -2907,7 +2907,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param predicate Returns true/truthy to continue to take rows from the original dataframe.
      * 
-     * @returns Returns a new dataframe with only the initial sequential rows that were taken while the predicate returned true/truthy.
+     * @return Returns a new dataframe with only the initial sequential rows that were taken while the predicate returned true/truthy.
      * 
      * @example
      * <pre>
@@ -2933,7 +2933,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param predicate Return true/truthy to stop taking rows in the original dataframe.
      * 
-     * @returns Returns a new dataframe with only the initial sequential rows taken until the predicate returned true/truthy.
+     * @return Returns a new dataframe with only the initial sequential rows taken until the predicate returned true/truthy.
      * 
      * @example
      * <pre>
@@ -2950,7 +2950,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Count the number of rows in the dataframe
      *
-     * @returns Returns the count of all rows.
+     * @return Returns the count of all rows.
      * 
      * @example
      * <pre>
@@ -2970,7 +2970,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Get the first row of the dataframe.
      *
-     * @returns Returns the first row of the dataframe.
+     * @return Returns the first row of the dataframe.
      * 
      * @example
      * <pre>
@@ -2990,7 +2990,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Get the last row of the dataframe.
      *
-     * @returns Returns the last row of the dataframe.
+     * @return Returns the last row of the dataframe.
      * 
      * @example
      * <pre>
@@ -3018,7 +3018,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param index Index to for which to retreive the row.
      *
-     * @returns Returns the row from the specified index in the dataframe or undefined if there is no such index in the present in the dataframe.
+     * @return Returns the row from the specified index in the dataframe or undefined if there is no such index in the present in the dataframe.
      * 
      * @example
      * <pre>
@@ -3060,7 +3060,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param numValues Number of rows to take.
      * 
-     * @returns Returns a new dataframe that has only the specified number of rows taken from the start of the original dataframe.  
+     * @return Returns a new dataframe that has only the specified number of rows taken from the start of the original dataframe.  
      * 
      * @examples
      * <pre>
@@ -3086,7 +3086,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param numValues Number of rows to take.
      * 
-     * @returns Returns a new dataframe that has only the specified number of rows taken from the end of the original dataframe.  
+     * @return Returns a new dataframe that has only the specified number of rows taken from the end of the original dataframe.  
      * 
      * @examples
      * <pre>
@@ -3111,7 +3111,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param predicate Predicte function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
      * 
-     * @returns Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
+     * @return Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
      * 
      * @example
      * <pre>
@@ -3138,7 +3138,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param callback The calback function to invoke for each row.
      * 
-     * @returns Returns the original dataframe with no modifications.
+     * @return Returns the original dataframe with no modifications.
      * 
      * @example
      * <pre>
@@ -3165,7 +3165,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param predicate Predicate function that receives each row. It should returns true/truthy for a match, otherwise false/falsy.
      *
-     * @returns Returns true if the predicate has returned true or truthy for every row in the dataframe, otherwise returns false. Returns false for an empty dataframe. 
+     * @return Returns true if the predicate has returned true or truthy for every row in the dataframe, otherwise returns false. Returns false for an empty dataframe. 
      * 
      * @example
      * <pre>
@@ -3197,7 +3197,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @returns Returns true if the predicate has returned truthy for any row in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for any row in the sequence, otherwise returns false. 
      * If no predicate is passed it returns true if the dataframe contains any rows at all. 
      * Returns false for an empty dataframe.
      * 
@@ -3243,7 +3243,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @returns Returns true if the predicate has returned truthy for zero rows in the dataframe, otherwise returns false. Returns false for an empty dataframe.
+     * @return Returns true if the predicate has returned truthy for zero rows in the dataframe, otherwise returns false. Returns false for an empty dataframe.
      * 
      * @example
      * <pre>
@@ -3285,7 +3285,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param indexValue The index value at which to start the new dataframe.
      * 
-     * @returns Returns a new dataframe containing all rows starting at and after the specified index value. 
+     * @return Returns a new dataframe containing all rows starting at and after the specified index value. 
      * 
      * @example
      * <pre>
@@ -3326,7 +3326,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param indexValue The index value at which to end the new dataframe.
      * 
-     * @returns Returns a new dataframe containing all rows up until and including the specified index value.
+     * @return Returns a new dataframe containing all rows up until and including the specified index value.
      * 
      * @example
      * <pre>
@@ -3367,7 +3367,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param indexValue The index value at which to end the new dataframe.
      * 
-     * @returns Returns a new dataframe containing all rows up to (but not including) the specified index value. 
+     * @return Returns a new dataframe containing all rows up to (but not including) the specified index value. 
      * 
      * @example
      * <pre>
@@ -3408,7 +3408,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param indexValue The index value after which to start the new dataframe.
      * 
-     * @returns Returns a new dataframe containing all rows after the specified index value.
+     * @return Returns a new dataframe containing all rows after the specified index value.
      * 
      * @example
      * <pre>
@@ -3449,7 +3449,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param startIndexValue The index at which to start the new dataframe.
      * @param endIndexValue The index at which to end the new dataframe.
      * 
-     * @returns Returns a new dataframe containing all values between the specified index values (inclusive).
+     * @return Returns a new dataframe containing all values between the specified index values (inclusive).
      * 
      * @example
      * <pre>
@@ -3480,7 +3480,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Format the dataframe for display as a string.
      * This forces lazy evaluation to complete.
      * 
-     * @returns Generates and returns a string representation of the dataframe or dataframe.
+     * @return Generates and returns a string representation of the dataframe or dataframe.
      * 
      * @example
      * <pre>
@@ -3513,7 +3513,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
-     * @returns Returns a new dataframe with a particular named column parsed as ints.  
+     * @return Returns a new dataframe with a particular named column parsed as ints.  
      * 
      * @example
      * <pre>
@@ -3547,7 +3547,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
-     * @returns  Returns a new dataframe with a particular named column parsed as floats.  
+     * @return  Returns a new dataframe with a particular named column parsed as floats.  
      * 
      * @example
      * <pre>
@@ -3582,7 +3582,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param columnNameOrNames -Specifies the column name or array of column names to parse.
      * @param [formatString] Optional formatting string for dates.
      * 
-     * @returns Returns a new dataframe with a particular named column parsed as dates.
+     * @return Returns a new dataframe with a particular named column parsed as dates.
      * 
      * @example
      * <pre>
@@ -3627,7 +3627,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
      * 
-     * @returns Returns a new dataframe with a particular named column convert to strings.
+     * @return Returns a new dataframe with a particular named column convert to strings.
      * 
      * @example
      * <pre>
@@ -3688,7 +3688,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param maxLength The maximum length of the string values after truncation.
      * 
-     * @returns Returns a new dataframe with all strings truncated to the specified maximum length.
+     * @return Returns a new dataframe with all strings truncated to the specified maximum length.
      * 
      * @example
      * <pre>
@@ -3718,7 +3718,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      * 
-     * @returns Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
+     * @return Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
      * 
      * @example
      * <pre>
@@ -3744,7 +3744,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /** 
      * Gets a new dataframe in reverse order.
      * 
-     * @returns Returns a new dataframe that is the reverse of the input.
+     * @return Returns a new dataframe that is the reverse of the input.
      * 
      * @example
      * <pre>
@@ -3770,7 +3770,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param selector User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.
      * 
-     * @returns Returns a dataframe containing only unique values as determined by the 'selector' function. 
+     * @return Returns a dataframe containing only unique values as determined by the 'selector' function. 
      * 
      * @example
      * <pre>
@@ -3795,7 +3795,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param selector User-defined selector function that defines the value to group by.
      *
-     * @returns Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @return Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
      * 
      * @example
      * <pre>
@@ -3837,7 +3837,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             return {
                 values: groups.map(group => new DataFrame<IndexT, ValueT>({ pairs: group }))
-            };            
+            };
         });
     }
     
@@ -3846,7 +3846,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param selector Optional selector that defines the value to group by.
      *
-     * @returns Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @return Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
      * 
      * @example
      * <pre>
@@ -3886,7 +3886,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param dataframes Array of dataframes to concatenate.
      * 
-     * @returns Returns a single dataframe concatenated from multiple input dataframes. 
+     * @return Returns a single dataframe concatenated from multiple input dataframes. 
      * 
      * @example
      * <pre>
@@ -3933,7 +3933,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param dataframes Multiple arguments. Each can be either a dataframe or an array of dataframes.
      * 
-     * @returns Returns a single dataframes concatenated from multiple input dataframes. 
+     * @return Returns a single dataframes concatenated from multiple input dataframes. 
      * 
      * @example
      * <pre>
@@ -3990,7 +3990,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * @param dataframes Array of input dataframes to be zipped together.
     * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
-    * @returns Returns a single dataframe zipped (or merged) from multiple input dataframes. 
+    * @return Returns a single dataframe zipped (or merged) from multiple input dataframes. 
     * 
     * @example
     * <pre>
@@ -4054,7 +4054,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * @param s2, s3, s4, s4 Multiple dataframes to zip.
     * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
-    * @returns Returns a single dataframe zipped (or merged) from multiple input dataframes. 
+    * @return Returns a single dataframe zipped (or merged) from multiple input dataframes. 
     * 
     * @example
     * <pre>
@@ -4087,7 +4087,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
+     * @return Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
      * 
      * @example
      * <pre>
@@ -4106,7 +4106,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
+     * @return Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
      * 
      * @example
      * <pre>
@@ -4129,7 +4129,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param other The other dataframes to merge.
      * @param [selector] Optional user-defined selector function that selects the value to compare to detemrine distinctness.
      * 
-     * @returns Returns the union of the two dataframes.
+     * @return Returns the union of the two dataframes.
      * 
      * @example
      * <pre>
@@ -4191,7 +4191,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
      * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
-     * @returns Returns a new dataframe that contains the intersection of rows from the two input dataframes.
+     * @return Returns a new dataframe that contains the intersection of rows from the two input dataframes.
      * 
      * @example
      * <pre>
@@ -4252,7 +4252,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
      * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
-     * @returns Returns a new dataframe that contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
+     * @return Returns a new dataframe that contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
      * 
      * @example
      * <pre>
@@ -4312,7 +4312,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
      * @param resultSelector User-defined function that merges outer and inner values.
      * 
-     * @returns Returns the new merged dataframe.
+     * @return Returns the new merged dataframe.
      * 
      * @example
      * <pre>
@@ -4387,7 +4387,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the new merged dataframe.
+     * @return Returns the new merged dataframe.
      * 
      * @example
      * <pre>
@@ -4452,7 +4452,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the new merged dataframe.
+     * @return Returns the new merged dataframe.
      * 
      * @example
      * <pre>
@@ -4511,7 +4511,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the new merged dataframe.
+     * @return Returns the new merged dataframe.
      * 
      * @example
      * <pre>
@@ -4565,7 +4565,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
      * @param [aggregator] Optional function used to aggregate pivotted vales. 
      *
-     * @returns Returns a new dataframe that has been pivoted based on a particular column's values. 
+     * @return Returns a new dataframe that has been pivoted based on a particular column's values. 
      * 
      * @example
      * <pre>
@@ -4720,10 +4720,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     
     /**
      * Insert a pair at the start of the dataframe.
+     * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the inserted pair.
      *
-     * @param pair - The pair to insert.
+     * @param pair The pair to insert.
      * 
-     * @returns Returns a new dataframe with the specified pair inserted.
+     * @return Returns a new dataframe with the specified pair inserted.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to insert ...
+     * const insertedDf = df.insertPair([newIndex, newRows]);
+     * </pre>
      */
     insertPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT> {
         assert.isArray(pair, "Expected 'pair' parameter to 'DataFrame.insertPair' to be an array.");
@@ -4734,10 +4743,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Append a pair to the end of a dataframe.
+     * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the appended pair.
      *
      * @param pair - The pair to append.
      *  
-     * @returns Returns a new dataframe with the specified pair appended.
+     * @return Returns a new dataframe with the specified pair appended.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to append ...
+     * const appendedDf = df.appendPair([newIndex, newRows]);
+     * </pre>
      */
     appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT> {
         assert.isArray(pair, "Expected 'pair' parameter to 'DataFrame.appendPair' to be an array.");
@@ -4749,10 +4767,34 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Fill gaps in a dataframe.
      *
-     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
-     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     * @param comparer User-defined comparer function that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
+     * @param generator User-defined generator function that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
      *
-     * @returns Returns a new dataframe with gaps filled in.
+     * @return Returns a new dataframe with gaps filled in.
+     * 
+     * @example
+     * <pre>
+     * 
+     *   var sequenceWithGaps = ...
+     *
+     *  // Predicate that determines if there is a gap.
+     *  var gapExists = (pairA, pairB) => {
+     *      // Returns true if there is a gap.
+     *      return true;
+     *  };
+     *
+     *  // Generator function that produces new rows to fill the game.
+     *  var gapFiller = (pairA, pairB) => {
+     *      // Create an array of index, value pairs that fill the gaps between pairA and pairB.
+     *      return [
+     *          newPair1,
+     *          newPair2,
+     *          newPair3,
+     *      ];
+     *  };
+     *
+     *  var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
+     * </pre>
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT> {
         assert.isFunction(comparer, "Expected 'comparer' parameter to 'DataFrame.fillGaps' to be a comparer function that compares two values and returns a boolean.")
@@ -4778,20 +4820,36 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Returns the specified default sequence if the dataframe is empty. 
+     * Returns the specified default dataframe if the dataframe is empty. 
      *
-     * @param defaultSequence - Default sequence to return if the dataframe is empty.
+     * @param defaultDataFrame Default dataframe to return if the dataframe is empty.
      * 
-     * @returns Returns 'defaultSequence' if the dataframe is empty. 
+     * @return Returns 'defaultDataFrame' if the dataframe is empty. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const emptyDataFrame = new DataFrame();
+     * const defaultDataFrame = new DataFrame([ { A: 1 }, { A: 2 }, { A: 3 } ]);
+     * expect(emptyDataFrame.defaultIfEmpty(defaultDataFrame)).to.eql(defaultDataFrame);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const nonEmptyDataFrame = new DataFrame([ { A: 100 }]);
+     * const defaultDataFrame = new DataFrame([ { A: 1 }, { A: 2 }, { A: 3 } ]);
+     * expect(nonEmptyDataFrame.defaultIfEmpty(defaultDataFrame)).to.eql(nonEmptyDataFrame);
+     * </pre>
      */
-    defaultIfEmpty (defaultSequence: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT> {
+    defaultIfEmpty (defaultDataFrame: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT> {
 
         if (this.none()) {
-            if (defaultSequence instanceof DataFrame) {
-                return <IDataFrame<IndexT, ValueT>> defaultSequence;
+            if (defaultDataFrame instanceof DataFrame) {
+                return <IDataFrame<IndexT, ValueT>> defaultDataFrame;
             }
-            else if (Sugar.Object.isArray(defaultSequence)) {
-                return new DataFrame<IndexT, ValueT>(defaultSequence);
+            else if (Sugar.Object.isArray(defaultDataFrame)) {
+                return new DataFrame<IndexT, ValueT>(defaultDataFrame);
             }
             else {
                 throw new Error("Expected 'defaultSequence' parameter to 'DataFrame.defaultIfEmpty' to be an array or a series.");
@@ -4804,8 +4862,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Detect the the frequency of the types of the values in the dataframe.
+     * This is a good way to understand the shape of your data.
      *
-     * @returns Returns a dataframe that describes the data types contained in the dataframe.
+     * @return Returns a dataframe with rows that confirm to {@link ITypeFrequency} that describes the data types contained in the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = dataForge.readFileSync("./my-data.json").parseJSON();
+     * const dataTypes = df.detectTypes();
+     * console.log(dataTypes.toString());
+     * </pre>
      */
     detectTypes (): IDataFrame<number, ITypeFrequency> {
         return new DataFrame<number, ITypeFrequency>(() => {
@@ -4827,8 +4894,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     
     /**
      * Detect the frequency of the values in the dataframe.
+     * This is a good way to understand the shape of your data.
      *
-     * @returns Returns a dataframe that describes the values contained in the dataframe.
+     * @return Returns a dataframe with rows that conform to {@link IValueFrequency} that describes the values contained in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = dataForge.readFileSync("./my-data.json").parseJSON();
+     * const dataValues = df.detectedValues();
+     * console.log(dataValues.toString());
+     * </pre>
      */
     detectValues (): IDataFrame<number, IValueFrequency> {
         return new DataFrame<number, IValueFrequency>(() => {
@@ -4849,18 +4925,32 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Serialize the dataframe to JSON.
+     * Serialize the dataframe to the JSON data format.
      * 
-     *  @returns Returns a JSON format string representing the dataframe.   
+     * @return Returns a string in the JSON data format that represents the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsonData = df.toJSON();
+     * console.log(jsonData);
+     * </pre>
      */
     toJSON (): string {
         return JSON.stringify(this.toArray(), null, 4);
     }
 
     /**
-     * Serialize the dataframe to CSV.
+     * Serialize the dataframe to the CSV data format.
      * 
-     *  @returns Returns a CSV format string representing the dataframe.   
+     * @return Returns a string in the CSV data format that represents the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const csvData = df.toCSV();
+     * console.log(csvData);
+     * </pre>
      */
     toCSV (): string {
 
@@ -4870,8 +4960,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Treat the dataframe as CSV data for purposes of serialization.
+     * This is the first step you need in serializing a dataframe to a CSV data file.
      * 
-     * @returns Returns an object that represents the dataframe for serialization in the CSV format. Call `writeFile`, `writeFileSync` to output the dataframe via different media.
+     * @return Returns a {@link ICsvSerializer} that represents the dataframe for serialization in the CSV format. Call `writeFile` or `writeFileSync` to output the CSV data to a text file.
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asCSV().writeFileSync("my-data-file.csv");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asCSV().writeFile("my-data-file.csv");
+     * </pre>
      */
     asCSV (): ICsvSerializer {
         return new CsvSerializer<IndexT, ValueT>(this);
@@ -4879,17 +4982,30 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Treat the dataframe as JSON data for purposes of serialization.
+     * This is the first step you need in serializing a dataframe to a JSON data file.
      * 
-     * @returns Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
+     * @return Returns a {@link IJsonSerializer} that represents the dataframe for serialization in the JSON format. Call `writeFile` or `writeFileSync` to output the JSON data to a text file.
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asJSON().writeFileSync("my-data-file.json");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asJSON().writeFile("my-data-file.json");
+     * </pre>
      */
     asJSON (): IJsonSerializer {
         return new JsonSerializer<IndexT, ValueT>(this);        
     }
 
     /**
-     * Serialize the data frame to HTML.
+     * Serialize the dataframe to HTML.
      * 
-     *  @returns Returns a HTML format string representing the dataframe.   
+     * @return Returns a string in HTML format that represents the dataframe.
      */
     toHTML (): string {
 
@@ -4930,6 +5046,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Serialize the dataframe to an ordinary JavaScript data structure.
+     * The resulting data structure is suitable for further serialization to JSON and can be used to 
+     * transmit a DataFrame and its internal structure over the wire.
+     * Use the {@link deserialize} function to later reconstitute the serialized dataframe.
+     * 
+     * @return Returns a JavaScript data structure conforming to {@link ISerializedDataFrame} that represents the dataframe and its internal structure.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsDataStructure = df.serialize();
+     * const jsonData = JSON.stringify(jsDataStructure);
+     * console.log(jsonData);
+     * const deserializedJsDataStructure = JSON.parse(jsonData);
+     * const deserializedDf = DataFrame.deserialize(deserializedJsDataStructure); // Reconsituted.
+     * </pre>
      */
     serialize (): ISerializedDataFrame {
         const values = this.toArray();
@@ -4964,6 +5095,22 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Deserialize the dataframe from an ordinary JavaScript data structure.
+     * Can reconstitute a dataframe that previously serialized with the {@link serialize} function.
+     * This can rebuilds the dataframe with the exact same internal structure after it has been transmitted over the wire.
+     * 
+     * @param input The serialize JavaScript data structure for the dataframe.
+     * 
+     * @return Returns the deserialized/reconstituted dataframe.    
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsDataStructure = df.serialize();
+     * const jsonData = JSON.stringify(jsDataStructure);
+     * console.log(jsonData);
+     * const deserializedJsDataStructure = JSON.parse(jsonData);
+     * const deserializedDf = DataFrame.deserialize(deserializedJsDataStructure); // Reconsituted.
+     * </pre>
      */
     static deserialize<IndexT = any,  ValueT = any> (input: ISerializedDataFrame): IDataFrame<IndexT, ValueT> {
 
@@ -5009,7 +5156,7 @@ export interface ICsvSerializer {
      * 
      * @param filePath - Specifies the output path for the file. 
      * 
-     *  @returns Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.   
      */
     writeFile (filePath: string): Promise<void>;
 
@@ -5040,7 +5187,7 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
      * 
      * @param filePath - Specifies the output path for the file. 
      * 
-     *  @returns Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.   
      */
     writeFile (filePath: string): Promise<void> {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFile' to be a string that specifies the path of the file to write to the local file system.");
@@ -5083,7 +5230,7 @@ export interface IJsonSerializer {
      * 
      * @param filePath - Specifies the output path for the file. 
      * 
-     *  @returns Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.   
      */
     /*async*/ writeFile (filePath: string): Promise<void>;
 
@@ -5114,7 +5261,7 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
      * 
      * @param filePath - Specifies the output path for the file. 
      * 
-     *  @returns Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.   
      */
     writeFile (filePath: string): Promise<void> {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
@@ -5207,7 +5354,7 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
      * 
      * @param selector Selects the value to sort by.
      * 
-     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
@@ -5219,7 +5366,7 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
      * 
      * @param selector Selects the value to sort by.
      * 
-     * @returns Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.

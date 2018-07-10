@@ -25,7 +25,7 @@ describe('pandas-examples', () => {
                 'first_name',
                 'last_name',
             ],
-            values: [
+            rows: [
                 [1, 'Alex', 'Anderson'],
                 [2, 'Amy', 'Ackerman'],
                 [3, 'Allen', 'Ali'],
@@ -40,7 +40,7 @@ describe('pandas-examples', () => {
                 'first_name',
                 'last_name',
             ],
-            values: [
+            rows: [
                 [4, 'Billy', 'Bonder'],
                 [5, 'Brian', 'Black'],
                 [6, 'Bran', 'Balwner'],
@@ -54,7 +54,7 @@ describe('pandas-examples', () => {
                 "subject_id",
                 "test_id",
             ],
-            values: [
+            rows: [
                 [1, 51],
                 [2, 15],
                 [3, 15],
@@ -70,7 +70,6 @@ describe('pandas-examples', () => {
     });
 
 
-    /*
     it('Join the two dataframes along rows', () => {
 
         var df_new = concat([df_a, df_b]);
@@ -307,15 +306,13 @@ describe('pandas-examples', () => {
         ]);
     });
 
-                /*
-
     it('Merge with inner join', () => {
 
         var df_merged = df_a.join(
                 df_b,
-                left => left.subject_id,
-                right => right.subject_id,
-                (left, right) => {
+                (left: any) => left.subject_id,
+                (right: any) => right.subject_id,
+                (left: any, right: any) => {
                     return {
                         subject_id: left.subject_id,
                         first_name_x: left.first_name,
@@ -349,10 +346,10 @@ describe('pandas-examples', () => {
 
         var df_merged = df_a.joinOuterRight(
                 df_b,
-                left => left.subject_id,
-                right => right.subject_id,
-                (left, right) => {
-                    var output = {};
+                (left: any) => left.subject_id,
+                (right: any) => right.subject_id,
+                (left: any, right: any) => {
+                    var output: any = {};
                     if (left) {
                         output.subject_id = left.subject_id;
                         output.first_name_x = left.first_name;
@@ -393,10 +390,10 @@ describe('pandas-examples', () => {
 
         var df_merged = df_a.joinOuterLeft(
                 df_b,
-                left => left.subject_id,
-                right => right.subject_id,
-                (left, right) => {
-                    var output = {};
+                (left: any) => left.subject_id,
+                (right: any) => right.subject_id,
+                (left: any, right: any) => {
+                    var output: any = {};
                     if (left) {
                         output.subject_id = left.subject_id;
                         output.first_name_x = left.first_name;
@@ -437,10 +434,10 @@ describe('pandas-examples', () => {
 
         var df_merged = df_a.joinOuterLeft(
                 df_b,
-                left => left.subject_id,
-                right => right.subject_id,
-                (left, right) => {
-                    var output = {};
+                (left: any) => left.subject_id,
+                (right: any) => right.subject_id,
+                (left: any, right: any) => {
+                    var output: any = {};
                     if (left) {
                         output.subject_id = left.subject_id;
                         output.first_name_left = left.first_name;
@@ -477,45 +474,4 @@ describe('pandas-examples', () => {
         ]);
     });
 
-    it('Merge based on indexes', () => {
-
-           var df_merged = df_a.join(
-                df_b,
-                (left, index) => index,
-                (right, index) => index,
-                (left, right) => {
-                    return {
-                        subject_id_x: left.subject_id,
-                        first_name_x: left.first_name,
-                        last_name_x: left.last_name,
-                        subject_id_y: right.subject_id,
-                        first_name_y: right.first_name,
-                        last_name_y: right.last_name,
-                    };
-                }
-            )
-            ;
-
-        expect(df_merged.getIndex().take(5).toArray()).to.eql([
-            0, 1, 2, 3, 4,
-        ]);
-
-        expect(df_merged.getColumnNames()).to.eql([
-            'subject_id_x',
-            'first_name_x',
-            'last_name_x',
-            'subject_id_y',
-            'first_name_y',
-            'last_name_y',
-        ]);
-
-        expect(df_merged.toRows()).to.eql([
-            [1, 'Alex', 'Anderson', 4, 'Billy', 'Bonder'],
-            [2, 'Amy', 'Ackerman', 5, 'Brian', 'Black'],
-            [3, 'Allen', 'Ali', 6, 'Bran', 'Balwner'],
-            [4, 'Alice', 'Aoni', 7, 'Bryce', 'Brice'],
-            [5, 'Ayoung', 'Aitches', 8, 'Betty', 'Btisan'],
-        ]);
-    });
-    */
 });
