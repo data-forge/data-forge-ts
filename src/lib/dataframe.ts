@@ -900,7 +900,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * <pre>
      * 
      * const windows = df.window(2); // Get rows in pairs.
-     * const pctIncrease = windows.select(pair => (pair.last() - pair.first()) / pair.first());
+     * const pctIncrease = windows.select(pair => (pair.last().SalesAmount - pair.first().SalesAmount) / pair.first().SalesAmount);
      * console.log(pctIncrease.toString());
      * </pre>
      * 
