@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Packages a dataframe ready for CSV serialization.</p>
+						<p>Packages a dataframe ready for serialization to a CSV format text file.</p>
 					</div>
 				</div>
 			</section>
@@ -103,21 +103,29 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L5161">lib/dataframe.ts:5161</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L6420">lib/dataframe.ts:6420</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Serialize the dataframe to a CSV file in the local file system.
-									Asynchronous version.</p>
+									<p>Serialize the dataframe to the CSV data format and save it as a text file in the local file system.
+									Asynchronous version using the Node.js &#39;fs&#39; module.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+await df.asCSV().writeFile("my-data-file.csv");
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Specifies the output path for the file.</p>
+										<p>Specifies the path for the output file.</p>
 									</div>
 								</li>
 							</ul>
@@ -136,21 +144,29 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L5169">lib/dataframe.ts:5169</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L6434">lib/dataframe.ts:6434</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Serialize the dataframe to a CSV file in the local file system.
-									Synchronous version.</p>
+									<p>Serialize the dataframe to the CSV data format and save it as a text file in the local file system.
+									Synchronous version using the Node.js &#39;fs&#39; module.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+df.asCSV().writeFileSync("my-data-file.csv");
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Specifies the output path for the file.</p>
+										<p>Specifies the path for the output file.</p>
 									</div>
 								</li>
 							</ul>

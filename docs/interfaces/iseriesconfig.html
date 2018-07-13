@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Series configuration.</p>
+						<p>Used to configure a series.</p>
 					</div>
 				</div>
 			</section>
@@ -112,9 +112,15 @@
 					<div class="tsd-signature tsd-kind-icon">baked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/series.ts#L38">lib/series.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/series.ts#L58">lib/series.ts:58</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Set to true when the series has been baked into memory
+							and does not need to be lazily evaluated.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="index" class="tsd-anchor"></a>
@@ -122,9 +128,15 @@
 					<div class="tsd-signature tsd-kind-icon">index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/series.ts#L36">lib/series.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/series.ts#L45">lib/series.ts:45</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The index for the serires.
+							If omitted the index will default to a 0-based index.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="pairs" class="tsd-anchor"></a>
@@ -132,9 +144,16 @@
 					<div class="tsd-signature tsd-kind-icon">pairs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/series.ts#L37">lib/series.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/series.ts#L52">lib/series.ts:52</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Array or iterable of index,value pairs to put in the series.
+								If index and values are not separately specified they can be extracted
+							from the pairs.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="values" class="tsd-anchor"></a>
@@ -142,9 +161,15 @@
 					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/series.ts#L35">lib/series.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/series.ts#L39">lib/series.ts:39</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Values to put in the dataframe.
+							This should be array or iterable of JavaScript values.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>

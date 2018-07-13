@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>DataFrame configuration.</p>
+						<p>Used to configure a dataframe.</p>
 					</div>
 				</div>
 			</section>
@@ -116,9 +116,15 @@
 					<div class="tsd-signature tsd-kind-icon">baked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L86">lib/dataframe.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L121">lib/dataframe.ts:121</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Set to true when the dataframe has been baked into memory
+							and does not need to be lazily evaluated.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="columnnames" class="tsd-anchor"></a>
@@ -126,9 +132,18 @@
 					<div class="tsd-signature tsd-kind-icon">column<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L85">lib/dataframe.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L115">lib/dataframe.ts:115</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Array or iterable of column names that are in the dataframe.
+								The order matters. This arrays specifies the ordering of columns which
+								is important when rendering tables or writing out CSV data files.
+								If this is omitted column names will automatically be determined
+							from the fields of the first row/value in the dataframe.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="columns" class="tsd-anchor"></a>
@@ -136,9 +151,14 @@
 					<div class="tsd-signature tsd-kind-icon">columns<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><a href="icolumnconfig.html" class="tsd-signature-type">IColumnConfig</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="icolumnspec.html" class="tsd-signature-type">IColumnSpec</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L88">lib/dataframe.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L134">lib/dataframe.ts:134</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Explicitly specify data for named columns to put in the dataframe.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="considerallrows" class="tsd-anchor"></a>
@@ -146,9 +166,17 @@
 					<div class="tsd-signature tsd-kind-icon">consider<wbr>All<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L87">lib/dataframe.ts:87</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L129">lib/dataframe.ts:129</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Set to true to consider all rows/values in the dataframe when
+								determining the column names. Otherwise only the first row is considered.
+								You should use this if you have ireggular fields in the objects that
+							make up the rows/values of the dataframe.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="index" class="tsd-anchor"></a>
@@ -156,9 +184,15 @@
 					<div class="tsd-signature tsd-kind-icon">index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L83">lib/dataframe.ts:83</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L99">lib/dataframe.ts:99</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The index for the dataframe.
+							If omitted the index will default to a 0-based index.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="pairs" class="tsd-anchor"></a>
@@ -166,9 +200,16 @@
 					<div class="tsd-signature tsd-kind-icon">pairs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L84">lib/dataframe.ts:84</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L106">lib/dataframe.ts:106</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Array or iterable of index,value pairs to put in the dataframe.
+								If index and values are not separately specified they can be extracted
+							from the pairs.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="rows" class="tsd-anchor"></a>
@@ -176,9 +217,16 @@
 					<div class="tsd-signature tsd-kind-icon">rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L82">lib/dataframe.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L93">lib/dataframe.ts:93</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>CSV style rows to put in the dataframe.
+								An array of arrays. Each element in the top level array is a row of data.
+							Each row of data contains field values in column order.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="values" class="tsd-anchor"></a>
@@ -186,9 +234,16 @@
 					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/487b5d6/src/lib/dataframe.ts#L81">lib/dataframe.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/bffa12b/src/lib/dataframe.ts#L86">lib/dataframe.ts:86</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Values to put in the dataframe.
+								This should be array or iterable of JavaScript objects.
+							Each element in the array contains fields that match the columns of the dataframe.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>

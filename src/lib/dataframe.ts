@@ -32,7 +32,7 @@ import { Utils } from 'handlebars';
 const PapaParse = require('papaparse');
 
 /** 
- * An object whose fields specify named columns.
+ * An object whose fields specify the data for named columns.
  */
 export interface IColumnSpec {
     [index: string]: Iterable<any> | ISeries<any, any>,
@@ -46,14 +46,14 @@ export interface IFormatSpec {
 }
 
 /**
- * Specification that defines output columns for a pivot.
+ * Specification that computes output columns for a pivot.
  */
 export interface IAggregatorSpec {
     [index: string]: (values: ISeries<number, any>) => any
 } 
 
 /**
- * Specification for pivoting values in named columns..
+ * Specification for pivoting values in named columns.
  */
 export interface IPivotAggregateSpec {
     [index: string]: IAggregatorSpec;
@@ -75,21 +75,67 @@ export interface IColumnConfig {
 }
 
 /**
- * DataFrame configuration.
+ * Used to configure a dataframe.
  */
 export interface IDataFrameConfig<IndexT, ValueT> {
+    /**
+     * Values to put in the dataframe.
+     * This should be array or iterable of JavaScript objects.
+     * Each element in the array contains fields that match the columns of the dataframe.
+     */
     values?: Iterable<ValueT>,
+
+    /**
+     * CSV style rows to put in the dataframe.
+     * An array of arrays. Each element in the top level array is a row of data.
+     * Each row of data contains field values in column order.
+     */
     rows?: Iterable<any[]>,
+
+    /***
+     * The index for the dataframe.
+     * If omitted the index will default to a 0-based index.
+     */
     index?: Iterable<IndexT>,
+
+    /**
+     * Array or iterable of index,value pairs to put in the dataframe.
+     * If index and values are not separately specified they can be extracted
+     * from the pairs.
+     */
     pairs?: Iterable<[IndexT, ValueT]>,
+
+    /**
+     * Array or iterable of column names that are in the dataframe.
+     * The order matters. This arrays specifies the ordering of columns which
+     * is important when rendering tables or writing out CSV data files.
+     * If this is omitted column names will automatically be determined
+     * from the fields of the first row/value in the dataframe.
+     */
     columnNames?: Iterable<string>,
+
+    /***
+     * Set to true when the dataframe has been baked into memory
+     * and does not need to be lazily evaluated.
+     */
     baked?: boolean,
+
+    /**
+     * Set to true to consider all rows/values in the dataframe when
+     * determining the column names. Otherwise only the first row is considered.
+     * You should use this if you have ireggular fields in the objects that
+     * make up the rows/values of the dataframe.
+     */
     considerAllRows?: boolean,
+
+    /**
+     * Explicitly specify data for named columns to put in the dataframe.
+     */
     columns?: Iterable<IColumnConfig> | IColumnSpec,
 };
 
 /** 
- * Represents a name column in a dataframe.
+ * Represents a named column in a dataframe.
  */
 export interface IColumn {
     
@@ -110,28 +156,28 @@ export interface IColumn {
 }
 
 /** 
- * An object whose fields specify named columns or functions to generate columns.
+ * An object whose fields specify data for named named columns or user-defined generator functions that generate the data for the columns.
  */
 export interface IColumnGenSpec { //todo: this should allow iterable as well!
     [index: string]: ISeries<any, any> | SeriesSelectorFn<any, any, any>,
 }
 
 /**
- * Specifies how to rename columns.
+ * A string-to-string mapping that specifies how to rename columns.
  */
 export interface IColumnRenameSpec {
     [index: string]: string;
 }
 
 /**
- * Specifies columns to transform.
+ * Specifies columns to transform and the user-defined selector function that does the transformation.
  */
 export interface IColumnTransformSpec {
     [index: string]: SelectorWithIndexFn<any, any>;
 }
 
 /**
- * A spec for aggregating a collection of names columns.
+ * Specifies columns that should be aggregated and a user-defined aggregator function to do the aggregation.
  */
 export interface IColumnAggregateSpec {
     [index: string]: AggregateFn<any, any>;
@@ -144,7 +190,7 @@ export type SeriesSelectorFn<IndexT, DataFrameValueT, SeriesValueT> = (dataFrame
 
 /*
  * A function that generates a dataframe content object.
- * Used to make it easy to create lazy evaluated dataframe.
+ * Used to make it easy to create lazy evaluated dataframes.
  */
 export type DataFrameConfigFn<IndexT, ValueT> = () => IDataFrameConfig<IndexT, ValueT>;
 
@@ -192,6 +238,9 @@ export interface IValueFrequency {
 
 /**
  * Records column types in a serialized dataframe.
+ * This is mainly used to reinstantiate dates that have been passed
+ * across the wire, because these are the only values that aren't already
+ * preserved by the JSON data format. 
  */
 export interface IColumnTypes {
     [index: string]: string;
@@ -200,7 +249,7 @@ export interface IColumnTypes {
 /**
  * The serialized form of a DataFrame. 
  * This is an ordinary JavaScript data structure that can be used to transfer a dataframe across the wire and
- * reinstantiate it on the otherside (this is necessary to maintain a stable column ordering).
+ * reinstantiate it on the otherside (this is necessary to maintain a stable column ordering and to allow date values to be reinstantiated).
  */
 export interface ISerializedDataFrame {
     /**
@@ -234,11 +283,11 @@ export interface ISerializedDataFrame {
 export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<ValueT> {
 
     /**
-     * Get an iterator to enumerate the values of the dataframe.
+     * Get an iterator to enumerate the rows of the dataframe.
      * Enumerating the iterator forces lazy evaluation to complete.
      * This function is automatically called by `for...of`.
      * 
-     * @return An iterator for the dataframe.
+     * @return An iterator for the rows in the dataframe.
      * 
      * @example
      * <pre>
@@ -248,491 +297,1155 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * }
      * </pre>
      */
-    [Symbol.iterator](): Iterator<ValueT>;
+    [Symbol.iterator] (): Iterator<ValueT>;
 
     /**
      * Get the names of the columns in the dataframe.
      * 
      * @return Returns an array of the column names in the dataframe.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * console.log(df.getColumnNames());
+     * </pre>
      */
     getColumnNames (): string[];
 
     /** 
-     * Retreive a collection of all columns in the dataframe.
+     * Retreive the collection of all columns in the dataframe.
      * 
-     * @return Returns a series the columns in the dataframe.
+     * @return Returns a {@link Series} containing the names of the columns in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * for (const column in df.getColummns()) {
+     *      console.log("Column name: ");
+     *      console.log(column.name);
+     * 
+     *      console.log("Data:");
+     *      console.log(column.series.toArray());
+     * }
+     * </pre>
      */
     getColumns (): ISeries<number, IColumn>;
 
     /**
      * Cast the value of the dataframe to a new type.
-     * This operation has no effect but to retype the value that the dataframe contains.
+     * This operation has no effect but to retype the r9ws that the dataframe contains.
+     * 
+     * @return The same dataframe, but with the type changed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const castDf = df.cast<SomeOtherType>();
+     * </pre>
      */
     cast<NewValueT> (): IDataFrame<IndexT, NewValueT>;
     
     /**
      * Get the index for the dataframe.
+     * 
+     * @return The {@link Index} for the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const index = df.getIndex();
+     * </pre>
      */
     getIndex (): IIndex<IndexT>;
 
     /**
-     * Set a named column as the index of the data-frame.
+     * Set a named column as the {@link Index} of the dataframe.
      *
-     * @param columnName - Name or index of the column to set as the index.
+     * @param columnName Name of the column to use as the new {@link Index} of the returned dataframe.
      *
-     * @return Returns a new dataframe with the values of a particular named column as the index.  
+     * @return Returns a new dataframe with the values of the specified column as the new {@link Index}.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedDf = df.setIndex("SomeColumn");
+     * </pre>
      */
     setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT>;
     
     /**
-     * Apply a new index to the dataframe.
+     * Apply a new {@link Index} to the dataframe.
      * 
-     * @param newIndex The new index to apply to the dataframe.
+     * @param newIndex The new array or iterable to be the new {@link Index} of the dataframe. Can also be a selector to choose the {@link Index} for each row in the dataframe.
      * 
-     * @return Returns a new dataframe with the specified index attached.
+     * @return Returns a new dataframe with the specified {@link Index} attached.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedDf = df.withIndex([10, 20, 30]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedDf = df.withIndex(df.getSeries("SomeColumn"));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedDf = df.withIndex(row => row.SomeColumn);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedDf = df.withIndex(row => row.SomeColumn + 20);
+     * </pre>
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT>;
 
     /**
-     * Resets the index of the dataframe back to the default zero-based sequential integer index.
+     * Resets the {@link Index} of the dataframe back to the default zero-based sequential integer index.
      * 
-     * @return Returns a new dataframe with the index reset to the default zero-based index. 
+     * @return Returns a new dataframe with the {@link Index} reset to the default zero-based index. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithResetIndex = df.resetIndex();
+     * </pre>
      */
     resetIndex (): IDataFrame<number, ValueT>;
     
     /**
-     * Retreive a series from a column of the dataframe.
+     * Extract a {@link Series} from a named column in the dataframe.
      *
-     * @param columnName Specifies the name of the column that contains the series to retreive.
+     * @param columnName Specifies the name of the column that contains the {@link Series} to retreive.
+     * 
+     * @return Returns the {@link Series} extracted from the named column in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = df.getSeries("SomeColumn");
+     * </pre>
      */
     getSeries<SeriesValueT = any> (columnName: string): ISeries<IndexT, SeriesValueT>;
 
     /**
-     * Returns true if the column with the requested name exists in the dataframe.
+     * Determine if the dataframe contains a {@link Series} the specified named column.
      *
-     * @param columnName - Name of the column to check.
+     * @param columnName Name of the column to check for.
+     * 
+     * @return Returns true if the dataframe contains the requested {@link Series}, otherwise returns false.
+     * 
+     * @example
+     * <pre>
+     * 
+     * if (df.hasSeries("SomeColumn")) {
+     *      // ... the dataframe contains a series with the specified column name ...
+     * }
+     * </pre>
      */
     hasSeries (columnName: string): boolean;
 
     /**
-     * 
-     * Verify the existance of a column and return it.
-     * Throws an exception if the column doesn't exist.
+     * Verify the existence of a name column and extracts the {@link Series} for it.
+     * Throws an exception if the requested column doesn't exist.
      *
-     * @param columnName - Name or index of the column to retreive.
+     * @param columnName Name of the column to extract.
+     * 
+     * @return Returns the {@link Series} for the column if it exists, otherwise it throws an exception.
+     * 
+     * @example
+     * <pre>
+     * 
+     * try {
+     *      const series = df.expectSeries("SomeColumn");
+     *      // ... do something with the series ...
+     * }
+     * catch (err) {
+     *      // ... the dataframe doesn't contain the column "SomeColumn" ...
+     * }
+     * </pre>
      */
     expectSeries<SeriesValueT> (columnName: string): ISeries<IndexT, SeriesValueT>;
 
     /**
-     * Create a new dataframe with an additional column specified by the passed-in series.
+     * Create a new dataframe with a replaced or additional column specified by the passed-in series.
      *
-     * @param columnNameOrSpec - The name of the column to add or replace.
-     * @param [series] - When columnNameOrSpec is a string that identifies the column to add, this specifies the Series to add to the data-frame or a function that produces a series (given a dataframe).
+     * @param columnNameOrSpec The name of the column to add or replace or a {@link IColumnGenSpec} that defines the columns to add.
+     * @param [series] When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
      *
      * @return Returns a new dataframe replacing or adding a particular named column.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries("ANewColumn", new Series([1, 2, 3]));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries("ANewColumn", df => 
+     *      df.getSeries("SourceData").select(aTransformation)
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries({
+     *      ANewColumn: new Series([1, 2, 3]),
+     *      SomeOtherColumn: new Series([10, 20, 30])
+     * });
+     * <pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.withSeries({
+     *      ANewColumn: df => df.getSeries("SourceData").select(aTransformation))
+     * });
+     * <pre>
      */
     withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
     
     /**
-     * Add a series if it doesn't already exist.
+     * Add a series to the dataframe, but only if it doesn't already exist.
      * 
-     * @param columnNameOrSpec - The name of the series to add or a column spec that defines the new column.
-     * @param series - The series to add to the dataframe. Can also be a function that returns the series.
+     * @param columnNameOrSpec The name of the series to add or a {@link IColumnGenSpec} that specifies the columns to add.
+     * @param [series] If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
      * 
-     * @return Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.  
+     * @return Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const updatedDf = df.ensureSeries("ANewColumn", new Series([1, 2, 3]));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const updatedDf = df.ensureSeries("ANewColumn", df => 
+     *      df.getSeries("AnExistingSeries").select(aTransformation)
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.ensureSeries({
+     *      ANewColumn: new Series([1, 2, 3]),
+     *      SomeOtherColumn: new Series([10, 20, 30])
+     * });
+     * <pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.ensureSeries({
+     *      ANewColumn: df => df.getSeries("SourceData").select(aTransformation))
+     * });
+     * <pre>
      */
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Create a new data-frame from a subset of columns.
+     * Create a new dataframe with just a subset of columns.
      *
-     * @param columnNames - Array of column names to include in the new data-frame.
+     * @param columnNames Array of column names to include in the new dataframe.
      * 
-     * @return Returns a dataframe with a subset of columns from the input dataframe.
+     * @return Returns a dataframe with a subset of columns from the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * const subsetDf = df.subset(["ColumnA", "ColumnB"]);
+     * </pre>
      */
     subset<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
 
     /**
-     * Create a new data frame with the requested column or columns dropped.
+     * Create a new dataframe with the requested column or columns dropped.
      *
-     * @param columnOrColumns - Specifies the column name (a string) or columns (array of column names) to drop.
+     * @param columnOrColumns Specifies the column name (a string) or columns (array of strings) to drop.
      * 
-     * @return Returns a new dataframe with a particular name column or columns removed.
+     * @return Returns a new dataframe with a particular named column or columns removed.
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.dropSeries("SomeColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.dropSeries(["ColumnA", "ColumnB"]);
+     * </pre>
      */
     dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT>;
 
     /**
-     * Create a new data frame with columns reordered.
+     * Create a new dataframe with columns reordered.
      * New column names create new columns (with undefined values), omitting existing column names causes those columns to be dropped.
      * 
-     * @param columnNames - The new order for columns.
+     * @param columnNames Specifies the new order for columns.
      * 
-     * @return Returns a new dataframe with columns remapped according to the specified column layout.   
+     * @return Returns a new dataframe with columns reodered according to the order of the array of column names that is passed in.
+     * 
+     * @example
+     * <pre>
+     * const reorderedDf = df.reorderSeries(["FirstColumn", "SecondColumn", "etc"]);
+     * </pre>
      */
     reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT>;
 
     /**
-     * Bring the name column (or columns) to the front, making it (or them) the first column(s) in the data-frame.
+     * Bring the column(s) with specified name(s) to the front of the column order, making it (or them) the first column(s) in the output dataframe.
      *
-     * @param columnOrColumns - Specifies the column or columns to bring to the front.
+     * @param columnOrColumns Specifies the column or columns to bring to the front.
      *
      * @return Returns a new dataframe with 1 or more columns bought to the front of the column ordering.
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToFront("NewFirstColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToFront(["NewFirstColumn", "NewSecondColumn"]);
+     * </pre>
      */
     bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Bring the name column (or columns) to the back, making it (or them) the last column(s) in the data-frame.
+     * Bring the column(s) with specified name(s) to the back of the column order, making it (or them) the last column(s) in the output dataframe.
      *
-     * @param columnOrColumns - Specifies the column or columns to bring to the back.
+     * @param columnOrColumns Specifies the column or columns to bring to the back.
      *
      * @return Returns a new dataframe with 1 or more columns bought to the back of the column ordering.
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToBack("NewLastColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * const modifiedDf = df.bringToBack(["NewSecondLastCollumn, ""NewLastColumn"]);
+     * </pre>
      */
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Create a new data-frame with renamed series.
+     * Create a new dataframe with 1 or more columns renamed.
      *
-     * @param newColumnNames - A column rename spec - maps existing column names to new column names.
+     * @param newColumnNames A column rename spec - a JavaScript hash that maps existing column names to new column names.
      * 
-     * @return Returns a new dataframe with columns renamed.
+     * @return Returns a new dataframe with specified columns renamed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const renamedDf = df.renameSeries({ OldColumnName, NewColumnName });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const renamedDf = df.renameSeries({ 
+     *      Column1: ColumnA,
+     *      Column2: ColumnB
+     * });
+     * </pre>
      */
     renameSeries<NewValueT = ValueT> (newColumnNames: IColumnRenameSpec): IDataFrame<IndexT, NewValueT>;
 
     /**
-    * Extract values from the dataframe as an array.
+    * Extract rows from the dataframe as an array.
+    * Each element of the array is one row of the dataframe represented as
+    * a JavaScript object with the fields as the dataframe's columns.
     * This forces lazy evaluation to complete.
     * 
-    * @return Returns an array of values contained within the dataframe. 
+    * @return Returns an array of the rows contained within the dataframe. 
+    * 
+    * @example
+    * <pre>
+    * const values = df.toArray();
+    * </pre>
     */
-    toArray (): ValueT[];
+   toArray (): ValueT[];
 
     /**
-     * Retreive the index and values from the DataFrame as an array of pairs.
-     * Each pairs is [index, value].
+     * Retreive the index, row pairs from the dataframe as an array.
+     * Each pair is [index, row].
+     * This forces lazy evaluation to complete.
      * 
-     * @return Returns an array of pairs that contains the dataframe content. Each pair is a two element array that contains an index and a value.  
+     * @return Returns an array of pairs that contains the dataframe's rows. Each pair is a two element array that contains an index and a row.
+     * 
+     * @example
+     * <pre>
+     * const pairs = df.toPairs();
+     * </pre>
      */
     toPairs (): ([IndexT, ValueT])[];
 
     /**
      * Convert the dataframe to a JavaScript object.
      *
-     * @param {function} keySelector - Function that selects keys for the resulting object.
-     * @param {valueSelector} keySelector - Function that selects values for the resulting object.
+     * @param keySelector User-defined selector function that selects keys for the resulting object.
+     * @param valueSelector User-defined selector function that selects values for the resulting object.
      * 
-     * @return {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     * @return Returns a JavaScript object generated from the dataframe by applying the key and value selector functions. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const someObject = df.toObject(
+     *      row => row.SomeColumn, // Specify the column to use for field names in the output object.
+     *      row => row.SomeOtherColumn // Specifi the column to use as the value for each field.
+     * );
+     * </pre>
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /**
-     * Bake the data frame to an array of rows.
+     * Bake the data frame to an array of rows were each rows is an array of values in column order.
      * 
-     * @return Returns an array of rows. Each row is an array of values in column order.   
+     * @return Returns an array of rows. Each row is an array of values in column order.
+     * 
+     * @example
+     * <pre>
+     * const rows = df.toRows();
+     * </pre>
      */
     toRows (): any[][];
  
     /**
-     * Generate a new dataframe based by calling the selector function on each value.
+     * Generates a new dataframe by repeatedly calling a user-defined selector function on each row in the original dataframe.
      *
-     * @param selector Selector function that transforms each value to create a new dataframe.
+     * @param selector A user-defined selector function that transforms each row to create the new dataframe.
      * 
-     * @return Returns a new dataframe that has been transformed by the selector function.
+     * @return Returns a new dataframe with each row transformed by the selector function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function transformRow (inputRow) {
+     *      const outputRow = {
+     *          // ... construct output row derived from input row ...
+     *      };
+     *
+     *      return outputRow;
+     * }
+     *  
+     * const transformedDf = df.select(row => transformRow(row));
+     * </pre>
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
 
     /**
-     * Generate a new dataframe based on the results of the selector function.
-     *
-     * @param selector Selector function that transforms each value into a list of values.
+     * Generates a new dataframe by repeatedly calling a user-defined selector function on each row in the original dataframe.
      * 
-     * @return  Returns a new dataframe with values that have been produced by the selector function. 
+     * * Similar to the {@link select} function, but in this case the selector function produces a collection of output rows that are flattened and merged to create the new dataframe.
+     *
+     * @param selector A user-defined selector function that transforms each row into a collection of output rows.
+     * 
+     * @return Returns a new dataframe where each row has been transformed into 0 or more new rows by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * function produceOutputRows (inputRow) {
+     *      const outputRows = [];
+     *      while (someCondition) {
+     *          // ... generate zero or more output rows ...
+     *          outputRows.push(... some generated row ...);
+     *      }
+     *      return outputRows;
+     * }
+     * 
+     * const modifiedDf = df.selectMany(row => produceOutputRows(row));
+     * </pre>
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT>;
 
     /**
-     * Transform one or more columns. This is equivalent to extracting a column, calling 'select' on it,
-     * then plugging it back in as the same column.
-     *
-     * @param columnSelectors - Object with field names for each column to be transformed. Each field you be a selector that transforms that column.
+     * Transform one or more columns. 
      * 
-     * @return Returns a new dataframe with 1 or more columns transformed.   
+     * This is equivalent to extracting a {@link Series} with {@link getSeries}, then transforming it with {@link Series.select},
+     * and finally plugging it back in as the same column using {@link withSeries}.
+     *
+     * @param columnSelectors Object with field names for each column to be transformed. Each field specifies a selector function that transforms that column.
+     * 
+     * @return Returns a new dataframe with 1 or more columns transformed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.transformSeries({ 
+     *      AColumnToTransform: columnValue => transformRow(columnValue) 
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modifiedDf = df.transformSeries({ 
+     *      ColumnA: columnValue => transformColumnA(columnValue),
+     *      ColumnB: columnValue => transformColumnB(columnValue)
+     * });
+     * </pre>
      */
     transformSeries<NewValueT = ValueT> (columnSelectors: IColumnTransformSpec): IDataFrame<IndexT, NewValueT>;
 
     /** 
      * Generate new columns based on existing rows.
+     * 
+     * This is equivalent to calling {@link select} to transform the original dataframe to a new dataframe with different column,
+     * then using {@link withSeries} to merge each the of both the new and original dataframes.
      *
-     * @param generator - Generator function that transforms each row to a new set of columns.
+     * @param generator Generator function that transforms each row to produce 1 or more new columns.
+     * Or use a column spec that has fields for each column, the fields specify a generate function that produces the value for each new column.
      * 
      * @return Returns a new dataframe with 1 or more new columns.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function produceNewColumns (inputRow) {
+     *      const newColumns = {
+     *          // ... specify new columns and their values based on the input row ...
+     *      };
+     * 
+     *      return newColumns;
+     * };
+     * 
+     * const dfWithNewSeries = df.generateSeries(row => produceNewColumns(row));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithNewSeries = df.generateSeries({ 
+     *      NewColumnA: row => produceNewColumnA(row),
+     *      NewColumnB: row => produceNewColumnB(row),
+     * })
+     * </pre>
      */
     generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT>;
 
     /** 
-     * Deflate a data-frame to a series.
+     * Converts (deflates) a dataframe to a {@link Series}.
      *
-     * @param [selector] - Optional selector function that transforms each row to a new sequence of values.
+     * @param [selector] Optional selector function that transforms each row to produce the series.
      *
-     * @return Returns a series that was created from the input dataframe.
+     * @return Returns a series that was created from the deflated from  the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = df.deflate(); // Deflate to a series of object.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = df.deflate(row => row.SomeColumn); // Extract a particular column.
+     * </pre>
      */
     deflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
 
     /** 
-     * Inflate a named series in the data-frame to 1 or more new series in the new dataframe.
+     * Inflate a named {@link Series} in the dataframe to 1 or more new series in the new dataframe.
+     * 
+     * This is the equivalent of extracting the series using {@link getSeries}, transforming them with {@link Series.select}
+     * and then running {@link Series.inflate} to create a new dataframe, then merging each column of the new dataframe
+     *  into the original dataframe using {@link withSeries}.
      *
-     * @param columnName - Name or index of the column to retreive.
-     * @param [selector] - Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
+     * @param columnName Name of the series to inflate.
+     * @param [selector] Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
      * 
      * @return Returns a new dataframe with a column inflated to 1 or more new columns.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function newColumnGenerator (row) {
+     *      const newColumns = {
+     *          // ... create 1 field per new column ...
+     *      };
+     * 
+     *      return row;
+     * }
+     * 
+     * const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
+     * </pre>
      */
     inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Segment a dataframe into 'windows'. Returns a new series. Each value in the new dataframe contains a 'window' (or segment) of the original dataframe.
-     * Use select or selectPairs to aggregate.
+     * Partition a dataframe into a {@link Series} of *data windows*. 
+     * Each value in the new series is a chunk of data from the original dataframe.
      *
-     * @param period - The number of values in the window.
+     * @param period The number of rows to include in each data window.
      * 
-     * @return Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     * @return Returns a new series, each value of which is a chunk (data window) of the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const windows = df.window(2); // Get rows in pairs.
+     * const pctIncrease = windows.select(pair => (pair.last() - pair.first()) / pair.first());
+     * console.log(pctIncrease.toString());
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... // Daily sales data.
+     * const weeklySales = salesDf.window(7); // Partition up into weekly data sets.
+     * console.log(weeklySales.toString());
+     * </pre>
      */
     window (period: number): ISeries<number, IDataFrame<IndexT, ValueT>>;
 
     /** 
-     * Segment a dataframe into 'rolling windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original dataframe.
-    *
-     * @param period - The number of values in the window.
+     * Partition a dataframe into a {@link Series} of *rolling data windows*. 
+     * Each value in the new series is a rolling chunk of data from the original dataframe.
+     *
+     * @param period The number of data rows to include in each data window.
      * 
-     * @return Returns a new series, each value of which is a 'window' (or segment) of the original dataframe.
+     * @return Returns a new series, each value of which is a rolling chunk of the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... // Daily sales data.
+     * const rollingWeeklySales = salesDf.rollingWindow(7); // Get rolling window over weekly sales data.
+     * console.log(rollingWeeklySales.toString());
+     * </pre>
      */
     rollingWindow (period: number): ISeries<number, IDataFrame<IndexT, ValueT>>;
 
     /**
-     * Groups sequential values into variable length 'windows'.
-     *
-     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * Partition a dataframe into a {@link Series} of variable-length *data windows* 
+     * where the divisions between the data chunks are
+     * defined by a user-provided *comparer* function.
      * 
-     * @return Returns a series of groups. Each group is itself a dataframe that contains the values in the 'window'. 
+     * @param comparer Function that compares two adjacent data rows and returns true if they should be in the same window.
+     * 
+     * @return Returns a new series, each value of which is a chunk of data from the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function rowComparer (rowA, rowB) {
+     *      if (... rowA should be in the same data window as rowB ...) {
+     *          return true;
+     *      }
+     *      else {
+     *          return false;
+     *      }
+     * };
+     * 
+     * const variableWindows = df.variableWindow(rowComparer);
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
 
     /**
-     * Collapase distinct values that happen to be sequential.
-     *
-     * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
+     * Eliminates adjacent duplicate rows.
      * 
-     * @return Returns a new dataframe with duplicate values that are sequential removed.
+     * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
+     * thus ajacent equivalent rows are collapsed down to the last row.
+     *
+     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * 
+     * @return Returns a new dataframe with groups of adjacent duplicate rows collapsed to a single row per group.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithDuplicateRowsRemoved = df.sequentialDistinct(row => row.ColumnA);
+     * </pre>
      */
     sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Aggregate the values in the dataframe.
+     * Aggregate the rows in the dataframe to a single result.
      *
-     * @param [seed] - Optional seed value for producing the aggregation.
-     * @param selector - Function that takes the seed and then each value in the dataframe and produces the aggregate value.
+     * @param [seed] Optional seed value for producing the aggregation.
+     * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregate value.
      * 
-     * @return Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
-     */
-    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT;
+     * @return Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailySalesDf = ... daily sales figures for the past month ...
+     * const totalSalesForthisMonth = dailySalesDf.aggregate(
+     *      0, // Seed - the starting value.
+     *      (accumulator, row) => accumulator + row.SalesAmount // Aggregation function.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+     * const dailySalesDf = ... daily sales figures for the past month ...
+     * const updatedTotalSalesAllTime = dailySalesDf.aggregate(
+     *      totalSalesAllTime, 
+     *      (accumulator, row) => accumulator + row.SalesAmount
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * var salesDataSummary = salesDataDf.aggregate({
+     *      TotalSales: df => df.count(),
+     *      AveragePrice: df => df.deflate(row => row.Price).average(),
+     *      TotalRevenue: df => df.deflate(row => row.Revenue).sum(), 
+     * });
+     * </pre>
+    */
+   aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT;
     
     /**
-     * Skip a number of values in the dataframe.
+     * Skip a number of rows in the dataframe.
      *
-     * @param numValues - Number of values to skip.     * 
-     * @return Returns a new dataframe or dataframe with the specified number of values skipped. 
+     * @param numValues Number of rows to skip.
+     * 
+     * @return Returns a new dataframe with the specified number of rows skipped. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsSkipped = df.skip(10); // Skip 10 rows in the original dataframe.
+     * </pre>
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Skips values in the series while a condition is met.
+     * Skips values in the dataframe while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to skip rows in the original dataframe.
      * 
-     * @return Returns a new series with all initial sequential values removed that match the predicate.  
+     * @return Returns a new dataframe with all initial sequential rows removed while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsSkipped = df.skipWhile(row => row.CustomerName === "Fred"); // Skip initial customers named Fred.
+     * </pre>
      */
     skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Skips values in the series until a condition is met.
+     * Skips values in the dataframe untils a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop skipping rows in the original dataframe.
      * 
-     * @return Returns a new series with all initial sequential values removed that don't match the predicate.
+     * @return Returns a new dataframe with all initial sequential rows removed until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsSkipped = df.skipUntil(row => row.CustomerName === "Fred"); // Skip initial customers until we find Fred.
+     * </pre>
      */
     skipUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Take a number of rows in the series.
+     * Take a number of rows in the dataframe.
      *
-     * @param numRows - Number of rows to take.
+     * @param numValues Number of rows to take.
      * 
-     * @return Returns a new series with up to the specified number of values included.
+     * @return Returns a new dataframe with only the specified number of rows taken from the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsTaken = df.take(15); // Take only the first 15 rows from the original dataframe.
+     * </pre>
      */
     take (numRows: number): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Take values from the series while a condition is met.
+     * Takes values from the dataframe while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to take rows from the original dataframe.
      * 
-     * @return Returns a new series that only includes the initial sequential values that have matched the predicate.
+     * @return Returns a new dataframe with only the initial sequential rows that were taken while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsTaken = df.takeWhile(row => row.CustomerName === "Fred"); // Take only initial customers named Fred.
+     * </pre>
      */
     takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Take values from the series until a condition is met.
+     * Takes values from the dataframe untils a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop taking rows in the original dataframe.
      * 
-     * @return Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     * @return Returns a new dataframe with only the initial sequential rows taken until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfWithRowsTaken = df.takeUntil(row => row.CustomerName === "Fred"); // Take all initial customers until we find Fred.
+     * </pre>
      */
     takeUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Count the number of values in the series.
+     * Count the number of rows in the dataframe
      *
-     * @return Returns the count of all values in the series.
+     * @return Returns the count of all rows.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const numRows = df.count();
+     * </pre>
      */
     count (): number;
 
     /**
-     * Get the first value of the series.
+     * Get the first row of the dataframe.
      *
-     * @return Returns the first value of the series.
+     * @return Returns the first row of the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const firstRow = df.first();
+     * </pre>
      */
     first (): ValueT;
 
     /**
-     * Get the last value of the series.
+     * Get the last row of the dataframe.
      *
-     * @return Returns the last value of the series.
+     * @return Returns the last row of the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const lastRow = df.last();
+     * </pre>
      */
     last (): ValueT;
     
     /**
-     * Get the value at a specified index.
+     * Get the row, if there is one, with the specified index.
      *
-     * @param index - Index to for which to retreive the value.
+     * @param index Index to for which to retreive the row.
      *
-     * @return Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     * @return Returns the row from the specified index in the dataframe or undefined if there is no such index in the present in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const row = df.at(5); // Get the row at index 5 (with a default 0-based index).
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const date = ... some date ...
+     * // Retreive the row with specified date from a time-series dataframe (assuming date indexed has been applied).
+     * const row = df.at(date); 
+     * </pre>
      */
     at (index: IndexT): ValueT | undefined;
     
     /** 
-     * Get X values from the start of the series.
+     * Get X rows from the start of the dataframe.
+     * Pass in a negative value to get all rows at the head except for X rows at the tail.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of rows to take.
      * 
-     * @return Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     * @return Returns a new dataframe that has only the specified number of rows taken from the start of the original dataframe.  
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = df.head(10); // Take a sample of 10 rows from the start of the dataframe.
+     * </pre>
      */
     head (numValues: number): IDataFrame<IndexT, ValueT>;
 
     /** 
-     * Get X values from the end of the series.
+     * Get X rows from the end of the dataframe.
+     * Pass in a negative value to get all rows at the tail except X rows at the head.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of rows to take.
      * 
-     * @return Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     * @return Returns a new dataframe that has only the specified number of rows taken from the end of the original dataframe.  
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = df.tail(12); // Take a sample of 12 rows from the end of the dataframe.
+     * </pre>
      */
     tail (numValues: number): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Filter a series by a predicate selector.
+     * Filter the dataframe using user-defined predicate function.
      *
-     * @param predicate - Predicte function to filter rows of the series.
+     * @param predicate Predicte function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
      * 
-     * @return Returns a new series containing only the values that match the predicate. 
+     * @return Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we only have customers named Fred.
+     * </pre>
      */
     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Invoke a callback function for each value in the series.
+     * Invoke a callback function for each roew in the dataframe.
      *
-     * @param callback - The calback to invoke for each value.
+     * @param callback The calback function to invoke for each row.
      * 
-     * @return Returns the input series with no modifications.
+     * @return Returns the original dataframe with no modifications.
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.forEach(row => {
+     *      // ... do something with the row ...
+     * });
+     * </pre>
      */
     forEach (callback: CallbackFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Determine if the predicate returns truthy for all values in the series.
-     * Returns false as soon as the predicate evaluates to falsy.
-     * Returns true if the predicate returns truthy for all values in the series.
-     * Returns false if the series is empty.
+     * Evaluates a predicate function for every row in the dataframe to determine 
+     * if some condition is true/truthy for **all** rows in the dataframe.
+     * 
+     * @param predicate Predicate function that receives each row. It should returns true/truthy for a match, otherwise false/falsy.
      *
-     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
-     *
-     * @return {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned true or truthy for every row in the dataframe, otherwise returns false. Returns false for an empty dataframe. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const everyoneIsNamedFred = df.all(row => row.CustomerName === "Fred"); // Check if all customers are named Fred.
+     * </pre>
      */
     all (predicate: PredicateFn<ValueT>): boolean;
 
     /**
-     * Determine if the predicate returns truthy for any of the values in the series.
-     * Returns true as soon as the predicate returns truthy.
-     * Returns false if the predicate never returns truthy.
-     * If no predicate is specified the value itself is checked. 
+     * Evaluates a predicate function for every row in the dataframe to determine 
+     * if some condition is true/truthy for **any** of rows in the dataframe.
+     * 
+     * If no predicate is specified then it simply checks if the dataframe contains more than zero rows.
      *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @return Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for any row in the sequence, otherwise returns false. 
+     * If no predicate is passed it returns true if the dataframe contains any rows at all. 
+     * Returns false for an empty dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const anyFreds = df.any(row => row.CustomerName === "Fred"); // Do we have any customers named Fred?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const anyCustomers = df.any(); // Do we have any customers at all?
+     * </pre>
      */
     any (predicate?: PredicateFn<ValueT>): boolean;
 
     /**
-     * Determine if the predicate returns truthy for none of the values in the series.
-     * Returns true for an empty series.
-     * Returns true if the predicate always returns falsy.
-     * Otherwise returns false.
-     * If no predicate is specified the value itself is checked.
-     *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * Evaluates a predicate function for every row in the dataframe to determine 
+     * if some condition is true/truthy for **none** of rows in the dataframe.
      * 
-     * @return Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     * If no predicate is specified then it simply checks if the dataframe contains zero rows.
+     *
+     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
+     *
+     * @return Returns true if the predicate has returned truthy for zero rows in the dataframe, otherwise returns false. Returns false for an empty dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const noFreds = df.none(row => row.CustomerName === "Fred"); // Do we have zero customers named Fred?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const noCustomers = df.none(); // Do we have zero customers?
+     * </pre>
      */
     none (predicate?: PredicateFn<ValueT>): boolean;
 
-    /**
-     * Get a new series containing all values starting at and after the specified index value.
+        /**
+     * Gets a new dataframe containing all rows starting at and after the specified index value.
      * 
-     * @param indexValue - The index value to search for before starting the new series.
+     * @param indexValue The index value at which to start the new dataframe.
      * 
-     * @return Returns a new series containing all values starting at and after the specified index value. 
+     * @return Returns a new dataframe containing all rows starting at and after the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = df.startAt(2);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows starting at (or after) a particular date.
+     * const allRowsFromStartDate = df.startAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values up until and including the specified index value (inclusive).
+     * Gets a new dataframe containing all rows up until and including the specified index value (inclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new dataframe.
      * 
-     * @return Returns a new series containing all values up until and including the specified index value. 
+     * @return Returns a new dataframe containing all rows up until and including the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = df.endAt(1);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows ending at a particular date.
+     * const allRowsUpToAndIncludingTheExactEndDate = df.endAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values up to the specified index value (exclusive).
+     * Gets a new dataframe containing all rows up to the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new dataframe.
      * 
-     * @return Returns a new series containing all values up to the specified inde value. 
+     * @return Returns a new dataframe containing all rows up to (but not including) the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = df.before(2);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows before the specified date.
+     * const allRowsBeforeEndDate = df.before(new Date(2016, 5, 4)); 
+     * </pre>
      */
     before (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values after the specified index value (exclusive).
+     * Gets a new dataframe containing all rows after the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for.
+     * @param indexValue The index value after which to start the new dataframe.
      * 
-     * @return Returns a new series containing all values after the specified index value.
+     * @return Returns a new dataframe containing all rows after the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = df.before(1);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows after the specified date.
+     * const allRowsAfterStartDate = df.after(new Date(2016, 5, 4)); 
+     * </pre>
      */
     after (indexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Get a new dataframe containing all values between the specified index values (inclusive).
+     * Gets a new dataframe containing all rows between the specified index values (inclusive).
      * 
-     * @param startIndexValue - The index where the new sequence starts. 
-     * @param endIndexValue - The index where the new sequence ends.
+     * @param startIndexValue The index at which to start the new dataframe.
+     * @param endIndexValue The index at which to end the new dataframe.
      * 
      * @return Returns a new dataframe containing all values between the specified index values (inclusive).
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = new DataFrame({ 
+     *      index: [0, 1, 2, 3, 4, 6], // This is the default index.
+     *      values: [10, 20, 30, 40, 50, 60],
+     * });
+     * 
+     * const middleSection = df.between(1, 4);
+     * expect(middleSection.toArray()).to.eql([20, 30, 40, 50]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeriesDf = ... a dataframe indexed by date/time ...
+     * 
+     * // Get all rows between the start and end dates (inclusive).
+     * const allRowsBetweenDates = df.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
+     * </pre>
      */
     between (startIndexValue: IndexT, endIndexValue: IndexT): IDataFrame<IndexT, ValueT>;
 
@@ -741,59 +1454,120 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * This forces lazy evaluation to complete.
      * 
      * @return Generates and returns a string representation of the dataframe or dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * console.log(df.toString());
+     * </pre>
      */
     toString (): string;
 
     /**
-     * Parse a column with string values to a column with int values.
+     * Parse a column with string values and convert it to a column with int values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
      * @return Returns a new dataframe with a particular named column parsed as ints.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumn = df.parseInts("MyIntColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumns = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
+     * </pre>
      */
     parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Parse a column with string values to a column with float values.
+     * Parse a column with string values and convert it to a column with float values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
+     * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
      * @return  Returns a new dataframe with a particular named column parsed as floats.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumn = df.parseFloats("MyFloatColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumns = df.parseFloats(["MyFloatColumnA", "MyFloatColumnA"]);
+     * </pre>
      */
     parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Parse a column with string values to a column with date values.
+     * Parse a column with string values and convert it to a column with date values.
      *
-     * @param columnNameOrNames - Specifies the column name or array of column names to parse.
-     * @param [formatString] - Optional formatting string for dates.
+     * @param columnNameOrNames -Specifies the column name or array of column names to parse.
+     * @param [formatString] Optional formatting string for dates.
      * 
-     * @return Returns a new dataframe with a particular named column parsed as dates.  
+     * @return Returns a new dataframe with a particular named column parsed as dates.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumn = df.parseDates("MyDateColumn");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withParsedColumns = df.parseDates(["MyDateColumnA", "MyDateColumnA"]);
+     * </pre>
      */
     parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT>;
 
     /**
      * Convert a column of values of different types to a column of string values.
      *
-     * @param columnNames - Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
-     * @param [formatString] - Optional formatting string for dates.
+     * @param columnNames Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
+     * @param [formatString] Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
      * 
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
-
-     * @return Returns a new dataframe with a particular named column convert to strings.  
+     * 
+     * @return Returns a new dataframe with a particular named column convert to strings.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withStringColumn = df.toStrings("MyDateColumn", "YYYY-MM-DD");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const withStringColumn = df.toStrings("MyFloatColumn", "0.00");
+     * </pre>
      */
     toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT>;    
 
     /**
-     * Produces a new data frame with all string values truncated to the requested maximum length.
+     * Produces a new dataframe with all string values truncated to the requested maximum length.
      *
-     * @param maxLength - The maximum length of the string values after truncation.
+     * @param maxLength The maximum length of the string values after truncation.
      * 
      * @return Returns a new dataframe with all strings truncated to the specified maximum length.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Truncate all string columns to 100 characters maximum.
+     * const truncatedDf = df.truncateString(100);
+     * </pre>
      */
     truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT>;
 
@@ -801,60 +1575,161 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      * 
      * @return Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const bakedDf = df.bake();
+     * </pre>
      */
     bake (): IDataFrame<IndexT, ValueT>;
 
     /** 
-     * Reverse the dataframe.
+     * Gets a new dataframe in reverse order.
      * 
      * @return Returns a new dataframe that is the reverse of the input.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const reversedDf = df.reverse();
+     * </pre>
      */
     reverse (): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Returns only values in the dataframe that have distinct values.
+     * Returns only the set of rows in the dataframe that are distinct according to some criteria.
+     * This can be used to remove duplicate rows from the dataframe.
      *
-     * @param selector - Selects the value used to compare for duplicates.
+     * @param selector User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.
      * 
      * @return Returns a dataframe containing only unique values as determined by the 'selector' function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Remove duplicate rows by customer id. Will return only a single row per customer.
+     * const distinctCustomers = salesDf.distinct(sale => sale.CustomerId);
+     * </pre>
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Group the dataframe according to the selector.
+     * Collects rows in the dataframe into a series of groups according to the user-defined selector function that defines the group for each row.
      *
-     * @param selector - Selector that defines the value to group by.
+     * @param selector User-defined selector function that defines the value to group by.
      *
-     * @return Returns a series of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @return Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... product sales ...
+     * const salesByProduct = salesDf.groupBy(sale => sale.ProductId);
+     * for (const productSalesGroup of salesByProduct) {
+     *      // ... do something with each product group ...
+     *      const productId = productSalesGroup.first().ProductId;
+     *      const totalSalesForProduct = productSalesGroup.deflate(sale => sale.Amount).sum();
+     *      console.log(totalSalesForProduct);
+     * }
+     * </pre>
      */
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
     
     /**
-     * Group sequential values into a series of windows.
+     * Collects rows in the dataframe into a series of groups according to a user-defined selector function that identifies adjacent rows that should be in the same group.
      *
-     * @param selector - Optional selector that defines the value to group by.
+     * @param selector Optional selector that defines the value to group by.
      *
-     * @return Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * @return Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Some ultra simple stock trading strategy backtesting...
+     * const dailyStockPriceDf = ... daily stock price for a company ...
+     * const priceGroups  = dailyStockPriceDf.groupBy(day => day.close > day.movingAverage);
+     * for (const priceGroup of priceGroups) {
+     *      // ... do something with each stock price group ...
+     * 
+     *      const firstDay = priceGroup.first();
+     *      if (firstDay.close > movingAverage) {
+     *          // This group of days has the stock price above its moving average.
+     *          // ... maybe enter a long trade here ...
+     *      }
+     *      else {
+     *          // This group of days has the stock price below its moving average.
+     *          // ... maybe enter a short trade here ...
+     *      }
+     * }
+     * </pre>
      */
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
     
     /**
      * Concatenate multiple other dataframes onto this dataframe.
      * 
-     * @param dataframes - Multiple arguments. Each can be either a dataframe or an array of dataframes.
+     * @param dataframes Multiple arguments. Each can be either a dataframe or an array of dataframes.
      * 
-     * @return Returns a single dataframe concatenated from multiple input dataframes. 
+     * @return Returns a single dataframes concatenated from multiple input dataframes. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat(dfB, dfC);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat([dfB, dfC]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenatedDf = dfA.concat(dfB, [dfC, dfD]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const otherDfs = [... array of dataframes...];
+     * const concatenatedDf = dfA.concat(otherDfs);
+     * </pre>
      */    
     concat (...dataframes: (IDataFrame<IndexT, ValueT>[] | IDataFrame<IndexT, ValueT>)[]): IDataFrame<IndexT, ValueT>;
     
     /**
-    * Zip together multiple dataframes to create a new dataframe.
+    * Zip (or merge) together multiple dataframes to create a new dataframe.
     * Preserves the index of the first dataframe.
     * 
-    * @param s2, s3, s4, s4 - Multiple dataframes to zip.
-    * @param zipper - Zipper function that produces a new dataframe based on the input dataframes.
+    * @param s2, s3, s4, s4 Multiple dataframes to zip.
+    * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
-    * @return Returns a single dataframe concatenated from multiple input dataframes. 
+    * @return Returns a single dataframe zipped (or merged) from multiple input dataframes. 
+    * 
+    * @example
+    * <pre>
+    * 
+    * function produceNewRow (rowA, rowB) {
+    *       const outputRow = {
+    *           ValueA: rowA.Value,
+    *           ValueB: rowB.Value,
+    *       };
+    *       return outputRow;
+    * }
+    * 
+    * const dfA = new DataFrame([ { Value: 10 }, { Value: 20 }, { Value: 30 }]);
+    * const dfB = new DataFrame([ { Value: 100 }, { Value: 200 }, { Value: 300 }]);
+    * const zippedDf = dfA.zip(dfB, produceNewRow);
+    * </pre>
     */    
     zip<Index2T, Value2T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): IDataFrame<IndexT, ResultT>;
     zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: IDataFrame<Index2T, Value2T>, s3: IDataFrame<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): IDataFrame<IndexT, ResultT>;
@@ -862,30 +1737,86 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     zip<ResultT>  (...args: any[]): IDataFrame<IndexT, ResultT>;
 
     /**
-     * Sorts the dataframe by a value defined by the selector (ascending). 
+     * Sorts the dataframe in ascending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @return Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     * @return Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by amount from least to most.
+     * const orderedDf = salesDf.orderBy(sale => sale.Amount); 
+     * </pre>
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 
     /**
-     * Sorts the dataframe by a value defined by the selector (descending). 
+     * Sorts the dataframe in descending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @return Returns a new ordered dataframe that has been sorted by the value returned by the selector. 
+     * @return Returns a new dataframe that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by amount from most to least
+     * const orderedDf = salesDf.orderByDescending(sale => sale.Amount); 
+     * </pre>
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
         
     /**
-     * Returns the unique union of values between two dataframes.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains the union of rows from the two input dataframes.
+     * These are the unique combination of rows in both dataframe.
+     * This is basically a concatenation and then elimination of duplicates.
      *
-     * @param other - The other dataframe to combine.
-     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * @param other The other dataframes to merge.
+     * @param [selector] Optional user-defined selector function that selects the value to compare to detemrine distinctness.
      * 
-     * @return Returns the union of two dataframes.
+     * @return Returns the union of the two dataframes.
+     * 
+     * @example
+     * <pre>
+     *
+     * const dfA = ...
+     * const dfB = ...
+     * const merged = dfA.union(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records that may contain the same
+     * // customer record in each set. This is basically a concatenation
+     * // of the dataframes and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA.union(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
+     * 
+     * 
+     * @example
+     * <pre>
+     *
+     * // Note that you can achieve the exact same result as the previous
+     * // example by doing a {@link DataFrame.concat) and {@link DataFrame.distinct}
+     * // of the dataframes and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA
+     *      .concat(customerRecordsB)
+     *      .distinct(customerRecord => customerRecord.CustomerId);
+     * </pre>
+     * 
      */
     union<KeyT = ValueT> (
         other: IDataFrame<IndexT, ValueT>, 
@@ -893,29 +1824,73 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<IndexT, ValueT>;
 
     /**
-     * Returns the intersection of values between two dataframes.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains the intersection of rows from the two input dataframes.
+     * These are only the rows that appear in both dataframes.
      *
-     * @param inner - The other dataframes to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
-     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
-     * @return Returns the intersection of two dataframes.
-     */
+     * @return Returns a new dataframe that contains the intersection of rows from the two input dataframes.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfA = ...
+     * const dfB = ...
+     * const mergedDf = dfA.intersection(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records to find only the
+     * // customers that appears in both.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const intersectionOfCustomerRecords = customerRecordsA.intersection(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>     
+     * */
     intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
         outerSelector?: SelectorFn<ValueT, KeyT>,
         innerSelector?: SelectorFn<InnerValueT, KeyT>): 
             IDataFrame<IndexT, ValueT>;
     
-
     /**
-     * Returns the exception of values between two dataframes.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
+     * This is essentially subtracting the rows from the 2nd dataframe from the 1st and creating a new dataframe with the remaining rows.
      *
-     * @param inner - The other dataframe to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two dataframes.
-     * @param [innerSelector] - Optional function to select the key for matching the two dataframes.
+     * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
-     * @return Returns the difference between the two dataframes.
+     * @return Returns a new dataframe that contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dfA = ...
+     * const dfB = ...
+     * const remainingDf = dfA.except(dfB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Find the list of customers haven't bought anything recently.
+     * const allCustomers = ... list of all customers ...
+     * const recentCustomers = ... list of customers who have purchased recently ...
+     * const remainingCustomers = allCustomers.except(
+     *      recentCustomers, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
      */
     except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -924,15 +1899,34 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<IndexT, ValueT>;
 
    /**
-     * Correlates the elements of two dataframes on matching keys.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that have matching keys in both input dataframes.
      *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
-     * @return Returns the joined dataframe. 
+     * @return Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -942,20 +1936,38 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<number, ResultValueT>;
 
     /**
-     * Performs an outer join on two dataframes. Correlates the elements based on matching keys.
-     * Includes elements from both dataframes that have no correlation in the other dataframe.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that are only present in or or the other of the dataframes, not both.
      *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @return Returns the joined dataframe. 
+     * @return Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either product A or product B, not not both.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -964,22 +1976,39 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             IDataFrame<number, ResultValueT>;
     
-
     /**
-     * Performs a left outer join on two dataframe. Correlates the elements based on matching keys.
-     * Includes left elements that have no correlation.
-     *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that present either in both dataframes or only in the outer (left) dataframe.
+     * 
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @return Returns the joined dataframe. 
+     * @return Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product A or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -989,20 +2018,38 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<number, ResultValueT>;
 
     /**
-     * Performs a right outer join on two dataframes. Correlates the elements based on matching keys.
-     * Includes right elements that have no correlation.
+     * Creates a new dataframe by merging two input dataframes.
+     * The resulting dataframe contains only those rows that present either in both dataframes or only in the inner (right) dataframe.
      *
-     * @param this - The outer dataframe to join. 
-     * @param inner - The inner dataframe to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner dataframe.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @return Returns the joined dataframe. 
+     * @return Returns the new merged dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product B or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: IDataFrame<InnerIndexT, InnerValueT>, 
@@ -1012,14 +2059,71 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<number, ResultValueT>;
 
     /**
-     * Reshape (or pivot) a table based on column values.
-     * This effiectively a short-hand for multiple grouping operations and an aggregation.
+     * Reshape (or pivot) a dataframe based on column values.
+     * This is short-hand that combines grouping, aggregation and sorting.
      *
-     * @param columnOrColumns - Column name whose values make the new DataFrame's columns.
-     * @param valueColumnNameOrSpec - Column name or column spec that defines the columns whose values should be aggregated.
-     * @param [aggregator] - Optional function used to aggregate pivotted vales. 
+     * @param columnOrColumns Column name whose values make the new DataFrame's columns.
+     * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
+     * @param [aggregator] Optional function used to aggregate pivotted vales. 
      *
      * @return Returns a new dataframe that has been pivoted based on a particular column's values. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Simplest example.
+     * // Group by the values in 'PivotColumn'.
+     * // The unique set of values in 'PivotColumn' becomes the columns in the resulting dataframe.
+     * // The column 'ValueColumn' is averaged for each group and this becomes the 
+     * // values in the new column.
+     * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multi-value column example.
+     * // Similar to the previous example except now we are aggregating multiple value columns.
+     * // Each group has the average computed for 'ValueColumnA' and the sum for 'ValueColumnB'.
+     * const pivottedDf = df.pivot("PivotColumn", { 
+     *      "ValueColumnA": aValues => aValues.average(),
+     *      "ValueColumnB":  bValues => bValues.sum(),
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Full multi-column example.
+     * // Similar to the previous example now we are pivotting on multiple columns.
+     * // We now group by the 'PivotColumnA' and then by 'PivotColumnB', effectively creating a 
+     * // multi-level group.
+     * const pivottedDf = df.pivot(["PivotColumnA", "PivotColumnB" ], { 
+     *      "ValueColumnA": aValues => aValues.average(),
+     *      "ValueColumnB":  bValues => bValues.sum(),
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // To help understand the pivot function, let's look at what it does internally.
+     * // Take the simplest example:
+     * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
+     * 
+     * // If we expand out the internals of the pivot function, it will look something like this:
+     * const pivottedDf = df.groupBy(row => row.PivotColumn)
+     *          .select(group => ({
+     *              PivotColumn: group.deflate(row.ValueColumn).average()
+     *          }))
+     *          .orderBy(row  => row.PivotColumn);
+     * 
+     * // You can see that pivoting a dataframe is the same as grouping, aggregating and sorting it.
+     * // Does pivoting seem simpler now?
+     * 
+     * // It gets more complicated than that of course, because the pivot function supports multi-level nested 
+     * // grouping and aggregation of multiple columns. So a full expansion of the pivot function is rather complex.
+     * </pre>
      */
     pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
@@ -1029,116 +2133,261 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Insert a pair at the start of the dataframe.
+     * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the inserted pair.
      *
-     * @param pair - The pair to insert.
+     * @param pair The pair to insert.
      * 
      * @return Returns a new dataframe with the specified pair inserted.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to insert ...
+     * const insertedDf = df.insertPair([newIndex, newRows]);
+     * </pre>
      */
     insertPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
 
     /**
      * Append a pair to the end of a dataframe.
+     * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the appended pair.
      *
      * @param pair - The pair to append.
      *  
      * @return Returns a new dataframe with the specified pair appended.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to append ...
+     * const appendedDf = df.appendPair([newIndex, newRows]);
+     * </pre>
      */
     appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
 
     /**
      * Fill gaps in a dataframe.
      *
-     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
-     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     * @param comparer User-defined comparer function that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
+     * @param generator User-defined generator function that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
      *
      * @return Returns a new dataframe with gaps filled in.
+     * 
+     * @example
+     * <pre>
+     * 
+     *   var sequenceWithGaps = ...
+     *
+     *  // Predicate that determines if there is a gap.
+     *  var gapExists = (pairA, pairB) => {
+     *      // Returns true if there is a gap.
+     *      return true;
+     *  };
+     *
+     *  // Generator function that produces new rows to fill the game.
+     *  var gapFiller = (pairA, pairB) => {
+     *      // Create an array of index, value pairs that fill the gaps between pairA and pairB.
+     *      return [
+     *          newPair1,
+     *          newPair2,
+     *          newPair3,
+     *      ];
+     *  };
+     *
+     *  var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
+     * </pre>
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Returns the specified default sequence if the dataframe is empty. 
+     * Returns the specified default dataframe if the dataframe is empty. 
      *
-     * @param defaultSequence - Default sequence to return if the dataframe is empty.
+     * @param defaultDataFrame Default dataframe to return if the dataframe is empty.
      * 
-     * @return Returns 'defaultSequence' if the dataframe is empty. 
+     * @return Returns 'defaultDataFrame' if the dataframe is empty. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const emptyDataFrame = new DataFrame();
+     * const defaultDataFrame = new DataFrame([ { A: 1 }, { A: 2 }, { A: 3 } ]);
+     * expect(emptyDataFrame.defaultIfEmpty(defaultDataFrame)).to.eql(defaultDataFrame);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const nonEmptyDataFrame = new DataFrame([ { A: 100 }]);
+     * const defaultDataFrame = new DataFrame([ { A: 1 }, { A: 2 }, { A: 3 } ]);
+     * expect(nonEmptyDataFrame.defaultIfEmpty(defaultDataFrame)).to.eql(nonEmptyDataFrame);
+     * </pre>
      */
     defaultIfEmpty (defaultSequence: ValueT[] | IDataFrame<IndexT, ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Detect the types of the values in the dataframe.
+     * Detect the the frequency of the types of the values in the dataframe.
+     * This is a good way to understand the shape of your data.
      *
-     * @return Returns a dataframe that describes the data types contained in the input series or dataframe.
+     * @return Returns a dataframe with rows that confirm to {@link ITypeFrequency} that describes the data types contained in the original dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = dataForge.readFileSync("./my-data.json").parseJSON();
+     * const dataTypes = df.detectTypes();
+     * console.log(dataTypes.toString());
+     * </pre>
      */
     detectTypes (): IDataFrame<number, ITypeFrequency>;
 
     /**
      * Detect the frequency of the values in the dataframe.
+     * This is a good way to understand the shape of your data.
      *
-     * @return Returns a dataframe that describes the values contained in the dataframe.
+     * @return Returns a dataframe with rows that conform to {@link IValueFrequency} that describes the values contained in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = dataForge.readFileSync("./my-data.json").parseJSON();
+     * const dataValues = df.detectedValues();
+     * console.log(dataValues.toString());
+     * </pre>
      */
     detectValues (): IDataFrame<number, IValueFrequency>;
 
     /**
-     * Serialize the dataframe to JSON.
+     * Serialize the dataframe to the JSON data format.
      * 
-     * @return Returns a JSON format string representing the dataframe.   
+     * @return Returns a string in the JSON data format that represents the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsonData = df.toJSON();
+     * console.log(jsonData);
+     * </pre>
      */
     toJSON (): string;
 
     /**
-     * Serialize the dataframe to CSV.
+     * Serialize the dataframe to the CSV data format.
      * 
-     * @return Returns a CSV format string representing the dataframe.   
+     * @return Returns a string in the CSV data format that represents the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const csvData = df.toCSV();
+     * console.log(csvData);
+     * </pre>
      */
     toCSV (): string;
 
     /**
      * Treat the dataframe as CSV data for purposes of serialization.
+     * This is the first step you need in serializing a dataframe to a CSV data file.
      * 
-     * @return Returns an object that represents the dataframe for serialization in the CSV format. Call `writeFile`, `writeFileSync` to output the dataframe via different media.
+     * @return Returns a {@link ICsvSerializer} that represents the dataframe for serialization in the CSV format. Call `writeFile` or `writeFileSync` to output the CSV data to a text file.
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asCSV().writeFileSync("my-data-file.csv");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asCSV().writeFile("my-data-file.csv");
+     * </pre>
      */
     asCSV (): ICsvSerializer;
 
     /**
      * Treat the dataframe as JSON data for purposes of serialization.
+     * This is the first step you need in serializing a dataframe to a JSON data file.
      * 
-     * @return Returns an object that can serialize the dataframe in the JSON format. Call `writeFile` or `writeFileSync` to output the dataframe via different media.
+     * @return Returns a {@link IJsonSerializer} that represents the dataframe for serialization in the JSON format. Call `writeFile` or `writeFileSync` to output the JSON data to a text file.
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asJSON().writeFileSync("my-data-file.json");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asJSON().writeFile("my-data-file.json");
+     * </pre>
      */
     asJSON (): IJsonSerializer;
 
     /**
      * Serialize the dataframe to HTML.
      * 
-     * @return Returns a HTML format string representing the dataframe.   
+     * @return Returns a string in HTML format that represents the dataframe.
      */
     toHTML (): string;
     
     /**
      * Serialize the dataframe to an ordinary JavaScript data structure.
+     * The resulting data structure is suitable for further serialization to JSON and can be used to 
+     * transmit a DataFrame and its internal structure over the wire.
+     * Use the {@link deserialize} function to later reconstitute the serialized dataframe.
+     * 
+     * @return Returns a JavaScript data structure conforming to {@link ISerializedDataFrame} that represents the dataframe and its internal structure.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsDataStructure = df.serialize();
+     * const jsonData = JSON.stringify(jsDataStructure);
+     * console.log(jsonData);
+     * const deserializedJsDataStructure = JSON.parse(jsonData);
+     * const deserializedDf = DataFrame.deserialize(deserializedJsDataStructure); // Reconsituted.
+     * </pre>
      */
     serialize (): any;
 }
 
 /**
- * Interface to a dataframe that has been ordered.
+ * Interface to a dataframe that has been sorted.
  */
 export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> extends IDataFrame<IndexT, ValueT> {
 
     /** 
-     * Performs additional sorting (ascending).
+     * Applys additional sorting (ascending) to an already sorted dataframe.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from least to most).
+     * const orderedDf = salesDf.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amount);
+     * </pre>
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 
     /** 
-     * Performs additional sorting (descending).
+     * Applys additional sorting (descending) to an already sorted dataframe.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from most to least).
+     * const orderedDf = salesDf.orderBy(sale => sale.SalesPerson).thenByDescending(sale => sale.Amount);
+     * </pre>
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT>;
 }
@@ -1692,7 +2941,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * 
      * Verify the existence of a name column and extracts the {@link Series} for it.
      * Throws an exception if the requested column doesn't exist.
      *
@@ -1870,7 +3118,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *      ANewColumn: df => df.getSeries("SourceData").select(aTransformation))
      * });
      * <pre>
-     * */
+     */
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
@@ -3995,7 +5243,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * @example
     * <pre>
     * 
-    * function produceNewRow (rowA, rowB) {
+    * function produceNewRow (inputRows) {
     *       const outputRow = {
     *           // Produce output row based on the contents of the input rows.
     *       };
@@ -4010,10 +5258,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * @example
     * <pre>
     * 
-    * function produceNewRow (rowA, rowB) {
+    * function produceNewRow (inputRows) {
     *       const outputRow = {
-    *           ValueA: rowA.Value,
-    *           ValueB: rowB.Value,
+    *           // Produce output row based on the contents of the input rows.
     *       };
     *       return outputRow;
     * }
@@ -4717,7 +5964,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return ordered;
     }
     
-    
     /**
      * Insert a pair at the start of the dataframe.
      * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the inserted pair.
@@ -5140,38 +6386,57 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         });
     }
 
+    /***
+     * Allows the dataframe to be queried to confirm that it is actually a dataframe.
+     * Used from JavaScript to tell the difference between a Series and a DataFrame.
+     * 
+     * @return Returns the string "dataframe".
+     */
     getTypeCode (): string {
         return "dataframe";
     }
 }
 
 /** 
- * Packages a dataframe ready for CSV serialization.
- * */
+ * Packages a dataframe ready for serialization to a CSV format text file.
+ */
 export interface ICsvSerializer {
 
     /**
-     * Serialize the dataframe to a CSV file in the local file system.
-     * Asynchronous version.
+     * Serialize the dataframe to the CSV data format and save it as a text file in the local file system.
+     * Asynchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
      * 
-     * @return Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.
+     * 
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asCSV().writeFile("my-data-file.csv");
+     * </pre>
      */
-    writeFile (filePath: string): Promise<void>;
+    /*async*/ writeFile (filePath: string): Promise<void>;
 
     /**
-     * Serialize the dataframe to a CSV file in the local file system.
-     * Synchronous version.
+     * Serialize the dataframe to the CSV data format and save it as a text file in the local file system.
+     * Synchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asCSV().writeFileSync("my-data-file.csv");
+     * </pre>
      */
     writeFileSync (filePath: string): void;
 }
 
 /**
  * @hidden
- * Packages a dataframe ready for CSV serialization.
+ * Packages a dataframe ready for serialization to a CSV format text file.
  */
 class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
 
@@ -5182,12 +6447,19 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
     }
     
     /**
-     * Serialize the dataframe to a CSV file in the local file system.
-     * Asynchronous version.
+     * Serialize the dataframe to the CSV data format and save it as a text file in the local file system.
+     * Asynchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
      * 
-     * @return Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.
+     * 
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asCSV().writeFile("my-data-file.csv");
+     * </pre>
      */
     writeFile (filePath: string): Promise<void> {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFile' to be a string that specifies the path of the file to write to the local file system.");
@@ -5206,10 +6478,16 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
     }
 
     /**
-     * Serialize the dataframe to a CSV file in the local file system.
-     * Synchronous version.
+     * Serialize the dataframe to the CSV data format and save it as a text file in the local file system.
+     * Synchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asCSV().writeFileSync("my-data-file.csv");
+     * </pre>
      */
     writeFileSync (filePath: string): void {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFileSync' to be a string that specifies the path of the file to write to the local file system.");
@@ -5220,32 +6498,45 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
 }
 
 /**
- * Packages a dataframe ready for JSON serialization.
+ * Packages a dataframe ready for serialization to a JSON format text file.
  */
 export interface IJsonSerializer {
 
     /**
-     * Serialize the dataframe to a JSON file in the local file system.
-     * Asynchronous version.
+     * Serialize the dataframe to the JSON data format and save it as a text file in the local file system.
+     * Asynchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
      * 
-     * @return Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.
+     * 
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asJSON().writeFile("my-data-file.json");
+     * </pre>
      */
     /*async*/ writeFile (filePath: string): Promise<void>;
 
     /**
-     * Serialize the dataframe to a JSON file in the local file system.
-     * Synchronous version.
+     * Serialize the dataframe to the JSON data format and save it as a text file in the local file system.
+     * Synchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asJSON().writeFileSync("my-data-file.json");
+     * </pre>
      */
     writeFileSync (filePath: string): void;
 }
 
 /**
  * @hidden
- * Packages a dataframe ready for JSON serialization.
+ * Packages a dataframe ready for serialization to a JSON format text file.
  */
 class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
 
@@ -5256,12 +6547,19 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
     }
 
     /**
-     * Serialize the dataframe to a JSON file in the local file system.
-     * Asynchronous version.
+     * Serialize the dataframe to the JSON data format and save it as a text file in the local file system.
+     * Asynchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
      * 
-     * @return Returns a promise that resolves when the file has been written.   
+     * @return Returns a promise that resolves when the file has been written.
+     * 
+     * 
+     * @example
+     * <pre>
+     * 
+     * await df.asJSON().writeFile("my-data-file.json");
+     * </pre>
      */
     writeFile (filePath: string): Promise<void> {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
@@ -5280,10 +6578,16 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
     }
 
     /**
-     * Serialize the dataframe to a JSON file in the local file system.
-     * Synchronous version.
+     * Serialize the dataframe to the JSON data format and save it as a text file in the local file system.
+     * Synchronous version using the Node.js 'fs' module.
      * 
-     * @param filePath - Specifies the output path for the file. 
+     * @param filePath Specifies the path for the output file. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * df.asJSON().writeFileSync("my-data-file.json");
+     * </pre>
      */
     writeFileSync (filePath: string): void {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
@@ -5295,7 +6599,7 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
 
 /**
  * @hidden
- * A dataframe that has been ordered.
+ * Represents a dataframe that has been sorted.
  */
 class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any> 
     extends DataFrame<IndexT, ValueT>
@@ -5350,11 +6654,18 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
     }
 
     /** 
-     * Performs additional sorting (ascending).
+     * Applys additional sorting (ascending) to an already sorted dataframe.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from least to most).
+     * const orderedDf = salesDf.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amount);
+     * </pre>
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
@@ -5362,15 +6673,21 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
     }
 
     /** 
-     * Performs additional sorting (descending).
+     * Applys additional sorting (descending) to an already sorted dataframe.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @return Returns a new dataframe has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new dataframe has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from most to least).
+     * const orderedDf = salesDf.orderBy(sale => sale.SalesPerson).thenByDescending(sale => sale.Amount);
+     * </pre>
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
         return new OrderedDataFrame<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
     }
 }
-    

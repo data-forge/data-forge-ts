@@ -29,27 +29,49 @@ import { range, replicate } from '..';
 import * as numeral from 'numeral';
 
 /**
- * Series configuration.
+ * Used to configure a series.
  */
 export interface ISeriesConfig<IndexT, ValueT> {
+    /**
+     * Values to put in the dataframe.
+     * This should be array or iterable of JavaScript values.
+     */
     values?: Iterable<ValueT>,
+
+    /***
+     * The index for the serires.
+     * If omitted the index will default to a 0-based index.
+     */
     index?: Iterable<IndexT>,
+
+    /**
+     * Array or iterable of index,value pairs to put in the series.
+     * If index and values are not separately specified they can be extracted
+     * from the pairs.
+     */
     pairs?: Iterable<[IndexT, ValueT]>
+
+    /***
+     * Set to true when the series has been baked into memory
+     * and does not need to be lazily evaluated.
+     */
     baked?: boolean,
 };
 
 /**
- * A callback function that can be applied to each value.
+ * A user-defined callback function that can be applied to each value.
  */
 export type CallbackFn<ValueT> = (value: ValueT, index: number) => void;
 
 /**
- * A selector function. Transforms a value into another kind of value.
+ * A user-defined selector function. 
+ * Transforms a value into another kind of value.
  */
 export type SelectorWithIndexFn<FromT, ToT> = (value: FromT, index: number) => ToT;
 
 /**
- * Functions to zip together multiple values.
+ * User-defined zipper functions.
+ * Used to 'zip together' multiple series or dataframes.
  */
 export type ZipNFn<ValueT, ReturnT> = (input: ISeries<number, ValueT>) => ReturnT;
 export type Zip2Fn<T1, T2, ReturnT> = (a: T1, b : T2) => ReturnT;
@@ -58,38 +80,42 @@ export type Zip4Fn<T1, T2, T3, T4, ReturnT> = (a: T1, b: T2, c: T3, d: T4) => Re
 export type Zip5Fn<T1, T2, T3, T4, T5, ReturnT> = (a: T1, b: T2, c: T3, d: T4) => ReturnT;
 
 /**
- * A selector function with no index. Transforms a value into another kind of value.
+ * A user-defined selector function with no index. 
+ * Transforms a value into another kind of value.
  */
 export type SelectorFn<FromT, ToT> = (value: FromT) => ToT;
 
 /**
- * A function that joins to vlaues.
+ * A user-defined function that joins two values and produces a result.
  */
 export type JoinFn<ValueT1, ValueT2, ResultT> = (a: ValueT1, b: ValueT2) => ResultT;
 
 /**
- * A predicate function, returns true or false based on input.
+ * A user-defined predicate function, returns true or false based on input.
  */
 export type PredicateFn<ValueT> = (value: ValueT) => boolean;
 
 /**
- * Defines a function for aggregation.
+ * A user-defined function that aggregtates a value into an accumulator
+ * and returns the new result.
  */
 export type AggregateFn<ValueT, ToT> = (accum: ToT, value: ValueT) => ToT;
 
 /**
- * Compares to values and returns true if they are equivalent.
+ * A user-defined comparer function that Compares to values and 
+ * returns true (truthy) if they are equivalent or false (falsy) if not.
  */
 export type ComparerFn<ValueT1, ValueT2> = (a: ValueT1, b: ValueT2) => boolean;
 
 /*
- * A function that generates a series config object.
+ * A user-defined function that generates a series config object.
  * Used to make it easy to create lazy evaluated series.
  */
 export type SeriesConfigFn<IndexT, ValueT> = () => ISeriesConfig<IndexT, ValueT>;
 
 /*
- * A function that generates a sequence of values between to fill the gap between two other values.
+ * A user-defined gap-filler function.
+ * This function generates a sequence of values between to fill the gaps between two other values.
  */
 export type GapFillFn<ValueT, ResultT> = (a: ValueT, b: ValueT) => ResultT[];
 
@@ -126,39 +152,102 @@ export interface IValueFrequency {
 }
 
 /**
- * Interface that represents a series containing a sequence of indexed values.
+ * Interface that represents a dataframe.
+ * A series contains an indexed sequence of values.
+ * A series indexed by time is a timeseries.
+ * 
+ * @typeparam IndexT The type to use for the index.
+ * @typeparam ValueT The type to use for each value.
  */
 export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT> {
 
     /**
      * Get an iterator to enumerate the values of the series.
+     * Enumerating the iterator forces lazy evaluation to complete.
+     * This function is automatically called by `for...of`.
+     * 
+     * @return An iterator for the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * for (const value of series) {
+     *     // ... do something with the value ...
+     * }
+     * </pre>
      */
-    [Symbol.iterator](): Iterator<ValueT>;
+    [Symbol.iterator] (): Iterator<ValueT>;
 
     /**
      * Cast the value of the series to a new type.
-     * This operation has no effect but to retype the value that the series contains.
+     * This operation has no effect but to retype the values that the series contains.
+     * 
+     * @return The same series, but with the type changed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const castSeries = series.cast<SomeOtherType>();
+     * </pre>
      */
     cast<NewValueT> (): ISeries<IndexT, NewValueT>;
 
     /**
      * Get the index for the series.
+     * 
+     * @return The {@link Index} for the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const index = series.getIndex();
+     * </pre>
      */
     getIndex (): IIndex<IndexT>;
 
     /**
-     * Apply a new index to the series.
+     * Apply a new {@link Index} to the series.
      * 
-     * @param newIndex The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.
+     * @param newIndex The new array or iterable to be the new {@link Index} of the series. Can also be a selector to choose the {@link Index} for each value in the series.
      * 
-     * @returns Returns a new series with the specified index attached.
+     * @return Returns a new series with the specified {@link Index} attached.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex([10, 20, 30]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex(someOtherSeries);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex(value => computeIndexFromValue(value));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex(value => value + 20);
+     * </pre>
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT>;
 
     /**
-     * Resets the index of the series back to the default zero-based sequential integer index.
+     * Resets the {@link Index} of the series back to the default zero-based sequential integer index.
      * 
-     * @returns Returns a new series with the index reset to the default zero-based index. 
+     * @return Returns a new series with the {@link Index} reset to the default zero-based index. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithResetIndex = series.resetIndex();
+     * </pre>
      */
     resetIndex (): ISeries<number, ValueT>;
 
@@ -166,55 +255,124 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     * 
-    * @returns Returns an array of values contained within the series. 
+    * @return Returns an array of the values contained within the series.
+    * 
+    * @example
+    * <pre>
+    * const values = series.toArray();
+    * </pre>
     */
-    toArray (): ValueT[];
+   toArray (): ValueT[];
 
     /**
-     * Retreive the index and values from the Series as an array of pairs.
-     * Each pairs is [index, value].
+     * Retreive the index, values pairs from the seires as an array.
+     * Each pair is [index, value].
+     * This forces lazy evaluation to complete.
      * 
-     * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.  
+     * @return Returns an array of pairs that contains the series' values. Each pair is a two element array that contains an index and a value.
+     * 
+     * @example
+     * <pre>
+     * const pairs = series.toPairs();
+     * </pre>
      */
     toPairs (): ([IndexT,ValueT])[];
 
-     /**
+    /**
      * Convert the series to a JavaScript object.
      *
-     * @param keySelector - Function that selects keys for the resulting object.
-     * @param valueSelector - Function that selects values for the resulting object.
+     * @param keySelector User-defined selector function that selects keys for the resulting object.
+     * @param valueSelector User-defined selector function that selects values for the resulting object.
      * 
-     * @returns Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     * @return Returns a JavaScript object generated from the series by applying the key and value selector functions. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const someObject = series.toObject(
+     *      value => value, // Specify the value to use for field names in the output object.
+     *      value => value // Specify the value to use as the value for each field.
+     * );
+     * </pre>
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /**
-     * Generate a new series based by calling the selector function on each value.
+     * Generates a new dataframe by repeatedly calling a user-defined selector function on each value in the original series.
      *
-     * @param selector - Selector function that transforms each value to create a new series or dataframe.
+     * @param selector A user-defined selector function that transforms each row to create the new dataframe.
      * 
-     * @returns Returns a new series that has been transformed by the selector function.
+     * @return Returns a new series with each value transformed by the selector function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function transformValue (inputValue) {
+     *      const outputValue = {
+     *          // ... construct output value derived from input value ...
+     *      };
+     *
+     *      return outputValue;
+     * }
+     *  
+     * const transformedSeries = series.select(value => transformValue(value));
+     * </pre>
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
 
     /**
-     * Generate a new series based on the results of the selector function.
-     *
-     * @param selector Selector function that transforms each value into a list of values.
+     * Generates a new series by repeatedly calling a user-defined selector function on each row in the original series.
      * 
-     * @returns  Returns a new series with values that have been produced by the selector function. 
+     * Similar to the {@link select} function, but in this case the selector function produces a collection of output values that are flattened and merged to create the new series.
+     *
+     * @param selector A user-defined selector function that transforms each value into a collection of output values.
+     * 
+     * @return Returns a new series where each value has been transformed into 0 or more new values by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * function produceOutputValues (inputValue) {
+     *      const outputValues = [];
+     *      while (someCondition) {
+     *          // ... generate zero or more output values ...
+     *          outputValues.push(... some generated value ...);
+     *      }
+     *      return outputValues;
+     * }
+     * 
+     * const modifiedSeries = series.selectMany(value => produceOutputValues(value));
+     * </pre>
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
         
     /**
-     * Segment a Series into 'windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
-     * Use select or selectPairs to aggregate.
+     * Partition a series into a {@link Series} of *data windows*. 
+     * Each value in the new series is a chunk of data from the original series.
      *
-     * @param period - The number of values in the window.
+     * @param period The number of values to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     * @return Returns a new series, each value of which is a chunk (data window) of the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const windows = series.window(2); // Get values in pairs.
+     * const pctIncrease = windows.select(pair => (pair.last() - pair.first()) / pair.first());
+     * console.log(pctIncrease.toString());
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... // Daily sales data.
+     * const weeklySales = salesDf.window(7); // Partition up into weekly data sets.
+     * console.log(weeklySales.toString());
+     * </pre>
      */
     window (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+
+//TODO: got here.
 
     /** 
      * Segment a Series into 'rolling windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
