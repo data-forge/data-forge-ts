@@ -152,6 +152,36 @@ export interface IValueFrequency {
 }
 
 /**
+ * Places a value in a bucket or range of values.
+ */
+export interface IBucket {
+    /**
+     * The bucketed value.
+     */
+    value: number;
+
+    /**
+     * The index of the bucket that contains the value.
+     */
+    bucketIndex: number;
+
+    /**
+     * The minimum value in the bucket.
+     */
+    minValue: number;
+
+    /**
+     * The mid-point value in the bucket.
+     */
+    midValue: number;
+    
+    /**
+     * The maximum value in the bucket.
+     */
+    maxValue: number;
+}
+
+/**
  * Interface that represents a dataframe.
  * A series contains an indexed sequence of values.
  * A series indexed by time is a timeseries.
@@ -2921,6 +2951,39 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                     })
             };
         });
+    }
+
+    /**
+     * Organise all values in the series into the specified number of buckets.
+     * Assumes that the series is a series of numbers.
+     * 
+     * @param numBuckets - The number of buckets to create.
+     * 
+     * @returns Returns a dataframe containing bucketed values. The input values are divided up into these buckets.
+     */
+    bucket (numBuckets: number): IDataFrame<IndexT, IBucket> {
+
+        if (this.none()) {
+            return new DataFrame();
+        }
+
+        const numberSeries = this as any as ISeries<IndexT, number>;
+        var min = numberSeries.min();
+        var max = numberSeries.max();
+        var range = max - min;
+        var width = range / (numBuckets-1);
+        return numberSeries.select(v => {
+                var bucket = Math.floor((v - min) / width);
+                var bucketMin = (bucket * width) + min;
+                return {
+                    value: v,
+                    bucketIndex: bucket,
+                    minValue: bucketMin,
+                    midValue: bucketMin + (width*0.5),
+                    maxValue: bucketMin + width,
+                };
+            })
+            .inflate();
     }
 
     getTypeCode (): string {

@@ -700,16 +700,16 @@ describe('Series', () => {
             values: [
                 {
                     Key: 'A',
-                    Value: 100,
+                    value: 100,
                 },
                 {
                     Key: 'B',
-                    Value: 200,
+                    value: 200,
                 },
             ]
         });
 
-		var obj = series.toObject(row => row.Key, row => row.Value);
+		var obj = series.toObject(row => row.Key, row => row.value);
 		expect(obj).to.eql({
 			A: 100,
 			B: 200,
@@ -723,20 +723,20 @@ describe('Series', () => {
             values: [
                 {
                     Key: 'A',
-                    Value: 100,
+                    value: 100,
                 },
                 {
                     Key: 'B',
-                    Value: 200,
+                    value: 200,
                 },
                 {
                     Key: 'A',
-                    Value: 3,
+                    value: 3,
                 },
             ]
         });
 
-		var obj = series.toObject(row => row.Key, row => row.Value);
+		var obj = series.toObject(row => row.Key, row => row.value);
 		expect(obj).to.eql({
 			A: 3,
 			B: 200,
@@ -921,5 +921,97 @@ describe('Series', () => {
 		var defaulted = series.defaultIfEmpty([1, 2]);
 		expect(defaulted.toArray()).to.eql([5, 6]);
 	});
-    
+   
+    it('empty series produces zero buckets', () => {
+
+        expect((new Series()).bucket(5).count()).to.eql(0);
+    });
+
+    it('series with one value produces a single bucket', () => {
+
+        expect((new Series([5])).bucket(10).count()).to.eql(1);
+    });
+
+
+    it('can divide values into buckets', () => {
+
+        var series = new Series([1, 1, 3, 4, 5, 5, 6, 9, 10, 10]);
+        expect(series.bucket(5).toArray()).to.eql([
+            {
+                value: 1, 
+                bucketIndex: 0,
+                minValue: 1,
+                midValue: 2.125,
+                maxValue: 3.25,
+            },
+
+            {
+                value: 1, 
+                bucketIndex: 0,
+                minValue: 1,
+                midValue: 2.125,
+                maxValue: 3.25,
+            },
+            {
+                value: 3, 
+                bucketIndex: 0,
+                minValue: 1,
+                midValue: 2.125,
+                maxValue: 3.25,
+            },
+
+            {
+                value: 4, 
+                bucketIndex: 1,
+                minValue: 3.25,
+                midValue: 4.375,
+                maxValue: 5.5,
+            },
+            {
+                value: 5, 
+                bucketIndex: 1,
+                minValue: 3.25,
+                midValue: 4.375,
+                maxValue: 5.5,
+            },
+            {
+                value: 5, 
+                bucketIndex: 1,
+                minValue: 3.25,
+                midValue: 4.375,
+                maxValue: 5.5,
+            },
+
+            {
+                value: 6, 
+                bucketIndex: 2,
+                minValue: 5.5,
+                midValue: 6.625,
+                maxValue: 7.75,
+            },
+
+            {
+                value: 9,
+                bucketIndex: 3,
+                minValue: 7.75,
+                midValue: 8.875,
+                maxValue: 10,
+            },
+
+            {
+                value: 10,
+                bucketIndex: 4,
+                minValue: 10,
+                midValue: 11.125,
+                maxValue: 12.25,
+            },
+            {
+                value: 10,
+                bucketIndex: 4,
+                minValue: 10,
+                midValue: 11.125,
+                maxValue: 12.25,
+            },
+        ]);
+    });    
 });
