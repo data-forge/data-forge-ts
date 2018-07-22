@@ -158,27 +158,27 @@ export interface IBucket {
     /**
      * The bucketed value.
      */
-    value: number;
+    Value: number;
 
     /**
      * The index of the bucket that contains the value.
      */
-    bucketIndex: number;
+    Bucket: number;
 
     /**
      * The minimum value in the bucket.
      */
-    minValue: number;
+    Min: number;
 
     /**
      * The mid-point value in the bucket.
      */
-    midValue: number;
+    Mid: number;
     
     /**
      * The maximum value in the bucket.
      */
-    maxValue: number;
+    Max: number;
 }
 
 /**
@@ -2976,11 +2976,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 var bucket = Math.floor((v - min) / width);
                 var bucketMin = (bucket * width) + min;
                 return {
-                    value: v,
-                    bucketIndex: bucket,
-                    minValue: bucketMin,
-                    midValue: bucketMin + (width*0.5),
-                    maxValue: bucketMin + width,
+                    Value: v,
+                    Bucket: bucket,
+                    Min: bucketMin,
+                    Mid: bucketMin + (width*0.5),
+                    Max: bucketMin + width,
                 };
             })
             .inflate();

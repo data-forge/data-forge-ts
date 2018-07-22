@@ -700,16 +700,16 @@ describe('Series', () => {
             values: [
                 {
                     Key: 'A',
-                    value: 100,
+                    Value:100,
                 },
                 {
                     Key: 'B',
-                    value: 200,
+                    Value:200,
                 },
             ]
         });
 
-		var obj = series.toObject(row => row.Key, row => row.value);
+		var obj = series.toObject(row => row.Key, row => row.Value);
 		expect(obj).to.eql({
 			A: 100,
 			B: 200,
@@ -723,20 +723,20 @@ describe('Series', () => {
             values: [
                 {
                     Key: 'A',
-                    value: 100,
+                    Value:100,
                 },
                 {
                     Key: 'B',
-                    value: 200,
+                    Value:200,
                 },
                 {
                     Key: 'A',
-                    value: 3,
+                    Value:3,
                 },
             ]
         });
 
-		var obj = series.toObject(row => row.Key, row => row.value);
+		var obj = series.toObject(row => row.Key, row => row.Value);
 		expect(obj).to.eql({
 			A: 3,
 			B: 200,
@@ -938,79 +938,79 @@ describe('Series', () => {
         var series = new Series([1, 1, 3, 4, 5, 5, 6, 9, 10, 10]);
         expect(series.bucket(5).toArray()).to.eql([
             {
-                value: 1, 
-                bucketIndex: 0,
-                minValue: 1,
-                midValue: 2.125,
-                maxValue: 3.25,
+                Value:1, 
+                Bucket: 0,
+                Min: 1,
+                Mid: 2.125,
+                Max: 3.25,
             },
 
             {
-                value: 1, 
-                bucketIndex: 0,
-                minValue: 1,
-                midValue: 2.125,
-                maxValue: 3.25,
+                Value:1, 
+                Bucket: 0,
+                Min: 1,
+                Mid: 2.125,
+                Max: 3.25,
             },
             {
-                value: 3, 
-                bucketIndex: 0,
-                minValue: 1,
-                midValue: 2.125,
-                maxValue: 3.25,
-            },
-
-            {
-                value: 4, 
-                bucketIndex: 1,
-                minValue: 3.25,
-                midValue: 4.375,
-                maxValue: 5.5,
-            },
-            {
-                value: 5, 
-                bucketIndex: 1,
-                minValue: 3.25,
-                midValue: 4.375,
-                maxValue: 5.5,
-            },
-            {
-                value: 5, 
-                bucketIndex: 1,
-                minValue: 3.25,
-                midValue: 4.375,
-                maxValue: 5.5,
+                Value:3, 
+                Bucket: 0,
+                Min: 1,
+                Mid: 2.125,
+                Max: 3.25,
             },
 
             {
-                value: 6, 
-                bucketIndex: 2,
-                minValue: 5.5,
-                midValue: 6.625,
-                maxValue: 7.75,
+                Value:4, 
+                Bucket: 1,
+                Min: 3.25,
+                Mid: 4.375,
+                Max: 5.5,
+            },
+            {
+                Value:5, 
+                Bucket: 1,
+                Min: 3.25,
+                Mid: 4.375,
+                Max: 5.5,
+            },
+            {
+                Value:5, 
+                Bucket: 1,
+                Min: 3.25,
+                Mid: 4.375,
+                Max: 5.5,
             },
 
             {
-                value: 9,
-                bucketIndex: 3,
-                minValue: 7.75,
-                midValue: 8.875,
-                maxValue: 10,
+                Value:6, 
+                Bucket: 2,
+                Min: 5.5,
+                Mid: 6.625,
+                Max: 7.75,
             },
 
             {
-                value: 10,
-                bucketIndex: 4,
-                minValue: 10,
-                midValue: 11.125,
-                maxValue: 12.25,
+                Value:9,
+                Bucket: 3,
+                Min: 7.75,
+                Mid: 8.875,
+                Max: 10,
+            },
+
+            {
+                Value:10,
+                Bucket: 4,
+                Min: 10,
+                Mid: 11.125,
+                Max: 12.25,
             },
             {
-                value: 10,
-                bucketIndex: 4,
-                minValue: 10,
-                midValue: 11.125,
-                maxValue: 12.25,
+                Value:10,
+                Bucket: 4,
+                Min: 10,
+                Mid: 11.125,
+                Max: 12.25,
             },
         ]);
     });    
