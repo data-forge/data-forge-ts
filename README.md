@@ -119,6 +119,7 @@ Use it via the `dataForge` global variable.
 - [The guide](docs/guide.md)
 - [Key concepts](docs/concepts.md)
 - [API docs](https://data-forge.github.io/data-forge-ts/)
+- [Gitter](https://gitter.im/data-forge)
 
 ## Resources
 

@@ -402,71 +402,176 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     window (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
 
-//TODO: got here.
-
     /** 
-     * Segment a Series into 'rolling windows'. Returns a new Series. Each value in the new Series contains a 'window' (or segment) of the original series.
-    *
-     * @param period - The number of values in the window.
+     * Partition a series into a new series of *rolling data windows*. 
+     * Each value in the new series is a rolling chunk of data from the original series.
+     *
+     * @param period The number of data values to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     * @return Returns a new series, each value of which is a rolling chunk of the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesData = ... // Daily sales data.
+     * const rollingWeeklySales = salesData.rollingWindow(7); // Get rolling window over weekly sales data.
+     * console.log(rollingWeeklySales.toString());
+     * </pre>
      */
     rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
-     * Groups sequential values into variable length 'windows'.
-     *
-     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * Partition a series into a new series of variable-length *data windows* 
+     * where the divisions between the data chunks are
+     * defined by a user-provided *comparer* function.
      * 
-     * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
+     * @param comparer Function that compares two adjacent data values and returns true if they should be in the same window.
+     * 
+     * @return Returns a new series, each value of which is a chunk of data from the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function rowComparer (valueA, valueB) {
+     *      if (... valueA should be in the same data window as valueB ...) {
+     *          return true;
+     *      }
+     *      else {
+     *          return false;
+     *      }
+     * };
+     * 
+     * const variableWindows = series.variableWindow(rowComparer);
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
-     * Group sequential duplicate values into a Series of windows.
-     *
-     * @param selector - Selects the value used to compare for duplicates.
+     * Eliminates adjacent duplicate values.
      * 
-     * @returns Returns a series of groups. Each group is itself a series. 
+     * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
+     * thus ajacent equivalent values are collapsed down to the last value.
+     *
+     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * 
+     * @return Returns a new series with groups of adjacent duplicate vlaues collapsed to a single value per group.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value);
+     * 
+     * // Or
+     * const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.someNestedField);
+     * </pre>
      */
     sequentialDistinct<ToT> (selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
     
     /**
-     * Aggregate the values in the series.
+     * Aggregate the values in the series to a single result.
      *
-     * @param [seed] - Optional seed value for producing the aggregation.
-     * @param selector - Function that takes the seed and then each value in the series and produces the aggregate value.
+     * @param [seed] Optional seed value for producing the aggregation.
+     * @param selector Function that takes the seed and then each value in the series and produces the aggregated value.
      * 
-     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
-     */
+     * @return Returns a new value that has been aggregated from the series using the 'selector' function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailySales = ... daily sales figures for the past month ...
+     * const totalSalesForthisMonth = dailySales.aggregate(
+     *      0, // Seed - the starting value.
+     *      (accumulator, salesAmount) => accumulator + salesAmount // Aggregation function.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+     * const dailySales = ... daily sales figures for the past month ...
+     * const updatedTotalSalesAllTime = dailySales.aggregate(
+     *      totalSalesAllTime, 
+     *      (accumulator, salesAmount) => accumulator + salesAmount
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * var salesDataSummary = salesData.aggregate({
+     *      TotalSales: series => series.count(),
+     *      AveragePrice: series => series.average(),
+     *      TotalRevenue: series => series.sum(), 
+     * });
+     * </pre>
+    */
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
 
     /**
-     * Compute the amount of change between each pair of values.
+     * Compute the amount of change between pairs or sets of values in the series.
      * 
-     * @param [period] - Optional period for computing the change - defaults to 2.
+     * @param [period] Optional period for computing the change - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const amountChanged = salesFigures.amountChanged(); // Amount that sales has changed, day to day.
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
+     * </pre>
      */
     amountChange (period?: number): ISeries<IndexT, number>;
 
     /**
-     * Compute the proportion change between each pair of values.
+     * Compute the proportion change between pairs or sets of values in the series.
      * Proportions are expressed as 0-1 values.
      * 
-     * @param [period] - Optional period for computing the proportion - defaults to 2.
+     * @param [period] Optional period for computing the proportion - defaults to 2.
      * 
-     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.  
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const proportionChanged = salesFigures.amountChanged(); // Proportion that sales has changed, day to day.
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
+     * </pre>
      */
     proportionChange (period?: number): ISeries<IndexT, number>;
 
     /**
-     * Compute the percent change between each pair of values.
+     * Compute the percentage change between pairs or sets of values in the series.
      * Percentages are expressed as 0-100 values.
      * 
-     * @param [period] - Optional period for computing the percentage - defaults to 2.
+     * @param [period] Optional period for computing the percentage - defaults to 2.
      * 
-     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.  
+     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const percentChanged = salesFigures.amountChanged(); // Percent that sales has changed, day to day.
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
+     * </pre>
      */
     percentChange (period?: number): ISeries<IndexT, number>;
 
@@ -474,109 +579,198 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Skip a number of values in the series.
      *
      * @param numValues Number of values to skip.
-     * @returns Returns a new series with the specified number of values skipped. 
+     * 
+     * @return Returns a new series with the specified number of values skipped.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original series.
+     * </pre>
      */
     skip (numValues: number): ISeries<IndexT, ValueT>;
 
     /**
-     * Skips values in the series while a condition is met.
+     * Skips values in the series while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to skip values in the original series.
      * 
-     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     * @return Returns a new series with all initial sequential values removed while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100); // Skip initial sales figure that are less than 100.
+     * </pre>
      */
     skipWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
-     * Skips values in the series until a condition is met.
+     * Skips values in the series untils a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop skipping values in the original series.
      * 
-     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     * @return Returns a new series with all initial sequential values removed until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100); // Skip initial sales figures unitl we see one greater than 100.
+     * </pre>
      */
     skipUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
     
     /**
-     * Take a number of rows in the series.
+     * Take a number of  values from the series.
      *
-     * @param numRows - Number of rows to take.
+     * @param numValues Number of values to take.
      * 
-     * @returns Returns a new series with up to the specified number of values included.
+     * @return Returns a new series with only the specified number of values taken from the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsTaken = series.take(15); // Take only the first 15 values from the original series.
+     * </pre>
      */
     take (numRows: number): ISeries<IndexT, ValueT>;
     
     /**
-     * Take values from the series while a condition is met.
+     * Takes values from the series while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to take values from the original series.
      * 
-     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     * @return Returns a new series with only the initial sequential values that were taken while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); // Take only initial sales figures that are greater than 100.
+     * </pre>
      */
     takeWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
-     * Take values from the series until a condition is met.
+     * Takes values from the series until a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop taking values in the original series.
      * 
-     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     * @return Returns a new series with only the initial sequential values taken until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); // Take all initial sales figures until we see one that is greater than 100.
+     * </pre>
      */
     takeUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
     
     /**
-     * Count the number of values in the series.
+     * Count the number of values in the seriese
      *
-     * @returns Returns the count of all values in the series.
+     * @return Returns the count of all values.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const numValues = series.count();
+     * </pre>
      */
     count (): number;
     
     /**
      * Get the first value of the series.
      *
-     * @returns Returns the first value of the series.
+     * @return Returns the first value of the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const firstValue = series.first();
+     * </pre>
      */
     first (): ValueT;
 
     /**
      * Get the last value of the series.
      *
-     * @returns Returns the last value of the series.
+     * @return Returns the last value of the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const lastValue = series.last();
+     * </pre>
      */
     last (): ValueT;
 
     /**
-     * Get the value at a specified index.
+     * Get the value, if there is one, with the specified index.
      *
-     * @param index - Index to for which to retreive the value.
+     * @param index Index to for which to retreive the value.
      *
-     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     * @return Returns the value from the specified index in the series or undefined if there is no such index in the present in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const value = series.at(5); // Get the value at index 5 (with a default 0-based index).
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const date = ... some date ...
+     * // Retreive the value with specified date from a time-series (assuming date indexed has been applied).
+     * const value = series.at(date); 
+     * </pre>
      */
     at (index: IndexT): ValueT | undefined;
 
     /** 
-     * Get X values from the start of the series.
+     * Get X value from the start of the series.
+     * Pass in a negative value to get all values at the head except for X values at the tail.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     * @return Returns a new series that has only the specified number of values taken from the start of the original series.
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = series.head(10); // Take a sample of 10 values from the start of the series.
+     * </pre>
      */
     head (numValues: number): ISeries<IndexT, ValueT>;
 
     /** 
      * Get X values from the end of the series.
+     * Pass in a negative value to get all values at the tail except X values at the head.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     * @return Returns a new series that has only the specified number of values taken from the end of the original series.  
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = series.tail(12); // Take a sample of 12 values from the end of the series.
+     * </pre>
      */
     tail (numValues: number): ISeries<IndexT, ValueT>;
 
     /**
-     * Filter a series by a predicate selector.
+     * Filter the series using user-defined predicate function.
      *
-     * @param predicate - Predicte function to filter rows of the series.
+     * @param predicate Predicte function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
      * 
-     * @returns Returns a new series containing only the values that match the predicate. 
+     * @return Returns a new series containing only the values from the original series that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we only have sales figures greater than 100.
+     * </pre>
      */
     where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 

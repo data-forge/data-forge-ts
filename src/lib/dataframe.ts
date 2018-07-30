@@ -3951,7 +3951,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Eliminates adjacent duplicate rows.
      * 
-     * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
+     * For each group of adjacent rows that are equivalent only returns the last index/row for the group, 
      * thus ajacent equivalent rows are collapsed down to the last row.
      *
      * @param [selector] Optional selector function to determine the value used to compare for equivalence.
@@ -3985,7 +3985,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Aggregate the rows in the dataframe to a single result.
      *
      * @param [seed] Optional seed value for producing the aggregation.
-     * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregate value.
+     * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregated value.
      * 
      * @return Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
      * 
@@ -4079,7 +4079,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Skips values in the dataframe while a condition evaluates to true or truthy.
+     * Skips rows in the dataframe while a condition evaluates to true or truthy.
      *
      * @param predicate Returns true/truthy to continue to skip rows in the original dataframe.
      * 
@@ -4105,7 +4105,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Skips values in the dataframe untils a condition evaluates to true or truthy.
+     * Skips rows in the dataframe untils a condition evaluates to true or truthy.
      *
      * @param predicate Return true/truthy to stop skipping rows in the original dataframe.
      * 
@@ -4124,7 +4124,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Take a number of rows in the dataframe.
+     * Take a number of rows from the dataframe.
      *
      * @param numValues Number of rows to take.
      * 
@@ -4151,7 +4151,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     };
 
     /**
-     * Takes values from the dataframe while a condition evaluates to true or truthy.
+     * Takes rows from the dataframe while a condition evaluates to true or truthy.
      *
      * @param predicate Returns true/truthy to continue to take rows from the original dataframe.
      * 
