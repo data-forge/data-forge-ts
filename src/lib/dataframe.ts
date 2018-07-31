@@ -4177,7 +4177,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Takes values from the dataframe untils a condition evaluates to true or truthy.
+     * Takes rows from the dataframe untils a condition evaluates to true or truthy.
      *
      * @param predicate Return true/truthy to stop taking rows in the original dataframe.
      * 
@@ -4382,7 +4382,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Invoke a callback function for each roew in the dataframe.
+     * Invoke a callback function for each row in the dataframe.
      *
      * @param callback The calback function to invoke for each row.
      * 
@@ -4445,7 +4445,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @return Returns true if the predicate has returned truthy for any row in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for any row in the dataframe, otherwise returns false. 
      * If no predicate is passed it returns true if the dataframe contains any rows at all. 
      * Returns false for an empty dataframe.
      * 
@@ -4528,12 +4528,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return true; // Nothing failed the predicate.
     }
 
+    //TODO: Improve this example (and subsequent examples, they look like series setup rather than dataframe)..
     /**
-     * Gets a new dataframe containing all rows starting at and after the specified index value.
+     * Gets a new dataframe containing all rows starting at or after the specified index value.
      * 
      * @param indexValue The index value at which to start the new dataframe.
      * 
-     * @return Returns a new dataframe containing all rows starting at and after the specified index value. 
+     * @return Returns a new dataframe containing all rows starting at or after the specified index value. 
      * 
      * @example
      * <pre>
@@ -4553,7 +4554,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const timeSeriesDf = ... a dataframe indexed by date/time ...
      * 
      * // Get all rows starting at (or after) a particular date.
-     * const allRowsFromStartDate = df.startAt(new Date(2016, 5, 4)); 
+     * const result = timeSeriesDf.startAt(new Date(2016, 5, 4)); 
      * </pre>
      */
     startAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
@@ -4594,7 +4595,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const timeSeriesDf = ... a dataframe indexed by date/time ...
      * 
      * // Get all rows ending at a particular date.
-     * const allRowsUpToAndIncludingTheExactEndDate = df.endAt(new Date(2016, 5, 4)); 
+     * const result = timeSeriesDf.endAt(new Date(2016, 5, 4)); 
      * </pre>
      */
     endAt (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
@@ -4635,7 +4636,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const timeSeriesDf = ... a dataframe indexed by date/time ...
      * 
      * // Get all rows before the specified date.
-     * const allRowsBeforeEndDate = df.before(new Date(2016, 5, 4)); 
+     * const result = timeSeriesDf.before(new Date(2016, 5, 4)); 
      * </pre>
      */
     before (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
@@ -4676,7 +4677,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const timeSeriesDf = ... a dataframe indexed by date/time ...
      * 
      * // Get all rows after the specified date.
-     * const allRowsAfterStartDate = df.after(new Date(2016, 5, 4)); 
+     * const result = timeSeriesDf.after(new Date(2016, 5, 4)); 
      * </pre>
      */
     after (indexValue: IndexT): IDataFrame<IndexT, ValueT> {
@@ -4717,7 +4718,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const timeSeriesDf = ... a dataframe indexed by date/time ...
      * 
      * // Get all rows between the start and end dates (inclusive).
-     * const allRowsBetweenDates = df.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
+     * const result = timeSeriesDf.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
      * </pre>
      */
     between (startIndexValue: IndexT, endIndexValue: IndexT): IDataFrame<IndexT, ValueT> {
@@ -4728,7 +4729,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Format the dataframe for display as a string.
      * This forces lazy evaluation to complete.
      * 
-     * @return Generates and returns a string representation of the dataframe or dataframe.
+     * @return Generates and returns a string representation of the dataframe.
      * 
      * @example
      * <pre>
@@ -4761,18 +4762,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
-     * @return Returns a new dataframe with a particular named column parsed as ints.  
+     * @return Returns a new dataframe with values of particular named column(s) parsed from strings to ints.
      * 
      * @example
      * <pre>
      * 
-     * const withParsedColumn = df.parseInts("MyIntColumn");
+     * const parsed = df.parseInts("MyIntColumn");
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const withParsedColumns = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
+     * const parsed = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
      * </pre>
      */
     parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
@@ -4795,18 +4796,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * 
-     * @return  Returns a new dataframe with a particular named column parsed as floats.  
+     * @return Returns a new dataframe with values of particular named column(s) parsed from strings to floats.
      * 
      * @example
      * <pre>
      * 
-     * const withParsedColumn = df.parseFloats("MyFloatColumn");
+     * const parsed = df.parseFloats("MyFloatColumn");
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const withParsedColumns = df.parseFloats(["MyFloatColumnA", "MyFloatColumnA"]);
+     * const parsed = df.parseFloats(["MyFloatColumnA", "MyFloatColumnA"]);
      * </pre>
      */
     parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
@@ -4827,21 +4828,24 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Parse a column with string values and convert it to a column with date values.
      *
-     * @param columnNameOrNames -Specifies the column name or array of column names to parse.
+     * @param columnNameOrNames Specifies the column name or array of column names to parse.
      * @param [formatString] Optional formatting string for dates.
      * 
-     * @return Returns a new dataframe with a particular named column parsed as dates.
+     * Moment is used for date parsing.
+     * https://momentjs.com
+     * 
+     * @return Returns a new dataframe with values of particular named column(s) parsed from strings to dates.
      * 
      * @example
      * <pre>
      * 
-     * const withParsedColumn = df.parseDates("MyDateColumn");
+     * const parsed = df.parseDates("MyDateColumn");
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const withParsedColumns = df.parseDates(["MyDateColumnA", "MyDateColumnA"]);
+     * const parsed = df.parseDates(["MyDateColumnA", "MyDateColumnA"]);
      * </pre>
      */
     parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT> {
@@ -4875,18 +4879,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
      * 
-     * @return Returns a new dataframe with a particular named column convert to strings.
+     * @return Returns a new dataframe with a particular named column converted from values to strings.
      * 
      * @example
      * <pre>
      * 
-     * const withStringColumn = df.toStrings("MyDateColumn", "YYYY-MM-DD");
+     * const result = df.toStrings("MyDateColumn", "YYYY-MM-DD");
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const withStringColumn = df.toStrings("MyFloatColumn", "0.00");
+     * const result = df.toStrings("MyFloatColumn", "0.00");
      * </pre>
      */
     toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT> {
@@ -4971,7 +4975,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @example
      * <pre>
      * 
-     * const bakedDf = df.bake();
+     * const baked = df.bake();
      * </pre>
      */
     bake (): IDataFrame<IndexT, ValueT> {

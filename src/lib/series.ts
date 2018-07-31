@@ -777,94 +777,234 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Invoke a callback function for each value in the series.
      *
-     * @param callback - The calback to invoke for each value.
+     * @param callback The calback function to invoke for each value.
      * 
-     * @returns Returns the input series with no modifications.
+     * @return Returns the original series with no modifications.
+     * 
+     * @example
+     * <pre>
+     * 
+     * series.forEach(value => {
+     *      // ... do something with the value ...
+     * });
+     * </pre>
      */
     forEach (callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
-     * Determine if the predicate returns truthy for all values in the series.
-     * Returns false as soon as the predicate evaluates to falsy.
-     * Returns true if the predicate returns truthy for all values in the series.
-     * Returns false if the series is empty.
+     * Evaluates a predicate function for every value in the series to determine 
+     * if some condition is true/truthy for **all** values in the series.
      * 
-     * TODO: Should predicate here by optional  as well same as in any and none?
-     * 
-     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * @param predicate Predicate function that receives each value. It should returns true/truthy for a match, otherwise false/falsy.
      *
-     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned true or truthy for every value in the series, otherwise returns false. Returns false for an empty series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.all(salesFigure => salesFigure > 100); // Returns true if all sales figures are greater than 100.
+     * </pre>
      */
     all (predicate: PredicateFn<ValueT>): boolean;
     
     /**
-     * Determine if the predicate returns truthy for any of the values in the series.
-     * Returns true as soon as the predicate returns truthy.
-     * Returns false if the predicate never returns truthy.
-     * If no predicate is specified the value itself is checked. 
+     * Evaluates a predicate function for every value in the series to determine 
+     * if some condition is true/truthy for **any** of values in the series.
+     * 
+     * If no predicate is specified then it simply checks if the series contains more than zero values.
      *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for any value in the series, otherwise returns false. 
+     * If no predicate is passed it returns true if the series contains any values at all.
+     * Returns false for an empty series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.any(salesFigure => salesFigure > 100); // Do we have any sales figures greater than 100?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.any(); // Do we have any sales figures at all?
+     * </pre>
      */
     any (predicate?: PredicateFn<ValueT>): boolean;
 
     /**
-     * Determine if the predicate returns truthy for none of the values in the series.
-     * Returns true for an empty series.
-     * Returns true if the predicate always returns falsy.
-     * Otherwise returns false.
-     * If no predicate is specified the value itself is checked.
-     *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * Evaluates a predicate function for every value in the series to determine 
+     * if some condition is true/truthy for **none** of values in the series.
      * 
-     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     * If no predicate is specified then it simply checks if the series contains zero values.
+     *
+     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
+     *
+     * @return Returns true if the predicate has returned truthy for zero values in the series, otherwise returns false. Returns false for an empty series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.none(salesFigure => salesFigure > 100); // Do we have zero sales figures greater than 100?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.none(); // Do we have zero sales figures?
+     * </pre>
      */
     none (predicate?: PredicateFn<ValueT>): boolean;
 
     /**
-     * Get a new series containing all values starting at and after the specified index value.
+     * Gets a new series containing all values starting at or after the specified index value.
      * 
-     * @param indexValue - The index value to search for before starting the new series.
+     * @param indexValue The index value at which to start the new series.
      * 
-     * @returns Returns a new series containing all values starting at and after the specified index value. 
+     * @return Returns a new series containing all values starting at or after the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = series.startAt(2);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values starting at (or after) a particular date.
+     * const result = timeSeries.startAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     startAt (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values up until and including the specified index value (inclusive).
+     * Gets a new series containing all values up until and including the specified index value (inclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new series.
      * 
-     * @returns Returns a new series containing all values up until and including the specified index value. 
+     * @return Returns a new series containing all values up until and including the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = series.endAt(1);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values ending at a particular date.
+     * const result = timeSeries.endAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     endAt (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values up to the specified index value (exclusive).
+     * Gets a new series containing all values up to the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new series.
      * 
-     * @returns Returns a new series containing all values up to the specified inde value. 
+     * @return Returns a new series containing all values up to (but not including) the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = series.before(2);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values before the specified date.
+     * const result = timeSeries.before(new Date(2016, 5, 4)); 
+     * </pre>
      */
     before (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values after the specified index value (exclusive).
+     * Gets a new series containing all values after the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for.
+     * @param indexValue The index value after which to start the new series.
      * 
-     * @returns Returns a new series containing all values after the specified index value.
-     */
+     * @return Returns a new series containing all values after the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = df.before(1);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSerie = ... a series indexed by date/time ...
+     * 
+     * // Get all values after the specified date.
+     * const result = timeSeries.after(new Date(2016, 5, 4)); 
+     * </pre>
+     */    
     after (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
-     * Get a new series containing all values between the specified index values (inclusive).
+     * Gets a new series containing all values between the specified index values (inclusive).
      * 
-     * @param startIndexValue - The index where the new sequence starts. 
-     * @param endIndexValue - The index where the new sequence ends.
+     * @param startIndexValue The index at which to start the new series.
+     * @param endIndexValue The index at which to end the new series.
      * 
-     * @returns Returns a new series containing all values between the specified index values (inclusive).
+     * @return Returns a new series containing all values between the specified index values (inclusive).
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3, 4, 6], // This is the default index.
+     *      values: [10, 20, 30, 40, 50, 60],
+     * });
+     * 
+     * const middleSection = series.between(1, 4);
+     * expect(middleSection.toArray()).to.eql([20, 30, 40, 50]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values between the start and end dates (inclusive).
+     * const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
+     * </pre>
      */
     between (startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT>;
 
@@ -872,37 +1012,64 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.
      * 
-     * @returns Generates and returns a string representation of the series or dataframe.
+     * @return Generates and returns a string representation of the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * console.log(series.toString());
+     * </pre>
      */
     toString (): string;
 
     /**
-     * Parse a series with string values to a series with int values.
+     * Parse a series with string values and convert it to a series with int values.
+     *
+     * @return Returns a new series with values parsed from strings to ints.
      * 
-     * @returns Returns a new series where string values from the original series have been parsed to integer values.
+     * @example
+     * <pre>
+     * 
+     * const parsed = series.parseInts();
+     * </pre>
      */
     parseInts (): ISeries<IndexT, number>;
 
     /**
-     * Parse a series with string values to a series with float values.
+     * Parse a series with string values and convert it to a series with float values.
+     *
+     * @return Returns a new series with values parsed from strings to floats.
      * 
-     * @returns Returns a new series where string values from the original series have been parsed to floating-point values.
+     * @example
+     * <pre>
+     * 
+     * const parsed = series.parseFloats();
+     * </pre>
      */
     parseFloats (): ISeries<IndexT, number>;
 
     /**
-     * Parse a series with string values to a series with date values.
+     * Parse a series with string values and convert it to a series with date values.
      *
      * @param [formatString] Optional formatting string for dates.
      * 
-     * @returns Returns a new series where string values from the original series have been parsed to Date values.
+     * Moment is used for date parsing.
+     * https://momentjs.com
+     * 
+     * @return Returns a new series with values parsed from strings to dates.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const parsed = series.parseDates();
+     * </pre>
      */
     parseDates (formatString?: string): ISeries<IndexT, Date>;
 
     /**
-     * Convert a series of values of different types to a series of string values.
+     * Convert a series of values of different types to a series containing string values.
      *
-     * @param [formatString] Optional formatting string for numbers and dates.
+     * @param [formatString] Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -910,7 +1077,19 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
      * 
-     * @returns Returns a new series where the values from the original series have been stringified. 
+     * @return Returns a new series values converted from values to strings.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.toStrings("YYYY-MM-DD");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.toStrings("0.00");
+     * </pre>
      */
     toStrings (formatString?: string): ISeries<IndexT, string>;
 
