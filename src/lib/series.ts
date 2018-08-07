@@ -182,7 +182,7 @@ export interface IBucket {
 }
 
 /**
- * Interface that represents a dataframe.
+ * Interface that represents a series.
  * A series contains an indexed sequence of values.
  * A series indexed by time is a timeseries.
  * 
@@ -1096,37 +1096,80 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Forces lazy evaluation to complete and 'bakes' the series into memory.
      * 
-     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.  
+     * @return Returns a series that has been 'baked', all lazy evaluation has completed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const baked = series.bake();
+     * </pre>
      */
     bake (): ISeries<IndexT, ValueT>;
 
     /** 
-     * Inflate the series to a dataframe.
+     * Converts (inflates) a series to a {@link DataFrame}.
      *
-     * @param [selector] Optional selector function that transforms each value in the series to a row in the new dataframe.
+     * @param [selector] Optional user-defined selector function that transforms each value to produce the dataframe.
      *
-     * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
+     * @returns Returns a dataframe that was created from the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataframe = series.inflate(); // Inflate a series of objects to a dataframe.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataframe = series.inflate(value => { AColumn:  value }); // Produces a dataframe with 1 column from a series of values.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // Extract a nested value and produce a dataframe from it.
+     * </pre>
      */
     inflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
 
     /**
-     * Sum the values in a series.
+     * Sum the values in a series and returns the result.
      * 
      * @returns Returns the sum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const totalSales = salesFigures.sum();
+     * </pre>
      */
     sum (): number;
 
     /**
-     * Average the values in a series.
+     * Average the values in a series and returns the result
      * 
      * @returns Returns the average of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const averageSales = salesFigures.average();
+     * </pre>
      */
     average (): number;
 
     /**
-     * Get the median value in the series. Not this sorts the series, so can be expensive.
+     * Get the median value in the series. 
+     * Note that this sorts the series, which can be expensive.
      * 
      * @returns Returns the median of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const medianSales = salesFigures.median();
+     * </pre>
      */
     median (): number;
 
@@ -1134,6 +1177,12 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Get the min value in the series.
      * 
      * @returns Returns the minimum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const minSales = salesFigures.min();
+     * </pre>
      */
     min (): number;
 
@@ -1141,6 +1190,12 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Get the max value in the series.
      * 
      * @returns Returns the maximum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const maxSales = salesFigures.max();
+     * </pre>
      */
     max (): number;
 
@@ -1149,60 +1204,159 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * This assumes that the input series contains numbers.
      * 
      * @returns Returns a new series with all number values inverted.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const inverted = series.invert();
+     * </pre>
      */
     invert (): ISeries<IndexT, number>;
 
     /** 
-     * Reverse the series.
+     * Gets a new series in reverse order.
      * 
-     * @returns Returns a new series that is the reverse of the input.
+     * @return Returns a new series that is the reverse of the original.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const reversed = series.reverse();
+     * </pre>
      */
     reverse (): ISeries<IndexT, ValueT>;
 
     /**
-     * Returns only values in the series that have distinct values.
+     * Returns only the set of values in the series that are distinct.
+     * Provide a user-defined selector to specify criteria for determining the distinctness.
+     * This can be used to remove duplicate values from the series.
      *
-     * @param selector - Selects the value used to compare for duplicates.
+     * @param [selector] Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
      * 
-     * @returns Returns a series containing only unique values as determined by the 'selector' function. 
+     * @return Returns a series containing only unique values in the series. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const uniqueValues = series.distinct(); // Get only non-duplicated value in the series.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump values into buckets of 10.
+     * </pre>
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
 
     /**
-     * Group the series according to the selector.
+     * Collects values in the series into a new series of groups according to a user-defined selector function.
      *
-     * @param selector - Selector that defines the value to group by.
+     * @param selector User-defined selector function that specifies the criteriay to group by.
      *
-     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * @return Returns a new series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const sales = ... product sales ...
+     * const salesByProduct = sales.groupBy(sale => sale.ProductId);
+     * for (const productSalesGroup of salesByProduct) {
+     *      // ... do something with each product group ...
+     *      const productId = productSalesGroup.first().ProductId;
+     *      const totalSalesForProduct = productSalesGroup.deflate(sale => sale.Amount).sum();
+     *      console.log(totalSalesForProduct);
+     * }
+     * </pre>
      */
     groupBy<GroupT> (selector: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
-     * Group sequential values into a Series of windows.
+     * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
      *
-     * @param selector - Optional selector that defines the value to group by.
+     * @param [selector] Optional selector that specifies the criteria for grouping.
      *
-     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
-     */
+     * @return Returns a new series of groups. Each group is a series with values that are the same or have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Some ultra simple stock trading strategy backtesting...
+     * const dailyStockPrice = ... daily stock price for a company ...
+     * const priceGroups  = dailyStockPrice.groupBy(day => day.close > day.movingAverage);
+     * for (const priceGroup of priceGroups) {
+     *      // ... do something with each stock price group ...
+     * 
+     *      const firstDay = priceGroup.first();
+     *      if (firstDay.close > movingAverage) {
+     *          // This group of days has the stock price above its moving average.
+     *          // ... maybe enter a long trade here ...
+     *      }
+     *      else {
+     *          // This group of days has the stock price below its moving average.
+     *          // ... maybe enter a short trade here ...
+     *      }
+     * }
+     * </pre>
+     */    
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
     
     /**
      * Concatenate multiple other series onto this series.
      * 
-     * @param series - Multiple arguments. Each can be either a series or an array of series.
+     * @param series Multiple arguments. Each can be either a series or an array of series.
      * 
-     * @returns Returns a single series concatenated from multiple input series. 
+     * @return Returns a single series concatenated from multiple input series. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat(b);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat(b, c);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat([b, c]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat(b, [c, d]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const otherSeries = [... array of series...];
+     * const concatenated = a.concat(otherSeries);
+     * </pre>
      */    
     concat (...series: (ISeries<IndexT, ValueT>[]|ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT>;
 
     /**
-    * Zip together multiple series to create a new series.
+    * Merge together multiple series to create a new series.
     * Preserves the index of the first series.
     * 
-    * @param s2, s3, s4, s4 - Multiple series to zip.
-    * @param zipper - Zipper function that produces a new series based on the input series.
+    * @param s2, s3, s4, s4 Multiple series to zip.
+    * @param zipper User-defined zipper function that merges rows. It produces values for the new series based-on values from the input series.
     * 
-    * @returns Returns a single series concatenated from multiple input series. 
+    * @return Returns a single series merged from multiple input series. 
+    * 
+    * @example
+    * <pre>
+    * 
+    * const a = new Series([1, 2, 3]);
+    * const b = new Series([10, 20, 30]);
+    * const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
+    * </pre>
     */    
    zip<Index2T, Value2T, ResultT>  (s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): ISeries<IndexT, ResultT>;
    zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): ISeries<IndexT, ResultT>;
@@ -3444,4 +3598,3 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
         return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
     }
 }
-    

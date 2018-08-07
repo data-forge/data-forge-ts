@@ -842,9 +842,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /** 
      * Converts (deflates) a dataframe to a {@link Series}.
      *
-     * @param [selector] Optional selector function that transforms each row to produce the series.
+     * @param [selector] Optional user-defined selector function that transforms each row to produce the series.
      *
-     * @return Returns a series that was created from the deflated from  the original dataframe.
+     * @return Returns a series that was created from the original dataframe.
      * 
      * @example
      * <pre>
@@ -1587,12 +1587,12 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /** 
      * Gets a new dataframe in reverse order.
      * 
-     * @return Returns a new dataframe that is the reverse of the input.
+     * @return Returns a new dataframe that is the reverse of the original.
      * 
      * @example
      * <pre>
      * 
-     * const reversedDf = df.reverse();
+     * const reversed = df.reverse();
      * </pre>
      */
     reverse (): IDataFrame<IndexT, ValueT>;
@@ -1615,11 +1615,11 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Collects rows in the dataframe into a series of groups according to the user-defined selector function that defines the group for each row.
+     * Collects rows in the dataframe into a {@link Series} of groups according to a user-defined selector function.
      *
-     * @param selector User-defined selector function that defines the value to group by.
+     * @param selector User-defined selector function that specifies the criteriay to group by.
      *
-     * @return Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @return Returns a {@link Series} of groups. Each group is a dataframe with rows that have been grouped by the 'selector' function.
      * 
      * @example
      * <pre>
@@ -1637,11 +1637,11 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>>;
     
     /**
-     * Collects rows in the dataframe into a series of groups according to a user-defined selector function that identifies adjacent rows that should be in the same group.
+     * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
      *
-     * @param selector Optional selector that defines the value to group by.
+     * @param [selector] Optional selector that specifies the criteria for grouping.
      *
-     * @return Returns a {@link Series} of groups. Each group is a dataframe with values that have been grouped by the 'selector' function.
+     * @return Returns a {@link Series} of groups. Each group is a dataframe with rows that are the same or have been grouped by the 'selector' function.
      * 
      * @example
      * <pre>
@@ -1671,49 +1671,49 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param dataframes Multiple arguments. Each can be either a dataframe or an array of dataframes.
      * 
-     * @return Returns a single dataframes concatenated from multiple input dataframes. 
+     * @return Returns a single dataframe concatenated from multiple input dataframes. 
      * 
      * @example
      * <pre>
      * 
-     * const concatenatedDf = dfA.concat(dfB);
+     * const concatenated = a.concat(b);
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const concatenatedDf = dfA.concat(dfB, dfC);
+     * const concatenated = a.concat(b, c);
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const concatenatedDf = dfA.concat([dfB, dfC]);
+     * const concatenated = a.concat([b, c]);
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const concatenatedDf = dfA.concat(dfB, [dfC, dfD]);
+     * const concatenated = a.concat(b, [c, d]);
      * </pre>
      * 
      * @example
      * <pre>
      * 
      * const otherDfs = [... array of dataframes...];
-     * const concatenatedDf = dfA.concat(otherDfs);
+     * const concatenated = a.concat(otherDfs);
      * </pre>
      */    
     concat (...dataframes: (IDataFrame<IndexT, ValueT>[] | IDataFrame<IndexT, ValueT>)[]): IDataFrame<IndexT, ValueT>;
     
     /**
-    * Zip (or merge) together multiple dataframes to create a new dataframe.
+    * Merge together multiple dataframes to create a new dataframe.
     * Preserves the index of the first dataframe.
     * 
     * @param s2, s3, s4, s4 Multiple dataframes to zip.
     * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
-    * @return Returns a single dataframe zipped (or merged) from multiple input dataframes. 
+    * @return Returns a single dataframe merged from multiple input dataframes. 
     * 
     * @example
     * <pre>
