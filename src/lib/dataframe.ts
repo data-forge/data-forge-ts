@@ -1775,7 +1775,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * This is basically a concatenation and then elimination of duplicates.
      *
      * @param other The other dataframes to merge.
-     * @param [selector] Optional user-defined selector function that selects the value to compare to detemrine distinctness.
+     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
      * @return Returns the union of the two dataframes.
      * 
@@ -1978,7 +1978,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     
     /**
      * Creates a new dataframe by merging two input dataframes.
-     * The resulting dataframe contains only those rows that present either in both dataframes or only in the outer (left) dataframe.
+     * The resulting dataframe contains only those rows that are present either in both dataframes or only in the outer (left) dataframe.
      * 
      * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
@@ -2019,7 +2019,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Creates a new dataframe by merging two input dataframes.
-     * The resulting dataframe contains only those rows that present either in both dataframes or only in the inner (right) dataframe.
+     * The resulting dataframe contains only those rows that are present either in both dataframes or only in the inner (right) dataframe.
      *
      * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
@@ -2135,7 +2135,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Insert a pair at the start of the dataframe.
      * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the inserted pair.
      *
-     * @param pair The pair to insert.
+     * @param pair The index/value pair to insert.
      * 
      * @return Returns a new dataframe with the specified pair inserted.
      * 
@@ -2153,7 +2153,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Append a pair to the end of a dataframe.
      * Doesn't modify the original dataframe! The returned dataframe is entirely new and contains rows from the original dataframe plus the appended pair.
      *
-     * @param pair - The pair to append.
+     * @param pair The index/value pair to append.
      *  
      * @return Returns a new dataframe with the specified pair appended.
      * 
@@ -2202,11 +2202,11 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Returns the specified default dataframe if the dataframe is empty. 
+     * Returns the specified default dataframe if the input dataframe is empty. 
      *
-     * @param defaultDataFrame Default dataframe to return if the dataframe is empty.
+     * @param defaultSequence Default dataframe to return if the input dataframe is empty.
      * 
-     * @return Returns 'defaultDataFrame' if the dataframe is empty. 
+     * @return Returns 'defaultSequence' if the input dataframe is empty. 
      * 
      * @example
      * <pre>
@@ -2246,13 +2246,13 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Detect the frequency of the values in the dataframe.
      * This is a good way to understand the shape of your data.
      *
-     * @return Returns a dataframe with rows that conform to {@link IValueFrequency} that describes the values contained in the dataframe.
+     * @return Returns a dataframe with rows that conform to {@link IValueFrequency} that describes the values contained in the original dataframe.
      * 
      * @example
      * <pre>
      * 
      * const df = dataForge.readFileSync("./my-data.json").parseJSON();
-     * const dataValues = df.detectedValues();
+     * const dataValues = df.detectValues();
      * console.log(dataValues.toString());
      * </pre>
      */
@@ -2641,19 +2641,19 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @example
      * <pre>
      * 
-     * const df = new DataFrame([10, 20, 30, 40]);
+     * const df = new DataFrame([ { A: 10 }, { A: 20 }, { A: 30 }, { A: 40 }]);
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const df = new DataFrame({ index: [1, 2, 3, 4], values: [10, 20, 30, 40]});
+     * const df = new DataFrame({ index: [1, 2, 3, 4], values: [ { A: 10 }, { A: 20 }, { A: 30 }, { A: 40 }] });
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * const lazyInit = () => ({ index: [1, 2, 3, 4], values: [10, 20, 30, 40] });
+     * const lazyInit = () => ({ index: [1, 2, 3, 4], values: [ { A: 10 }, { A: 20 }, { A: 30 }, { A: 40 }] });
      * const df = new DataFrame(lazyInit);
      * </pre>
      */
@@ -2693,7 +2693,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
     
     /**
-     * Get an iterator to enumerate the values of the dataframe.
+     * Get an iterator to enumerate the rows of the dataframe.
      * Enumerating the iterator forces lazy evaluation to complete.
      * This function is automatically called by `for...of`.
      * 

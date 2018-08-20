@@ -295,11 +295,11 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
    toArray (): ValueT[];
 
     /**
-     * Retreive the index, values pairs from the seires as an array.
+     * Retreive the index, values pairs from the series as an array.
      * Each pair is [index, value].
      * This forces lazy evaluation to complete.
      * 
-     * @return Returns an array of pairs that contains the series' values. Each pair is a two element array that contains an index and a value.
+     * @return Returns an array of pairs that contains the series values. Each pair is a two element array that contains an index and a value.
      * 
      * @example
      * <pre>
@@ -328,7 +328,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /**
-     * Generates a new dataframe by repeatedly calling a user-defined selector function on each value in the original series.
+     * Generates a new series by repeatedly calling a user-defined selector function on each value in the original series.
      *
      * @param selector A user-defined selector function that transforms each row to create the new dataframe.
      * 
@@ -1213,6 +1213,24 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     invert (): ISeries<IndexT, number>;
 
+    /**
+     * Counts the number of sequential values where the predicate evaluates to truthy.
+     * Outputs 0 for values when the predicate evaluates to falsy.
+     * 
+     * @param predicate User-defined function. Should evaluate to truthy to activate the counter or falsy to deactivate it.
+     * 
+     * @returns Returns a new series that counts up the number of sequential values where the predicate evaluates to truthy. 0 values appear when the prediate evaluates to falsy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([ 1, 10, 3, 15, 8, 5 ]);
+     * const counted = series.counter(value => value >= 3);
+     * console.log(counted.toString());
+     * </pre>
+     */
+    counter (predicate: PredicateFn<ValueT>): ISeries<IndexT, number>;
+
     /** 
      * Gets a new series in reverse order.
      * 
@@ -1364,30 +1382,96 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
    zip<ResultT>  (...args: any[]): ISeries<IndexT, ResultT>;
    
     /**
-     * Sorts the series by a value defined by the selector (ascending). 
+     * Sorts the series in ascending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     * @return Returns a new series that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderBy(value => value); 
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderBy(value => value.NestedValue); 
+     * </pre>
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 
     /**
-     * Sorts the series by a value defined by the selector (descending). 
+     * Sorts the series in descending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     * @return Returns a new series that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderByDescending(value => value); 
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderByDescending(value => value.NestedValue); 
+     * </pre>
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 
     /**
-     * Returns the unique union of values between two series.
+     * Creates a new series by merging two input dataframes.
+     * The resulting series contains the union of value from the two input series.
+     * These are the unique combination of values in both series.
+     * This is basically a concatenation and then elimination of duplicates.
      *
-     * @param other - The other Series or DataFrame to combine.
-     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * @param other The other series to merge.
+     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
-     * @returns Returns the union of two series.
+     * @return Returns the union of the two series.
+     * 
+     * @example
+     * <pre>
+     *
+     * const seriesA = ...
+     * const seriesB = ...
+     * const merged = seriesA.union(seriesB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records that may contain the same
+     * // customer record in each set. This is basically a concatenation
+     * // of the series and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA.union(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
+     * 
+     * 
+     * @example
+     * <pre>
+     *
+     * // Note that you can achieve the exact same result as the previous
+     * // example by doing a {@link Series.concat) and {@link Series.distinct}
+     * // of the input series and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA
+     *      .concat(customerRecordsB)
+     *      .distinct(customerRecord => customerRecord.CustomerId);
+     * </pre>
+     * 
      */
     union<KeyT = ValueT> (
         other: ISeries<IndexT, ValueT>, 
@@ -1395,14 +1479,37 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
             ISeries<IndexT, ValueT>;
 
     /**
-     * Returns the intersection of values between two series.
+     * Creates a new series by merging two input series.
+     * The resulting series contains the intersection of values from the two input series.
+     * These are only the values that appear in both series.
      *
-     * @param inner - The other series to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two series.
-     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
-     * @returns Returns the intersection of two series.
-     */
+     * @return Returns a new series that contains the intersection of values from the two input series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesA = ...
+     * const seriesB = ...
+     * const mergedDf = seriesA.intersection(seriesB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records to find only the
+     * // customers that appears in both.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const intersectionOfCustomerRecords = customerRecordsA.intersection(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>     
+     */    
     intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
         outerSelector?: SelectorFn<ValueT, KeyT>,
@@ -1410,30 +1517,71 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
             ISeries<IndexT, ValueT>;
 
     /**
-     * Returns the exception of values between two series.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only the values from the 1st series that don't appear in the 2nd series.
+     * This is essentially subtracting the values from the 2nd series from the 1st and creating a new series with the remaining values.
      *
-     * @param inner - The other series to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two series.
-     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
-     * @returns Returns the difference between the two series.
-     */
+     * @return Returns a new series that contains only the values from the 1st series that don't appear in the 2nd series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesA = ...
+     * const seriesB = ...
+     * const remainingDf = seriesA.except(seriesB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Find the list of customers haven't bought anything recently.
+     * const allCustomers = ... list of all customers ...
+     * const recentCustomers = ... list of customers who have purchased recently ...
+     * const remainingCustomers = allCustomers.except(
+     *      recentCustomers, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
+     */    
     except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
         outerSelector?: SelectorFn<ValueT, KeyT>,
         innerSelector?: SelectorFn<InnerValueT, KeyT>): 
             ISeries<IndexT, ValueT>;
 
-    /**
-     * Correlates the elements of two series on matching keys.
+   /**
+     * Creates a new series by merging two input series.
+     * The resulting dataframe contains only those value that have matching keys in both input series.
      *
-     * @param this - The outer Series or DataFrame to join. 
-     * @param inner - The inner Series or DataFrame to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
-     * @returns Returns the joined series. 
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
@@ -1443,21 +1591,39 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
             ISeries<number, ResultValueT>;
 
     /**
-     * Performs an outer join on two series. Correlates the elements based on matching keys.
-     * Includes elements from both series that have no correlation in the other series.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only those values that are only present in or or the other of the series, not both.
      *
-     * @param this - The outer series to join. 
-     * @param inner - The inner series to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined series. 
-     */
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either product A or product B, not not both.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
+     */    
     joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
         outerKeySelector: SelectorFn<ValueT, KeyT>, 
@@ -1466,20 +1632,38 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
             ISeries<number, ResultValueT>;
 
     /**
-     * Performs a left outer join on two series. Correlates the elements based on matching keys.
-     * Includes left elements that have no correlation.
-     *
-     * @param this - The outer Series or DataFrame to join. 
-     * @param inner - The inner Series or DataFrame to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only those values that are present either in both series or only in the outer (left) series.
+     * 
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns {Series|DataFrame} Returns the joined series or dataframe. 
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product A or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
@@ -1489,20 +1673,38 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
             ISeries<number, ResultValueT>;
 
     /**
-     * Performs a right outer join on two series. Correlates the elements based on matching keys.
-     * Includes right elements that have no correlation.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only those values that are present either in both series or only in the inner (right) series.
      *
-     * @param this - The outer Series or DataFrame to join. 
-     * @param inner - The inner Series or DataFrame to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns {Series|DataFrame} Returns the joined series or dataframe. 
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product B or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
@@ -1517,59 +1719,156 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @param maxLength - The maximum length of the string values after truncation.
      * 
      * @returns Returns a new series with strings that are truncated to the specified maximum length. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const truncated = series.truncateStrings(10); // Truncate all string values to max length of 10 characters.
+     * </pre>
      */
     truncateStrings (maxLength: number): ISeries<IndexT, ValueT>;
 
     /**
      * Insert a pair at the start of the series.
+     * Doesn't modify the original series! The returned series is entirely new and contains values from the original series plus the inserted pair.
      *
-     * @param pair - The pair to insert.
+     * @param pair The index/value pair to insert.
      * 
-     * @returns Returns a new series with the specified pair inserted.
+     * @return Returns a new series with the specified pair inserted.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to insert ...
+     * const insertedSeries = series.insertPair([newIndex, newRows]);
+     * </pre>
      */
     insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
 
     /**
-     * Append a pair to the end of a Series.
+     * Append a pair to the end of a series.
+     * Doesn't modify the original series! The returned series is entirely new and contains values from the original series plus the appended pair.
      *
-     * @param pair - The pair to append.
+     * @param pair The index/value pair to append.
      *  
-     * @returns Returns a new series with the specified pair appended.
+     * @return Returns a new series with the specified pair appended.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to append ...
+     * const appendedSeries = series.appendPair([newIndex, newRows]);
+     * </pre>
      */
     appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
 
     /**
-     * Fill gaps in a series or dataframe.
+     * Fill gaps in a series.
      *
-     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
-     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     * @param comparer User-defined comparer function that is passed pairA and pairB, two consecutive values, return truthy if there is a gap between the value, or falsey if there is no gap.
+     * @param generator User-defined generator function that is passed pairA and pairB, two consecutive values, returns an array of pairs that fills the gap between the values.
      *
-     * @returns {Series} Returns a new series with gaps filled in.
+     * @return Returns a new series with gaps filled in.
+     * 
+     * @example
+     * <pre>
+     * 
+     *   var sequenceWithGaps = ...
+     *
+     *  // Predicate that determines if there is a gap.
+     *  var gapExists = (pairA, pairB) => {
+     *      // Returns true if there is a gap.
+     *      return true;
+     *  };
+     *
+     *  // Generator function that produces new rows to fill the game.
+     *  var gapFiller = (pairA, pairB) => {
+     *      // Create an array of index, value pairs that fill the gaps between pairA and pairB.
+     *      return [
+     *          newPair1,
+     *          newPair2,
+     *          newPair3,
+     *      ];
+     *  };
+     *
+     *  var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
+     * </pre>
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT>;
 
     /**
-     * Returns the specified default sequence if the series is empty. 
+     * Returns the specified default series if the input series is empty. 
      *
-     * @param defaultSequence - Default sequence to return if the series is empty.
+     * @param defaultSequence Default series to return if the input series is empty.
      * 
-     * @returns Returns 'defaultSequence' if the series is empty. 
+     * @return Returns 'defaultSequence' if the input series is empty. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const emptySeries = new Series();
+     * const defaultSeries = new Series([ 1, 2, 3 ]);
+     * expect(emptyDataFrame.defaultIfEmpty(defaultSeries)).to.eql(defaultSeries);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const nonEmptySeries = new Series([ 100 ]);
+     * const defaultSeries = new Series([ 1, 2, 3 ]);
+     * expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
+     * </pre>
      */
     defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT>;
 
-    /** 
-     * Detect the types of the values in the sequence.
+    /**
+     * Detect the the frequency of the types of the values in the series.
+     * This is a good way to understand the shape of your data.
      *
-     * @returns Returns a dataframe that describes the data types contained in the input series or dataframe.
+     * @return Returns a {@link DataFrame} with rows that confirm to {@link ITypeFrequency} that describes the data types contained in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataTypes = series.detectTypes();
+     * console.log(dataTypes.toString());
+     * </pre>
      */
     detectTypes (): IDataFrame<number, ITypeFrequency>;
 
-    /** 
-     * Detect the frequency of values in the sequence.
+    /**
+     * Detect the frequency of the values in the series.
+     * This is a good way to understand the shape of your data.
      *
-     * @returns Returns a dataframe that describes the values contained in the input sequence.
+     * @return Returns a {@link DataFrame} with rows that conform to {@link IValueFrequency} that describes the values contained in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataValues = series.detectValues();
+     * console.log(dataValues.toString());
+     * </pre>
      */
     detectValues (): IDataFrame<number, IValueFrequency>;
+
+    /**
+     * Organise all values in the series into the specified number of buckets.
+     * Assumes that the series is a series of numbers.
+     * 
+     * @param numBuckets - The number of buckets to create.
+     * 
+     * @returns Returns a dataframe containing bucketed values. The input values are divided up into these buckets.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const buckets = series.bucket(20); // Distribute values into 20 evenly spaced buckets.
+     * console.log(buckets.toString());
+     * </pre>
+     */
+    bucket (numBuckets: number): IDataFrame<IndexT, IBucket>;    
 }
 
 /**
@@ -1578,20 +1877,34 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
 export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> extends ISeries<IndexT, ValueT> {
 
     /** 
-     * Performs additional sorting (ascending).
+     * Applys additional sorting (ascending) to an already sorted series.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new series has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from least to most).
+     * const ordered = sales.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amount);
+     * </pre>
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 
     /** 
-     * Performs additional sorting (descending).
+     * Applys additional sorting (descending) to an already sorted series.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new series has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from most to least).
+     * const ordered = sales.orderBy(sale => sale.SalesPerson).thenByDescending(sale => sale.Amount);
+     * </pre>
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }
@@ -1726,12 +2039,38 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Create a series.
      * 
-     * @param config This can be either an array or a config object the sets the values that the series contains.
-     * If it is an array it specifies the values that the series contains.
-     * If it is a config object that can contain:
-     *      values: Optional array or iterable of values that the series contains.
-     *      index: Optional array or iterable of values that index the series, defaults to a series of integers from 1 and counting upward.
-     *      pairs: Optional iterable of pairs (index and value) that the series contains.
+     * @param config This can be an array, a configuration object or a function that lazily produces a configuration object. 
+     * 
+     * It can be an array that specifies the values that the series contains.
+     * 
+     * It can be a {@link ISeriesConfig} that defines the values and configuration of the series.
+     * 
+     * Or it can be a function that lazily produces a {@link ISeriesConfig}.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series();
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([10, 20, 30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ index: [1, 2, 3, 4], values: [10, 20, 30, 40]});
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const lazyInit = () => ({ index: [1, 2, 3, 4], values: [10, 20, 30, 40] });
+     * const series = new Series(lazyInit);
+     * </pre>
      */
     constructor(config?: Iterable<ValueT> | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
         if (config) {
@@ -1771,6 +2110,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Get an iterator to enumerate the values of the series.
      * Enumerating the iterator forces lazy evaluation to complete.
+     * This function is automatically called by `for...of`.
+     * 
+     * @return An iterator for the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * for (const value of series) {
+     *     // ... do something with the value ...
+     * }
+     * </pre>
      */
     [Symbol.iterator](): Iterator<ValueT> {
         return this.getContent().values[Symbol.iterator]();
@@ -1778,7 +2128,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /**
      * Cast the value of the series to a new type.
-     * This operation has no effect but to retype the value that the series contains.
+     * This operation has no effect but to retype the values that the series contains.
+     * 
+     * @return The same series, but with the type changed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const castSeries = series.cast<SomeOtherType>();
+     * </pre>
      */
     cast<NewValueT> (): ISeries<IndexT, NewValueT> {
         return this as any as ISeries<IndexT, NewValueT>;
@@ -1786,17 +2144,49 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     
     /**
      * Get the index for the series.
+     * 
+     * @return The {@link Index} for the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const index = series.getIndex();
+     * </pre>
      */
     getIndex (): IIndex<IndexT> {
         return new Index<IndexT>(() => ({ values: this.getContent().index }));
     }
 
     /**
-     * Apply a new index to the Series.
+     * Apply a new {@link Index} to the series.
      * 
-     * @param newIndex The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.
+     * @param newIndex The new array or iterable to be the new {@link Index} of the series. Can also be a selector to choose the {@link Index} for each value in the series.
      * 
-     * @returns Returns a new series with the specified index attached.
+     * @return Returns a new series with the specified {@link Index} attached.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex([10, 20, 30]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex(someOtherSeries);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex(value => computeIndexFromValue(value));
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const indexedSeries = series.withIndex(value => value + 20);
+     * </pre>
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT> {
 
@@ -1817,9 +2207,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Resets the index of the series back to the default zero-based sequential integer index.
+     * Resets the {@link Index} of the series back to the default zero-based sequential integer index.
      * 
-     * @returns Returns a new series with the index reset to the default zero-based index. 
+     * @return Returns a new series with the {@link Index} reset to the default zero-based index. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithResetIndex = series.resetIndex();
+     * </pre>
      */
     resetIndex (): ISeries<number, ValueT> {
         return new Series<number, ValueT>(() => ({
@@ -1831,9 +2227,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     * 
-    * @returns Returns an array of values contained within the series. 
+    * @return Returns an array of the values contained within the series.
+    * 
+    * @example
+    * <pre>
+    * const values = series.toArray();
+    * </pre>
     */
-    toArray (): any[] {
+   toArray (): any[] {
         const values = [];
         for (const value of this.getContent().values) {
             if (value !== undefined) {
@@ -1844,11 +2245,16 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Retreive the index and values from the Series as an array of pairs.
+     * Retreive the index, values pairs from the series as an array.
      * Each pair is [index, value].
      * This forces lazy evaluation to complete.
      * 
-     * @returns Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.  
+     * @return Returns an array of pairs that contains the series values. Each pair is a two element array that contains an index and a value.
+     * 
+     * @example
+     * <pre>
+     * const pairs = series.toPairs();
+     * </pre>
      */
     toPairs (): ([IndexT, ValueT])[] {
         const pairs = [];
@@ -1863,10 +2269,19 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Convert the series to a JavaScript object.
      *
-     * @param keySelector - Function that selects keys for the resulting object.
-     * @param valueSelector - Function that selects values for the resulting object.
+     * @param keySelector User-defined selector function that selects keys for the resulting object.
+     * @param valueSelector User-defined selector function that selects values for the resulting object.
      * 
-     * @returns {object} Returns a JavaScript object generated from the input sequence by the key and value selector funtions. 
+     * @return Returns a JavaScript object generated from the series by applying the key and value selector functions. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const someObject = series.toObject(
+     *      value => value, // Specify the value to use for field names in the output object.
+     *      value => value // Specify the value to use as the value for each field.
+     * );
+     * </pre>
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
 
@@ -1877,11 +2292,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Generate a new series based by calling the selector function on each value.
+     * Generates a new series by repeatedly calling a user-defined selector function on each value in the original series.
      *
-     * @param selector Selector function that transforms each value to create a new series.
+     * @param selector A user-defined selector function that transforms each row to create the new dataframe.
      * 
-     * @returns Returns a new series that has been transformed by the selector function.
+     * @return Returns a new series with each value transformed by the selector function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function transformValue (inputValue) {
+     *      const outputValue = {
+     *          // ... construct output value derived from input value ...
+     *      };
+     *
+     *      return outputValue;
+     * }
+     *  
+     * const transformedSeries = series.select(value => transformValue(value));
+     * </pre>
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.select' function to be a function.");
@@ -1893,11 +2322,28 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Generate a new series based on the results of the selector function.
-     *
-     * @param selector Selector function that transforms each value into a list of values.
+     * Generates a new series by repeatedly calling a user-defined selector function on each row in the original series.
      * 
-     * @returns  Returns a new series with values that have been produced by the selector function. 
+     * Similar to the {@link select} function, but in this case the selector function produces a collection of output values that are flattened and merged to create the new series.
+     *
+     * @param selector A user-defined selector function that transforms each value into a collection of output values.
+     * 
+     * @return Returns a new series where each value has been transformed into 0 or more new values by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * function produceOutputValues (inputValue) {
+     *      const outputValues = [];
+     *      while (someCondition) {
+     *          // ... generate zero or more output values ...
+     *          outputValues.push(... some generated value ...);
+     *      }
+     *      return outputValues;
+     * }
+     * 
+     * const modifiedSeries = series.selectMany(value => produceOutputValues(value));
+     * </pre>
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
         assert.isFunction(selector, "Expected 'selector' parameter to 'Series.selectMany' to be a function.");
@@ -1920,12 +2366,28 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Segment a series into 'windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original series.
-     * Use select or selectPairs to aggregate.
+     * Partition a series into a {@link Series} of *data windows*. 
+     * Each value in the new series is a chunk of data from the original series.
      *
-     * @param period - The number of values in the window.
+     * @param period The number of values to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     * @return Returns a new series, each value of which is a chunk (data window) of the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const windows = series.window(2); // Get values in pairs.
+     * const pctIncrease = windows.select(pair => (pair.last() - pair.first()) / pair.first());
+     * console.log(pctIncrease.toString());
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesDf = ... // Daily sales data.
+     * const weeklySales = salesDf.window(7); // Partition up into weekly data sets.
+     * console.log(weeklySales.toString());
+     * </pre>
      */
     window (period: number): ISeries<number, ISeries<IndexT, ValueT>> {
 
@@ -1937,11 +2399,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /** 
-     * Segment a series into 'rolling windows'. Returns a new series. Each value in the new series contains a 'window' (or segment) of the original series.
-    *
-     * @param period - The number of values in the window.
+     * Partition a series into a new series of *rolling data windows*. 
+     * Each value in the new series is a rolling chunk of data from the original series.
+     *
+     * @param period The number of data values to include in each data window.
      * 
-     * @returns Returns a new series, each value of which is a 'window' (or segment) of the original series.
+     * @return Returns a new series, each value of which is a rolling chunk of the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesData = ... // Daily sales data.
+     * const rollingWeeklySales = salesData.rollingWindow(7); // Get rolling window over weekly sales data.
+     * console.log(rollingWeeklySales.toString());
+     * </pre>
      */
     rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>> {
 
@@ -1953,11 +2424,27 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Groups sequential values into variable length 'windows'.
-     *
-     * @param comparer - Predicate that compares two values and returns true if they should be in the same window.
+     * Partition a series into a new series of variable-length *data windows* 
+     * where the divisions between the data chunks are
+     * defined by a user-provided *comparer* function.
      * 
-     * @returns Returns a series of groups. Each group is itself a series that contains the values in the 'window'. 
+     * @param comparer Function that compares two adjacent data values and returns true if they should be in the same window.
+     * 
+     * @return Returns a new series, each value of which is a chunk of data from the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function rowComparer (valueA, valueB) {
+     *      if (... valueA should be in the same data window as valueB ...) {
+     *          return true;
+     *      }
+     *      else {
+     *          return false;
+     *      }
+     * };
+     * 
+     * const variableWindows = series.variableWindow(rowComparer);
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
         
@@ -1969,11 +2456,23 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };    
 
     /**
-     * Collapase distinct values that happen to be sequential.
-     *
-     * @param [selector] - Optional selector function to determine the value used to compare for duplicates.
+     * Eliminates adjacent duplicate values.
      * 
-     * @returns Returns a new series with duplicate values that are sequential removed.
+     * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
+     * thus ajacent equivalent values are collapsed down to the last value.
+     *
+     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * 
+     * @return Returns a new series with groups of adjacent duplicate vlaues collapsed to a single value per group.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value);
+     * 
+     * // Or
+     * const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.someNestedField);
+     * </pre>
      */
     sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
         
@@ -1993,14 +2492,45 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Aggregate the values in the series.
+     * Aggregate the values in the series to a single result.
      *
-     * @param [seed] - Optional seed value for producing the aggregation.
-     * @param selector - Function that takes the seed and then each value in the series and produces the aggregate value.
+     * @param [seed] Optional seed value for producing the aggregation.
+     * @param selector Function that takes the seed and then each value in the series and produces the aggregated value.
      * 
-     * @returns Returns a new value that has been aggregated from the input sequence by the 'selector' function. 
-     */
-    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
+     * @return Returns a new value that has been aggregated from the series using the 'selector' function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailySales = ... daily sales figures for the past month ...
+     * const totalSalesForthisMonth = dailySales.aggregate(
+     *      0, // Seed - the starting value.
+     *      (accumulator, salesAmount) => accumulator + salesAmount // Aggregation function.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+     * const dailySales = ... daily sales figures for the past month ...
+     * const updatedTotalSalesAllTime = dailySales.aggregate(
+     *      totalSalesAllTime, 
+     *      (accumulator, salesAmount) => accumulator + salesAmount
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * var salesDataSummary = salesData.aggregate({
+     *      TotalSales: series => series.count(),
+     *      AveragePrice: series => series.average(),
+     *      TotalRevenue: series => series.sum(), 
+     * });
+     * </pre>
+    */
+   aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
 
         if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
@@ -2019,11 +2549,24 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
    
     /**
-     * Compute the amount of change between each pair of values.
+     * Compute the amount of change between pairs or sets of values in the series.
      * 
-     * @param [period] - Optional period for computing the change - defaults to 2.
+     * @param [period] Optional period for computing the change - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
+     * 
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const amountChanged = salesFigures.amountChanged(); // Amount that sales has changed, day to day.
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
+     * </pre>
      */
     amountChange (period?: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
@@ -2039,12 +2582,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }   
 
     /**
-     * Compute the proportion change between each pair of values.
+     * Compute the proportion change between pairs or sets of values in the series.
      * Proportions are expressed as 0-1 values.
      * 
-     * @param [period] - Optional period for computing the proportion - defaults to 2.
+     * @param [period] Optional period for computing the proportion - defaults to 2.
      * 
-     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.  
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const proportionChanged = salesFigures.amountChanged(); // Proportion that sales has changed, day to day.
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
+     * </pre>
      */
     proportionChange (period?: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
@@ -2061,12 +2617,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }    
 
     /**
-     * Compute the percent change between each pair of values.
+     * Compute the percentage change between pairs or sets of values in the series.
      * Percentages are expressed as 0-100 values.
      * 
-     * @param [period] - Optional period for computing the percentage - defaults to 2.
+     * @param [period] Optional period for computing the percentage - defaults to 2.
      * 
-     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.  
+     * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const percentChanged = salesFigures.amountChanged(); // Percent that sales has changed, day to day.
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const saleFigures = ... running series of daily sales figures ...
+     * const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
+     * </pre>
      */
     percentChange (period?: number): ISeries<IndexT, number> {
         return this.proportionChange(period).select(v => v * 100);
@@ -2075,8 +2644,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Skip a number of values in the series.
      *
-     * @param numValues - Number of values to skip.     * 
-     * @returns Returns a new series or dataframe with the specified number of values skipped. 
+     * @param numValues Number of values to skip.
+     * 
+     * @return Returns a new series with the specified number of values skipped.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original series.
+     * </pre>
      */
     skip (numValues: number): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => ({
@@ -2087,11 +2663,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Skips values in the series while a condition is met.
+     * Skips values in the series while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to skip values in the original series.
      * 
-     * @returns Returns a new series with all initial sequential values removed that match the predicate.  
+     * @return Returns a new series with all initial sequential values removed while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100); // Skip initial sales figure that are less than 100.
+     * </pre>
      */
     skipWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.skipWhile' function to be a predicate function that returns true/false.");
@@ -2103,11 +2685,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Skips values in the series until a condition is met.
+     * Skips values in the series untils a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop skipping values in the original series.
      * 
-     * @returns Returns a new series with all initial sequential values removed that don't match the predicate.
+     * @return Returns a new series with all initial sequential values removed until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100); // Skip initial sales figures unitl we see one greater than 100.
+     * </pre>
      */
     skipUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.skipUntil' function to be a predicate function that returns true/false.");
@@ -2116,11 +2704,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Take a number of rows in the series.
+     * Take a number of  values from the series.
      *
-     * @param numRows - Number of rows to take.
+     * @param numValues Number of values to take.
      * 
-     * @returns Returns a new series with up to the specified number of values included.
+     * @return Returns a new series with only the specified number of values taken from the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsTaken = series.take(15); // Take only the first 15 values from the original series.
+     * </pre>
      */
     take (numRows: number): ISeries<IndexT, ValueT> {
         assert.isNumber(numRows, "Expected 'numRows' parameter to 'Series.take' function to be a number.");
@@ -2133,11 +2727,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Take values from the series while a condition is met.
+     * Takes values from the series while a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Returns true/truthy to continue to take values from the original series.
      * 
-     * @returns Returns a new series that only includes the initial sequential values that have matched the predicate.
+     * @return Returns a new series with only the initial sequential values that were taken while the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); // Take only initial sales figures that are greater than 100.
+     * </pre>
      */
     takeWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.takeWhile' function to be a predicate function that returns true/false.");
@@ -2149,11 +2749,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Take values from the series until a condition is met.
+     * Takes values from the series until a condition evaluates to true or truthy.
      *
-     * @param predicate - Return true to indicate the condition met.
+     * @param predicate Return true/truthy to stop taking values in the original series.
      * 
-     * @returns Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.
+     * @return Returns a new series with only the initial sequential values taken until the predicate returned true/truthy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); // Take all initial sales figures until we see one that is greater than 100.
+     * </pre>
      */
     takeUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.takeUntil' function to be a predicate function that returns true/false.");
@@ -2162,9 +2768,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Count the number of values in the series.
+     * Count the number of values in the seriese
      *
-     * @returns Returns the count of all values in the series.
+     * @return Returns the count of all values.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const numValues = series.count();
+     * </pre>
      */
     count (): number {
 
@@ -2178,7 +2790,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Get the first value of the series.
      *
-     * @returns Returns the first value of the series.
+     * @return Returns the first value of the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const firstValue = series.first();
+     * </pre>
      */
     first (): ValueT {
 
@@ -2192,7 +2810,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Get the last value of the series.
      *
-     * @returns Returns the last value of the series.
+     * @return Returns the last value of the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const lastValue = series.last();
+     * </pre>
      */
     last (): ValueT {
 
@@ -2210,11 +2834,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }    
     
     /**
-     * Get the value at a specified index.
+     * Get the value, if there is one, with the specified index.
      *
-     * @param index - Index to for which to retreive the value.
+     * @param index Index to for which to retreive the value.
      *
-     * @returns Returns the value from the specified index in the sequence or undefined if there is no such index in the series.
+     * @return Returns the value from the specified index in the series or undefined if there is no such index in the present in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const value = series.at(5); // Get the value at index 5 (with a default 0-based index).
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const date = ... some date ...
+     * // Retreive the value with specified date from a time-series (assuming date indexed has been applied).
+     * const value = series.at(date); 
+     * </pre>
      */
     at (index: IndexT): ValueT | undefined {
 
@@ -2237,12 +2875,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /** 
-     * Get X values from the start of the series.
-     * Pass in a negative value to get all items at the head except X values at the tail.
+     * Get X value from the start of the series.
+     * Pass in a negative value to get all values at the head except for X values at the tail.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the start of the input sequence.  
+     * @return Returns a new series that has only the specified number of values taken from the start of the original series.
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = series.head(10); // Take a sample of 10 values from the start of the series.
+     * </pre>
      */
     head (numValues: number): ISeries<IndexT, ValueT> {
 
@@ -2258,11 +2902,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /** 
      * Get X values from the end of the series.
-     * Pass in a negative value to get all items at the tail except X values at the head.
+     * Pass in a negative value to get all values at the tail except X values at the head.
      *
-     * @param numValues - Number of values to take.
+     * @param numValues Number of values to take.
      * 
-     * @returns Returns a new series that has only the specified number of values taken from the end of the input sequence.  
+     * @return Returns a new series that has only the specified number of values taken from the end of the original series.  
+     * 
+     * @examples
+     * <pre>
+     * 
+     * const sample = series.tail(12); // Take a sample of 12 values from the end of the series.
+     * </pre>
      */
     tail (numValues: number): ISeries<IndexT, ValueT> {
 
@@ -2277,11 +2927,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Filter a series by a predicate selector.
+     * Filter the series using user-defined predicate function.
      *
-     * @param predicate - Predicte function to filter rows of the series.
+     * @param predicate Predicte function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
      * 
-     * @returns Returns a new series containing only the values that match the predicate. 
+     * @return Returns a new series containing only the values from the original series that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we only have sales figures greater than 100.
+     * </pre>
      */
     where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
 
@@ -2296,9 +2952,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Invoke a callback function for each value in the series.
      *
-     * @param callback - The calback to invoke for each value.
+     * @param callback The calback function to invoke for each value.
      * 
-     * @returns Returns the input series with no modifications.
+     * @return Returns the original series with no modifications.
+     * 
+     * @example
+     * <pre>
+     * 
+     * series.forEach(value => {
+     *      // ... do something with the value ...
+     * });
+     * </pre>
      */
     forEach (callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT> {
         assert.isFunction(callback, "Expected 'callback' parameter to 'Series.forEach' to be a function.");
@@ -2312,14 +2976,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Determine if the predicate returns truthy for all values in the series.
-     * Returns false as soon as the predicate evaluates to falsy.
-     * Returns true if the predicate returns truthy for all values in the series.
-     * Returns false if the series is empty.
+     * Evaluates a predicate function for every value in the series to determine 
+     * if some condition is true/truthy for **all** values in the series.
+     * 
+     * @param predicate Predicate function that receives each value. It should returns true/truthy for a match, otherwise false/falsy.
      *
-     * @param predicate - Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
-     *
-     * @returns {boolean} Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned true or truthy for every value in the series, otherwise returns false. Returns false for an empty series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.all(salesFigure => salesFigure > 100); // Returns true if all sales figures are greater than 100.
+     * </pre>
      */
     all (predicate: PredicateFn<ValueT>): boolean {
         assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.all' to be a function.")
@@ -2338,14 +3006,28 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Determine if the predicate returns truthy for any of the values in the series.
-     * Returns true as soon as the predicate returns truthy.
-     * Returns false if the predicate never returns truthy.
-     * If no predicate is specified the value itself is checked. 
+     * Evaluates a predicate function for every value in the series to determine 
+     * if some condition is true/truthy for **any** of values in the series.
+     * 
+     * If no predicate is specified then it simply checks if the series contains more than zero values.
      *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
      *
-     * @returns Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false. 
+     * @return Returns true if the predicate has returned truthy for any value in the series, otherwise returns false. 
+     * If no predicate is passed it returns true if the series contains any values at all.
+     * Returns false for an empty series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.any(salesFigure => salesFigure > 100); // Do we have any sales figures greater than 100?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.any(); // Do we have any sales figures at all?
+     * </pre>
      */
     any (predicate?: PredicateFn<ValueT>): boolean {
         if (predicate) {
@@ -2370,15 +3052,26 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Determine if the predicate returns truthy for none of the values in the series.
-     * Returns true for an empty series.
-     * Returns true if the predicate always returns falsy.
-     * Otherwise returns false.
-     * If no predicate is specified the value itself is checked.
-     *
-     * @param [predicate] - Optional predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.
+     * Evaluates a predicate function for every value in the series to determine 
+     * if some condition is true/truthy for **none** of values in the series.
      * 
-     * @returns Returns true if the predicate has returned truthy for no values in the series, otherwise returns false. 
+     * If no predicate is specified then it simply checks if the series contains zero values.
+     *
+     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
+     *
+     * @return Returns true if the predicate has returned truthy for zero values in the series, otherwise returns false. Returns false for an empty series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.none(salesFigure => salesFigure > 100); // Do we have zero sales figures greater than 100?
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.none(); // Do we have zero sales figures?
+     * </pre>
      */
     none (predicate?: PredicateFn<ValueT>): boolean {
 
@@ -2404,11 +3097,32 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Get a new series containing all values starting at and after the specified index value.
+     * Gets a new series containing all values starting at or after the specified index value.
      * 
-     * @param indexValue - The index value to search for before starting the new series.
+     * @param indexValue The index value at which to start the new series.
      * 
-     * @returns Returns a new series containing all values starting at and after the specified index value. 
+     * @return Returns a new series containing all values starting at or after the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = series.startAt(2);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values starting at (or after) a particular date.
+     * const result = timeSeries.startAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     startAt (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
@@ -2421,11 +3135,32 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Get a new series containing all values up until and including the specified index value (inclusive).
+     * Gets a new series containing all values up until and including the specified index value (inclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new series.
      * 
-     * @returns Returns a new series containing all values up until and including the specified index value. 
+     * @return Returns a new series containing all values up until and including the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = series.endAt(1);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values ending at a particular date.
+     * const result = timeSeries.endAt(new Date(2016, 5, 4)); 
+     * </pre>
      */
     endAt (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
@@ -2438,11 +3173,32 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Get a new series containing all values up to the specified index value (exclusive).
+     * Gets a new series containing all values up to the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for before ending the new series.
+     * @param indexValue The index value at which to end the new series.
      * 
-     * @returns Returns a new series containing all values up to the specified inde value. 
+     * @return Returns a new series containing all values up to (but not including) the specified index value. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const firstHalf = series.before(2);
+     * expect(firstHalf.toArray()).to.eql([10, 20]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values before the specified date.
+     * const result = timeSeries.before(new Date(2016, 5, 4)); 
+     * </pre>
      */
     before (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
@@ -2455,12 +3211,33 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Get a new series containing all values after the specified index value (exclusive).
+     * Gets a new series containing all values after the specified index value (exclusive).
      * 
-     * @param indexValue - The index value to search for.
+     * @param indexValue The index value after which to start the new series.
      * 
-     * @returns Returns a new series containing all values after the specified index value.
-     */
+     * @return Returns a new series containing all values after the specified index value.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3], // This is the default index.
+     *      values: [10, 20, 30, 40],
+     * });
+     * 
+     * const lastHalf = df.before(1);
+     * expect(lastHalf.toArray()).to.eql([30, 40]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSerie = ... a series indexed by date/time ...
+     * 
+     * // Get all values after the specified date.
+     * const result = timeSeries.after(new Date(2016, 5, 4)); 
+     * </pre>
+     */    
     after (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
             const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
@@ -2472,12 +3249,33 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Get a new series containing all values between the specified index values (inclusive).
+     * Gets a new series containing all values between the specified index values (inclusive).
      * 
-     * @param startIndexValue - The index where the new sequence starts. 
-     * @param endIndexValue - The index where the new sequence ends.
+     * @param startIndexValue The index at which to start the new series.
+     * @param endIndexValue The index at which to end the new series.
      * 
-     * @returns Returns a new series containing all values between the specified index values (inclusive).
+     * @return Returns a new series containing all values between the specified index values (inclusive).
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series({ 
+     *      index: [0, 1, 2, 3, 4, 6], // This is the default index.
+     *      values: [10, 20, 30, 40, 50, 60],
+     * });
+     * 
+     * const middleSection = series.between(1, 4);
+     * expect(middleSection.toArray()).to.eql([20, 30, 40, 50]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const timeSeries = ... a series indexed by date/time ...
+     * 
+     * // Get all values between the start and end dates (inclusive).
+     * const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
+     * </pre>
      */
     between (startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT> {
         return this.startAt(startIndexValue).endAt(endIndexValue); 
@@ -2487,7 +3285,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Format the series for display as a string.
      * This forces lazy evaluation to complete.
      * 
-     * @returns Generates and returns a string representation of the series or dataframe.
+     * @return Generates and returns a string representation of the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * console.log(series.toString());
+     * </pre>
      */
     toString (): string {
 
@@ -2524,9 +3328,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Parse a series with string values to a series with int values.
+     * Parse a series with string values and convert it to a series with int values.
+     *
+     * @return Returns a new series with values parsed from strings to ints.
      * 
-     * @returns Returns a new series where string values from the original series have been parsed to integer values.
+     * @example
+     * <pre>
+     * 
+     * const parsed = series.parseInts();
+     * </pre>
      */
     parseInts (): ISeries<IndexT, number> {
         return <ISeries<IndexT, number>> this.select(Series.parseInt);
@@ -2551,9 +3361,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Parse a series with string values to a series with float values.
+     * Parse a series with string values and convert it to a series with float values.
+     *
+     * @return Returns a new series with values parsed from strings to floats.
      * 
-     * @returns Returns a new series where string values from the original series have been parsed to floating-point values.
+     * @example
+     * <pre>
+     * 
+     * const parsed = series.parseFloats();
+     * </pre>
      */
     parseFloats (): ISeries<IndexT, number> {
         return <ISeries<IndexT, number>> this.select(Series.parseFloat);
@@ -2578,11 +3394,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Parse a series with string values to a series with date values.
+     * Parse a series with string values and convert it to a series with date values.
      *
      * @param [formatString] Optional formatting string for dates.
      * 
-     * @returns Returns a new series where string values from the original series have been parsed to Date values.
+     * Moment is used for date parsing.
+     * https://momentjs.com
+     * 
+     * @return Returns a new series with values parsed from strings to dates.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const parsed = series.parseDates();
+     * </pre>
      */
     parseDates (formatString?: string): ISeries<IndexT, Date> {
 
@@ -2618,9 +3443,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Convert a series of values of different types to a series of string values.
+     * Convert a series of values of different types to a series containing string values.
      *
-     * @param [formatString] Optional formatting string for numbers and dates.
+     * @param [formatString] Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -2628,7 +3453,19 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Moment is used for date formatting.
      * https://momentjs.com/docs/#/parsing/string-format/
      * 
-     * @returns Returns a new series where the values from the original series have been stringified. 
+     * @return Returns a new series values converted from values to strings.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.toStrings("YYYY-MM-DD");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const result = series.toStrings("0.00");
+     * </pre>
      */
     toStrings (formatString?: string): ISeries<IndexT, string> {
 
@@ -2642,7 +3479,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Forces lazy evaluation to complete and 'bakes' the series into memory.
      * 
-     * @returns Returns a series that has been 'baked', all lazy evaluation has completed.  
+     * @return Returns a series that has been 'baked', all lazy evaluation has completed.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const baked = series.bake();
+     * </pre>
      */
     bake (): ISeries<IndexT, ValueT> {
 
@@ -2659,11 +3502,29 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /** 
-     * Inflate the series to a dataframe.
+     * Converts (inflates) a series to a {@link DataFrame}.
      *
-     * @param [selector] Optional selector function that transforms each value in the series to a row in the new dataframe.
+     * @param [selector] Optional user-defined selector function that transforms each value to produce the dataframe.
      *
-     * @returns Returns a new dataframe that has been created from the input series via the 'selector' function.
+     * @returns Returns a dataframe that was created from the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataframe = series.inflate(); // Inflate a series of objects to a dataframe.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataframe = series.inflate(value => { AColumn:  value }); // Produces a dataframe with 1 column from a series of values.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // Extract a nested value and produce a dataframe from it.
+     * </pre>
      */
     inflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
 
@@ -2686,9 +3547,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Sum the values in a series.
+     * Sum the values in a series and returns the result.
      * 
      * @returns Returns the sum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const totalSales = salesFigures.sum();
+     * </pre>
      */
     sum (): number {
 
@@ -2701,9 +3568,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Average the values in a series.
+     * Average the values in a series and returns the result
      * 
      * @returns Returns the average of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const averageSales = salesFigures.average();
+     * </pre>
      */
     average (): number {
 
@@ -2717,9 +3590,16 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Get the median value in the series. Not this sorts the series, so can be expensive.
+     * Get the median value in the series. 
+     * Note that this sorts the series, which can be expensive.
      * 
      * @returns Returns the median of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const medianSales = salesFigures.median();
+     * </pre>
      */
     median (): number {
 
@@ -2749,6 +3629,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Get the min value in the series.
      * 
      * @returns Returns the minimum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const minSales = salesFigures.min();
+     * </pre>
      */
     min (): number {
 
@@ -2760,6 +3646,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Get the max value in the series.
      * 
      * @returns Returns the maximum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const maxSales = salesFigures.max();
+     * </pre>
      */
     max (): number {
 
@@ -2772,6 +3664,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * This assumes that the input series contains numbers.
      * 
      * @returns Returns a new series with all number values inverted.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const inverted = series.invert();
+     * </pre>
      */
     invert (): ISeries<IndexT, number> {
         const inputSeries = this as any as ISeries<IndexT, number>;
@@ -2780,11 +3678,19 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /**
      * Counts the number of sequential values where the predicate evaluates to truthy.
-     * Outputs 0 values when the predicate evaluates to falsy.
+     * Outputs 0 for values when the predicate evaluates to falsy.
      * 
      * @param predicate User-defined function. Should evaluate to truthy to activate the counter or falsy to deactivate it.
      * 
      * @returns Returns a new series that counts up the number of sequential values where the predicate evaluates to truthy. 0 values appear when the prediate evaluates to falsy.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([ 1, 10, 3, 15, 8, 5 ]);
+     * const counted = series.counter(value => value >= 3);
+     * console.log(counted.toString());
+     * </pre>
      */
     counter (predicate: PredicateFn<ValueT>): ISeries<IndexT, number> {
         return this.groupSequentialBy(predicate)
@@ -2807,9 +3713,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /** 
-     * Reverse the series.
+     * Gets a new series in reverse order.
      * 
-     * @returns Returns a new series that is the reverse of the input.
+     * @return Returns a new series that is the reverse of the original.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const reversed = series.reverse();
+     * </pre>
      */
     reverse (): ISeries<IndexT, ValueT> {
 
@@ -2821,11 +3733,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Returns only values in the series that have distinct values.
+     * Returns only the set of values in the series that are distinct.
+     * Provide a user-defined selector to specify criteria for determining the distinctness.
+     * This can be used to remove duplicate values from the series.
      *
-     * @param selector - Selects the value used to compare for duplicates.
+     * @param [selector] Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
      * 
-     * @returns Returns a series containing only unique values as determined by the 'selector' function. 
+     * @return Returns a series containing only unique values in the series. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const uniqueValues = series.distinct(); // Get only non-duplicated value in the series.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump values into buckets of 10.
+     * </pre>
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
 
@@ -2836,11 +3762,24 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Group the series according to the selector.
+     * Collects values in the series into a new series of groups according to a user-defined selector function.
      *
-     * @param selector - Selector that defines the value to group by.
+     * @param selector User-defined selector function that specifies the criteriay to group by.
      *
-     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * @return Returns a new series of groups. Each group is a series with values that have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const sales = ... product sales ...
+     * const salesByProduct = sales.groupBy(sale => sale.ProductId);
+     * for (const productSalesGroup of salesByProduct) {
+     *      // ... do something with each product group ...
+     *      const productId = productSalesGroup.first().ProductId;
+     *      const totalSalesForProduct = productSalesGroup.deflate(sale => sale.Amount).sum();
+     *      console.log(totalSalesForProduct);
+     * }
+     * </pre>
      */
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
@@ -2874,12 +3813,33 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Group sequential values into a Series of windows.
+     * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
      *
-     * @param selector - Optional selector that defines the value to group by.
+     * @param [selector] Optional selector that specifies the criteria for grouping.
      *
-     * @returns Returns a series of groups. Each group is a series with values that have been grouped by the 'selector' function.
-     */
+     * @return Returns a new series of groups. Each group is a series with values that are the same or have been grouped by the 'selector' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Some ultra simple stock trading strategy backtesting...
+     * const dailyStockPrice = ... daily stock price for a company ...
+     * const priceGroups  = dailyStockPrice.groupBy(day => day.close > day.movingAverage);
+     * for (const priceGroup of priceGroups) {
+     *      // ... do something with each stock price group ...
+     * 
+     *      const firstDay = priceGroup.first();
+     *      if (firstDay.close > movingAverage) {
+     *          // This group of days has the stock price above its moving average.
+     *          // ... maybe enter a long trade here ...
+     *      }
+     *      else {
+     *          // This group of days has the stock price below its moving average.
+     *          // ... maybe enter a short trade here ...
+     *      }
+     * }
+     * </pre>
+     */    
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
         if (selector) {
@@ -2915,9 +3875,40 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Concatenate multiple other series onto this series.
      * 
-     * @param series - Multiple arguments. Each can be either a series or an array of series.
+     * @param series Multiple arguments. Each can be either a series or an array of series.
      * 
-     * @returns Returns a single series concatenated from multiple input series. 
+     * @return Returns a single series concatenated from multiple input series. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat(b);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat(b, c);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat([b, c]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const concatenated = a.concat(b, [c, d]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const otherSeries = [... array of series...];
+     * const concatenated = a.concat(otherSeries);
+     * </pre>
      */    
     concat (...series: (ISeries<IndexT, ValueT>[]|ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT> {
         const concatInput: ISeries<IndexT, ValueT>[] = [this];
@@ -2970,13 +3961,21 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-    * Zip together multiple series to create a new series.
+    * Merge together multiple series to create a new series.
     * Preserves the index of the first series.
     * 
-    * @param s2, s3, s4, s4 - Multiple series to zip.
-    * @param zipper - Zipper function that produces a new series based on the input series.
+    * @param s2, s3, s4, s4 Multiple series to zip.
+    * @param zipper User-defined zipper function that merges rows. It produces values for the new series based-on values from the input series.
     * 
-    * @returns Returns a single series concatenated from multiple input series. 
+    * @return Returns a single series merged from multiple input series. 
+    * 
+    * @example
+    * <pre>
+    * 
+    * const a = new Series([1, 2, 3]);
+    * const b = new Series([10, 20, 30]);
+    * const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
+    * </pre>
     */    
     zip<Index2T, Value2T, ResultT>  (s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT> ): ISeries<IndexT, ResultT>;
     zip<Index2T, Value2T, Index3T, Value3T, ResultT>  (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT> ): ISeries<IndexT, ResultT>;
@@ -2989,11 +3988,23 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }    
 
     /**
-     * Sorts the series by a value defined by the selector (ascending). 
+     * Sorts the series in ascending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     * @return Returns a new series that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderBy(value => value); 
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderBy(value => value.NestedValue); 
+     * </pre>
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries. Could just pass in 'this'. The getContent() wouldn't have to be evaluated here.
@@ -3001,11 +4012,23 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Sorts the series by a value defined by the selector (descending). 
+     * Sorts the series in descending order by a value defined by the user-defined selector function. 
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector function that selects the value to sort by.
      * 
-     * @returns Returns a new ordered series that has been sorted by the value returned by the selector. 
+     * @return Returns a new series that has been ordered accorrding to the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderByDescending(value => value); 
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const orderedSeries = series.orderByDescending(value => value.NestedValue); 
+     * </pre>
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
@@ -3013,12 +4036,54 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
         
     /**
-     * Returns the unique union of values between two series.
+     * Creates a new series by merging two input dataframes.
+     * The resulting series contains the union of value from the two input series.
+     * These are the unique combination of values in both series.
+     * This is basically a concatenation and then elimination of duplicates.
      *
-     * @param other - The other series to combine.
-     * @param [selector] - Optional function that selects the value to compare to detemrine distinctness.
+     * @param other The other series to merge.
+     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
-     * @returns Returns the union of two series.
+     * @return Returns the union of the two series.
+     * 
+     * @example
+     * <pre>
+     *
+     * const seriesA = ...
+     * const seriesB = ...
+     * const merged = seriesA.union(seriesB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records that may contain the same
+     * // customer record in each set. This is basically a concatenation
+     * // of the series and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA.union(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
+     * 
+     * 
+     * @example
+     * <pre>
+     *
+     * // Note that you can achieve the exact same result as the previous
+     * // example by doing a {@link Series.concat) and {@link Series.distinct}
+     * // of the input series and then an elimination of any duplicate records
+     * // that result.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const mergedCustomerRecords = customerRecordsA
+     *      .concat(customerRecordsB)
+     *      .distinct(customerRecord => customerRecord.CustomerId);
+     * </pre>
+     * 
      */
     union<KeyT = ValueT> (
         other: ISeries<IndexT, ValueT>, 
@@ -3033,14 +4098,37 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Returns the intersection of values between two series.
+     * Creates a new series by merging two input series.
+     * The resulting series contains the intersection of values from the two input series.
+     * These are only the values that appear in both series.
      *
-     * @param inner - The other series to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two series.
-     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
-     * @returns Returns the intersection of two series.
-     */
+     * @return Returns a new series that contains the intersection of values from the two input series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesA = ...
+     * const seriesB = ...
+     * const mergedDf = seriesA.intersection(seriesB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Merge two sets of customer records to find only the
+     * // customers that appears in both.
+     * const customerRecordsA = ...
+     * const customerRecordsB = ...
+     * const intersectionOfCustomerRecords = customerRecordsA.intersection(
+     *      customerRecordsB, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>     
+     */    
     intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
         outerSelector?: SelectorFn<ValueT, KeyT>,
@@ -3071,14 +4159,36 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Returns the exception of values between two series.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only the values from the 1st series that don't appear in the 2nd series.
+     * This is essentially subtracting the values from the 2nd series from the 1st and creating a new series with the remaining values.
      *
-     * @param inner - The other series to combine.
-     * @param [outerSelector] - Optional function to select the key for matching the two series.
-     * @param [innerSelector] - Optional function to select the key for matching the two series.
+     * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
+     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
-     * @returns Returns the difference between the two series.
-     */
+     * @return Returns a new series that contains only the values from the 1st series that don't appear in the 2nd series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const seriesA = ...
+     * const seriesB = ...
+     * const remainingDf = seriesA.except(seriesB);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     *
+     * // Find the list of customers haven't bought anything recently.
+     * const allCustomers = ... list of all customers ...
+     * const recentCustomers = ... list of customers who have purchased recently ...
+     * const remainingCustomers = allCustomers.except(
+     *      recentCustomers, 
+     *      customerRecord => customerRecord.CustomerId
+     * );
+     * </pre>
+     */    
     except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
         outerSelector?: SelectorFn<ValueT, KeyT>,
@@ -3109,15 +4219,34 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
    /**
-     * Correlates the elements of two series on matching keys.
+     * Creates a new series by merging two input series.
+     * The resulting dataframe contains only those value that have matching keys in both input series.
      *
-     * @param this - The outer series to join. 
-     * @param inner - The inner series to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
-     * @returns Returns the joined series. 
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
@@ -3161,21 +4290,39 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Performs an outer join on two series. Correlates the elements based on matching keys.
-     * Includes elements from both series that have no correlation in the other series.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only those values that are only present in or or the other of the series, not both.
      *
-     * @param this - The outer series to join. 
-     * @param inner - The inner series to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined series. 
-     */
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either product A or product B, not not both.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
+     */    
     joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
         outerKeySelector: SelectorFn<ValueT, KeyT>, 
@@ -3208,20 +4355,38 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Performs a left outer join on two series. Correlates the elements based on matching keys.
-     * Includes left elements that have no correlation.
-     *
-     * @param this - The outer series to join. 
-     * @param inner - The inner series to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only those values that are present either in both series or only in the outer (left) series.
+     * 
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined series. 
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product A or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
@@ -3249,20 +4414,38 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     };
 
     /**
-     * Performs a right outer join on two series. Correlates the elements based on matching keys.
-     * Includes right elements that have no correlation.
+     * Creates a new series by merging two input series.
+     * The resulting series contains only those values that are present either in both series or only in the inner (right) series.
      *
-     * @param this - The outer series to join. 
-     * @param inner - The inner series to join.
-     * @param outerKeySelector - Selector that chooses the join key from the outer sequence.
-     * @param innerKeySelector - Selector that chooses the join key from the inner sequence.
-     * @param resultSelector - Selector that defines how to merge outer and inner values.
+     * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
+     * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
+     * @param innerKeySelector User-defined selector function that chooses the join key from the inner series.
+     * @param resultSelector User-defined function that merges outer and inner values.
      * 
      * Implementation from here:
      * 
      * 	http://blogs.geniuscode.net/RyanDHatch/?p=116
      * 
-     * @returns Returns the joined series. 
+     * @return Returns the new merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Join together two sets of customers to find those
+     * // that have bought either just product B or both product A and product B.
+     * const customerWhoBoughtProductA = ...
+     * const customerWhoBoughtProductB = ...
+     * const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
+     *          customerWhoBoughtProductB,
+     *          customerA => customerA.CustomerId, // Join key.
+     *          customerB => customerB.CustomerId, // Join key.
+     *          (customerA, customerB) => {
+     *              return {
+     *                  // ... merge the results ...
+     *              };
+     *          }
+     *      );
+     * </pre>
      */
     joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>, 
@@ -3295,6 +4478,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @param maxLength - The maximum length of the string values after truncation.
      * 
      * @returns Returns a new series with strings that are truncated to the specified maximum length. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const truncated = series.truncateStrings(10); // Truncate all string values to max length of 10 characters.
+     * </pre>
      */
     truncateStrings (maxLength: number): ISeries<IndexT, ValueT> {
 
@@ -3313,10 +4502,19 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /**
      * Insert a pair at the start of the series.
+     * Doesn't modify the original series! The returned series is entirely new and contains values from the original series plus the inserted pair.
      *
-     * @param pair - The pair to insert.
+     * @param pair The index/value pair to insert.
      * 
-     * @returns Returns a new series with the specified pair inserted.
+     * @return Returns a new series with the specified pair inserted.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to insert ...
+     * const insertedSeries = series.insertPair([newIndex, newRows]);
+     * </pre>
      */
     insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
         assert.isArray(pair, "Expected 'pair' parameter to 'Series.insertPair' to be an array.");
@@ -3326,11 +4524,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Append a pair to the end of a Series.
+     * Append a pair to the end of a series.
+     * Doesn't modify the original series! The returned series is entirely new and contains values from the original series plus the appended pair.
      *
-     * @param pair - The pair to append.
+     * @param pair The index/value pair to append.
      *  
-     * @returns Returns a new series with the specified pair appended.
+     * @return Returns a new series with the specified pair appended.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const newIndex = ... index of the new row ...
+     * const newRow = ... the new data row to append ...
+     * const appendedSeries = series.appendPair([newIndex, newRows]);
+     * </pre>
      */
     appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
         assert.isArray(pair, "Expected 'pair' parameter to 'Series.appendPair' to be an array.");
@@ -3342,10 +4549,34 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Fill gaps in a series.
      *
-     * @param comparer - Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
-     * @param generator - Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.
+     * @param comparer User-defined comparer function that is passed pairA and pairB, two consecutive values, return truthy if there is a gap between the value, or falsey if there is no gap.
+     * @param generator User-defined generator function that is passed pairA and pairB, two consecutive values, returns an array of pairs that fills the gap between the values.
      *
-     * @returns Returns a new series with gaps filled in.
+     * @return Returns a new series with gaps filled in.
+     * 
+     * @example
+     * <pre>
+     * 
+     *   var sequenceWithGaps = ...
+     *
+     *  // Predicate that determines if there is a gap.
+     *  var gapExists = (pairA, pairB) => {
+     *      // Returns true if there is a gap.
+     *      return true;
+     *  };
+     *
+     *  // Generator function that produces new rows to fill the game.
+     *  var gapFiller = (pairA, pairB) => {
+     *      // Create an array of index, value pairs that fill the gaps between pairA and pairB.
+     *      return [
+     *          newPair1,
+     *          newPair2,
+     *          newPair3,
+     *      ];
+     *  };
+     *
+     *  var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
+     * </pre>
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT> {
         assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.fillGaps' to be a comparer function that compares two values and returns a boolean.")
@@ -3371,11 +4602,27 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Returns the specified default sequence if the series is empty. 
+     * Returns the specified default series if the input series is empty. 
      *
-     * @param defaultSequence - Default sequence to return if the series is empty.
+     * @param defaultSequence Default series to return if the input series is empty.
      * 
-     * @returns Returns 'defaultSequence' if the series is empty. 
+     * @return Returns 'defaultSequence' if the input series is empty. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * const emptySeries = new Series();
+     * const defaultSeries = new Series([ 1, 2, 3 ]);
+     * expect(emptyDataFrame.defaultIfEmpty(defaultSeries)).to.eql(defaultSeries);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const nonEmptySeries = new Series([ 100 ]);
+     * const defaultSeries = new Series([ 1, 2, 3 ]);
+     * expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
+     * </pre>
      */
     defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT> {
 
@@ -3395,10 +4642,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
     }
 
-    /** 
-     * Detect the types of the values in the sequence.
+    /**
+     * Detect the the frequency of the types of the values in the series.
+     * This is a good way to understand the shape of your data.
      *
-     * @returns Returns a dataframe that describes the data types contained in the input series or dataframe.
+     * @return Returns a {@link DataFrame} with rows that confirm to {@link ITypeFrequency} that describes the data types contained in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataTypes = series.detectTypes();
+     * console.log(dataTypes.toString());
+     * </pre>
      */
     detectTypes (): IDataFrame<number, ITypeFrequency> {
 
@@ -3442,10 +4697,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         });
     }
 
-    /** 
-     * Detect the frequency of values in the sequence.
+    /**
+     * Detect the frequency of the values in the series.
+     * This is a good way to understand the shape of your data.
      *
-     * @returns Returns a dataframe that describes the values contained in the input sequence.
+     * @return Returns a {@link DataFrame} with rows that conform to {@link IValueFrequency} that describes the values contained in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dataValues = series.detectValues();
+     * console.log(dataValues.toString());
+     * </pre>
      */
     detectValues (): IDataFrame<number, IValueFrequency> {
 
@@ -3487,6 +4750,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @param numBuckets - The number of buckets to create.
      * 
      * @returns Returns a dataframe containing bucketed values. The input values are divided up into these buckets.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const buckets = series.bucket(20); // Distribute values into 20 evenly spaced buckets.
+     * console.log(buckets.toString());
+     * </pre>
      */
     bucket (numBuckets: number): IDataFrame<IndexT, IBucket> {
 
@@ -3513,6 +4783,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             .inflate();
     }
 
+    /***
+     * Allows the series to be queried to confirm that it is actually a series.
+     * Used from JavaScript to tell the difference between a Series and a DataFrame.
+     * 
+     * @return Returns the string "series".
+     */
     getTypeCode (): string {
         return "series";
     }    
@@ -3575,11 +4851,18 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
     }
 
     /** 
-     * Performs additional sorting (ascending).
+     * Applys additional sorting (ascending) to an already sorted series.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new series has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from least to most).
+     * const ordered = sales.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amount);
+     * </pre>
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.
@@ -3587,11 +4870,18 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
     }
 
     /** 
-     * Performs additional sorting (descending).
+     * Applys additional sorting (descending) to an already sorted series.
      * 
-     * @param selector Selects the value to sort by.
+     * @param selector User-defined selector that selects the additional value to sort by.
      * 
-     * @returns Returns a new series has been additionally sorted by the value returned by the selector. 
+     * @return Returns a new series has been additionally sorted by the value chosen by the selector function. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Order sales by salesperson and then by amount (from most to least).
+     * const ordered = sales.orderBy(sale => sale.SalesPerson).thenByDescending(sale => sale.Amount);
+     * </pre>
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         //TODO: Should pass a config fn to OrderedSeries.

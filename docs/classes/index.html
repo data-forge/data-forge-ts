@@ -216,7 +216,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="series.html">Series</a>.<a href="series.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/index.ts#L54">lib/index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/index.ts#L54">lib/index.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -244,16 +244,28 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#___iterator">__@iterator</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#___iterator">__@iterator</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1775">lib/series.ts:1775</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2125">lib/series.ts:2125</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get an iterator to enumerate the values of the series.
-									Enumerating the iterator forces lazy evaluation to complete.</p>
+										Enumerating the iterator forces lazy evaluation to complete.
+									This function is automatically called by <code>for...of</code>.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+for (const value of series) {
+    // ... do something with the value ...
+}
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>An iterator for the series.</p>
 						</li>
 					</ul>
 				</section>
@@ -269,20 +281,43 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#after">after</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#after">after</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2464">lib/series.ts:2464</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3241">lib/series.ts:3241</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values after the specified index value (exclusive).</p>
+									<p>Gets a new series containing all values after the specified index value (exclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const series = new Series({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const lastHalf = df.before(1);
+expect(lastHalf.toArray()).to.eql([30, 40]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSerie = ... a series indexed by date/time ...
+
+// Get all values after the specified date.
+const result = timeSeries.after(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for.</p>
+										<p>The index value after which to start the new series.</p>
 									</div>
 								</li>
 							</ul>
@@ -303,13 +338,46 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#aggregate">aggregate</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2003">lib/series.ts:2003</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2533">lib/series.ts:2533</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Aggregate the values in the series.</p>
+									<p>Aggregate the values in the series to a single result.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const dailySales = ... daily sales figures for the past month ...
+const totalSalesForthisMonth = dailySales.aggregate(
+     0, // Seed - the starting value.
+     (accumulator, salesAmount) => accumulator + salesAmount // Aggregation function.
+);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+const dailySales = ... daily sales figures for the past month ...
+const updatedTotalSalesAllTime = dailySales.aggregate(
+     totalSalesAllTime,
+     (accumulator, salesAmount) => accumulator + salesAmount
+);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+var salesDataSummary = salesData.aggregate({
+     TotalSales: series => series.count(),
+     AveragePrice: series => series.average(),
+     TotalRevenue: series => series.sum(),
+});
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -325,12 +393,12 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> selector: <a href="../index.html#aggregatefn" class="tsd-signature-type">AggregateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Function that takes the seed and then each value in the series and produces the aggregate value.</p>
+										<p>Function that takes the seed and then each value in the series and produces the aggregated value.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ToT</span></h4>
-							<p>Returns a new value that has been aggregated from the input sequence by the &#39;selector&#39; function.</p>
+							<p>Returns a new value that has been aggregated from the series using the &#39;selector&#39; function.</p>
 						</li>
 					</ul>
 				</section>
@@ -346,28 +414,34 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#all">all</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#all">all</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2324">lib/series.ts:2324</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2992">lib/series.ts:2992</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Determine if the predicate returns truthy for all values in the series.
-										Returns false as soon as the predicate evaluates to falsy.
-										Returns true if the predicate returns truthy for all values in the series.
-									Returns false if the series is empty.</p>
+									<p>Evaluates a predicate function for every value in the series to determine
+									if some condition is true/truthy for <strong>all</strong> values in the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.all(salesFigure => salesFigure > 100); // Returns true if all sales figures are greater than 100.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Predicate function that receives each value in turn and returns truthy for a match, otherwise falsy.</p>
+										<p>Predicate function that receives each value. It should returns true/truthy for a match, otherwise false/falsy.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-							<p>Returns true if the predicate has returned truthy for every value in the sequence, otherwise returns false.</p>
+							<p>Returns true if the predicate has returned true or truthy for every value in the series, otherwise returns false. Returns false for an empty series.</p>
 						</li>
 					</ul>
 				</section>
@@ -383,13 +457,28 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#amountchange">amountChange</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#amountchange">amountChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2028">lib/series.ts:2028</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2571">lib/series.ts:2571</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Compute the amount of change between each pair of values.</p>
+									<p>Compute the amount of change between pairs or sets of values in the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const saleFigures = ... running series of daily sales figures ...
+const amountChanged = salesFigures.amountChanged(); // Amount that sales has changed, day to day.
+</pre></dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const saleFigures = ... running series of daily sales figures ...
+const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -414,16 +503,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#any">any</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#any">any</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2350">lib/series.ts:2350</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3032">lib/series.ts:3032</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Determine if the predicate returns truthy for any of the values in the series.
-										Returns true as soon as the predicate returns truthy.
-										Returns false if the predicate never returns truthy.
-									If no predicate is specified the value itself is checked.</p>
+									<p>Evaluates a predicate function for every value in the series to determine
+									if some condition is true/truthy for <strong>any</strong> of values in the series.</p>
 								</div>
+								<p>If no predicate is specified then it simply checks if the series contains more than zero values.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.any(salesFigure => salesFigure > 100); // Do we have any sales figures greater than 100?
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.any(); // Do we have any sales figures at all?
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -432,7 +534,9 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-							<p>Returns true if the predicate has returned truthy for any value in the sequence, otherwise returns false.</p>
+							<p>Returns true if the predicate has returned truthy for any value in the series, otherwise returns false.
+								If no predicate is passed it returns true if the series contains any values at all.
+							Returns false for an empty series.</p>
 						</li>
 					</ul>
 				</section>
@@ -448,20 +552,31 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#appendpair">appendPair</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3335">lib/series.ts:3335</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4542">lib/series.ts:4542</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Append a pair to the end of a Series.</p>
+									<p>Append a pair to the end of a series.
+									Doesn&#39;t modify the original series! The returned series is entirely new and contains values from the original series plus the appended pair.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const newIndex = ... index of the new row ...
+const newRow = ... the new data row to append ...
+const appendedSeries = series.appendPair([newIndex, newRows]);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>pair: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The pair to append.</p>
+										<p>The index/value pair to append.</p>
 									</div>
 								</li>
 							</ul>
@@ -482,13 +597,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#at">at</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#at">at</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2219">lib/series.ts:2219</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2857">lib/series.ts:2857</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get the value at a specified index.</p>
+									<p>Get the value, if there is one, with the specified index.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const value = series.at(5); // Get the value at index 5 (with a default 0-based index).
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const date = ... some date ...
+// Retreive the value with specified date from a time-series (assuming date indexed has been applied).
+const value = series.at(date);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -503,7 +634,7 @@
 								<span class="tsd-signature-symbol"> | </span>
 								<span class="tsd-signature-type">undefined</span>
 							</h4>
-							<p>Returns the value from the specified index in the sequence or undefined if there is no such index in the series.</p>
+							<p>Returns the value from the specified index in the series or undefined if there is no such index in the present in the series.</p>
 						</li>
 					</ul>
 				</section>
@@ -519,13 +650,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#average">average</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#average">average</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2708">lib/series.ts:2708</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3581">lib/series.ts:3581</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Average the values in a series.</p>
+									<p>Average the values in a series and returns the result</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const averageSales = salesFigures.average();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 							<p>Returns the average of the number values in the series.</p>
@@ -544,13 +683,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#bake">bake</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2647">lib/series.ts:2647</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3490">lib/series.ts:3490</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Forces lazy evaluation to complete and &#39;bakes&#39; the series into memory.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const baked = series.bake();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a series that has been &#39;baked&#39;, all lazy evaluation has completed.</p>
@@ -569,25 +716,48 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#before">before</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#before">before</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2447">lib/series.ts:2447</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3203">lib/series.ts:3203</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values up to the specified index value (exclusive).</p>
+									<p>Gets a new series containing all values up to the specified index value (exclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const series = new Series({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const firstHalf = series.before(2);
+expect(firstHalf.toArray()).to.eql([10, 20]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeries = ... a series indexed by date/time ...
+
+// Get all values before the specified date.
+const result = timeSeries.before(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for before ending the new series.</p>
+										<p>The index value at which to end the new series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing all values up to the specified inde value.</p>
+							<p>Returns a new series containing all values up to (but not including) the specified index value.</p>
 						</li>
 					</ul>
 				</section>
@@ -603,26 +773,49 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#between">between</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#between">between</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2482">lib/series.ts:2482</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3280">lib/series.ts:3280</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values between the specified index values (inclusive).</p>
+									<p>Gets a new series containing all values between the specified index values (inclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const series = new Series({
+     index: [0, 1, 2, 3, 4, 6], // This is the default index.
+     values: [10, 20, 30, 40, 50, 60],
+});
+
+const middleSection = series.between(1, 4);
+expect(middleSection.toArray()).to.eql([20, 30, 40, 50]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeries = ... a series indexed by date/time ...
+
+// Get all values between the start and end dates (inclusive).
+const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>startIndexValue: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index where the new sequence starts.</p>
+										<p>The index at which to start the new series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>endIndexValue: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index where the new sequence ends.</p>
+										<p>The index at which to end the new series.</p>
 									</div>
 								</li>
 							</ul>
@@ -640,9 +833,10 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#bucket">bucket</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#bucket">bucket</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3491">lib/series.ts:3491</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4761">lib/series.ts:4761</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -650,6 +844,15 @@
 									<p>Organise all values in the series into the specified number of buckets.
 									Assumes that the series is a series of numbers.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const buckets = series.bucket(20); // Distribute values into 20 evenly spaced buckets.
+console.log(buckets.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -677,14 +880,22 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#cast">cast</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#cast">cast</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1783">lib/series.ts:1783</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2141">lib/series.ts:2141</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Cast the value of the series to a new type.
-									This operation has no effect but to retype the value that the series contains.</p>
+									This operation has no effect but to retype the values that the series contains.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const castSeries = series.cast<SomeOtherType>();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -693,6 +904,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">NewValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>The same series, but with the type changed.</p>
 						</li>
 					</ul>
 				</section>
@@ -708,13 +920,46 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#concat">concat</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2922">lib/series.ts:2922</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3913">lib/series.ts:3913</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Concatenate multiple other series onto this series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const concatenated = a.concat(b);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const concatenated = a.concat(b, c);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const concatenated = a.concat([b, c]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const concatenated = a.concat(b, [c, d]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const otherSeries = [... array of series...];
+const concatenated = a.concat(otherSeries);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -742,16 +987,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#count">count</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2169">lib/series.ts:2169</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2781">lib/series.ts:2781</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Count the number of values in the series.</p>
+									<p>Count the number of values in the seriese</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const numValues = series.count();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
-							<p>Returns the count of all values in the series.</p>
+							<p>Returns the count of all values.</p>
 						</li>
 					</ul>
 				</section>
@@ -764,16 +1017,27 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#counter">counter</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#counter">counter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2789">lib/series.ts:2789</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3695">lib/series.ts:3695</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Counts the number of sequential values where the predicate evaluates to truthy.
-									Outputs 0 values when the predicate evaluates to falsy.</p>
+									Outputs 0 for values when the predicate evaluates to falsy.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const series = new Series([ 1, 10, 3, 15, 8, 5 ]);
+const counted = series.counter(value => value >= 3);
+console.log(counted.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -801,25 +1065,43 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#defaultifempty">defaultIfEmpty</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3380">lib/series.ts:3380</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4627">lib/series.ts:4627</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the specified default sequence if the series is empty.</p>
+									<p>Returns the specified default series if the input series is empty.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const emptySeries = new Series();
+const defaultSeries = new Series([ 1, 2, 3 ]);
+expect(emptyDataFrame.defaultIfEmpty(defaultSeries)).to.eql(defaultSeries);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const nonEmptySeries = new Series([ 100 ]);
+const defaultSeries = new Series([ 1, 2, 3 ]);
+expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>defaultSequence: <span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Default sequence to return if the series is empty.</p>
+										<p>Default series to return if the input series is empty.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns &#39;defaultSequence&#39; if the series is empty.</p>
+							<p>Returns &#39;defaultSequence&#39; if the input series is empty.</p>
 						</li>
 					</ul>
 				</section>
@@ -835,16 +1117,26 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#detecttypes">detectTypes</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3403">lib/series.ts:3403</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4658">lib/series.ts:4658</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Detect the types of the values in the sequence.</p>
+									<p>Detect the the frequency of the types of the values in the series.
+									This is a good way to understand the shape of your data.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const dataTypes = series.detectTypes();
+console.log(dataTypes.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ITypeFrequency</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a dataframe that describes the data types contained in the input series or dataframe.</p>
+							<p>Returns a <a href="dataframe.html">DataFrame</a> with rows that confirm to <a href="../interfaces/itypefrequency.html">ITypeFrequency</a> that describes the data types contained in the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -860,16 +1152,26 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#detectvalues">detectValues</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3450">lib/series.ts:3450</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4713">lib/series.ts:4713</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Detect the frequency of values in the sequence.</p>
+									<p>Detect the frequency of the values in the series.
+									This is a good way to understand the shape of your data.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const dataValues = series.detectValues();
+console.log(dataValues.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IValueFrequency</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a dataframe that describes the values contained in the input sequence.</p>
+							<p>Returns a <a href="dataframe.html">DataFrame</a> with rows that conform to <a href="../interfaces/ivaluefrequency.html">IValueFrequency</a> that describes the values contained in the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -885,13 +1187,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#distinct">distinct</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2830">lib/series.ts:2830</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3756">lib/series.ts:3756</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns only values in the series that have distinct values.</p>
+									<p>Returns only the set of values in the series that are distinct.
+										Provide a user-defined selector to specify criteria for determining the distinctness.
+									This can be used to remove duplicate values from the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const uniqueValues = series.distinct(); // Get only non-duplicated value in the series.
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump values into buckets of 10.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -903,13 +1221,10 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> selector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Selects the value used to compare for duplicates.</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a series containing only unique values as determined by the &#39;selector&#39; function.</p>
+							<p>Returns a series containing only unique values in the series.</p>
 						</li>
 					</ul>
 				</section>
@@ -925,20 +1240,43 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#endat">endAt</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2430">lib/series.ts:2430</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3165">lib/series.ts:3165</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values up until and including the specified index value (inclusive).</p>
+									<p>Gets a new series containing all values up until and including the specified index value (inclusive).</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const series = new Series({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const firstHalf = series.endAt(1);
+expect(firstHalf.toArray()).to.eql([10, 20]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeries = ... a series indexed by date/time ...
+
+// Get all values ending at a particular date.
+const result = timeSeries.endAt(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for before ending the new series.</p>
+										<p>The index value at which to end the new series.</p>
 									</div>
 								</li>
 							</ul>
@@ -959,13 +1297,37 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#except">except</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#except">except</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3082">lib/series.ts:3082</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4192">lib/series.ts:4192</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the exception of values between two series.</p>
+									<p>Creates a new series by merging two input series.
+										The resulting series contains only the values from the 1st series that don&#39;t appear in the 2nd series.
+									This is essentially subtracting the values from the 2nd series from the 1st and creating a new series with the remaining values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesA = ...
+const seriesB = ...
+const remainingDf = seriesA.except(seriesB);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+// Find the list of customers haven't bought anything recently.
+const allCustomers = ... list of all customers ...
+const recentCustomers = ... list of customers who have purchased recently ...
+const remainingCustomers = allCustomers.except(
+     recentCustomers,
+     customerRecord => customerRecord.CustomerId
+);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -984,7 +1346,7 @@
 								<li>
 									<h5>inner: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The other series to combine.</p>
+										<p>The inner series to merge (the series you call the function on is the &#39;outer&#39; series).</p>
 									</div>
 								</li>
 								<li>
@@ -995,7 +1357,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the difference between the two series.</p>
+							<p>Returns a new series that contains only the values from the 1st series that don&#39;t appear in the 2nd series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1011,26 +1373,52 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#fillgaps">fillGaps</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3350">lib/series.ts:3350</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4581">lib/series.ts:4581</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Fill gaps in a series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+  var sequenceWithGaps = ...
+
+ // Predicate that determines if there is a gap.
+ var gapExists = (pairA, pairB) => {
+     // Returns true if there is a gap.
+     return true;
+ };
+
+ // Generator function that produces new rows to fill the game.
+ var gapFiller = (pairA, pairB) => {
+     // Create an array of index, value pairs that fill the gaps between pairA and pairB.
+     return [
+         newPair1,
+         newPair2,
+         newPair3,
+     ];
+ };
+
+ var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>comparer: <a href="../index.html#comparerfn" class="tsd-signature-type">ComparerFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Comparer that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.</p>
+										<p>User-defined comparer function that is passed pairA and pairB, two consecutive values, return truthy if there is a gap between the value, or falsey if there is no gap.</p>
 									</div>
 								</li>
 								<li>
 									<h5>generator: <a href="../index.html#gapfillfn" class="tsd-signature-type">GapFillFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Generator that is passed pairA and pairB, two consecutive rows, returns an array of pairs that fills the gap between the rows.</p>
+										<p>User-defined generator function that is passed pairA and pairB, two consecutive values, returns an array of pairs that fills the gap between the values.</p>
 									</div>
 								</li>
 							</ul>
@@ -1051,13 +1439,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#first">first</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#first">first</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2183">lib/series.ts:2183</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2801">lib/series.ts:2801</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get the first value of the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const firstValue = series.first();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IndexT</span></h4>
 							<p>Returns the first value of the series.</p>
@@ -1076,25 +1472,35 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#foreach">forEach</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2303">lib/series.ts:2303</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2967">lib/series.ts:2967</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Invoke a callback function for each value in the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+series.forEach(value => {
+     // ... do something with the value ...
+});
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>callback: <a href="../index.html#callbackfn" class="tsd-signature-type">CallbackFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The calback to invoke for each value.</p>
+										<p>The calback function to invoke for each value.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the input series with no modifications.</p>
+							<p>Returns the original series with no modifications.</p>
 						</li>
 					</ul>
 				</section>
@@ -1109,7 +1515,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#getgreaterthan">getGreaterThan</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/index.ts#L119">lib/index.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/index.ts#L119">lib/index.ts:119</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1134,15 +1540,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#getindex">getIndex</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#getindex">getIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1790">lib/series.ts:1790</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2156">lib/series.ts:2156</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get the index for the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const index = series.getIndex();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iindex.html" class="tsd-signature-type">IIndex</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>The <a href="index.html">Index</a> for the series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1157,7 +1572,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#getlessthan">getLessThan</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/index.ts#L87">lib/index.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/index.ts#L87">lib/index.ts:87</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1181,7 +1596,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#getlessthanorequalto">getLessThanOrEqualTo</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/index.ts#L110">lib/index.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/index.ts#L110">lib/index.ts:110</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1205,7 +1620,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#gettype">getType</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/index.ts#L65">lib/index.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/index.ts#L65">lib/index.ts:65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1229,10 +1644,17 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#gettypecode">getTypeCode</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3516">lib/series.ts:3516</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4792">lib/series.ts:4792</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Allows the series to be queried to confirm that it is actually a series.
+									Used from JavaScript to tell the difference between a Series and a DataFrame.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>Returns the string &quot;series&quot;.</p>
 						</li>
 					</ul>
 				</section>
@@ -1248,13 +1670,28 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#groupby">groupBy</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2845">lib/series.ts:2845</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3784">lib/series.ts:3784</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Group the series according to the selector.</p>
+									<p>Collects values in the series into a new series of groups according to a user-defined selector function.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const sales = ... product sales ...
+const salesByProduct = sales.groupBy(sale => sale.ProductId);
+for (const productSalesGroup of salesByProduct) {
+     // ... do something with each product group ...
+     const productId = productSalesGroup.first().ProductId;
+     const totalSalesForProduct = productSalesGroup.deflate(sale => sale.Amount).sum();
+     console.log(totalSalesForProduct);
+}
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1267,12 +1704,12 @@
 								<li>
 									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">GroupT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that defines the value to group by.</p>
+										<p>User-defined selector function that specifies the criteriay to group by.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a series of groups. Each group is a series with values that have been grouped by the &#39;selector&#39; function.</p>
+							<p>Returns a new series of groups. Each group is a series with values that have been grouped by the &#39;selector&#39; function.</p>
 						</li>
 					</ul>
 				</section>
@@ -1288,13 +1725,36 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#groupsequentialby">groupSequentialBy</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2883">lib/series.ts:2883</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3843">lib/series.ts:3843</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Group sequential values into a Series of windows.</p>
+									<p>Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Some ultra simple stock trading strategy backtesting...
+const dailyStockPrice = ... daily stock price for a company ...
+const priceGroups  = dailyStockPrice.groupBy(day => day.close > day.movingAverage);
+for (const priceGroup of priceGroups) {
+     // ... do something with each stock price group ...
+
+     const firstDay = priceGroup.first();
+     if (firstDay.close > movingAverage) {
+         // This group of days has the stock price above its moving average.
+         // ... maybe enter a long trade here ...
+     }
+     else {
+         // This group of days has the stock price below its moving average.
+         // ... maybe enter a short trade here ...
+     }
+}
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1306,13 +1766,10 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> selector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">GroupT</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Optional selector that defines the value to group by.</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a series of groups. Each group is a series with values that have been grouped by the &#39;selector&#39; function.</p>
+							<p>Returns a new series of groups. Each group is a series with values that are the same or have been grouped by the &#39;selector&#39; function.</p>
 						</li>
 					</ul>
 				</section>
@@ -1328,14 +1785,22 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#head">head</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#head">head</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2247">lib/series.ts:2247</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2891">lib/series.ts:2891</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get X values from the start of the series.
-									Pass in a negative value to get all items at the head except X values at the tail.</p>
+									<p>Get X value from the start of the series.
+									Pass in a negative value to get all values at the head except for X values at the tail.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>examples</dt>
+									<dd><pre>
+
+const sample = series.head(10); // Take a sample of 10 values from the start of the series.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1347,7 +1812,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series that has only the specified number of values taken from the start of the input sequence.</p>
+							<p>Returns a new series that has only the specified number of values taken from the start of the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1363,13 +1828,33 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#inflate">inflate</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#inflate">inflate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2668">lib/series.ts:2668</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3529">lib/series.ts:3529</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Inflate the series to a dataframe.</p>
+									<p>Converts (inflates) a series to a <a href="dataframe.html">DataFrame</a>.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const dataframe = series.inflate(); // Inflate a series of objects to a dataframe.
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const dataframe = series.inflate(value => { AColumn:  value }); // Produces a dataframe with 1 column from a series of values.
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // Extract a nested value and produce a dataframe from it.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1384,7 +1869,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new dataframe that has been created from the input series via the &#39;selector&#39; function.</p>
+							<p>Returns a dataframe that was created from the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1400,20 +1885,31 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#insertpair">insertPair</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3321">lib/series.ts:3321</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4519">lib/series.ts:4519</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Insert a pair at the start of the series.</p>
+									<p>Insert a pair at the start of the series.
+									Doesn&#39;t modify the original series! The returned series is entirely new and contains values from the original series plus the inserted pair.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const newIndex = ... index of the new row ...
+const newRow = ... the new data row to insert ...
+const insertedSeries = series.insertPair([newIndex, newRows]);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>pair: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The pair to insert.</p>
+										<p>The index/value pair to insert.</p>
 									</div>
 								</li>
 							</ul>
@@ -1434,13 +1930,38 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#intersection">intersection</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3044">lib/series.ts:3044</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4132">lib/series.ts:4132</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the intersection of values between two series.</p>
+									<p>Creates a new series by merging two input series.
+										The resulting series contains the intersection of values from the two input series.
+									These are only the values that appear in both series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesA = ...
+const seriesB = ...
+const mergedDf = seriesA.intersection(seriesB);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+// Merge two sets of customer records to find only the
+// customers that appears in both.
+const customerRecordsA = ...
+const customerRecordsB = ...
+const intersectionOfCustomerRecords = customerRecordsA.intersection(
+     customerRecordsB,
+     customerRecord => customerRecord.CustomerId
+);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1459,7 +1980,7 @@
 								<li>
 									<h5>inner: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The other series to combine.</p>
+										<p>The inner series to merge (the series you call the function on is the &#39;outer&#39; series).</p>
 									</div>
 								</li>
 								<li>
@@ -1470,7 +1991,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the intersection of two series.</p>
+							<p>Returns a new series that contains the intersection of values from the two input series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1486,7 +2007,7 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#invert">invert</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#invert">invert</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2776">lib/series.ts:2776</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3674">lib/series.ts:3674</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1494,6 +2015,14 @@
 									<p>Invert the sign of every number value in the series.
 									This assumes that the input series contains numbers.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const inverted = series.invert();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series with all number values inverted.</p>
@@ -1512,13 +2041,35 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#join">join</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#join">join</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3122">lib/series.ts:3122</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4251">lib/series.ts:4251</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Correlates the elements of two series on matching keys.</p>
+									<p>Creates a new series by merging two input series.
+									The resulting dataframe contains only those value that have matching keys in both input series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Join together two sets of customers to find those
+// that have bought both product A and product B.
+const customerWhoBoughtProductA = ...
+const customerWhoBoughtProductB = ...
+const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
+         customerWhoBoughtProductB,
+         customerA => customerA.CustomerId, // Join key.
+         customerB => customerB.CustomerId, // Join key.
+         (customerA, customerB) => {
+             return {
+                 // ... merge the results ...
+             };
+         }
+     );
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1540,30 +2091,30 @@
 								<li>
 									<h5>inner: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The inner series to join.</p>
+										<p>The &#39;inner&#39; series to join (the series you are callling the function on is the &#39;outer&#39; series).</p>
 									</div>
 								</li>
 								<li>
 									<h5>outerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the outer sequence.</p>
+										<p>User-defined selector function that chooses the join key from the outer series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>innerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the inner sequence.</p>
+										<p>User-defined selector function that chooses the join key from the inner series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>resultSelector: <a href="../index.html#joinfn" class="tsd-signature-type">JoinFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that defines how to merge outer and inner values.</p>
+										<p>User-defined function that merges outer and inner values.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the joined series.</p>
+							<p>Returns the new merged series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1579,14 +2130,35 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#joinouter">joinOuter</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3179">lib/series.ts:3179</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4326">lib/series.ts:4326</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Performs an outer join on two series. Correlates the elements based on matching keys.
-									Includes elements from both series that have no correlation in the other series.</p>
+									<p>Creates a new series by merging two input series.
+									The resulting series contains only those values that are only present in or or the other of the series, not both.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Join together two sets of customers to find those
+// that have bought either product A or product B, not not both.
+const customerWhoBoughtProductA = ...
+const customerWhoBoughtProductB = ...
+const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
+         customerWhoBoughtProductB,
+         customerA => customerA.CustomerId, // Join key.
+         customerB => customerB.CustomerId, // Join key.
+         (customerA, customerB) => {
+             return {
+                 // ... merge the results ...
+             };
+         }
+     );
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1608,25 +2180,25 @@
 								<li>
 									<h5>inner: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The inner series to join.</p>
+										<p>The &#39;inner&#39; series to join (the series you are callling the function on is the &#39;outer&#39; series).</p>
 									</div>
 								</li>
 								<li>
 									<h5>outerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the outer sequence.</p>
+										<p>User-defined selector function that chooses the join key from the outer series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>innerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the inner sequence.</p>
+										<p>User-defined selector function that chooses the join key from the inner series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>resultSelector: <a href="../index.html#joinfn" class="tsd-signature-type">JoinFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that defines how to merge outer and inner values.</p>
+										<p>User-defined function that merges outer and inner values.</p>
 										<p>Implementation from here:</p>
 										<pre><code>http:<span class="hljs-regexp">//</span>blogs.geniuscode.net<span class="hljs-regexp">/RyanDHatch/</span>?p=<span class="hljs-number">116</span>
 </code></pre>
@@ -1634,7 +2206,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the joined series.</p>
+							<p>Returns the new merged series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1650,14 +2222,35 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#joinouterleft">joinOuterLeft</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3226">lib/series.ts:3226</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4391">lib/series.ts:4391</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Performs a left outer join on two series. Correlates the elements based on matching keys.
-									Includes left elements that have no correlation.</p>
+									<p>Creates a new series by merging two input series.
+									The resulting series contains only those values that are present either in both series or only in the outer (left) series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Join together two sets of customers to find those
+// that have bought either just product A or both product A and product B.
+const customerWhoBoughtProductA = ...
+const customerWhoBoughtProductB = ...
+const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
+         customerWhoBoughtProductB,
+         customerA => customerA.CustomerId, // Join key.
+         customerB => customerB.CustomerId, // Join key.
+         (customerA, customerB) => {
+             return {
+                 // ... merge the results ...
+             };
+         }
+     );
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1679,25 +2272,25 @@
 								<li>
 									<h5>inner: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The inner series to join.</p>
+										<p>The &#39;inner&#39; series to join (the series you are callling the function on is the &#39;outer&#39; series).</p>
 									</div>
 								</li>
 								<li>
 									<h5>outerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the outer sequence.</p>
+										<p>User-defined selector function that chooses the join key from the outer series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>innerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the inner sequence.</p>
+										<p>User-defined selector function that chooses the join key from the inner series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>resultSelector: <a href="../index.html#joinfn" class="tsd-signature-type">JoinFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that defines how to merge outer and inner values.</p>
+										<p>User-defined function that merges outer and inner values.</p>
 										<p>Implementation from here:</p>
 										<pre><code>http:<span class="hljs-regexp">//</span>blogs.geniuscode.net<span class="hljs-regexp">/RyanDHatch/</span>?p=<span class="hljs-number">116</span>
 </code></pre>
@@ -1705,7 +2298,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the joined series.</p>
+							<p>Returns the new merged series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1721,14 +2314,35 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#joinouterright">joinOuterRight</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3267">lib/series.ts:3267</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4450">lib/series.ts:4450</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Performs a right outer join on two series. Correlates the elements based on matching keys.
-									Includes right elements that have no correlation.</p>
+									<p>Creates a new series by merging two input series.
+									The resulting series contains only those values that are present either in both series or only in the inner (right) series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Join together two sets of customers to find those
+// that have bought either just product B or both product A and product B.
+const customerWhoBoughtProductA = ...
+const customerWhoBoughtProductB = ...
+const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
+         customerWhoBoughtProductB,
+         customerA => customerA.CustomerId, // Join key.
+         customerB => customerB.CustomerId, // Join key.
+         (customerA, customerB) => {
+             return {
+                 // ... merge the results ...
+             };
+         }
+     );
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1750,25 +2364,25 @@
 								<li>
 									<h5>inner: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The inner series to join.</p>
+										<p>The &#39;inner&#39; series to join (the series you are callling the function on is the &#39;outer&#39; series).</p>
 									</div>
 								</li>
 								<li>
 									<h5>outerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the outer sequence.</p>
+										<p>User-defined selector function that chooses the join key from the outer series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>innerKeySelector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">KeyT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that chooses the join key from the inner sequence.</p>
+										<p>User-defined selector function that chooses the join key from the inner series.</p>
 									</div>
 								</li>
 								<li>
 									<h5>resultSelector: <a href="../index.html#joinfn" class="tsd-signature-type">JoinFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">InnerValueT</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector that defines how to merge outer and inner values.</p>
+										<p>User-defined function that merges outer and inner values.</p>
 										<p>Implementation from here:</p>
 										<pre><code>http:<span class="hljs-regexp">//</span>blogs.geniuscode.net<span class="hljs-regexp">/RyanDHatch/</span>?p=<span class="hljs-number">116</span>
 </code></pre>
@@ -1776,7 +2390,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the joined series.</p>
+							<p>Returns the new merged series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1792,13 +2406,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#last">last</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#last">last</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2197">lib/series.ts:2197</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2821">lib/series.ts:2821</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get the last value of the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const lastValue = series.last();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IndexT</span></h4>
 							<p>Returns the last value of the series.</p>
@@ -1817,13 +2439,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#max">max</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#max">max</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2764">lib/series.ts:2764</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3656">lib/series.ts:3656</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get the max value in the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const maxSales = salesFigures.max();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 							<p>Returns the maximum of the number values in the series.</p>
@@ -1842,13 +2472,22 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#median">median</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#median">median</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2724">lib/series.ts:2724</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3604">lib/series.ts:3604</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get the median value in the series. Not this sorts the series, so can be expensive.</p>
+									<p>Get the median value in the series.
+									Note that this sorts the series, which can be expensive.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const medianSales = salesFigures.median();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 							<p>Returns the median of the values in the series.</p>
@@ -1867,13 +2506,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#min">min</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#min">min</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2753">lib/series.ts:2753</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3639">lib/series.ts:3639</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get the min value in the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const minSales = salesFigures.min();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 							<p>Returns the minimum of the number values in the series.</p>
@@ -1892,17 +2539,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#none">none</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#none">none</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2383">lib/series.ts:2383</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3076">lib/series.ts:3076</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Determine if the predicate returns truthy for none of the values in the series.
-										Returns true for an empty series.
-										Returns true if the predicate always returns falsy.
-										Otherwise returns false.
-									If no predicate is specified the value itself is checked.</p>
+									<p>Evaluates a predicate function for every value in the series to determine
+									if some condition is true/truthy for <strong>none</strong> of values in the series.</p>
 								</div>
+								<p>If no predicate is specified then it simply checks if the series contains zero values.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.none(salesFigure => salesFigure > 100); // Do we have zero sales figures greater than 100?
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.none(); // Do we have zero sales figures?
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1911,7 +2570,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-							<p>Returns true if the predicate has returned truthy for no values in the series, otherwise returns false.</p>
+							<p>Returns true if the predicate has returned truthy for zero values in the series, otherwise returns false. Returns false for an empty series.</p>
 						</li>
 					</ul>
 				</section>
@@ -1927,13 +2586,27 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#orderby">orderBy</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2998">lib/series.ts:2998</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4009">lib/series.ts:4009</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sorts the series by a value defined by the selector (ascending).</p>
+									<p>Sorts the series in ascending order by a value defined by the user-defined selector function.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const orderedSeries = series.orderBy(value => value);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const orderedSeries = series.orderBy(value => value.NestedValue);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1946,12 +2619,12 @@
 								<li>
 									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">SortT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selects the value to sort by.</p>
+										<p>User-defined selector function that selects the value to sort by.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iorderedseries.html" class="tsd-signature-type">IOrderedSeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">SortT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new ordered series that has been sorted by the value returned by the selector.</p>
+							<p>Returns a new series that has been ordered accorrding to the value chosen by the selector function.</p>
 						</li>
 					</ul>
 				</section>
@@ -1967,13 +2640,27 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#orderbydescending">orderByDescending</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3010">lib/series.ts:3010</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4033">lib/series.ts:4033</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sorts the series by a value defined by the selector (descending).</p>
+									<p>Sorts the series in descending order by a value defined by the user-defined selector function.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const orderedSeries = series.orderByDescending(value => value);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const orderedSeries = series.orderByDescending(value => value.NestedValue);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -1986,12 +2673,12 @@
 								<li>
 									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">SortT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selects the value to sort by.</p>
+										<p>User-defined selector function that selects the value to sort by.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iorderedseries.html" class="tsd-signature-type">IOrderedSeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">SortT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new ordered series that has been sorted by the value returned by the selector.</p>
+							<p>Returns a new series that has been ordered accorrding to the value chosen by the selector function.</p>
 						</li>
 					</ul>
 				</section>
@@ -2007,13 +2694,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#parsedates">parseDates</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2587">lib/series.ts:2587</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3412">lib/series.ts:3412</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Parse a series with string values to a series with date values.</p>
+									<p>Parse a series with string values and convert it to a series with date values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const parsed = series.parseDates();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2022,7 +2717,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Date</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series where string values from the original series have been parsed to Date values.</p>
+							<p>Returns a new series with values parsed from strings to dates.</p>
 						</li>
 					</ul>
 				</section>
@@ -2038,16 +2733,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#parsefloats">parseFloats</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2558">lib/series.ts:2558</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3374">lib/series.ts:3374</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Parse a series with string values to a series with float values.</p>
+									<p>Parse a series with string values and convert it to a series with float values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const parsed = series.parseFloats();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series where string values from the original series have been parsed to floating-point values.</p>
+							<p>Returns a new series with values parsed from strings to floats.</p>
 						</li>
 					</ul>
 				</section>
@@ -2063,16 +2766,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#parseints">parseInts</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2531">lib/series.ts:2531</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3341">lib/series.ts:3341</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Parse a series with string values to a series with int values.</p>
+									<p>Parse a series with string values and convert it to a series with int values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const parsed = series.parseInts();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series where string values from the original series have been parsed to integer values.</p>
+							<p>Returns a new series with values parsed from strings to ints.</p>
 						</li>
 					</ul>
 				</section>
@@ -2088,14 +2799,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#percentchange">percentChange</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#percentchange">percentChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2071">lib/series.ts:2071</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2640">lib/series.ts:2640</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Compute the percent change between each pair of values.
+									<p>Compute the percentage change between pairs or sets of values in the series.
 									Percentages are expressed as 0-100 values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const saleFigures = ... running series of daily sales figures ...
+const percentChanged = salesFigures.amountChanged(); // Percent that sales has changed, day to day.
+</pre></dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const saleFigures = ... running series of daily sales figures ...
+const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2120,14 +2846,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#proportionchange">proportionChange</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#proportionchange">proportionChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2049">lib/series.ts:2049</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2605">lib/series.ts:2605</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Compute the proportion change between each pair of values.
+									<p>Compute the proportion change between pairs or sets of values in the series.
 									Proportions are expressed as 0-1 values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const saleFigures = ... running series of daily sales figures ...
+const proportionChanged = salesFigures.amountChanged(); // Proportion that sales has changed, day to day.
+</pre></dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const saleFigures = ... running series of daily sales figures ...
+const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2152,16 +2893,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#resetindex">resetIndex</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#resetindex">resetIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1824">lib/series.ts:1824</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2220">lib/series.ts:2220</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Resets the index of the series back to the default zero-based sequential integer index.</p>
+									<p>Resets the <a href="index.html">Index</a> of the series back to the default zero-based sequential integer index.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithResetIndex = series.resetIndex();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with the index reset to the default zero-based index.</p>
+							<p>Returns a new series with the <a href="index.html">Index</a> reset to the default zero-based index.</p>
 						</li>
 					</ul>
 				</section>
@@ -2177,16 +2926,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#reverse">reverse</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2814">lib/series.ts:2814</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3726">lib/series.ts:3726</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Reverse the series.</p>
+									<p>Gets a new series in reverse order.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const reversed = series.reverse();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series that is the reverse of the input.</p>
+							<p>Returns a new series that is the reverse of the original.</p>
 						</li>
 					</ul>
 				</section>
@@ -2202,25 +2959,36 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#rollingwindow">rollingWindow</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1946">lib/series.ts:1946</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2417">lib/series.ts:2417</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Segment a series into &#39;rolling windows&#39;. Returns a new series. Each value in the new series contains a &#39;window&#39; (or segment) of the original series.</p>
+									<p>Partition a series into a new series of <em>rolling data windows</em>.
+									Each value in the new series is a rolling chunk of data from the original series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const salesData = ... // Daily sales data.
+const rollingWeeklySales = salesData.rollingWindow(7); // Get rolling window over weekly sales data.
+console.log(rollingWeeklySales.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>period: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The number of values in the window.</p>
+										<p>The number of data values to include in each data window.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series, each value of which is a &#39;window&#39; (or segment) of the original series.</p>
+							<p>Returns a new series, each value of which is a rolling chunk of the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2236,13 +3004,29 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#select">select</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#select">select</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1886">lib/series.ts:1886</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2315">lib/series.ts:2315</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Generate a new series based by calling the selector function on each value.</p>
+									<p>Generates a new series by repeatedly calling a user-defined selector function on each value in the original series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+function transformValue (inputValue) {
+     const outputValue = {
+         // ... construct output value derived from input value ...
+     };
+
+     return outputValue;
+}
+
+const transformedSeries = series.select(value => transformValue(value));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -2255,12 +3039,12 @@
 								<li>
 									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector function that transforms each value to create a new series.</p>
+										<p>A user-defined selector function that transforms each row to create the new dataframe.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series that has been transformed by the selector function.</p>
+							<p>Returns a new series with each value transformed by the selector function.</p>
 						</li>
 					</ul>
 				</section>
@@ -2276,13 +3060,31 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#selectmany">selectMany</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1902">lib/series.ts:1902</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2348">lib/series.ts:2348</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Generate a new series based on the results of the selector function.</p>
+									<p>Generates a new series by repeatedly calling a user-defined selector function on each row in the original series.</p>
 								</div>
+								<p>Similar to the <a href="index.html#select">select</a> function, but in this case the selector function produces a collection of output values that are flattened and merged to create the new series.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+function produceOutputValues (inputValue) {
+     const outputValues = [];
+     while (someCondition) {
+         // ... generate zero or more output values ...
+         outputValues.push(... some generated value ...);
+     }
+     return outputValues;
+}
+
+const modifiedSeries = series.selectMany(value => produceOutputValues(value));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -2295,12 +3097,12 @@
 								<li>
 									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector function that transforms each value into a list of values.</p>
+										<p>A user-defined selector function that transforms each value into a collection of output values.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with values that have been produced by the selector function.</p>
+							<p>Returns a new series where each value has been transformed into 0 or more new values by the selector function.</p>
 						</li>
 					</ul>
 				</section>
@@ -2316,13 +3118,26 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#sequentialdistinct">sequentialDistinct</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1978">lib/series.ts:1978</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2477">lib/series.ts:2477</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Collapase distinct values that happen to be sequential.</p>
+									<p>Eliminates adjacent duplicate values.</p>
 								</div>
+								<p>For each group of adjacent values that are equivalent only returns the last index/row for the group,
+								thus ajacent equivalent values are collapsed down to the last value.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value);
+
+// Or
+const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.someNestedField);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -2337,7 +3152,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with duplicate values that are sequential removed.</p>
+							<p>Returns a new series with groups of adjacent duplicate vlaues collapsed to a single value per group.</p>
 						</li>
 					</ul>
 				</section>
@@ -2353,25 +3168,33 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#skip">skip</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2081">lib/series.ts:2081</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2657">lib/series.ts:2657</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Skip a number of values in the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original series.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>numValues: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Number of values to skip.     *</p>
+										<p>Number of values to skip.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series or dataframe with the specified number of values skipped.</p>
+							<p>Returns a new series with the specified number of values skipped.</p>
 						</li>
 					</ul>
 				</section>
@@ -2387,25 +3210,33 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#skipuntil">skipUntil</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2112">lib/series.ts:2112</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2700">lib/series.ts:2700</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Skips values in the series until a condition is met.</p>
+									<p>Skips values in the series untils a condition evaluates to true or truthy.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100); // Skip initial sales figures unitl we see one greater than 100.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Return true to indicate the condition met.</p>
+										<p>Return true/truthy to stop skipping values in the original series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with all initial sequential values removed that don&#39;t match the predicate.</p>
+							<p>Returns a new series with all initial sequential values removed until the predicate returned true/truthy.</p>
 						</li>
 					</ul>
 				</section>
@@ -2421,25 +3252,33 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#skipwhile">skipWhile</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2096">lib/series.ts:2096</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2678">lib/series.ts:2678</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Skips values in the series while a condition is met.</p>
+									<p>Skips values in the series while a condition evaluates to true or truthy.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100); // Skip initial sales figure that are less than 100.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Return true to indicate the condition met.</p>
+										<p>Returns true/truthy to continue to skip values in the original series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with all initial sequential values removed that match the predicate.</p>
+							<p>Returns a new series with all initial sequential values removed while the predicate returned true/truthy.</p>
 						</li>
 					</ul>
 				</section>
@@ -2455,25 +3294,48 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#startat">startAt</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2413">lib/series.ts:2413</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3127">lib/series.ts:3127</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a new series containing all values starting at and after the specified index value.</p>
+									<p>Gets a new series containing all values starting at or after the specified index value.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const series = new Series({
+     index: [0, 1, 2, 3], // This is the default index.
+     values: [10, 20, 30, 40],
+});
+
+const lastHalf = series.startAt(2);
+expect(lastHalf.toArray()).to.eql([30, 40]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const timeSeries = ... a series indexed by date/time ...
+
+// Get all values starting at (or after) a particular date.
+const result = timeSeries.startAt(new Date(2016, 5, 4));
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>indexValue: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The index value to search for before starting the new series.</p>
+										<p>The index value at which to start the new series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing all values starting at and after the specified index value.</p>
+							<p>Returns a new series containing all values starting at or after the specified index value.</p>
 						</li>
 					</ul>
 				</section>
@@ -2489,13 +3351,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#sum">sum</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#sum">sum</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2693">lib/series.ts:2693</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3560">lib/series.ts:3560</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sum the values in a series.</p>
+									<p>Sum the values in a series and returns the result.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const totalSales = salesFigures.sum();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 							<p>Returns the sum of the number values in the series.</p>
@@ -2514,14 +3384,22 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#tail">tail</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2267">lib/series.ts:2267</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2917">lib/series.ts:2917</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Get X values from the end of the series.
-									Pass in a negative value to get all items at the tail except X values at the head.</p>
+									Pass in a negative value to get all values at the tail except X values at the head.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>examples</dt>
+									<dd><pre>
+
+const sample = series.tail(12); // Take a sample of 12 values from the end of the series.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2533,7 +3411,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series that has only the specified number of values taken from the end of the input sequence.</p>
+							<p>Returns a new series that has only the specified number of values taken from the end of the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2549,25 +3427,30 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#take">take</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#take">take</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2125">lib/series.ts:2125</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2719">lib/series.ts:2719</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Take a number of rows in the series.</p>
+									<p>Take a number of  values from the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithRowsTaken = series.take(15); // Take only the first 15 values from the original series.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>numRows: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Number of rows to take.</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with up to the specified number of values included.</p>
+							<p>Returns a new series with only the specified number of values taken from the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2583,25 +3466,33 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#takeuntil">takeUntil</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2158">lib/series.ts:2158</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2764">lib/series.ts:2764</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Take values from the series until a condition is met.</p>
+									<p>Takes values from the series until a condition evaluates to true or truthy.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); // Take all initial sales figures until we see one that is greater than 100.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Return true to indicate the condition met.</p>
+										<p>Return true/truthy to stop taking values in the original series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series or dataframe that only includes the initial sequential values that have not matched the predicate.</p>
+							<p>Returns a new series with only the initial sequential values taken until the predicate returned true/truthy.</p>
 						</li>
 					</ul>
 				</section>
@@ -2617,25 +3508,33 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#takewhile">takeWhile</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2142">lib/series.ts:2142</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2742">lib/series.ts:2742</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Take values from the series while a condition is met.</p>
+									<p>Takes values from the series while a condition evaluates to true or truthy.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); // Take only initial sales figures that are greater than 100.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Return true to indicate the condition met.</p>
+										<p>Returns true/truthy to continue to take values from the original series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series that only includes the initial sequential values that have matched the predicate.</p>
+							<p>Returns a new series with only the initial sequential values that were taken while the predicate returned true/truthy.</p>
 						</li>
 					</ul>
 				</section>
@@ -2651,7 +3550,7 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#toarray">toArray</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#toarray">toArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1836">lib/series.ts:1836</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2237">lib/series.ts:2237</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2659,9 +3558,16 @@
 									<p>Extract values from the series as an array.
 									This forces lazy evaluation to complete.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+const values = series.toArray();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
-							<p>Returns an array of values contained within the series.</p>
+							<p>Returns an array of the values contained within the series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2676,13 +3582,24 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#toobject">toObject</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1871">lib/series.ts:1871</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2286">lib/series.ts:2286</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Convert the series to a JavaScript object.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const someObject = series.toObject(
+     value => value, // Specify the value to use for field names in the output object.
+     value => value // Specify the value to use as the value for each field.
+);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -2701,7 +3618,7 @@
 								<li>
 									<h5>keySelector: <span class="tsd-signature-type">function</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Function that selects keys for the resulting object.</p>
+										<p>User-defined selector function that selects keys for the resulting object.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
@@ -2725,7 +3642,7 @@
 								<li>
 									<h5>valueSelector: <span class="tsd-signature-type">function</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Function that selects values for the resulting object.</p>
+										<p>User-defined selector function that selects values for the resulting object.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
@@ -2748,7 +3665,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">OutT</span></h4>
-							<p>Returns a JavaScript object generated from the input sequence by the key and value selector funtions.</p>
+							<p>Returns a JavaScript object generated from the series by applying the key and value selector functions.</p>
 						</li>
 					</ul>
 				</section>
@@ -2764,18 +3681,25 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#topairs">toPairs</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#topairs">toPairs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1853">lib/series.ts:1853</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2259">lib/series.ts:2259</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Retreive the index and values from the Series as an array of pairs.
+									<p>Retreive the index, values pairs from the series as an array.
 										Each pair is [index, value].
 									This forces lazy evaluation to complete.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+const pairs = series.toPairs();
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">[]</span></h4>
-							<p>Returns an array of pairs that contains the series content. Each pair is a two element array that contains an index and a value.</p>
+							<p>Returns an array of pairs that contains the series values. Each pair is a two element array that contains an index and a value.</p>
 						</li>
 					</ul>
 				</section>
@@ -2791,7 +3715,7 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#tostring">toString</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2492">lib/series.ts:2492</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3296">lib/series.ts:3296</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2799,9 +3723,17 @@
 									<p>Format the series for display as a string.
 									This forces lazy evaluation to complete.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+console.log(series.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-							<p>Generates and returns a string representation of the series or dataframe.</p>
+							<p>Generates and returns a string representation of the series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2817,13 +3749,27 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#tostrings">toStrings</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2633">lib/series.ts:2633</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3470">lib/series.ts:3470</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Convert a series of values of different types to a series of string values.</p>
+									<p>Convert a series of values of different types to a series containing string values.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.toStrings("YYYY-MM-DD");
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const result = series.toStrings("0.00");
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2832,7 +3778,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series where the values from the original series have been stringified.</p>
+							<p>Returns a new series values converted from values to strings.</p>
 						</li>
 					</ul>
 				</section>
@@ -2848,13 +3794,21 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#truncatestrings">truncateStrings</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3299">lib/series.ts:3299</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4488">lib/series.ts:4488</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Produces a new series with all string values truncated to the requested maximum length.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const truncated = series.truncateStrings(10); // Truncate all string values to max length of 10 characters.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -2882,13 +3836,55 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#union">union</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#union">union</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L3023">lib/series.ts:3023</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L4088">lib/series.ts:4088</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the unique union of values between two series.</p>
+									<p>Creates a new series by merging two input dataframes.
+										The resulting series contains the union of value from the two input series.
+										These are the unique combination of values in both series.
+									This is basically a concatenation and then elimination of duplicates.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const seriesA = ...
+const seriesB = ...
+const merged = seriesA.union(seriesB);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+// Merge two sets of customer records that may contain the same
+// customer record in each set. This is basically a concatenation
+// of the series and then an elimination of any duplicate records
+// that result.
+const customerRecordsA = ...
+const customerRecordsB = ...
+const mergedCustomerRecords = customerRecordsA.union(
+     customerRecordsB,
+     customerRecord => customerRecord.CustomerId
+);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+// Note that you can achieve the exact same result as the previous
+// example by doing a {@link Series.concat) and {@link Series.distinct}
+// of the input series and then an elimination of any duplicate records
+// that result.
+const customerRecordsA = ...
+const customerRecordsB = ...
+const mergedCustomerRecords = customerRecordsA
+     .concat(customerRecordsB)
+     .distinct(customerRecord => customerRecord.CustomerId);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -2901,7 +3897,7 @@
 								<li>
 									<h5>other: <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The other series to combine.</p>
+										<p>The other series to merge.</p>
 									</div>
 								</li>
 								<li>
@@ -2909,7 +3905,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the union of two series.</p>
+							<p>Returns the union of the two series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2925,59 +3921,97 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#variablewindow">variableWindow</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1962">lib/series.ts:1962</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2449">lib/series.ts:2449</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Groups sequential values into variable length &#39;windows&#39;.</p>
+									<p>Partition a series into a new series of variable-length <em>data windows</em>
+										where the divisions between the data chunks are
+									defined by a user-provided <em>comparer</em> function.</p>
 								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>comparer: <a href="../index.html#comparerfn" class="tsd-signature-type">ComparerFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Predicate that compares two values and returns true if they should be in the same window.</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a series of groups. Each group is itself a series that contains the values in the &#39;window&#39;.</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="where" class="tsd-anchor"></a>
-					<h3>where</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">where<span class="tsd-signature-symbol">(</span>predicate<span class="tsd-signature-symbol">: </span><a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#where">where</a></p>
-								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#where">where</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2286">lib/series.ts:2286</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Filter a series by a predicate selector.</p>
-								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+<p>function rowComparer (valueA, valueB) {
+     if (... valueA should be in the same data window as valueB ...) {
+         return true;
+     }
+     else {
+         return false;
+     }
+};</p>
+<p>const variableWindows = series.variableWindow(rowComparer);</p>
+</dd>
+                </dl>
+        </div>
+
+
+    <h4 class="tsd-parameters-title">Parameters</h4>
+    <ul class="tsd-parameters">
+            <li>
+                <h5>comparer: <a href="../index.html#comparerfn" class="tsd-signature-type">ComparerFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+
+                        <div class="tsd-comment tsd-typography">
+                <p>Function that compares two adjacent data values and returns true if they should be in the same window.</p>
+
+        </div>
+
+            </li>
+    </ul>
+
+    <h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+
+        <p>Returns a new series, each value of which is a chunk of data from the original series.</p>
+
+
+        </li>
+</ul>    
+
+</section>
+            <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+    <a name="where" class="tsd-anchor"></a>
+        <h3>where</h3>
+
+        <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+        <li class="tsd-signature tsd-kind-icon">where<span class="tsd-signature-symbol">(</span>predicate<span class="tsd-signature-symbol">: </span><a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></li>
+</ul>
+
+<ul class="tsd-descriptions">
+        <li class="tsd-description">
+                <aside class="tsd-sources">
+        <p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#where">where</a></p>
+        <p>Inherited from <a href="series.html">Series</a>.<a href="series.html#where">where</a></p>
+        <ul>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2942">lib/series.ts:2942</a></li>
+        </ul>
+</aside>
+        <div class="tsd-comment tsd-typography">
+                <div class="lead">
+                    <p>Filter the series using user-defined predicate function.</p>
+
+                </div>
+                <dl class="tsd-comment-tags">
+                        <dt>example</dt>
+                        <dd><pre>
+
+const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we only have sales figures greater than 100.
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Predicte function to filter rows of the series.</p>
+										<p>Predicte function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series containing only the values that match the predicate.</p>
+							<p>Returns a new series containing only the values from the original series that matched the predicate.</p>
 						</li>
 					</ul>
 				</section>
@@ -2993,26 +4027,44 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#window">window</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#window">window</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1930">lib/series.ts:1930</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2392">lib/series.ts:2392</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Segment a series into &#39;windows&#39;. Returns a new series. Each value in the new series contains a &#39;window&#39; (or segment) of the original series.
-									Use select or selectPairs to aggregate.</p>
+									<p>Partition a series into a <a href="series.html">Series</a> of <em>data windows</em>.
+									Each value in the new series is a chunk of data from the original series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const windows = series.window(2); // Get values in pairs.
+const pctIncrease = windows.select(pair => (pair.last() - pair.first()) / pair.first());
+console.log(pctIncrease.toString());
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const salesDf = ... // Daily sales data.
+const weeklySales = salesDf.window(7); // Partition up into weekly data sets.
+console.log(weeklySales.toString());
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>period: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The number of values in the window.</p>
+										<p>The number of values to include in each data window.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series, each value of which is a &#39;window&#39; (or segment) of the original series.</p>
+							<p>Returns a new series, each value of which is a chunk (data window) of the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -3028,13 +4080,39 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#withindex">withIndex</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#withindex">withIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L1801">lib/series.ts:1801</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L2191">lib/series.ts:2191</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Apply a new index to the Series.</p>
+									<p>Apply a new <a href="index.html">Index</a> to the series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const indexedSeries = series.withIndex([10, 20, 30]);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const indexedSeries = series.withIndex(someOtherSeries);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const indexedSeries = series.withIndex(value => computeIndexFromValue(value));
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const indexedSeries = series.withIndex(value => value + 20);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -3047,12 +4125,12 @@
 								<li>
 									<h5>newIndex: <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">NewIndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">NewIndexT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The new array or iterable to apply to the dataframe. Can also be a selector to choose the index for each row in the dataframe.</p>
+										<p>The new array or iterable to be the new <a href="index.html">Index</a> of the series. Can also be a selector to choose the <a href="index.html">Index</a> for each value in the series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">NewIndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new series with the specified index attached.</p>
+							<p>Returns a new series with the specified <a href="index.html">Index</a> attached.</p>
 						</li>
 					</ul>
 				</section>
@@ -3070,14 +4148,24 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#zip">zip</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2981">lib/series.ts:2981</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3980">lib/series.ts:3980</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Zip together multiple series to create a new series.
+									<p>Merge together multiple series to create a new series.
 									Preserves the index of the first series.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const a = new Series([1, 2, 3]);
+const b = new Series([10, 20, 30]);
+const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
+</pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -3099,19 +4187,19 @@
 								<li>
 									<h5>zipper: <a href="../index.html#zip2fn" class="tsd-signature-type">Zip2Fn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Value2T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Zipper function that produces a new series based on the input series.</p>
+										<p>User-defined zipper function that merges rows. It produces values for the new series based-on values from the input series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ResultT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a single series concatenated from multiple input series.</p>
+							<p>Returns a single series merged from multiple input series.</p>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#zip">zip</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2982">lib/series.ts:2982</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3981">lib/series.ts:3981</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3151,7 +4239,7 @@
 								<p>Implementation of <a href="../interfaces/iindex.html">IIndex</a>.<a href="../interfaces/iindex.html#zip">zip</a></p>
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2983">lib/series.ts:2983</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3982">lib/series.ts:3982</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -3208,7 +4296,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#concat-1">concat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2902">lib/series.ts:2902</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3862">lib/series.ts:3862</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3250,7 +4338,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#parsedate">parseDate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2565">lib/series.ts:2565</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3381">lib/series.ts:3381</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3283,7 +4371,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#parsefloat">parseFloat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2538">lib/series.ts:2538</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3348">lib/series.ts:3348</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3313,7 +4401,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#parseint">parseInt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2511">lib/series.ts:2511</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3315">lib/series.ts:3315</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3343,7 +4431,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#tostring-1">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2599">lib/series.ts:2599</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3424">lib/series.ts:3424</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3375,7 +4463,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="series.html">Series</a>.<a href="series.html#zip-1">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/9c31e45/src/lib/series.ts#L2948">lib/series.ts:2948</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dfd8dea/src/lib/series.ts#L3939">lib/series.ts:3939</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
