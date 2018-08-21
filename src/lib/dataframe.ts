@@ -4037,6 +4037,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return accum;
         }
         else {
+            //
+            //TODO:
+            // This approach is fairly limited because I can't provide a seed.
+            // Consider removing this and replacing it with a 'summarize' function.
+            //
             assert.isObject(seedOrSelector, "Expected 'seed' parameter to aggregate to be an object.");
 
             const columnAggregateSpec = seedOrSelector as IColumnAggregateSpec;

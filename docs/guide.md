@@ -1189,15 +1189,6 @@ A dataframe can be aggregated in the same way, for example summarizing sales dat
             }
         );
 
-Individual columns can also be aggregated using a column spec:
-
-    var summary = salesData.aggregate({
-        TotalSales: df => df.count(),
-        AveragePrice: df => df.deflate(row => row.Price).average(),
-        TotalRevenue: df => df.deflate(row => row.Revenue).sum(), 
-    });
-
-
 ## Group and Aggregate
 
 This an example of using `groupBy` and `aggregate` to summarize a dataframe:
