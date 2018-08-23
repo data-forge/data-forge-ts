@@ -247,6 +247,21 @@ export interface IColumnTypes {
 }
 
 /**
+ * The serialized index for a dataframe.
+ */
+export interface ISerializedIndex {
+    /**
+     * The data type of the index.
+     */
+    type: string;
+
+    /**
+     * Values in the index.
+     */
+    values: any[];
+}
+
+/**
  * The serialized form of a DataFrame. 
  * This is an ordinary JavaScript data structure that can be used to transfer a dataframe across the wire and
  * reinstantiate it on the otherside (this is necessary to maintain a stable column ordering and to allow date values to be reinstantiated).
@@ -261,6 +276,11 @@ export interface ISerializedDataFrame {
      * Records the columns and their types.
      */
     columns: IColumnTypes;
+
+    /**
+     * The serialized index for the dataframe.
+     */
+    index: ISerializedIndex;
 
     /**
      * Rows/values contained in the dataframe..
@@ -6318,30 +6338,29 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     serialize (): ISerializedDataFrame {
-        const values = this.toArray();
-        const index = this.getIndex();
-        let indices = index.head(values.length).toArray() as any[];
+        let rows = this.toArray(); // Bake the dataframe to an array.
+        const index = this.getIndex(); // Extract the index.
+        let indexValues = index.head(rows.length).toArray() as any[];
         const columns = this.getColumns();
         const serializedColumns = toMap(columns, column => column.name, column => column.type);
         const indexType = index.getType();
         
-        if (values.length > 0) {
-            serializedColumns.__index__ = indexType;
-        }
-
         if (indexType === "date") {
-            indices = indices.map(value => moment(value).toISOString(true))
+            indexValues = indexValues.map(index => moment(index).toISOString(true)); // Manually serialize date value, they aren't supported directly by JSON.
         }
 
-        const serializedValues = values.map((value, valueindex) => 
-            Object.assign({}, value, { __index__: indices[valueindex] })
-        );
+        let cloned = false;
 
         // Serialize date values.
         for (const column of columns) {
             if (column.type === "date") {
-                for (const serializedValue of serializedValues) {
-                    serializedValue[column.name] = moment(serializedValue[column.name]).toISOString(true);
+                if (!cloned) {
+                    rows = rows.map(row => Object.assign({}, row)); // Clone so we don't modify any original data.
+                    cloned = true;
+                }
+
+                for (const row of rows) {
+                    row[column.name] = moment(row[column.name]).toISOString(true); // Manually serialize date value.
                 }
             }
         }
@@ -6349,7 +6368,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return {
             columnOrder: this.getColumnNames(),
             columns: serializedColumns,
-            values: serializedValues,
+            index: {
+                type: indexType,
+                values: indexValues,
+            },
+            values: rows,
         };
     }
 
@@ -6374,10 +6397,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     static deserialize<IndexT = any,  ValueT = any> (input: ISerializedDataFrame): IDataFrame<IndexT, ValueT> {
 
-        const deserializedValues = input.values && input.values.map((row: any) => {
-                const clone = Object.assign({}, row);
-                return clone;
-            }) || [];
+        let indexValues = input.index && input.index.values || [];
+        let rows = input.values && input.values || [];
+        let cloned = false;
 
         // Deserialize dates.
         if (input.columns) {
@@ -6385,17 +6407,26 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 if (input.columns[columnName] !== "date") {
                     continue; // No need to process other types, they are natively supported by JSON.
                 }
+
+                if (!cloned) {
+                    rows = rows.map(row => Object.assign({}, row)); // Clone so we don't modify any original data.
+                    cloned = true;
+                }
     
-                for (const deserializedValue of deserializedValues) {
-                    deserializedValue[columnName] = moment(deserializedValue[columnName], moment.ISO_8601).toDate();
+                for (const row of rows) {
+                    row[columnName] = moment(row[columnName], moment.ISO_8601).toDate(); // Manually deserialize data value.
                 }
             }
         }
 
+        if (input.index && input.index.type === "date") {
+            indexValues = indexValues.map(value => moment(value, moment.ISO_8601).toDate()); // Manually deserialize data value.
+        }
+
         return new DataFrame<IndexT, ValueT>({
             columnNames: input.columnOrder || [],
-            index: deserializedValues.map((row: any) => row.__index__) || [],
-            values: deserializedValues,
+            index: indexValues,
+            values: rows,
         });
     }
 

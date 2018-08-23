@@ -12,6 +12,10 @@ describe('DataFrame serialization', () => {
         expect(df.serialize()).to.eql({
             columnOrder: [],
             columns: {},
+            index: {
+                type: "empty",
+                values: [],
+            },
             values: [],
         });
     });
@@ -33,12 +37,15 @@ describe('DataFrame serialization', () => {
                 A: "number",
                 B: "string",
                 C: "boolean",
-                __index__: "number",
+            },
+            index: {
+                type: "number",
+                values: [10, 20, 30],
             },
             values: [
-                { A: 100, B: "a", C: true,  __index__: 10 },
-                { A: 200, B: "b", C: false, __index__: 20 },
-                { A: 300, B: "c", C: false, __index__: 30 },
+                { A: 100, B: "a", C: true },
+                { A: 200, B: "b", C: false },
+                { A: 300, B: "c", C: false },
             ]
         });
     });
@@ -53,20 +60,25 @@ describe('DataFrame serialization', () => {
         });
 
         expect(df.serialize()).to.eql({
-            columnOrder: ["A"],
+            columnOrder: [ "A" ],
             columns: {
                 A: "date",
-                __index__: "number",
+            },
+            index: {
+                type: "number",
+                values: [ 10, ],
             },
             values: [
-                { A: moment("2018/05/15", "YYYY/MM/DD").toISOString(true),  __index__: 10 },
+                { 
+                    A: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) 
+                },
             ]
         });
     });
 
     it ('can deserialize empty dataframe', () => {
 
-        const df = DataFrame.deserialize({ columnOrder: [], columns: {}, values: [] });
+        const df = DataFrame.deserialize({ columnOrder: [], columns: {}, index: { type: "number", values: [], }, values: [] });
         expect(df.count()).to.eql(0);
     });
 
@@ -84,12 +96,15 @@ describe('DataFrame serialization', () => {
                 A: "number",
                 B: "string",
                 C: "boolean",
-                __index__: "number",
+            },
+            index: {
+                type: "number",
+                values: [ 10, 20, 30 ],
             },
             values: [
-                { A: 100, B: "a", C: true,  __index__: 10 },
-                { A: 200, B: "b", C: false, __index__: 20 },
-                { A: 300, B: "c", C: false, __index__: 30 },
+                { A: 100, B: "a", C: true, },
+                { A: 200, B: "b", C: false, },
+                { A: 300, B: "c", C: false, },
             ]
         });
         
@@ -106,13 +121,16 @@ describe('DataFrame serialization', () => {
     it ('can deserialize dataframe with dates', () => {
 
         const df = DataFrame.deserialize({
-            columnOrder: ["A"],
+            columnOrder: [ "A" ],
             columns: {
                 A: "date",
-                __index__: "number",
+            },
+            index: {
+                type: "number",
+                values: [ 10, ],
             },
             values: [
-                { A: moment("2018/05/15", "YYYY/MM/DD").toISOString(true),  __index__: 10 },
+                { A: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) },
             ]
         });
         
@@ -136,11 +154,13 @@ describe('DataFrame serialization', () => {
         expect(df.serialize()).to.eql({
             columnOrder: [ "A" ],
             columns: {
-                A: "number",
-                __index__: "date",
+                A: "number",            },
+            index: {
+                type: "date",
+                values: [ moment("2018/05/15", "YYYY/MM/DD").toISOString(true), ],
             },
             values: [
-                { A: 1,  __index__: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) },
+                { A: 1, },
             ]
         });
 
@@ -152,10 +172,13 @@ describe('DataFrame serialization', () => {
             columnOrder: [ "A" ],
             columns: {
                 A: "number",
-                __index__: "date",
+            },
+            index: {
+                type: "date",
+                values: [ moment("2018/05/15", "YYYY/MM/DD").toISOString(true), ],
             },
             values: [
-                { A: 10,  __index__: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) },
+                { A: 10, },
             ]
         });
         
