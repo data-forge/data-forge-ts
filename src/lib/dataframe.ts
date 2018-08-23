@@ -6320,12 +6320,17 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     serialize (): ISerializedDataFrame {
         const values = this.toArray();
         const index = this.getIndex();
-        const indices = index.head(values.length).toArray();
+        let indices = index.head(values.length).toArray() as any[];
         const columns = this.getColumns();
         const serializedColumns = toMap(columns, column => column.name, column => column.type);
+        const indexType = index.getType();
         
         if (values.length > 0) {
-            serializedColumns.__index__ = index.getType();
+            serializedColumns.__index__ = indexType;
+        }
+
+        if (indexType === "date") {
+            indices = indices.map(value => moment(value).toISOString(true))
         }
 
         const serializedValues = values.map((value, valueindex) => 
@@ -6371,7 +6376,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         const deserializedValues = input.values && input.values.map((row: any) => {
                 const clone = Object.assign({}, row);
-                delete clone.__index__;
                 return clone;
             }) || [];
 
@@ -6379,7 +6383,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         if (input.columns) {
             for (const columnName of Object.keys(input.columns)) {
                 if (input.columns[columnName] !== "date") {
-                    continue; // No need to process other types, they are natively supporte dby JSON.
+                    continue; // No need to process other types, they are natively supported by JSON.
                 }
     
                 for (const deserializedValue of deserializedValues) {
@@ -6390,7 +6394,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         return new DataFrame<IndexT, ValueT>({
             columnNames: input.columnOrder || [],
-            index: input.values && input.values.map((row: any) => row.__index__) || [],
+            index: deserializedValues.map((row: any) => row.__index__) || [],
             values: deserializedValues,
         });
     }

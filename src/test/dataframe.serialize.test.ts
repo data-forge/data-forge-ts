@@ -123,4 +123,48 @@ describe('DataFrame serialization', () => {
             [moment("2018/05/15", "YYYY/MM/DD").toDate()],
         ]);
     });
+
+    it ('can serialize index with dates', () => {
+        const df = new DataFrame({ 
+            index: [moment("2018/05/15", "YYYY/MM/DD").toDate()],
+            columnNames: ["A"],
+            rows: [
+                [ 1, ],
+            ]
+        });
+
+        expect(df.serialize()).to.eql({
+            columnOrder: [ "A" ],
+            columns: {
+                A: "number",
+                __index__: "date",
+            },
+            values: [
+                { A: 1,  __index__: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) },
+            ]
+        });
+
+    });
+
+    it ('can deserialize index with dates', () => {
+
+        const df = DataFrame.deserialize({
+            columnOrder: [ "A" ],
+            columns: {
+                A: "number",
+                __index__: "date",
+            },
+            values: [
+                { A: 10,  __index__: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) },
+            ]
+        });
+        
+        expect(df.count()).to.eql(1);
+        expect(df.getColumnNames()).to.eql([ "A" ]);
+        expect(df.getIndex().toArray()).to.eql([moment("2018/05/15", "YYYY/MM/DD").toDate()]);
+        expect(df.toRows()).to.eql([
+            [10],
+        ]);
+    });
+    
 });
