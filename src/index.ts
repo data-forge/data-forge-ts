@@ -145,6 +145,23 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
     });
 }
 
+//
+// Promise-based read file.
+//
+function readFileData(filePath: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        var fs = require('fs');
+        fs.readFile(filePath, 'utf8', (err: any, fileData: string) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+    
+            resolve(fileData);
+        });
+    });
+}
+
 /**
  * Reads a file asynchonrously to a dataframe.
  */
@@ -189,22 +206,13 @@ class AsyncFileReader implements IAsyncFileReader {
      * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseCSV (config?: ICSVOptions): Promise<IDataFrame<number, any>> {
+    async parseCSV (config?: ICSVOptions): Promise<IDataFrame<number, any>> {
         if (config) {
             assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
         }
-
-        return new Promise((resolve: Function, reject: Function) => {
-            var fs = require('fs');
-            fs.readFile(this.filePath, 'utf8', (err: any, csvData: string) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                resolve(fromCSV(csvData, config));
-            });
-        });
+        
+        const fileData = await readFileData(this.filePath);
+        return fromCSV(fileData, config);
     }
 
     /**
@@ -213,19 +221,9 @@ class AsyncFileReader implements IAsyncFileReader {
      * 
      * @returns Returns a promise of a dataframe loaded from the file. 
      */
-    parseJSON (): Promise<IDataFrame<number, any>> {
-
-        return new Promise((resolve: Function, reject: Function) => {
-            var fs = require('fs');
-            fs.readFile(this.filePath, 'utf8', (err: any, jsonData: string) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                resolve(fromJSON(jsonData));
-            });
-        });
+    async parseJSON (): Promise<IDataFrame<number, any>> {
+        const fileData = await readFileData(this.filePath);
+        return fromJSON(fileData);
     } 
 }
 
