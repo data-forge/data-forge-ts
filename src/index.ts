@@ -4,7 +4,6 @@ export { Series, ISeries, SelectorWithIndexFn } from './lib/series';
 export { DataFrame, IDataFrame } from './lib/dataframe';
 
 import { assert } from 'chai';
-import * as fs from 'fs';
 import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
 import { Series, ISeries } from '.';
@@ -150,7 +149,7 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
 //
 function readFileData(filePath: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        var fs = require('fs');
+        const fs = require('fs');
         fs.readFile(filePath, 'utf8', (err: any, fileData: string) => {
             if (err) {
                 reject(err);

@@ -6509,7 +6509,7 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFile' to be a string that specifies the path of the file to write to the local file system.");
 
         return new Promise((resolve, reject) => {
-            var fs = require('fs');	
+            const fs = require('fs');	
             fs.writeFile(filePath, this.dataframe.toCSV(), (err: any) => {
                 if (err) {
                     reject(err);
@@ -6536,7 +6536,7 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
     writeFileSync (filePath: string): void {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFileSync' to be a string that specifies the path of the file to write to the local file system.");
 
-        var fs = require('fs');	
+        const fs = require('fs');	
         fs.writeFileSync(filePath, this.dataframe.toCSV());
     }
 }
@@ -6609,7 +6609,7 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
 
         return new Promise((resolve, reject) => {
-            var fs = require('fs');	
+            const fs = require('fs');	
             fs.writeFile(filePath, this.dataframe.toJSON(), (err: any) => {
                 if (err) {
                     reject(err);
@@ -6636,7 +6636,7 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
     writeFileSync (filePath: string): void {
         assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
 
-        var fs = require('fs');	
+        const fs = require('fs');	
         fs.writeFileSync(filePath, this.dataframe.toJSON());
     }
 }
