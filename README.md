@@ -24,7 +24,6 @@ Do your prototyping and exploratory data analysis in JavaScript with [Data-Forge
 
 **Please note** that this repository replaces the [old version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
-
 ## Install
 
     npm install --save data-forge
