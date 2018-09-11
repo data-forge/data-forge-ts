@@ -24,13 +24,6 @@ Do your prototyping and exploratory data analysis in JavaScript with [Data-Forge
 
 **Please note** that this repository replaces the [old version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
-<!--todo:
-!! Made with TypeScript.
-[![NPM Downloads][downloads-image]][downloads-url]
-[![Linux Build][travis-image]][travis-url]
-[![Windows Build][appveyor-image]][appveyor-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
--->
 
 ## Install
 
