@@ -1,5 +1,8 @@
 # Data-Forge
 
+!! This is the beta/dev version of Data-Forge. 
+You probably want [the currently published version](https://www.npmjs.com/package/data-forge) instead.
+
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
 Implemented in TypeScript, used in JavaScript ES5+ or TypeScript.
