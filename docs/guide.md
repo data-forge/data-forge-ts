@@ -1203,7 +1203,7 @@ This an example of using `groupBy` and `aggregate` to summarize a dataframe:
         .inflate() // Series -> dataframe.
         .toArray(); // Convert to regular JS array.
 
-Please see example 13 in the [Data-Forge examples repo](https://github.com/data-forge/data-forge-js-examples-and-tests) for a working version of this.
+Please see example 12 in the [Data-Forge examples repo](https://github.com/data-forge/data-forge-js-examples-and-tests) for a working version of this.
 
 # Filling gaps and missing data
 
