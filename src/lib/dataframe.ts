@@ -22,7 +22,7 @@ import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
-import { assert } from 'chai';
+import { isString, isObject, isNumber, isFunction, isArray, isUndefined } from 'lodash';
 import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
@@ -2566,7 +2566,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 columnsConfig = toMap(iterableColumnsConfig, column => column.name, column => column.series);
             }
             else {
-                assert.isObject(columnsConfig, "Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
+                if (!isObject(columnsConfig)) throw new Error("Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
 
                 columnNames = Object.keys(columnsConfig);
             }
@@ -2824,7 +2824,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     setIndex<NewIndexT = any> (columnName: string): IDataFrame<NewIndexT, ValueT> {
-        assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.setIndex' to be a string that specifies the name of the column to set as the index for the dataframe.");
+        if (!isString(columnName)) throw new Error("Expected 'columnName' parameter to 'DataFrame.setIndex' to be a string that specifies the name of the column to set as the index for the dataframe.");
 
         return this.withIndex<NewIndexT>(this.getSeries(columnName));
     }
@@ -2923,7 +2923,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     getSeries<SeriesValueT = any> (columnName: string): ISeries<IndexT, SeriesValueT> {
 
-        assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
+        if (!isString(columnName)) throw new Error("Expected 'columnName' parameter to 'DataFrame.getSeries' function to be a string that specifies the name of the column to retreive.");
 
         return new Series<IndexT, SeriesValueT>(() => ({
             values: new SelectIterable<ValueT, SeriesValueT>(
@@ -3030,13 +3030,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
-            assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
+            if (!isString(columnNameOrSpec)) throw new Error("Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
             if (!Sugar.Object.isFunction(series as Object)) {
-                assert.isObject(series, "Expected 'series' parameter to 'DataFrame.withSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
+                if (!isObject(series)) throw new Error("Expected 'series' parameter to 'DataFrame.withSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
             }
         }
         else {
-            assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
+            if (!isUndefined(series)) throw new Error("Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
         if (Sugar.Object.isObject(columnNameOrSpec)) {
@@ -3142,13 +3142,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
-            assert.isString(columnNameOrSpec, "Expected 'columnNameOrSpec' parameter to 'DataFrame.ensureSeries' function to be a string that specifies the column to set or replace.");
+            if (!isString(columnNameOrSpec)) throw new Error("Expected 'columnNameOrSpec' parameter to 'DataFrame.ensureSeries' function to be a string that specifies the column to set or replace.");
             if (!Sugar.Object.isFunction(series as Object)) {
-                assert.isObject(series, "Expected 'series' parameter to 'DataFrame.ensureSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
+                if (!isObject(series)) throw new Error("Expected 'series' parameter to 'DataFrame.ensureSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
             }
         }
         else {
-            assert.isUndefined(series, "Expected 'series' parameter to 'DataFrame.ensureSeries' to not be set when 'columnNameOrSpec is an object.");
+            if (!isUndefined(series)) throw new Error("Expected 'series' parameter to 'DataFrame.ensureSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
         if (Sugar.Object.isObject(columnNameOrSpec)) {
@@ -3184,7 +3184,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     subset<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT> {
-        assert.isArray(columnNames, "Expected 'columnNames' parameter to 'DataFrame.subset' to be an array of column names to keep.");	
+        if (!isArray(columnNames)) throw new Error("Expected 'columnNames' parameter to 'DataFrame.subset' to be an array of column names to keep.");	
 
         return new DataFrame<IndexT, NewValueT>(() => {
             const content = this.getContent();
@@ -3230,7 +3230,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT> {
 
         if (!Sugar.Object.isArray(columnOrColumns)) {
-            assert.isString(columnOrColumns, "'DataFrame.dropSeries' expected either a string or an array or strings.");
+            if (!isString(columnOrColumns)) throw new Error("'DataFrame.dropSeries' expected either a string or an array or strings.");
 
             columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
         }
@@ -3280,10 +3280,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     reorderSeries<NewValueT = ValueT> (columnNames: string[]): IDataFrame<IndexT, NewValueT> {
 
-        assert.isArray(columnNames, "Expected parameter 'columnNames' to 'DataFrame.reorderSeries' to be an array with column names.");
+        if (!isArray(columnNames)) throw new Error("Expected parameter 'columnNames' to 'DataFrame.reorderSeries' to be an array with column names.");
 
         for (const columnName of columnNames) {
-            assert.isString(columnName, "Expected parameter 'columnNames' to 'DataFrame.reorderSeries' to be an array with column names.");
+            if (!isString(columnName)) throw new Error("Expected parameter 'columnNames' to 'DataFrame.reorderSeries' to be an array with column names.");
         }
 
         return new DataFrame<IndexT, NewValueT>(() => {
@@ -3333,11 +3333,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         if (Sugar.Object.isArray(columnOrColumns)) {
             columnOrColumns.forEach(function (columnName) {
-                assert.isString(columnName, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");	
+                if (!isString(columnName)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");	
             });
         }
         else {
-            assert.isString(columnOrColumns, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");
+            if (!isString(columnOrColumns)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");
 
             columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
         }
@@ -3390,11 +3390,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         if (Sugar.Object.isArray(columnOrColumns)) {
             columnOrColumns.forEach(function (columnName) {
-                assert.isString(columnName, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");	
+                if (!isString(columnName)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");	
             });
         }
         else {
-            assert.isString(columnOrColumns, "Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");
+            if (!isString(columnOrColumns)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");
 
             columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
         }
@@ -3450,12 +3450,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     renameSeries<NewValueT = ValueT> (newColumnNames: IColumnRenameSpec): IDataFrame<IndexT, NewValueT> {
 
-        assert.isObject(newColumnNames, "Expected parameter 'newColumnNames' to 'DataFrame.renameSeries' to be an array with column names.");
+        if (!isObject(newColumnNames)) throw new Error("Expected parameter 'newColumnNames' to 'DataFrame.renameSeries' to be an array with column names.");
 
         const existingColumnsToRename = Object.keys(newColumnNames);
         for (const existingColumnName of existingColumnsToRename) {
-            assert.isString(existingColumnName, "Expected existing column name '" + existingColumnName + "' of 'newColumnNames' parameter to 'DataFrame.renameSeries' to be a string.");
-            assert.isString(newColumnNames[existingColumnName], "Expected new column name '" + newColumnNames[existingColumnName] + "' for existing column '" + existingColumnName + "' of 'newColumnNames' parameter to 'DataFrame.renameSeries' to be a string.");
+            if (!isString(existingColumnName)) throw new Error("Expected existing column name '" + existingColumnName + "' of 'newColumnNames' parameter to 'DataFrame.renameSeries' to be a string.");
+            if (!isString(newColumnNames[existingColumnName])) throw new Error("Expected new column name '" + newColumnNames[existingColumnName] + "' for existing column '" + existingColumnName + "' of 'newColumnNames' parameter to 'DataFrame.renameSeries' to be a string.");
         }
 
         return new DataFrame<IndexT, NewValueT>(() => {
@@ -3559,8 +3559,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
 
-        assert.isFunction(keySelector, "Expected 'keySelector' parameter to DataFrame.toObject to be a function.");
-        assert.isFunction(valueSelector, "Expected 'valueSelector' parameter to DataFrame.toObject to be a function.");
+        if (!isFunction(keySelector)) throw new Error("Expected 'keySelector' parameter to DataFrame.toObject to be a function.");
+        if (!isFunction(valueSelector)) throw new Error("Expected 'valueSelector' parameter to DataFrame.toObject to be a function.");
 
         return toMap(this, keySelector, valueSelector);
     }
@@ -3612,7 +3612,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
-        assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
+        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.select' function to be a function.");
 
         return new DataFrame(() => {
             const content = this.getContent();
@@ -3648,7 +3648,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): IDataFrame<IndexT, ToT> {
-        assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.selectMany' to be a function.");
+        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.selectMany' to be a function.");
 
         return new DataFrame(() => ({
             pairs: new SelectManyIterable(
@@ -3696,7 +3696,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     transformSeries<NewValueT = ValueT> (columnSelectors: IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
-        assert.isObject(columnSelectors, "Expected 'columnSelectors' parameter of 'DataFrame.transformSeries' function to be an object. Field names should specify columns to transform. Field values should be selector functions that specify the transformation for each column.");
+        if (!isObject(columnSelectors)) throw new Error("Expected 'columnSelectors' parameter of 'DataFrame.transformSeries' function to be an object. Field names should specify columns to transform. Field values should be selector functions that specify the transformation for each column.");
 
         let working: IDataFrame<IndexT, any> = this;
 
@@ -3750,7 +3750,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
         if (!Sugar.Object.isObject(generator)) {
-            assert.isFunction(generator, "Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
+            if (!isFunction(generator)) throw new Error("Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
 
             const selector = generator as SelectorWithIndexFn<any, any>;
             const newColumns = this.select(selector) // Build a new dataframe.
@@ -3802,7 +3802,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     deflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
 
         if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.deflate' function to be a selector function.");
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.deflate' function to be a selector function.");
         }
 
         return new Series<IndexT, ToT>(() => { 
@@ -3857,10 +3857,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
 
-        assert.isString(columnName, "Expected 'columnName' parameter to 'DataFrame.inflateSeries' to be a string that is the name of the column to inflate.");
+        if (!isString(columnName)) throw new Error("Expected 'columnName' parameter to 'DataFrame.inflateSeries' to be a string that is the name of the column to inflate.");
 
         if (selector) {
-            assert.isFunction(selector, "Expected optional 'selector' parameter to 'DataFrame.inflateSeries' to be a selector function, if it is specified.");
+            if (!isFunction(selector)) throw new Error("Expected optional 'selector' parameter to 'DataFrame.inflateSeries' to be a selector function, if it is specified.");
         }
 
         return this.zip(
@@ -3895,7 +3895,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     window (period: number): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
-        assert.isNumber(period, "Expected 'period' parameter to 'DataFrame.window' to be a number.");
+        if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'DataFrame.window' to be a number.");
 
         return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
             const content = this.getContent();
@@ -3923,7 +3923,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     rollingWindow (period: number): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
-        assert.isNumber(period, "Expected 'period' parameter to 'DataFrame.rollingWindow' to be a number.");
+        if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'DataFrame.rollingWindow' to be a number.");
 
         return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
             const content = this.getContent();
@@ -3958,7 +3958,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
         
-        assert.isFunction(comparer, "Expected 'comparer' parameter to 'DataFrame.variableWindow' to be a function.")
+        if (!isFunction(comparer)) throw new Error("Expected 'comparer' parameter to 'DataFrame.variableWindow' to be a function.")
 
         return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
             const content = this.getContent();
@@ -3987,7 +3987,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT> {
         
         if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
         }
         else {
             selector = (value: ValueT): ToT => <ToT> <any> value;
@@ -4046,7 +4046,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
         }
         else if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to aggregate to be a function.");
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to aggregate to be a function.");
 
             let accum = <ToT> seedOrSelector;
 
@@ -4062,13 +4062,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             // This approach is fairly limited because I can't provide a seed.
             // Consider removing this and replacing it with a 'summarize' function.
             //
-            assert.isObject(seedOrSelector, "Expected 'seed' parameter to aggregate to be an object.");
+            if (!isObject(seedOrSelector)) throw new Error("Expected 'seed' parameter to aggregate to be an object.");
 
             const columnAggregateSpec = seedOrSelector as IColumnAggregateSpec;
             const columnNames = Object.keys(columnAggregateSpec);
             const aggregatedColumns = columnNames.map(columnName => {
                 var columnSelector = columnAggregateSpec[columnName];
-                assert.isFunction(columnSelector, "Expected column/selector pairs in 'seed' parameter to aggregate.");
+                if (!isFunction(columnSelector)) throw new Error("Expected column/selector pairs in 'seed' parameter to aggregate.");
                 return [columnName, this.getSeries(columnName).aggregate(columnSelector)];
             });
 
@@ -4090,7 +4090,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     skip (numValues: number): IDataFrame<IndexT, ValueT> {
-        assert.isNumber(numValues, "Expected 'numValues' parameter to 'DataFrame.skip' to be a number.");
+        if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'DataFrame.skip' to be a number.");
 
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -4117,7 +4117,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     skipWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipWhile' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.skipWhile' function to be a predicate function that returns true/false.");
 
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -4143,7 +4143,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     skipUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.skipUntil' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.skipUntil' function to be a predicate function that returns true/false.");
 
         return this.skipWhile(value => !predicate(value)); 
     }
@@ -4162,7 +4162,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     take (numRows: number): IDataFrame<IndexT, ValueT> {
-        assert.isNumber(numRows, "Expected 'numRows' parameter to 'DataFrame.take' function to be a number.");
+        if (!isNumber(numRows)) throw new Error("Expected 'numRows' parameter to 'DataFrame.take' function to be a number.");
 
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -4189,7 +4189,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     takeWhile (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeWhile' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.takeWhile' function to be a predicate function that returns true/false.");
 
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -4215,7 +4215,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     takeUntil (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.takeUntil' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.takeUntil' function to be a predicate function that returns true/false.");
 
         return this.takeWhile(value => !predicate(value));
     }
@@ -4343,7 +4343,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     head (numValues: number): IDataFrame<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'numValues' parameter to 'DataFrame.head' function to be a number.");
+        if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'DataFrame.head' function to be a number.");
 
         if (numValues === 0) {
             return new DataFrame<IndexT, ValueT>(); // Empty dataframe.
@@ -4369,7 +4369,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     tail (numValues: number): IDataFrame<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'numValues' parameter to 'DataFrame.tail' function to be a number.");
+        if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'DataFrame.tail' function to be a number.");
 
         if (numValues === 0) {
             return new DataFrame<IndexT, ValueT>(); // Empty dataframe.
@@ -4394,7 +4394,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
 
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.where' function to be a function.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.where' function to be a function.");
 
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -4422,7 +4422,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     forEach (callback: CallbackFn<ValueT>): IDataFrame<IndexT, ValueT> {
-        assert.isFunction(callback, "Expected 'callback' parameter to 'DataFrame.forEach' to be a function.");
+        if (!isFunction(callback)) throw new Error("Expected 'callback' parameter to 'DataFrame.forEach' to be a function.");
 
         let index = 0;
         for (const value of this) {
@@ -4447,7 +4447,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     all (predicate: PredicateFn<ValueT>): boolean {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.all' to be a function.")
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.all' to be a function.")
 
         let count = 0;
 
@@ -4488,7 +4488,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     any (predicate?: PredicateFn<ValueT>): boolean {
         if (predicate) {
-            assert.isFunction(predicate, "Expected optional 'predicate' parameter to 'DataFrame.any' to be a function.")
+            if (!isFunction(predicate)) throw new Error("Expected optional 'predicate' parameter to 'DataFrame.any' to be a function.")
         }
 
         if (predicate) {
@@ -4533,7 +4533,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     none (predicate?: PredicateFn<ValueT>): boolean {
 
         if (predicate) {
-            assert.isFunction(predicate, "Expected 'predicate' parameter to 'DataFrame.none' to be a function.")
+            if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.none' to be a function.")
         }
 
         if (predicate) {
@@ -4876,7 +4876,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     parseDates (columnNameOrNames: string | string[], formatString?: string): IDataFrame<IndexT, ValueT> {
 
         if (formatString) {
-            assert.isString(formatString, "Expected optional 'formatString' parameter to 'DataFrame.parseDates' to be a string (if specified).");
+            if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to 'DataFrame.parseDates' to be a string (if specified).");
         }
 
         if (Sugar.Object.isArray(columnNameOrNames)) {
@@ -4922,18 +4922,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         if (Sugar.Object.isObject(columnNames)) {
             for (const columnName of Object.keys(columnNames)) {
-                assert.isString((columnNames as any)[columnName], "Expected values of 'columnNames' parameter to be strings when a format spec is passed in.");
+                if (!isString((columnNames as any)[columnName])) throw new Error("Expected values of 'columnNames' parameter to be strings when a format spec is passed in.");
             }
 
-            assert.isUndefined(formatString, "Optional 'formatString' parameter to 'DataFrame.toStrings' should not be set when passing in a format spec.");
+            if (!isUndefined(formatString)) throw new Error("Optional 'formatString' parameter to 'DataFrame.toStrings' should not be set when passing in a format spec.");
         }
         else {
             if (!Sugar.Object.isArray(columnNames)) {
-                assert.isString(columnNames, "Expected 'columnNames' parameter to 'DataFrame.toStrings' to be a string, array of strings or format spec that specifes which columns should be converted to strings.");
+                if (!isString(columnNames)) throw new Error("Expected 'columnNames' parameter to 'DataFrame.toStrings' to be a string, array of strings or format spec that specifes which columns should be converted to strings.");
             }
 
             if (formatString) {
-                assert.isString(formatString, "Expected optional 'formatString' parameter to 'DataFrame.toStrings' to be a string (if specified).");
+                if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to 'DataFrame.toStrings' to be a string (if specified).");
             }    
         }
 
@@ -4975,7 +4975,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT> {
-        assert.isNumber(maxLength, "Expected 'maxLength' parameter to 'truncateStrings' to be an integer.");
+        if (!isNumber(maxLength)) throw new Error("Expected 'maxLength' parameter to 'truncateStrings' to be an integer.");
 
         return this.select((row: any) => {
             const output: any = {};
@@ -5089,7 +5089,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
-        assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.groupBy' to be a selector function that determines the value to group the series by.");
+        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.groupBy' to be a selector function that determines the value to group the series by.");
 
         return new Series<number, IDataFrame<IndexT, ValueT>>(() => {
             const groups: any[] = []; // Each group, in order of discovery.
@@ -5149,7 +5149,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, IDataFrame<IndexT, ValueT>> {
 
         if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to 'DataFrame.groupSequentialBy' to be a selector function that determines the value to group the series by.")
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.groupSequentialBy' to be a selector function that determines the value to group the series by.")
         }
         else {
             selector = value => <GroupT> <any> value;
@@ -5182,7 +5182,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     static concat<IndexT = any, ValueT = any> (dataframes: IDataFrame<IndexT, ValueT>[]): IDataFrame<IndexT, ValueT > {
-        assert.isArray(dataframes, "Expected 'dataframes' parameter to 'DataFrame.concat' to be an array of dataframes.");
+        if (!isArray(dataframes)) throw new Error("Expected 'dataframes' parameter to 'DataFrame.concat' to be an array of dataframes.");
 
         return new DataFrame(() => {
             const upcast = <DataFrame<IndexT, ValueT>[]> dataframes; // Upcast so that we can access private index, values and pairs.
@@ -5301,7 +5301,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     */
     static zip<IndexT = any, ValueT = any, ResultT = any> (dataframes: IDataFrame<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): IDataFrame<IndexT, ResultT> {
 
-        assert.isArray(dataframes, "Expected 'dataframe' parameter to 'DataFrame.zip' to be an array of dataframes.");
+        if (!isArray(dataframes)) throw new Error("Expected 'dataframe' parameter to 'DataFrame.zip' to be an array of dataframes.");
 
         if (dataframes.length === 0) {
             return new DataFrame<IndexT, ResultT>();
@@ -5452,7 +5452,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             IDataFrame<IndexT, ValueT> {
 
         if (selector) {
-            assert.isFunction(selector, "Expected optional 'selector' parameter to 'DataFrame.union' to be a selector function.");
+            if (!isFunction(selector)) throw new Error("Expected optional 'selector' parameter to 'DataFrame.union' to be a selector function.");
         }
 
         return this.concat(other).distinct(selector);
@@ -5497,14 +5497,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             IDataFrame<IndexT, ValueT> {
 
         if (outerSelector) {
-            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'DataFrame.intersection' to be a function.");
+            if (!isFunction(outerSelector)) throw new Error("Expected optional 'outerSelector' parameter to 'DataFrame.intersection' to be a function.");
         }
         else {
             outerSelector = value => <KeyT> <any> value;
         }
         
         if (innerSelector) {
-            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'DataFrame.intersection' to be a function.");
+            if (!isFunction(innerSelector)) throw new Error("Expected optional 'innerSelector' parameter to 'DataFrame.intersection' to be a function.");
         }
         else {
             innerSelector = value => <KeyT> <any> value;
@@ -5557,14 +5557,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             IDataFrame<IndexT, ValueT> {
 
         if (outerSelector) {
-            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'DataFrame.except' to be a function.");
+            if (!isFunction(outerSelector)) throw new Error("Expected optional 'outerSelector' parameter to 'DataFrame.except' to be a function.");
         }
         else {
             outerSelector = value => <KeyT> <any> value;
         }
 
         if (innerSelector) {
-            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'DataFrame.except' to be a function.");
+            if (!isFunction(innerSelector)) throw new Error("Expected optional 'innerSelector' parameter to 'DataFrame.except' to be a function.");
         }
         else {
             innerSelector = value => <KeyT> <any> value;
@@ -5616,9 +5616,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         resultSelector: JoinFn<ValueT, InnerValueT, ResultValueT>):
             IDataFrame<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.join' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.join' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.join' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'DataFrame.join' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'DataFrame.join' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'DataFrame.join' to be a selector function.");
 
         const outer = this;
 
@@ -5691,9 +5691,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             IDataFrame<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'DataFrame.joinOuter' to be a selector function.");
 
         // Get the results in the outer that are not in the inner.
         const outer = this;
@@ -5756,9 +5756,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             IDataFrame<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'DataFrame.joinOuterLeft' to be a selector function.");
 
         // Get the results in the outer that are not in the inner.
         const outer = this;
@@ -5815,9 +5815,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             IDataFrame<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'DataFrame.joinOuterRight' to be a selector function.");
 
         // Get the results in the inner that are not in the outer.
         const outer = this;
@@ -5912,22 +5912,22 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             columnNames = [columnOrColumns];
         }
         else {
-            assert.isArray(columnOrColumns, "Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to be a string or an array of strings that identifies the column(s) whose values make the new DataFrame's columns.");
+            if (!isArray(columnOrColumns)) throw new Error("Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to be a string or an array of strings that identifies the column(s) whose values make the new DataFrame's columns.");
 
             columnNames = Array.from(columnOrColumns);
 
-            assert(columnNames.length > 0, "Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to contain at least one string.");
+            if (columnNames.length === 0) throw new Error("Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to contain at least one string.");
 
             for (const columnName of columnNames) {
-                assert.isString(columnName, "Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to be an array of strings, each string identifies a column in the DataFrame on which to pivot.");
+                if (!isString(columnName)) throw new Error("Expected 'columnOrColumns' parameter to 'DataFrame.pivot' to be an array of strings, each string identifies a column in the DataFrame on which to pivot.");
             }
         }
 
         let aggSpec: IPivotAggregateSpec;
 
         if (!Sugar.Object.isObject(valueColumnNameOrSpec)) {
-            assert.isString(valueColumnNameOrSpec, "Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values to aggregate or a column spec that defines which column contains the value ot aggregate and the ways to aggregate that value.");
-            assert.isFunction(aggregator, "Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
+            if (!isString(valueColumnNameOrSpec)) throw new Error("Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values to aggregate or a column spec that defines which column contains the value ot aggregate and the ways to aggregate that value.");
+            if (!isFunction(aggregator)) throw new Error("Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
 
             const aggColumnName = valueColumnNameOrSpec as string;
 
@@ -6010,8 +6010,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     insertPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT> {
-        assert.isArray(pair, "Expected 'pair' parameter to 'DataFrame.insertPair' to be an array.");
-        assert(pair.length === 2, "Expected 'pair' parameter to 'DataFrame.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
+        if (!isArray(pair)) throw new Error("Expected 'pair' parameter to 'DataFrame.insertPair' to be an array.");
+        if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'DataFrame.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
 
         return (new DataFrame<IndexT, ValueT>({ pairs: [pair] })).concat(this);
     }
@@ -6033,8 +6033,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT> {
-        assert.isArray(pair, "Expected 'pair' parameter to 'DataFrame.appendPair' to be an array.");
-        assert(pair.length === 2, "Expected 'pair' parameter to 'DataFrame.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
+        if (!isArray(pair)) throw new Error("Expected 'pair' parameter to 'DataFrame.appendPair' to be an array.");
+        if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'DataFrame.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
 
         return this.concat(new DataFrame<IndexT, ValueT>({ pairs: [pair] }));
     }
@@ -6072,8 +6072,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): IDataFrame<IndexT, ValueT> {
-        assert.isFunction(comparer, "Expected 'comparer' parameter to 'DataFrame.fillGaps' to be a comparer function that compares two values and returns a boolean.")
-        assert.isFunction(generator, "Expected 'generator' parameter to 'DataFrame.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
+        if (!isFunction(comparer)) throw new Error("Expected 'comparer' parameter to 'DataFrame.fillGaps' to be a comparer function that compares two values and returns a boolean.")
+        if (!isFunction(generator)) throw new Error("Expected 'generator' parameter to 'DataFrame.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
 
         return this.rollingWindow(2)
             .selectMany((window): [IndexT, ValueT][] => {
@@ -6085,7 +6085,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }
 
                 const generatedRows = generator(pairA, pairB);
-                assert.isArray(generatedRows, "Expected return from 'generator' parameter to 'DataFrame.fillGaps' to be an array of pairs, instead got a " + typeof(generatedRows));
+                if (!isArray(generatedRows)) throw new Error("Expected return from 'generator' parameter to 'DataFrame.fillGaps' to be an array of pairs, instead got a " + typeof(generatedRows));
 
                 return [pairA].concat(generatedRows);
             })
@@ -6506,7 +6506,7 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
      * </pre>
      */
     writeFile (filePath: string): Promise<void> {
-        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFile' to be a string that specifies the path of the file to write to the local file system.");
+        if (!isString(filePath)) throw new Error("Expected 'filePath' parameter to 'DataFrame.asCSV().writeFile' to be a string that specifies the path of the file to write to the local file system.");
 
         return new Promise((resolve, reject) => {
             const fs = require('fs');	
@@ -6534,7 +6534,7 @@ class CsvSerializer<IndexT, ValueT> implements ICsvSerializer {
      * </pre>
      */
     writeFileSync (filePath: string): void {
-        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asCSV().writeFileSync' to be a string that specifies the path of the file to write to the local file system.");
+        if (!isString(filePath)) throw new Error("Expected 'filePath' parameter to 'DataFrame.asCSV().writeFileSync' to be a string that specifies the path of the file to write to the local file system.");
 
         const fs = require('fs');	
         fs.writeFileSync(filePath, this.dataframe.toCSV());
@@ -6606,7 +6606,7 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
      * </pre>
      */
     writeFile (filePath: string): Promise<void> {
-        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
+        if (!isString(filePath)) throw new Error("Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
 
         return new Promise((resolve, reject) => {
             const fs = require('fs');	
@@ -6634,7 +6634,7 @@ class JsonSerializer<IndexT, ValueT> implements IJsonSerializer {
      * </pre>
      */
     writeFileSync (filePath: string): void {
-        assert.isString(filePath, "Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
+        if (!isString(filePath)) throw new Error("Expected 'filePath' parameter to 'DataFrame.asJSON().writeFile' to be a string that specifies the path of the file to write to the local file system.");
 
         const fs = require('fs');	
         fs.writeFileSync(filePath, this.dataframe.toJSON());

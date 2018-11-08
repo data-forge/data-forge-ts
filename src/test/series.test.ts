@@ -693,6 +693,15 @@ describe('Series', () => {
 		expect(agg()).to.eql(30);
 	});
         
+	it('throws exception if no function is passed to aggregate', () => {
+
+		var series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
+
+		expect(() => { series.aggregate(3) }).to.throw();
+		expect(() => { series.aggregate("joy") }).to.throw();
+		expect(() => { series.aggregate( undefined ) }).to.throw();
+	});
+
 	it('can convert to javascript object', () => {
 
 		var series = new Series({
