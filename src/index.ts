@@ -3,7 +3,7 @@ export { Index, IIndex } from './lib/index';
 export { Series, ISeries, SelectorWithIndexFn } from './lib/series';
 export { DataFrame, IDataFrame } from './lib/dataframe';
 
-import { assert } from 'chai';
+import { isString, isObject, isNumber, isFunction, isArray } from 'lodash';
 import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
 import { Series, ISeries } from '.';
@@ -53,7 +53,7 @@ export function fromObject (obj: any): IDataFrame<number, IFieldRecord> {
  */
 export function fromJSON (jsonTextString: string): IDataFrame<number, any> {
     
-    assert.isString(jsonTextString, "Expected 'jsonTextString' parameter to 'dataForge.fromJSON' to be a string containing data encoded in the JSON format.");
+    if (!isString(jsonTextString)) throw new Error("Expected 'jsonTextString' parameter to 'dataForge.fromJSON' to be a string containing data encoded in the JSON format.");
 
     return new DataFrame<number, any>({
         values: JSON.parse(jsonTextString)
@@ -92,19 +92,19 @@ export interface ICSVOptions {
  * @returns Returns a dataframe that has been deserialized from the CSV data.
  */
 export function fromCSV (csvTextString: string, config?: ICSVOptions) {
-    assert.isString(csvTextString, "Expected 'csvTextString' parameter to 'dataForge.fromCSV' to be a string containing data encoded in the CSV format.");
+    if (!isString(csvTextString)) throw new Error("Expected 'csvTextString' parameter to 'dataForge.fromCSV' to be a string containing data encoded in the CSV format.");
 
     if (config) {
-        assert.isObject(config, "Expected 'config' parameter to 'dataForge.fromCSV' to be an object with CSV parsing configuration options.");
+        if (!isObject(config)) throw new Error("Expected 'config' parameter to 'dataForge.fromCSV' to be an object with CSV parsing configuration options.");
 
         if (config.columnNames) {
             if (!Sugar.Object.isFunction(config.columnNames[Symbol.iterator])) {
-                assert.isArray(config.columnNames, "Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array or iterable of strings that specifies column names.")
+                if (!isArray(config.columnNames)) throw new Error("Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array or iterable of strings that specifies column names.")
             }
 
 
             for (const columnName of config.columnNames) {
-                assert.isString(columnName, "Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array of strings that specify column names.")
+                if (!isString(columnName)) throw new Error("Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array of strings that specify column names.")
             }
         }
         
@@ -207,7 +207,7 @@ class AsyncFileReader implements IAsyncFileReader {
      */
     async parseCSV (config?: ICSVOptions): Promise<IDataFrame<number, any>> {
         if (config) {
-            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFile(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
+            if (!isObject(config)) throw new Error("Expected optional 'config' parameter to dataForge.readFile(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
         }
         
         const fileData = await readFileData(this.filePath);
@@ -236,7 +236,7 @@ class AsyncFileReader implements IAsyncFileReader {
  */
 export function readFile (filePath: string): IAsyncFileReader {
 
-    assert.isString(filePath, "Expected 'filePath' parameter to dataForge.readFile to be a string that specifies the path of the file to read.");
+    if (!isString(filePath)) throw new Error("Expected 'filePath' parameter to dataForge.readFile to be a string that specifies the path of the file to read.");
 
     return new AsyncFileReader(filePath);
 }
@@ -284,7 +284,7 @@ class SyncFileReader implements ISyncFileReader {
      */
     parseCSV (config?: ICSVOptions): IDataFrame<number, any> {
         if (config) {
-            assert.isObject(config, "Expected optional 'config' parameter to dataForge.readFileSync(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
+            if (!isObject(config)) throw new Error("Expected optional 'config' parameter to dataForge.readFileSync(...).parseCSV(...) to be an object with configuration options for CSV parsing.");
         }
 
         const fs = require('fs');
@@ -315,7 +315,7 @@ class SyncFileReader implements ISyncFileReader {
  */
 export function readFileSync (filePath: string): ISyncFileReader {
 
-    assert.isString(filePath, "Expected 'filePath' parameter to dataForge.readFileSync to be a string that specifies the path of the file to read.");
+    if (!isString(filePath)) throw new Error("Expected 'filePath' parameter to dataForge.readFileSync to be a string that specifies the path of the file to read.");
 
     return new SyncFileReader(filePath);
 }
@@ -355,8 +355,8 @@ export { zip as zipSeries }
  */
 export function range (start: number, count: number): ISeries<number, number> {
 
-    assert.isNumber(start, "Expect 'start' parameter to 'dataForge.range' function to be a number.");
-    assert.isNumber(count, "Expect 'count' parameter to 'dataForge.range' function to be a number.");
+    if (!isNumber(start)) throw new Error("Expect 'start' parameter to 'dataForge.range' function to be a number.");
+    if (!isNumber(count)) throw new Error("Expect 'count' parameter to 'dataForge.range' function to be a number.");
 
     const values: number[] = [];
     for (let valueIndex = 0; valueIndex < count; ++valueIndex) {
@@ -394,10 +394,10 @@ export function replicate<ValueT> (value: ValueT, count: number): ISeries<number
  * @returns Returns a dataframe that contains a matrix of generated values.
  */
 export function matrix (numColumns: number, numRows: number, start: number, increment: number): IDataFrame<number, any> {
-    assert.isNumber(numColumns, "Expect 'numColumns' parameter to 'dataForge.matrix' function to be a number.");
-    assert.isNumber(numRows, "Expect 'numRows' parameter to 'dataForge.matrix' function to be a number.");
-    assert.isNumber(start, "Expect 'start' parameter to 'dataForge.matrix' function to be a number.");
-    assert.isNumber(increment, "Expect 'increment' parameter to 'dataForge.matrix' function to be a number.");
+    if (!isNumber(numColumns)) throw new Error("Expect 'numColumns' parameter to 'dataForge.matrix' function to be a number.");
+    if (!isNumber(numRows)) throw new Error("Expect 'numRows' parameter to 'dataForge.matrix' function to be a number.");
+    if (!isNumber(start)) throw new Error("Expect 'start' parameter to 'dataForge.matrix' function to be a number.");
+    if (!isNumber(increment)) throw new Error("Expect 'increment' parameter to 'dataForge.matrix' function to be a number.");
 
     const rows: number[][] = [];
     const columnNames: string[] = [];

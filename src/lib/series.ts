@@ -21,7 +21,7 @@ import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
-import { assert } from 'chai';
+import { isString, isObject, isNumber, isFunction, isArray} from 'lodash';
 import { IDataFrame, DataFrame } from './dataframe';
 import * as moment from 'moment';
 import { toMap } from './utils';
@@ -2285,8 +2285,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
 
-        assert.isFunction(keySelector, "Expected 'keySelector' parameter to Series.toObject to be a function.");
-        assert.isFunction(valueSelector, "Expected 'valueSelector' parameter to Series.toObject to be a function.");
+        if (!isFunction(keySelector)) throw new Error("Expected 'keySelector' parameter to Series.toObject to be a function.");
+        if (!isFunction(valueSelector)) throw new Error("Expected 'valueSelector' parameter to Series.toObject to be a function.");
 
         return toMap(this, keySelector, valueSelector);
     }
@@ -2313,7 +2313,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
-        assert.isFunction(selector, "Expected 'selector' parameter to 'Series.select' function to be a function.");
+        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.select' function to be a function.");
 
         return new Series(() => ({
             values: new SelectIterable(this.getContent().values, selector),
@@ -2346,7 +2346,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     selectMany<ToT> (selector: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
-        assert.isFunction(selector, "Expected 'selector' parameter to 'Series.selectMany' to be a function.");
+        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.selectMany' to be a function.");
 
         return new Series(() => ({
             pairs: new SelectManyIterable(
@@ -2391,7 +2391,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     window (period: number): ISeries<number, ISeries<IndexT, ValueT>> {
 
-        assert.isNumber(period, "Expected 'period' parameter to 'Series.window' to be a number.");
+        if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'Series.window' to be a number.");
 
         return new Series<number, ISeries<IndexT, ValueT>>(() => ({
             values: new SeriesWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
@@ -2416,7 +2416,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>> {
 
-        assert.isNumber(period, "Expected 'period' parameter to 'Series.rollingWindow' to be a number.");
+        if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'Series.rollingWindow' to be a number.");
 
         return new Series<number, ISeries<IndexT, ValueT>>(() => ({
             values: new SeriesRollingWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
@@ -2448,7 +2448,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
         
-        assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.variableWindow' to be a function.")
+        if (!isFunction(comparer)) throw new Error("Expected 'comparer' parameter to 'Series.variableWindow' to be a function.")
 
         return new Series<number, ISeries<IndexT, ValueT>>(() => ({
             values: new SeriesVariableWindowIterable<IndexT, ValueT>(this.getContent().pairs, comparer)
@@ -2477,7 +2477,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
         
         if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to 'Series.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
         }
         else {
             selector = (value: ValueT): ToT => <ToT> <any> value;
@@ -2536,7 +2536,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
         }
         else {
-            assert.isFunction(selector, "Expected 'selector' parameter to aggregate to be a function.");
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to aggregate to be a function.");
 
             let accum = <ToT> seedOrSelector;
 
@@ -2676,7 +2676,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     skipWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.skipWhile' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.skipWhile' function to be a predicate function that returns true/false.");
 
         return new Series<IndexT, ValueT>(() => ({
             values: new SkipWhileIterable(this.getContent().values, predicate),
@@ -2698,7 +2698,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     skipUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.skipUntil' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.skipUntil' function to be a predicate function that returns true/false.");
 
         return this.skipWhile(value => !predicate(value)); 
     }
@@ -2717,7 +2717,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     take (numRows: number): ISeries<IndexT, ValueT> {
-        assert.isNumber(numRows, "Expected 'numRows' parameter to 'Series.take' function to be a number.");
+        if (!isNumber(numRows)) throw new Error("Expected 'numRows' parameter to 'Series.take' function to be a number.");
 
         return new Series(() => ({
             index: new TakeIterable(this.getContent().index, numRows),
@@ -2740,7 +2740,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     takeWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.takeWhile' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.takeWhile' function to be a predicate function that returns true/false.");
 
         return new Series(() => ({
             values: new TakeWhileIterable(this.getContent().values, predicate),
@@ -2762,7 +2762,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     takeUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.takeUntil' function to be a predicate function that returns true/false.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.takeUntil' function to be a predicate function that returns true/false.");
 
         return this.takeWhile(value => !predicate(value));
     }
@@ -2890,7 +2890,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     head (numValues: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'numValues' parameter to 'Series.head' function to be a number.");
+        if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'Series.head' function to be a number.");
 
         if (numValues === 0) {
             return new Series<IndexT, ValueT>(); // Empty series.
@@ -2916,7 +2916,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     tail (numValues: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(numValues, "Expected 'numValues' parameter to 'Series.tail' function to be a number.");
+        if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'Series.tail' function to be a number.");
 
         if (numValues === 0) {
             return new Series<IndexT, ValueT>(); // Empty series.
@@ -2941,7 +2941,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
 
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.where' function to be a function.");
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.where' function to be a function.");
 
         return new Series(() => ({
             values: new WhereIterable(this.getContent().values, predicate),
@@ -2965,7 +2965,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     forEach (callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT> {
-        assert.isFunction(callback, "Expected 'callback' parameter to 'Series.forEach' to be a function.");
+        if (!isFunction(callback)) throw new Error("Expected 'callback' parameter to 'Series.forEach' to be a function.");
 
         let index = 0;
         for (const value of this) {
@@ -2990,7 +2990,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     all (predicate: PredicateFn<ValueT>): boolean {
-        assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.all' to be a function.")
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.all' to be a function.")
 
         let count = 0;
 
@@ -3031,7 +3031,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     any (predicate?: PredicateFn<ValueT>): boolean {
         if (predicate) {
-            assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.any' to be a function.")
+            if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.any' to be a function.")
         }
 
         if (predicate) {
@@ -3076,7 +3076,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     none (predicate?: PredicateFn<ValueT>): boolean {
 
         if (predicate) {
-            assert.isFunction(predicate, "Expected 'predicate' parameter to 'Series.none' to be a function.")
+            if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.none' to be a function.")
         }
 
         if (predicate) {
@@ -3317,7 +3317,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return undefined;
         }
         else {
-            assert.isString(value, "Called Series.parseInts, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+            if (!isString(value)) throw new Error("Called Series.parseInts, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
 
             if (value.length === 0) {
                 return undefined;
@@ -3350,7 +3350,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return undefined;
         }
         else {
-            assert.isString(value, "Called Series.parseFloats, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+            if (!isString(value)) throw new Error("Called Series.parseFloats, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
 
             if (value.length === 0) {
                 return undefined;
@@ -3383,7 +3383,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return undefined;
         }
         else {
-            assert.isString(value, "Called Series.parseDates, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+            if (!isString(value)) throw new Error("Called Series.parseDates, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
 
             if (value.length === 0) {
                 return undefined;
@@ -3412,7 +3412,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     parseDates (formatString?: string): ISeries<IndexT, Date> {
 
         if (formatString) {
-            assert.isString(formatString, "Expected optional 'formatString' parameter to Series.parseDates to be a string (if specified).");
+            if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to Series.parseDates to be a string (if specified).");
         }
 
         return <ISeries<IndexT, Date>> this.select((value: any | undefined, valueIndex: number) => Series.parseDate(value, valueIndex, formatString));
@@ -3470,7 +3470,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     toStrings (formatString?: string): ISeries<IndexT, string> {
 
         if (formatString) {
-            assert.isString(formatString, "Expected optional 'formatString' parameter to Series.toStrings to be a string (if specified).");
+            if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to Series.toStrings to be a string (if specified).");
         }
 
         return <ISeries<IndexT, string>> this.select(value => Series.toString(value, formatString));
@@ -3529,7 +3529,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     inflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
 
         if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to Series.inflate to be a selector function.");
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to Series.inflate to be a selector function.");
 
             return new DataFrame<IndexT, ToT>({ //TODO: Pass a fn in here.
                 values: new SelectIterable(this.getContent().values, selector),
@@ -3783,7 +3783,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
-        assert.isFunction(selector, "Expected 'selector' parameter to 'Series.groupBy' to be a selector function that determines the value to group the series by.");
+        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.groupBy' to be a selector function that determines the value to group the series by.");
 
         return new Series<number, ISeries<IndexT, ValueT>>(() => {
             const groups: any[] = []; // Each group, in order of discovery.
@@ -3843,7 +3843,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
         if (selector) {
-            assert.isFunction(selector, "Expected 'selector' parameter to 'Series.groupSequentialBy' to be a selector function that determines the value to group the series by.")
+            if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.groupSequentialBy' to be a selector function that determines the value to group the series by.")
         }
         else {
             selector = value => <GroupT> <any> value;
@@ -3860,7 +3860,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @returns Returns a single series concatenated from multiple input series. 
      */
     static concat<IndexT = any, ValueT = any> (series: ISeries<IndexT, ValueT>[]): ISeries<IndexT, ValueT> {
-        assert.isArray(series, "Expected 'series' parameter to 'Series.concat' to be an array of series.");
+        if (!isArray(series)) throw new Error("Expected 'series' parameter to 'Series.concat' to be an array of series.");
 
         return new Series(() => {
             const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
@@ -3938,7 +3938,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     */
     static zip<IndexT = any, ValueT = any, ResultT = any> (series: ISeries<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): ISeries<IndexT, ResultT> {
 
-        assert.isArray(series, "Expected 'series' parameter to 'Series.zip' to be an array of series.");
+        if (!isArray(series)) throw new Error("Expected 'series' parameter to 'Series.zip' to be an array of series.");
 
         if (series.length === 0) {
             return new Series<IndexT, ResultT>();
@@ -4091,7 +4091,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             ISeries<IndexT, ValueT> {
 
         if (selector) {
-            assert.isFunction(selector, "Expected optional 'selector' parameter to 'Series.union' to be a selector function.");
+            if (!isFunction(selector)) throw new Error("Expected optional 'selector' parameter to 'Series.union' to be a selector function.");
         }
 
         return this.concat(other).distinct(selector);
@@ -4136,14 +4136,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             ISeries<IndexT, ValueT> {
 
         if (outerSelector) {
-            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'Series.intersection' to be a function.");
+            if (!isFunction(outerSelector)) throw new Error("Expected optional 'outerSelector' parameter to 'Series.intersection' to be a function.");
         }
         else {
             outerSelector = value => <KeyT> <any> value;
         }
         
         if (innerSelector) {
-            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'Series.intersection' to be a function.");
+            if (!isFunction(innerSelector)) throw new Error("Expected optional 'innerSelector' parameter to 'Series.intersection' to be a function.");
         }
         else {
             innerSelector = value => <KeyT> <any> value;
@@ -4196,14 +4196,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             ISeries<IndexT, ValueT> {
 
         if (outerSelector) {
-            assert.isFunction(outerSelector, "Expected optional 'outerSelector' parameter to 'Series.except' to be a function.");
+            if (!isFunction(outerSelector)) throw new Error("Expected optional 'outerSelector' parameter to 'Series.except' to be a function.");
         }
         else {
             outerSelector = value => <KeyT> <any> value;
         }
 
         if (innerSelector) {
-            assert.isFunction(innerSelector, "Expected optional 'innerSelector' parameter to 'Series.except' to be a function.");
+            if (!isFunction(innerSelector)) throw new Error("Expected optional 'innerSelector' parameter to 'Series.except' to be a function.");
         }
         else {
             innerSelector = value => <KeyT> <any> value;
@@ -4255,9 +4255,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         resultSelector: JoinFn<ValueT, InnerValueT, ResultValueT>):
             ISeries<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.join' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.join' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.join' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'Series.join' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'Series.join' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'Series.join' to be a selector function.");
 
         const outer = this;
 
@@ -4330,9 +4330,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             ISeries<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.joinOuter' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.joinOuter' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.joinOuter' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'Series.joinOuter' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'Series.joinOuter' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'Series.joinOuter' to be a selector function.");
 
         // Get the results in the outer that are not in the inner.
         const outer = this;
@@ -4395,9 +4395,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             ISeries<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'Series.joinOuterLeft' to be a selector function.");
 
         // Get the results in the outer that are not in the inner.
         const outer = this;
@@ -4454,9 +4454,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         resultSelector: JoinFn<ValueT | null, InnerValueT | null, ResultValueT>):
             ISeries<number, ResultValueT> {
 
-        assert.isFunction(outerKeySelector, "Expected 'outerKeySelector' parameter of 'Series.joinOuterRight' to be a selector function.");
-        assert.isFunction(innerKeySelector, "Expected 'innerKeySelector' parameter of 'Series.joinOuterRight' to be a selector function.");
-        assert.isFunction(resultSelector, "Expected 'resultSelector' parameter of 'Series.joinOuterRight' to be a selector function.");
+        if (!isFunction(outerKeySelector)) throw new Error("Expected 'outerKeySelector' parameter of 'Series.joinOuterRight' to be a selector function.");
+        if (!isFunction(innerKeySelector)) throw new Error("Expected 'innerKeySelector' parameter of 'Series.joinOuterRight' to be a selector function.");
+        if (!isFunction(resultSelector)) throw new Error("Expected 'resultSelector' parameter of 'Series.joinOuterRight' to be a selector function.");
 
         // Get the results in the inner that are not in the outer.
         const outer = this;
@@ -4487,7 +4487,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     truncateStrings (maxLength: number): ISeries<IndexT, ValueT> {
 
-        assert.isNumber(maxLength, "Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
+        if (!isNumber(maxLength)) throw new Error("Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
 
         return this.select((value: any) => {
                 if (Sugar.Object.isString(value)) {
@@ -4517,8 +4517,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
-        assert.isArray(pair, "Expected 'pair' parameter to 'Series.insertPair' to be an array.");
-        assert(pair.length === 2, "Expected 'pair' parameter to 'Series.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
+        if (!isArray(pair)) throw new Error("Expected 'pair' parameter to 'Series.insertPair' to be an array.");
+        if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'Series.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
 
         return (new Series<IndexT, ValueT>({ pairs: [pair] })).concat(this);
     }
@@ -4540,8 +4540,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
-        assert.isArray(pair, "Expected 'pair' parameter to 'Series.appendPair' to be an array.");
-        assert(pair.length === 2, "Expected 'pair' parameter to 'Series.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
+        if (!isArray(pair)) throw new Error("Expected 'pair' parameter to 'Series.appendPair' to be an array.");
+        if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'Series.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
 
         return this.concat(new Series<IndexT, ValueT>({ pairs: [pair] }));
     }
@@ -4579,8 +4579,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT> {
-        assert.isFunction(comparer, "Expected 'comparer' parameter to 'Series.fillGaps' to be a comparer function that compares two values and returns a boolean.")
-        assert.isFunction(generator, "Expected 'generator' parameter to 'Series.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
+        if (!isFunction(comparer)) throw new Error("Expected 'comparer' parameter to 'Series.fillGaps' to be a comparer function that compares two values and returns a boolean.")
+        if (!isFunction(generator)) throw new Error("Expected 'generator' parameter to 'Series.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
 
         return this.rollingWindow(2)
             .selectMany((window): [IndexT, ValueT][] => {
@@ -4592,7 +4592,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 }
 
                 const generatedRows = generator(pairA, pairB);
-                assert.isArray(generatedRows, "Expected return from 'generator' parameter to 'Series.fillGaps' to be an array of pairs, instead got a " + typeof(generatedRows));
+                if (!isArray(generatedRows)) throw new Error("Expected return from 'generator' parameter to 'Series.fillGaps' to be an array of pairs, instead got a " + typeof(generatedRows));
 
                 return [pairA].concat(generatedRows);
             })

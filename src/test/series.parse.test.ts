@@ -140,8 +140,7 @@ describe('Series parse', () => {
         expect(row[2]).to.eql("foo");
         expect(row[3]).to.eql("5.5");
         expect(row[4]).to.satisfy((value: string) => {
-            return value === "Sun Feb 01 2015 00:00:00 GMT+1000 (E. Australia Standard Time)" ||
-                value === "Sun Feb 01 2015 00:00:00 GMT+1000 (AEST)";
+        	return value.startsWith("Sun Feb 01 2015 00:00:00 GMT"); // Don't care about timezone part of string.
         });
 	});
 
