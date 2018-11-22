@@ -1,5 +1,8 @@
 # Data-Forge
 
+!! This is the beta/dev version of Data-Forge. 
+You probably want [the currently published version](https://www.npmjs.com/package/data-forge) instead.
+
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
 Implemented in TypeScript, used in JavaScript ES5+ or TypeScript.
@@ -20,14 +23,6 @@ Do your prototyping and exploratory data analysis in JavaScript with [Data-Forge
 [![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/data-forge/data-forge-ts/issues/)
 
 **Please note** that this repository replaces the [old version of Data-Forge](https://github.com/data-forge/data-forge-js).
-
-<!--todo:
-!! Made with TypeScript.
-[![NPM Downloads][downloads-image]][downloads-url]
-[![Linux Build][travis-image]][travis-url]
-[![Windows Build][appveyor-image]][appveyor-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
--->
 
 ## Install
 

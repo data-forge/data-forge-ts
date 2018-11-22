@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IValueFrequency | Data-Forge</title>
+	<title>ISerializedIndex | Data-Forge</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="ivaluefrequency.html">IValueFrequency</a>
+					<a href="iserializedindex.html">ISerializedIndex</a>
 				</li>
 			</ul>
-			<h1>Interface IValueFrequency</h1>
+			<h1>Interface ISerializedIndex</h1>
 		</div>
 	</div>
 </header>
@@ -65,8 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Represents the frequency of a value in a series or dataframe.
-						Represents the frequency of a value in a series or dataframe.</p>
+						<p>The serialized index for a dataframe.</p>
 					</div>
 				</div>
 			</section>
@@ -74,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IValueFrequency</span>
+						<span class="target">ISerializedIndex</span>
 					</li>
 				</ul>
 			</section>
@@ -85,9 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#column" class="tsd-kind-icon">Column</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#frequency" class="tsd-kind-icon">Frequency</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#value" class="tsd-kind-icon">Value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iserializedindex.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iserializedindex.html#values" class="tsd-kind-icon">values</a></li>
 							</ul>
 						</section>
 					</div>
@@ -96,51 +94,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="column" class="tsd-anchor"></a>
-					<h3>Column</h3>
-					<div class="tsd-signature tsd-kind-icon">Column<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/dataframe.ts#L226">lib/dataframe.ts:226</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/dataframe.ts#L256">lib/dataframe.ts:256</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Name of the column containing the value.</p>
+							<p>The data type of the index.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="frequency" class="tsd-anchor"></a>
-					<h3>Frequency</h3>
-					<div class="tsd-signature tsd-kind-icon">Frequency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="values" class="tsd-anchor"></a>
+					<h3>values</h3>
+					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/dataframe.ts#L236">lib/dataframe.ts:236</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/series.ts#L151">lib/series.ts:151</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/dataframe.ts#L261">lib/dataframe.ts:261</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The frequency of the value&#39;s appearance in the series or dataframe.
-							The frequency of the value&#39;s appearance in the series or dataframe.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="value" class="tsd-anchor"></a>
-					<h3>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/dataframe.ts#L231">lib/dataframe.ts:231</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e5fac24/src/lib/series.ts#L146">lib/series.ts:146</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The value.
-							The value.</p>
+							<p>Values in the index.</p>
 						</div>
 					</div>
 				</section>
@@ -159,16 +138,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ivaluefrequency.html" class="tsd-kind-icon">IValue<wbr>Frequency</a>
+						<a href="iserializedindex.html" class="tsd-kind-icon">ISerialized<wbr>Index</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#column" class="tsd-kind-icon">Column</a>
+								<a href="iserializedindex.html#type" class="tsd-kind-icon">type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#frequency" class="tsd-kind-icon">Frequency</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#value" class="tsd-kind-icon">Value</a>
+								<a href="iserializedindex.html#values" class="tsd-kind-icon">values</a>
 							</li>
 						</ul>
 					</li>
