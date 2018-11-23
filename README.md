@@ -63,7 +63,7 @@ Here's an example:
 const dataForge = require('data-forge');
 require('data-forge-fs'); // For readFile/writeFile.
 
-dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
+dataForge.readFileSync('./input-data-file.csv') // Read CSV file (or JSON!)
     .parseCSV()
     .parseDates(["Column B"]) // Parse date columns.
     .parseInts(["Column B", "Column C"]) // Parse integer columsn.
@@ -72,13 +72,7 @@ dataForge.readFile('./input-data-file.csv') // Read CSV file (or JSON!)
     .where(row => predicate(row)) // Filter rows.
     .select(row => transform(row)) // Transform the data.
     .asCSV() 
-    .writeFile("./output-data-file.csv") // Write to output CSV file (or JSON!)
-    .then(() => {
-        console.log("Done!");
-    })
-    .catch(err => {
-        console.log("An error occurred!");
-    });
+    .writeFileSync("./output-data-file.csv"); // Write to output CSV file (or JSON!)
 ```
 
 ## From the browser
