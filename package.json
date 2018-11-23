@@ -1,5 +1,5 @@
 {
-  "name": "data-forge-beta",
+  "name": "data-forge",
   "version": "1.3.0",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",

@@ -107,7 +107,7 @@ The aims of this project:
 - To combine the best aspects of [Pandas](https://en.wikipedia.org/wiki/Pandas_(software)) and [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query) and make them available in JavaScript.
 - To be able to load, transform and save data.
 - To be able to prepare data for visualization. 
-- To be able to work with massive data files (although it's not quite there yet).
+- To be able to work with massive data files (although it's not quite there yet - want to add streaming in the future).
 
 ## Driving Principles 
 
@@ -136,6 +136,10 @@ Install via [NPM](https://en.wikipedia.org/wiki/Npm_(software)):
 
 	npm install --save data-forge
 
+If you are on Node.js and want the file system functions please also install the file system module [Data-Forge FS](https://github.com/data-forge/data-forge-fs):
+
+    npm install --save data-forge-fs
+
 Require the module into your JavaScript code:
 
 	var dataForge = require('data-forge');
@@ -147,6 +151,16 @@ Or import the entire module in TypeScript:
 Or just import classes and functions in TypeScript:
 
     import { readFile, Series, DataFrame } from 'data-forge';
+
+To use the file system functions also import the fs module in JavaScript:
+
+    require('data-forge-fs');
+
+Or in TypeScript:
+
+    import 'data-forge-fs';
+
+The file system module auguments the core Data-Forge API and adds readFile and writeFile function to support access to data files under Node.js. 
 
 ## Browser installation and setup
 
@@ -160,12 +174,15 @@ Include the main script in your HTML file:
 
 You can now use data-forge through the global `dataForge` variable.
 
+Don't attempt to install Data-Forge FS when using Data-Forge in the browser, that only works under Node.js.
+
 ## Getting the code
 
 Install via NPM or Bower as described in previous sections or clone, fork or download the code from GitHub:
 
-[https://github.com/data-forge/data-forge-ts](https://github.com/data-forge/data-forge-ts)
-
+- [https://github.com/data-forge/data-forge-ts](https://github.com/data-forge/data-forge-ts)
+- [https://github.com/data-forge/data-forge-fs](https://github.com/data-forge/data-forge-fs)
+- [https://github.com/data-forge/data-forge-plot](https://github.com/data-forge/data-forge-plot)
 
 # Key Concepts
 
@@ -428,7 +445,7 @@ Note an index is required for certain operations like `join` and `withSeries`.
 
 ## Working with CSV files
 
-NOTE: Data-Forge uses the NodeJS `fs` module, so reading and writing files doesn't work in the browser which has no access to the local file system.
+**WARNING:** You must have [Data-Forge FS](https://github.com/data-forge/data-forge-fs) installed to use the file system functions. This uses the NodeJS `fs` module, so reading and writing files can't work in the browser which has no access to the local file system. Only try this under Node.js!
 
 ### Reading CSV files
 
@@ -473,7 +490,7 @@ If your CSV doesn't have a header you must specify the column names:
 
 ### Working with CSV data
 
-NOTE: The `fromCSV`  and `toCSV` functions do work in the browser, because they are in-memory operations and don't deal directly with any files.
+**NOTE:** The `fromCSV`  and `toCSV` functions **do** work in the browser, because they are in-memory operations and don't deal directly with any files.
 
 If you already have CSV data (loaded into a string) you can parse it into a dataframe via `fromCSV`:
 
@@ -491,7 +508,7 @@ You can stringify a dataframe to CSV by calling `toCSV`:
 
 ## Working with JSON files 
 
-NOTE: Data-Forge uses the NodeJS `fs` module, so reading and writing files doesn't work in the browser which has no access to the local file system.
+**WARNING:** You must have [Data-Forge FS](https://github.com/data-forge/data-forge-fs) installed to use the file system functions. This uses the NodeJS `fs` module, so reading and writing files can't work in the browser which has no access to the local file system. Only try this under Node.js!
 
 ### Reading JSON files
 
@@ -529,7 +546,7 @@ NOTE: Data-Forge uses the NodeJS `fs` module, so reading and writing files doesn
 
 ### Working with JSON data
 
-NOTE: The `fromJSON`  and `toJSON` functions do work in the browser, because they are in-memory operations and don't deal directly with any files.
+**NOTE:** The `fromJSON`  and `toJSON` functions **do** work in the browser, because they are in-memory operations and don't deal directly with any files.
 
 If you already have JSON data (loaded into a string) you can parse it into a dataframe via `fromJSON`:
 
@@ -542,7 +559,7 @@ You can stringify a dataframe to jSON by calling `toJSON`:
 
 ## Parsing column values
 
-Often when you load data from a file you will need to parse string values in specific columns to particular types. This is especially true for CSV files which contain only string data once loaded. It is less true for JSON files which can store values as numbers, although the JSON format has no native date format, so when you load JSON files you will still need parse the dates.
+Often when you parse a data set from a text format you will need to parse string values in specific columns to particular types. This is especially true for CSV data which contain only string data once loaded. It is less true for JSON data which can store values as numbers, although the JSON format has no native date format, so when you load JSON files you will still need parse the dates.
 
 Data-Forge has various helper functions for parsing string values: `parseInts`, `parseFloats` and `parseDates`.
 
@@ -586,7 +603,7 @@ Please note that this will parse numbers and booleans, but it won't parse dates.
 
 ## Stringifying column values 
 
-When you are saving out data files or displaying data on screen you will often want to transform values in specific columns to particular types. For numbers this happens automatically, but this is essential when formatting dates for output, for example:
+When you are saving out data in a text format or displaying data on screen you will often want to transform values in specific columns to particular types. For numbers this happens automatically, but this is essential when formatting dates for output, for example:
 
 	var df = ...
 	assert.instanceof(df.first().Column1, Date);
