@@ -66,7 +66,7 @@ require('data-forge-fs'); // For readFile/writeFile.
 dataForge.readFileSync('./input-data-file.csv') // Read CSV file (or JSON!)
     .parseCSV()
     .parseDates(["Column B"]) // Parse date columns.
-    .parseInts(["Column B", "Column C"]) // Parse integer columsn.
+    .parseInts(["Column B", "Column C"]) // Parse integer columns.
     .parseFloats(["Column D", "Column E"]) // Parse float columns.
     .dropSeries(["Column F"]) // Drop certain columns.
     .where(row => predicate(row)) // Filter rows.
