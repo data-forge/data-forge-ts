@@ -4218,7 +4218,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return value; // Only need the first value.
         }
 
-        throw new Error("No values in Series.");
+        throw new Error("DataFrame.first: No values in DataFrame.");
     }
 
     /**
@@ -4241,7 +4241,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         if (lastValue === null) {
-            throw new Error("No values in Series.");
+            throw new Error("DataFrame.last: No values in DataFrame.");
         }
 
         return lastValue;

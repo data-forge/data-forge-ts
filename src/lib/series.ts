@@ -2804,7 +2804,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return value; // Only need the first value.
         }
 
-        throw new Error("No values in Series.");
+        throw new Error("Series.first: No values in Series.");
     }
 
     /**
@@ -2827,7 +2827,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         if (lastValue === null) {
-            throw new Error("No values in Series.");
+            throw new Error("Series.last: No values in Series.");
         }
 
         return lastValue;
