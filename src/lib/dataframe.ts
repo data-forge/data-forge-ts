@@ -2729,9 +2729,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return {
                 values: columnNames.map(columnName => {
                     const series = this.getSeries(columnName);
+                    const firstValue = series.skipWhile(value => value === undefined).first();
                     return {
                         name: columnName,
-                        type: determineType(series.first()), //TODO: Should cache the type.
+                        type: determineType(firstValue), //TODO: Should cache the type.
                         series: series,
                     };
                 }),

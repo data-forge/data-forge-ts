@@ -520,6 +520,23 @@ describe('DataFrame series', () => {
 		expect(columns.at(2)!.series.toArray()).to.eql(['foo', 'bar']);
     });
 
+    it('column with undefined initial values reports type correctly', () => {
+
+		var dataFrame = new DataFrame({
+			columnNames: [ "Column" ],
+			rows: [
+				[undefined],
+				[5],
+			]
+        });
+        
+        const columns = dataFrame.getColumns();
+        expect(columns.count()).to.eql(1);
+        
+        const column = columns.first();
+        expect(column.type).to.eql("number");
+    });
+
 	it('column being merged is reindexed', () => {
 
 		var dataFrame = new DataFrame({
