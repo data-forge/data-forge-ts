@@ -50,7 +50,10 @@ export function toMap<InT, KeyT, ValueT>(items: Iterable<InT>, keySelector: (ite
 // Determine the type of a value.
 //
 export function determineType (value: any): string {
-    if (Sugar.Object.isNumber(value)) {
+    if (value === undefined) {
+        return "undefined";
+    }
+    else if (Sugar.Object.isNumber(value)) {
         return "number";
     }
     else if (Sugar.Object.isString(value)) {

@@ -2728,8 +2728,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const columnNames = this.getColumnNames();
             return {
                 values: columnNames.map(columnName => {
-                    const series = this.getSeries(columnName);
-                    const firstValue = series.skipWhile(value => value === undefined).first();
+                    const series = this.getSeries(columnName).skipWhile(value => value === undefined);
+                    const firstValue = series.any() ? series.first() : undefined;
                     return {
                         name: columnName,
                         type: determineType(firstValue), //TODO: Should cache the type.

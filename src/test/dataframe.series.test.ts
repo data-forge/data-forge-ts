@@ -537,6 +537,23 @@ describe('DataFrame series', () => {
         expect(column.type).to.eql("number");
     });
 
+    it('column with fully undefined values reports type as undefined', () => {
+
+		var dataFrame = new DataFrame({
+			columnNames: [ "Column" ],
+			rows: [
+				[undefined],
+				[undefined],
+			]
+        });
+        
+        const columns = dataFrame.getColumns();
+        expect(columns.count()).to.eql(1);
+        
+        const column = columns.first();
+        expect(column.type).to.eql("undefined");
+    });
+    
 	it('column being merged is reindexed', () => {
 
 		var dataFrame = new DataFrame({
