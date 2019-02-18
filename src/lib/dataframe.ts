@@ -532,7 +532,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * });
      * <pre>
      */
-    withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT>;
+    withSeries<OutputValueT = any, SeriesValueT = any> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, OutputValueT>;
+
     
     /**
      * Add a series to the dataframe, but only if it doesn't already exist.
@@ -2988,7 +2989,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * });
      * <pre>
      */
-    withSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
+    withSeries<OutputValueT = any, SeriesValueT = any> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, OutputValueT> {
 
         if (!Sugar.Object.isObject(columnNameOrSpec)) {
             if (!isString(columnNameOrSpec)) throw new Error("Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
@@ -3008,7 +3009,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 workingDataFrame = workingDataFrame.withSeries(columnName, columnSpec[columnName]);
             }
 
-            return workingDataFrame;
+            return workingDataFrame.cast<OutputValueT>();
         }
 
         const columnName: string = <string> columnNameOrSpec;
@@ -3028,10 +3029,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                     var row: any = {};
                     row[columnName] = value;
                     return row;
-                });
+                })
+                .cast<OutputValueT>();
         }
 
-        return new DataFrame<IndexT, ValueT>(() => {    
+        return new DataFrame<IndexT, OutputValueT>(() => {    
             let importSeries: ISeries<IndexT, SeriesValueT>;
     
             if (Sugar.Object.isFunction(series as Object)) {
@@ -3047,7 +3049,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return {
                 columnNames: newColumnNames,
                 index: this.getContent().index,
-                pairs: new SelectIterable<[IndexT, ValueT], [IndexT, ValueT]>(this.getContent().pairs, pair => {
+                pairs: new SelectIterable<[IndexT, ValueT], [IndexT, OutputValueT]>(this.getContent().pairs, pair => {
                     const index = pair[0];
                     const value = pair[1];
                     const modified: any = Object.assign({}, value);
@@ -3060,7 +3062,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             };
         });
     }
-    
+
     /**
      * Add a series to the dataframe, but only if it doesn't already exist.
      * 

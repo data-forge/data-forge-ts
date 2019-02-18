@@ -2485,7 +2485,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         return this.variableWindow((a, b) => selector!(a) === selector!(b))
             .select((window): [IndexT, ValueT] => {
-                return [window.getIndex().first(), window.first()]  ;
+                return [window.getIndex().first(), window.first()] ;
             })
             .withIndex(pair => pair[0])
             .select(pair => pair[1]);
