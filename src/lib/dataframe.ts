@@ -537,9 +537,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Merge another data frame into this one.
      * 
-     * @param otherDataFrame The other data frame to merge into this dataframe.
+     * @param otherDataFrame The other dataframe to merge into this dataframe.
      * 
-     * @returns The merged data frame.
+     * @returns The merged dataframe.
      * 
      * @example
      * <pre>
@@ -547,6 +547,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * const mergedDF = df.merge(otherDf);
      * </pre>
      */
+    //TODO: This should take an optional selector for compatibility with the series version of merge.
     merge<MergedValueT = any, OtherValueT = any>(otherDataFrame: IDataFrame<IndexT, OtherValueT>): IDataFrame<IndexT, MergedValueT>;
     
     /**

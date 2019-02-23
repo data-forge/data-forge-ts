@@ -282,6 +282,24 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     resetIndex (): ISeries<number, ValueT>;
 
     /**
+     * Merge another seies into this one.
+     * 
+     * @param otherSeries The other series to merge into this series.
+     * 
+     * @returns The merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const mergedSeries = series.merge(otherSeries);
+     * </pre>
+     */
+    merge<MergedValueT = any, OtherValueT = any>(
+        otherSeries: ISeries<IndexT, OtherValueT>,
+        mergeFn: (a: ValueT, b: OtherValueT) => MergedValueT)
+            : ISeries<IndexT, MergedValueT>;
+
+    /**
     * Extract values from the series as an array.
     * This forces lazy evaluation to complete.
     * 
@@ -2221,6 +2239,30 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return new Series<number, ValueT>(() => ({
             values: this.getContent().values // Just strip the index.
         }));
+    }
+    
+    /**
+     * Merge another seies into this one.
+     * 
+     * @param otherSeries The other series to merge into this series.
+     * 
+     * @returns The merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const mergedSeries = series.merge(otherSeries);
+     * </pre>
+     */
+    merge<MergedValueT = any, OtherValueT = any>(
+        otherSeries: ISeries<IndexT, OtherValueT>, 
+        mergeFn: (a: ValueT, b: OtherValueT) => MergedValueT)
+            : ISeries<IndexT, MergedValueT> {
+
+        return this.inflate(value => ({ a: value })) //TODO: Need a more efficient way to merge series.
+            .withSeries({ b: otherSeries })
+            .where(row => row.a !== undefined && row.b !== undefined)
+            .deflate(row => mergeFn(row.a, row.b));
     }
     
     /**
