@@ -73,6 +73,8 @@ export type SelectorWithIndexFn<FromT, ToT> = (value: FromT, index: number) => T
  * User-defined zipper functions.
  * Used to 'zip together' multiple series or dataframes.
  */
+//TODO: The Zip function should actually be necessary. Should really just output a series of arrays, collecting each value into one array.
+// The caller can then run select on it and this means th the zipper function is unecessary.
 export type ZipNFn<ValueT, ReturnT> = (input: ISeries<number, ValueT>) => ReturnT;
 export type Zip2Fn<T1, T2, ReturnT> = (a: T1, b : T2) => ReturnT;
 export type Zip3Fn<T1, T2, T3, ReturnT> = (a: T1, b: T2, c: T3) => ReturnT;
