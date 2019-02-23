@@ -296,10 +296,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const mergedSeries = series.merge(otherSeries);
      * </pre>
      */
-    merge<Value2T = any, ResultT = any>  (s2: ISeries<IndexT, Value2T>): ISeries<IndexT, ResultT>;
-    merge<Value2T = any, Value3T = any, ResultT = any>  (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>): ISeries<IndexT, ResultT>;
-    merge<Value2T = any, Value3T = any, Value4T = any, ResultT = any>  (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>, s4: ISeries<IndexT, Value4T>): ISeries<IndexT, ResultT>;
-    merge<ResultT = any>  (...args: any[]): ISeries<IndexT, ResultT>;
+    merge<Value2T = any>(s2: ISeries<IndexT, Value2T>): ISeries<IndexT, [ValueT, Value2T]>;
+    merge<Value2T = any, Value3T = any> (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>): ISeries<IndexT, [ValueT, Value2T, Value3T]>;
+    merge<Value2T = any, Value3T = any, Value4T = any>(s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>, s4: ISeries<IndexT, Value4T>): ISeries<IndexT, [ValueT, Value2T, Value3T, Value4T]>;
+    merge(...args: any[]): ISeries<IndexT, any[]>;
 
     /**
     * Extract values from the series as an array.
