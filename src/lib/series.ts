@@ -594,6 +594,48 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     percentChange (period?: number): ISeries<IndexT, number>;
 
     /**
+     * For each period, compute the proportion of values that are less than the last value in the period.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param [period] Optional period for computing the proportion rank - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the proportion rank value for that period.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const proportionRank = series.proportionRank();
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const proportionRank = series.proportionRank(100);
+     * </pre>
+     */
+    proportionRank (period?: number): ISeries<IndexT, number>;
+
+    /**
+     * For each period, compute the percent of values that are less than the last value in the period.
+     * Percent are expressed as 0-100 values.
+     * 
+     * @param [period] Optional period for computing the percent rank - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the percent rank value for that period.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const percentRank = series.percentRank();
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const percentRank = series.percentRank(100);
+     * </pre>
+     */
+    percentRank (period?: number): ISeries<IndexT, number>;
+    
+    /**
      * Skip a number of values in the series.
      *
      * @param numValues Number of values to skip.
@@ -2583,7 +2625,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             let accum = <ToT> seedOrSelector;
 
             for (const value of this) {
-                accum = selector!(accum, value);                
+                accum = selector!(accum, value);
             }
 
             return accum;
@@ -2682,6 +2724,88 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     percentChange (period?: number): ISeries<IndexT, number> {
         return this.proportionChange(period).select(v => v * 100);
     }    
+    
+    /**
+     * For each period, compute the proportion of values that are less than the last value in the period.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param [period] Optional period for computing the proportion rank - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the proportion rank value for that period.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const proportionRank = series.proportionRank();
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const proportionRank = series.proportionRank(100);
+     * </pre>
+     */
+    proportionRank (period?: number): ISeries<IndexT, number> {
+        if (period === undefined) {
+            period = 2;
+        }
+
+        if (!isNumber(period)) {
+            throw new Error("Expected 'period' parameter to 'Series.proportionRank' to be a number that specifies the time period for the ranking.");
+        }
+    
+        return this.rollingWindow(period+1) // +1 to account for the last value being used.
+            .select<[IndexT, number]>(window => {
+                const latestValue = window.last();
+                const numLowerValues = window.head(-1).where(prevMomentum => prevMomentum < latestValue).count();
+                if (numLowerValues > period!) {
+                    throw new Error("Unexpected!"); //fio:
+                }
+                const proportionRank = numLowerValues / period!;
+                if (proportionRank > 1) {
+                    throw new Error("Unexpected 1"); //fio:
+                }
+                if (proportionRank < 0) {
+                    throw new Error("Unexpected 2"); //fio:
+                }
+                return [
+                    window.getIndex().last(),
+                    proportionRank
+                ];
+            })
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
+    }
+
+    /**
+     * For each period, compute the percent of values that are less than the last value in the period.
+     * Percent are expressed as 0-100 values.
+     * 
+     * @param [period] Optional period for computing the percent rank - defaults to 2.
+     * 
+     * @returns Returns a new series where each value indicates the percent rank value for that period.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const percentRank = series.percentRank();
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const percentRank = series.percentRank(100);
+     * </pre>
+     */
+    percentRank (period?: number): ISeries<IndexT, number> {
+        if (period === undefined) {
+            period = 2;
+        }
+
+        if (!isNumber(period)) {
+            throw new Error("Expected 'period' parameter to 'Series.percentRank' to be a number that specifies the time period for the ranking.");
+        }
+    
+        return this.proportionRank(period).select(proportion => proportion * 100);
+    }
     
     /**
      * Skip a number of values in the series.
