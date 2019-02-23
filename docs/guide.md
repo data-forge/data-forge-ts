@@ -661,7 +661,7 @@ Get the names of the columns:
 
 Iterate a series of all columns:
 
-    for (var column in df.getColumns()) {
+    for (const column of df.getColumns()) {
         var name = column.name;
         var series = column.series;
 
