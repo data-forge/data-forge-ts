@@ -2312,16 +2312,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             ++index;
         }
 
-        return working.where((row: any) => {
-                for (let x = 0; x < args.length+1; ++x) {
-                    if (row[x.toString()] === undefined) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .deflate((row: any) => {
+        return working.deflate((row: any) => {
                 const output = [];
                 for (let x = 0; x < args.length+1; ++x) {
                     output.push(row[x.toString()]);
