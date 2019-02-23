@@ -2773,16 +2773,6 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             .select<[IndexT, number]>(window => {
                 const latestValue = window.last();
                 const numLowerValues = window.head(-1).where(prevMomentum => prevMomentum < latestValue).count();
-                if (numLowerValues > period!) {
-                    throw new Error("Unexpected!"); //fio:
-                }
-                const proportionRank = numLowerValues / period!;
-                if (proportionRank > 1) {
-                    throw new Error("Unexpected 1"); //fio:
-                }
-                if (proportionRank < 0) {
-                    throw new Error("Unexpected 2"); //fio:
-                }
                 return [
                     window.getIndex().last(),
                     proportionRank
