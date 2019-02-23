@@ -10,23 +10,37 @@ describe('Series merge', () => {
 
 		const series1 = new Series([0, 1, 2]);
 		const series2 = new Series([10, 11, 12]);
-        const merged = series1.merge(series2, (a, b) => a + b);
+        const merged = series1.merge(series2);
 
 		expect(merged.toPairs()).to.eql([
-			[0, 0+10],
-			[1, 1+11],
-			[2, 2+12],
+			[0, [0,10]],
+			[1, [1,11]],
+			[2, [2,12]],
 		]);
 	});
 
+	it('can merge multiple series', function () {
+
+		const series1 = new Series([0, 1, 2]);
+        const series2 = new Series([10, 11, 12]);
+        const series3 = new Series([100, 111, 122]);
+        const merged = series1.merge(series2, series3);
+
+		expect(merged.toPairs()).to.eql([
+			[0, [0,10,100]],
+			[1, [1,11,111]],
+			[2, [2,12,122]],
+		]);
+	});
+    
 	it('when merging series, undefined values in first series are skipped', function () {
 
 		const series1 = new Series([undefined, 1, undefined]);
 		const series2 = new Series([10, 11, 12]);
-        const merged = series1.merge(series2, (a, b) => a + b);
+        const merged = series1.merge(series2);
 
 		expect(merged.toPairs()).to.eql([
-			[1, 1+11],
+			[1, [1,11]],
 		]);
 	});
 
@@ -34,10 +48,10 @@ describe('Series merge', () => {
 
 		const series1 = new Series([0, 1, 2]);
 		const series2 = new Series([10, undefined, undefined]);
-        const merged = series1.merge(series2, (a, b) => a + b);
+        const merged = series1.merge(series2);
 
 		expect(merged.toPairs()).to.eql([
-			[0, 0+10],
+			[0, [0,10]],
 		]);
 	});
     
@@ -51,11 +65,11 @@ describe('Series merge', () => {
             index: [5, 6, 7],
             values: [10, 11, 12]
         });
-        const merged = series1.merge(series2, (a, b) => a + b);
+        const merged = series1.merge(series2);
 
 		expect(merged.toPairs()).to.eql([
-			[5, 2 + 10],
-			[6, 3 + 11],
+			[5, [2,10]],
+			[6, [3,11]],
 		]);
 	});
 
@@ -63,7 +77,7 @@ describe('Series merge', () => {
 
 		const series1 = new Series();
 		const series2 = new Series();
-        const merged = series1.merge(series2, (a, b) => a + b);
+        const merged = series1.merge(series2);
         expect(merged.toPairs()).to.eql([]);
     });
     
@@ -71,8 +85,7 @@ describe('Series merge', () => {
 
 		const series1 = new Series([0, 1, 2]);
 		const series2 = new Series();
-        const merged = series1.merge(series2, (a, b) => a + b);
-
+        const merged = series1.merge(series2);
 		expect(merged.toPairs()).to.eql([]);
 	});
 
@@ -80,8 +93,7 @@ describe('Series merge', () => {
 
 		const series1 = new Series();
 		const series2 = new Series([10, 11, 12]);
-        const merged = series1.merge(series2, (a, b) => a + b);
-
+        const merged = series1.merge(series2);
 		expect(merged.toPairs()).to.eql([]);
 	});
 

@@ -294,10 +294,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const mergedSeries = series.merge(otherSeries);
      * </pre>
      */
-    merge<MergedValueT = any, OtherValueT = any>(
-        otherSeries: ISeries<IndexT, OtherValueT>,
-        mergeFn: (a: ValueT, b: OtherValueT) => MergedValueT)
-            : ISeries<IndexT, MergedValueT>;
+    merge<Value2T = any, ResultT = any>  (s2: ISeries<IndexT, Value2T>): ISeries<IndexT, ResultT>;
+    merge<Value2T = any, Value3T = any, ResultT = any>  (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>): ISeries<IndexT, ResultT>;
+    merge<Value2T = any, Value3T = any, Value4T = any, ResultT = any>  (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>, s4: ISeries<IndexT, Value4T>): ISeries<IndexT, ResultT>;
+    merge<ResultT = any>  (...args: any[]): ISeries<IndexT, ResultT>;
 
     /**
     * Extract values from the series as an array.
@@ -1420,7 +1420,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     concat (...series: (ISeries<IndexT, ValueT>[]|ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT>;
 
     /**
-    * Merge together multiple series to create a new series.
+    * Zip together multiple series to create a new series.
     * Preserves the index of the first series.
     * 
     * @param s2, s3, s4, s4 Multiple series to zip.
@@ -2284,9 +2284,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Merge another seies into this one.
+     * Merge one mor more other series into this one.
      * 
-     * @param otherSeries The other series to merge into this series.
+     * @param series One or more other arguments to merge into the series.
      * 
      * @returns The merged series.
      * 
@@ -2295,16 +2295,39 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * const mergedSeries = series.merge(otherSeries);
      * </pre>
+     * <pre>
+     * 
+     * const mergedSeries = seriesA.merge(seriesB, seriesC);
+     * </pre>
      */
-    merge<MergedValueT = any, OtherValueT = any>(
-        otherSeries: ISeries<IndexT, OtherValueT>, 
-        mergeFn: (a: ValueT, b: OtherValueT) => MergedValueT)
-            : ISeries<IndexT, MergedValueT> {
+    merge<Value2T = any>(s2: ISeries<IndexT, Value2T>): ISeries<IndexT, [ValueT, Value2T]>;
+    merge<Value2T = any, Value3T = any> (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>): ISeries<IndexT, [ValueT, Value2T, Value3T]>;
+    merge<Value2T = any, Value3T = any, Value4T = any>(s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>, s4: ISeries<IndexT, Value4T>): ISeries<IndexT, [ValueT, Value2T, Value3T, Value4T]>;
+    merge(...args: any[]): ISeries<IndexT, any[]> {
 
-        return this.inflate(value => ({ a: value })) //TODO: Need a more efficient way to merge series.
-            .withSeries({ b: otherSeries })
-            .where(row => row.a !== undefined && row.b !== undefined)
-            .deflate(row => mergeFn(row.a, row.b));
+        let working = this.inflate(value => ({ "0": value }));
+        let index = 1;
+        for (const arg of args) {
+            working = working.withSeries(index.toString(), arg); //TODO: Need a more efficient way to merge series.
+            ++index;
+        }
+
+        return working.where((row: any) => {
+                for (let x = 0; x < args.length+1; ++x) {
+                    if (row[x.toString()] === undefined) {
+                        return false;
+                    }
+                }
+
+                return true;
+            })
+            .deflate((row: any) => {
+                const output = [];
+                for (let x = 0; x < args.length+1; ++x) {
+                    output.push(row[x.toString()]);
+                }
+                return output;
+            });
     }
     
     /**
