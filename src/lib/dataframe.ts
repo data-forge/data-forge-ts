@@ -534,6 +534,20 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      */
     withSeries<OutputValueT = any, SeriesValueT = any> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, OutputValueT>;
 
+    /**
+     * Merge another data frame into this one.
+     * 
+     * @param otherDataFrame The other data frame to merge into this dataframe.
+     * 
+     * @returns The merged data frame.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const mergedDF = df.merge(otherDf);
+     * </pre>
+     */
+    merge<MergedValueT = any, OtherValueT = any>(otherDataFrame: IDataFrame<IndexT, OtherValueT>): IDataFrame<IndexT, MergedValueT>;
     
     /**
      * Add a series to the dataframe, but only if it doesn't already exist.
@@ -3063,6 +3077,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         });
     }
 
+    /**
+     * Merge another dataframe into this one creating a new dataframe.
+     * 
+     * @param otherDataFrame The other data frame to merge into this dataframe.
+     * 
+     * @returns The merged data frame.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const mergedDF = df.merge(otherDf);
+     * </pre>
+     */
+    merge<MergedValueT = ValueT, OtherValueT = any>(otherDataFrame: IDataFrame<IndexT, OtherValueT>): IDataFrame<IndexT, MergedValueT> {
+        return this.withSeries<MergedValueT, any>(otherDataFrame.getColumns().toObject(column => column.name, column => column.series));
+    }
+    
     /**
      * Add a series to the dataframe, but only if it doesn't already exist.
      * 
