@@ -535,16 +535,21 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     withSeries<OutputValueT = any, SeriesValueT = any> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, OutputValueT>;
 
     /**
-     * Merge another data frame into this one.
+     * Merge one or more other dataframes into this one creating a new dataframe.
      * 
-     * @param otherDataFrame The other dataframe to merge into this dataframe.
+     * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 
-     * @returns The merged dataframe.
+     * @returns The merged data frame.
      * 
      * @example
      * <pre>
      * 
-     * const mergedDF = df.merge(otherDf);
+     * const mergedDF = df1.merge(df2);
+     * </pre>
+     * 
+     * <pre>
+     * 
+     * const mergedDF = df1.merge(df2, df3, etc);
      * </pre>
      */
     merge<MergedValueT = any>(...otherDataFrames: IDataFrame<IndexT, any>[]): IDataFrame<IndexT, MergedValueT>;
@@ -3129,9 +3134,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             pairs: mergedPairs as [IndexT, MergedValueT][],
         });
     }  
-      
+
     /**
-     * Merge another dataframe into this one creating a new dataframe.
+     * Merge one or more other dataframes into this one creating a new dataframe.
      * 
      * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 
@@ -3140,7 +3145,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @example
      * <pre>
      * 
-     * const mergedDF = df.merge(otherDf);
+     * const mergedDF = df1.merge(df2);
+     * </pre>
+     * 
+     * <pre>
+     * 
+     * const mergedDF = df1.merge(df2, df3, etc);
      * </pre>
      */
     merge<MergedValueT = ValueT>(...otherDataFrames: IDataFrame<IndexT, any>[]): IDataFrame<IndexT, MergedValueT> {

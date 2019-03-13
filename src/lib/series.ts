@@ -2297,12 +2297,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @example
      * <pre>
      * 
-     * const mergedSeries = series.merge(otherSeries);
-     * </pre>
-     * 
-     * <pre>
-     * 
-     * const mergedSeries = seriesA.merge(seriesB, seriesC);
+     * const mergedSeries = Series.merge([series1, series2, etc]);
      * </pre>
      */
     static merge<MergedValueT = any, IndexT = any>(series: Iterable<ISeries<IndexT, any>>): ISeries<IndexT, MergedValueT[]> {
@@ -2353,12 +2348,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @example
      * <pre>
      * 
-     * const mergedSeries = series.merge(otherSeries);
+     * const mergedSeries = series1.merge(series2);
      * </pre>
      * 
      * <pre>
      * 
-     * const mergedSeries = seriesA.merge(seriesB, seriesC);
+     * const mergedSeries = series1.merge(series2, series3, etc);
      * </pre>
      */
     merge<MergedValueT = any>(...args: any[]): ISeries<IndexT, MergedValueT[]> {
