@@ -2288,7 +2288,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Merge a collection series into a single series.
+     * Merge a collection of series into a single series.
      * 
      * @param series The collection of series to merge.
      * 
