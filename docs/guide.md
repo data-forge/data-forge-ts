@@ -966,9 +966,33 @@ You can also concatenate by passing an array of series or dataframes to the glob
 
 	var concatenated = dataForge.DataFrame.concat([df1, df2, df3, df4, etc]);
 
+## Merge
+
+A simple merge of series or dataframes by index can be done using the `merge` function:
+
+    const mergedSeries = Series.merge([series1, series2, etc]);
+
+The merged series that is output is a series of arrays. Each array contains the values, aligned by index, across each of the input series.
+
+You can also use the instance version of `merge` to merge 1 or more series into another series:
+
+    const mergedSeries = series1.merge(series2, series3, etc);
+
+The `merge` function can also be applied to dataframes:
+
+    const mergedDf = DataFrame.merge([df1, df2, etc]);
+
+Each row in the merged dataframe contains, aligned by index, the merged fields of each of the input dataframes. When dataframes have overlapping column names, values for those columns are overwritten by later dataframes in the list.
+
+You can also use the instance version of `merge` for dataframes:
+
+    const mergedDf = df1.merge(df2, df3, etc);
+
+The output of a merge is always sorted ascending by index values.
+
 ## Join
 
-Series and dataframes can be merged or joined using the `join` function as in LINQ.  This performs an inner join. Data-Forge also has additional functions for outer joins: `joinOuter`, `joinOuterLeft` and `joinOuterRight`. Thanks to [Ryan Hatch for the implementation](http://blogs.geniuscode.net/RyanDHatch/?p=116).
+Series and dataframes can be joined using the `join` function as in LINQ.  This performs an inner join. Data-Forge also has additional functions for outer joins: `joinOuter`, `joinOuterLeft` and `joinOuterRight`. Thanks to [Ryan Hatch for the implementation](http://blogs.geniuscode.net/RyanDHatch/?p=116).
 
 Following is [an example translated from Pandas code on Chris Albon's blog](http://chrisalbon.com/python/pandas_join_merge_dataframe.html):
 
