@@ -283,10 +283,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      */
     resetIndex (): ISeries<number, ValueT>;
 
-    /**
-     * Merge another seies into this one.
+   /**
+     * Merge one or more other series into this series.
      * 
-     * @param otherSeries The other series to merge into this series.
+     * @param series... One or more other arguments to merge into the series.
      * 
      * @returns The merged series.
      * 
@@ -295,11 +295,13 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * 
      * const mergedSeries = series.merge(otherSeries);
      * </pre>
+     * 
+     * <pre>
+     * 
+     * const mergedSeries = seriesA.merge(seriesB, seriesC);
+     * </pre>
      */
-    merge<Value2T = any>(s2: ISeries<IndexT, Value2T>): ISeries<IndexT, [ValueT, Value2T]>;
-    merge<Value2T = any, Value3T = any> (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>): ISeries<IndexT, [ValueT, Value2T, Value3T]>;
-    merge<Value2T = any, Value3T = any, Value4T = any>(s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>, s4: ISeries<IndexT, Value4T>): ISeries<IndexT, [ValueT, Value2T, Value3T, Value4T]>;
-    merge(...args: any[]): ISeries<IndexT, any[]>;
+    merge<MergedValueT = any>(...args: any[]): ISeries<IndexT, MergedValueT[]>;
 
     /**
     * Extract values from the series as an array.
@@ -2284,11 +2286,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             values: this.getContent().values // Just strip the index.
         }));
     }
-    
+
     /**
-     * Merge one mor more other series into this one.
+     * Merge a collection series into a single series.
      * 
-     * @param series One or more other arguments to merge into the series.
+     * @param series The collection of series to merge.
      * 
      * @returns The merged series.
      * 
@@ -2297,30 +2299,70 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * const mergedSeries = series.merge(otherSeries);
      * </pre>
+     * 
      * <pre>
      * 
      * const mergedSeries = seriesA.merge(seriesB, seriesC);
      * </pre>
      */
-    merge<Value2T = any>(s2: ISeries<IndexT, Value2T>): ISeries<IndexT, [ValueT, Value2T]>;
-    merge<Value2T = any, Value3T = any> (s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>): ISeries<IndexT, [ValueT, Value2T, Value3T]>;
-    merge<Value2T = any, Value3T = any, Value4T = any>(s2: ISeries<IndexT, Value2T>, s3: ISeries<IndexT, Value3T>, s4: ISeries<IndexT, Value4T>): ISeries<IndexT, [ValueT, Value2T, Value3T, Value4T]>;
-    merge(...args: any[]): ISeries<IndexT, any[]> {
+    static merge<MergedValueT = any, IndexT = any>(series: Iterable<ISeries<IndexT, any>>): ISeries<IndexT, MergedValueT[]> {
 
-        let working = this.inflate(value => ({ "0": value }));
-        let index = 1;
-        for (const arg of args) {
-            working = working.withSeries(index.toString(), arg); //TODO: Need a more efficient way to merge series.
-            ++index;
+        const rowMap = new Map<IndexT, any[]>();
+        const numSeries = Array.from(series).length; //TODO: Be nice not to have to do this.
+        let seriesIndex = 0;
+        for (const workingSeries of series) {
+            for (const pair of workingSeries.toPairs()) {
+                const index = pair[0];
+                if (!rowMap.has(index)) {
+                    rowMap.set(index, new Array(numSeries));
+                }
+
+                rowMap.get(index)![seriesIndex] = pair[1];
+            }
+
+            ++seriesIndex;
         }
 
-        return working.deflate((row: any) => {
-                const output = [];
-                for (let x = 0; x < args.length+1; ++x) {
-                    output.push(row[x.toString()]);
-                }
-                return output;
-            });
+        const mergedPairs = Array.from(rowMap.keys())
+            .map(index => [index, rowMap.get(index)] as [IndexT, MergedValueT[]]);
+
+        mergedPairs.sort((a, b) => { // Sort by index, ascending.
+            if (a[0] === b[0]) {
+                return 0;
+            }
+            else if (a[0] > b[0]) {
+                return 1;
+            }
+            else {
+                return -1;
+            }
+        });
+
+        return new Series<IndexT, MergedValueT[]>({
+            pairs: mergedPairs,
+        });
+    }
+
+   /**
+     * Merge one or more other series into this series.
+     * 
+     * @param series... One or more other arguments to merge into the series.
+     * 
+     * @returns The merged series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const mergedSeries = series.merge(otherSeries);
+     * </pre>
+     * 
+     * <pre>
+     * 
+     * const mergedSeries = seriesA.merge(seriesB, seriesC);
+     * </pre>
+     */
+    merge<MergedValueT = any>(...args: any[]): ISeries<IndexT, MergedValueT[]> {
+        return Series.merge<MergedValueT, IndexT>([this].concat(args));
     }
     
     /**

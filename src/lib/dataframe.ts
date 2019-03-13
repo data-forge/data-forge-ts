@@ -26,7 +26,7 @@ import { isString, isObject, isNumber, isFunction, isArray, isUndefined } from '
 import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
-import { toMap, makeDistinct, mapIterable, determineType } from './utils';
+import { toMap, makeDistinct, mapIterable, determineType, toMap2 } from './utils';
 import { Utils } from 'handlebars';
 
 const PapaParse = require('papaparse');
@@ -547,8 +547,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * const mergedDF = df.merge(otherDf);
      * </pre>
      */
-    //TODO: Should be able to merge multiple dataframes at once!
-    merge<MergedValueT = any, OtherValueT = any>(otherDataFrame: IDataFrame<IndexT, OtherValueT>): IDataFrame<IndexT, MergedValueT>;
+    merge<MergedValueT = any>(...otherDataFrames: IDataFrame<IndexT, any>[]): IDataFrame<IndexT, MergedValueT>;
     
     /**
      * Add a series to the dataframe, but only if it doesn't already exist.
@@ -3058,7 +3057,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 importSeries = series! as ISeries<IndexT, SeriesValueT>;
             }
 
-            const seriesValueMap = toMap(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
+            const seriesValueMap = toMap2(importSeries.toPairs(), pair => pair[0], pair => pair[1]);
             const newColumnNames =  makeDistinct(this.getColumnNames().concat([columnName]));
     
             return {
@@ -3068,7 +3067,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                     const index = pair[0];
                     const value = pair[1];
                     const modified: any = Object.assign({}, value);
-                    modified[columnName] = seriesValueMap[index];
+                    modified[columnName] = seriesValueMap.get(index);
                     return [
                         index,
                         modified
@@ -3079,9 +3078,62 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
+     * Merge multiple dataframes into a single dataframe.
+     * 
+     * @param dataFrames The array/series of dataframes to merge.
+     * 
+     * @returns The merged data frame.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const mergedDF = DataFrame.merge([df1, df2, etc]);
+     * </pre>
+     */
+    static merge<MergedValueT = any, IndexT = any, ValueT = any>(dataFrames: Iterable<IDataFrame<IndexT, ValueT>>): IDataFrame<IndexT, MergedValueT> {
+
+        const rowMap = new Map<IndexT, any>();
+        for (const dataFrame of dataFrames) {
+            for (const pair of dataFrame.toPairs()) {
+                const index = pair[0];
+                if (!rowMap.has(index)) {
+                    const clone = Object.assign({}, pair[1]);
+                    rowMap.set(index, clone);
+                }
+                else {
+                    rowMap.set(index, Object.assign(rowMap.get(index), pair[1]));
+                }
+            }
+        }
+
+        const allColumnNames = Array.from(dataFrames)
+            .map(dataFrame => dataFrame.getColumnNames())
+            .reduce((prev, next) => prev.concat(next), []);
+        const newColumnNames =  makeDistinct(allColumnNames);
+        const mergedPairs = Array.from(rowMap.keys()).map(index => [index, rowMap.get(index)]);
+
+        mergedPairs.sort((a, b) => { // Sort by index, ascending.
+            if (a[0] === b[0]) {
+                return 0;
+            }
+            else if (a[0] > b[0]) {
+                return 1;
+            }
+            else {
+                return -1;
+            }
+        });
+
+        return new DataFrame<IndexT, MergedValueT>({
+            columnNames: newColumnNames,
+            pairs: mergedPairs as [IndexT, MergedValueT][],
+        });
+    }  
+      
+    /**
      * Merge another dataframe into this one creating a new dataframe.
      * 
-     * @param otherDataFrame The other data frame to merge into this dataframe.
+     * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 
      * @returns The merged data frame.
      * 
@@ -3091,8 +3143,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const mergedDF = df.merge(otherDf);
      * </pre>
      */
-    merge<MergedValueT = ValueT, OtherValueT = any>(otherDataFrame: IDataFrame<IndexT, OtherValueT>): IDataFrame<IndexT, MergedValueT> {
-        return this.withSeries<MergedValueT, any>(otherDataFrame.getColumns().toObject(column => column.name, column => column.series));
+    merge<MergedValueT = ValueT>(...otherDataFrames: IDataFrame<IndexT, any>[]): IDataFrame<IndexT, MergedValueT> {
+        return DataFrame.merge<MergedValueT, IndexT, any>([this as IDataFrame<IndexT, ValueT>].concat(otherDataFrames));
     }
     
     /**
