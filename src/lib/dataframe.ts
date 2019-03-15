@@ -535,7 +535,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     withSeries<OutputValueT = any, SeriesValueT = any> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, OutputValueT>;
 
     /**
-     * Merge one or more other dataframes into this one creating a new dataframe.
+     * Merge one or more dataframes into this single dataframe.
+     * Rows are merged by indexed. 
+     * Same named columns in subsequent dataframes override columns earlier dataframes.
      * 
      * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 
@@ -3084,8 +3086,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Merge multiple dataframes into a single dataframe.
+     * Rows are merged by indexed. 
+     * Same named columns in subsequent dataframes override columns earlier dataframes.
      * 
-     * @param dataFrames The array/series of dataframes to merge.
+     * @param dataFrames An array or series of dataframes to merge.
      * 
      * @returns The merged data frame.
      * 
@@ -3136,7 +3140,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }  
 
     /**
-     * Merge one or more other dataframes into this one creating a new dataframe.
+     * Merge one or more dataframes into this dataframe.
+     * Rows are merged by indexed. 
+     * Same named columns in subsequent dataframes override columns earlier dataframes.
      * 
      * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 

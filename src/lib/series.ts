@@ -284,21 +284,23 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     resetIndex (): ISeries<number, ValueT>;
 
    /**
-     * Merge one or more other series into this series.
+     * Merge one or more series into this series.
+     * Values are merged by index.
+     * Values at each index are combined into arrays in the resulting series.
      * 
-     * @param series... One or more other arguments to merge into the series.
+     * @param series... One or more other series to merge into the series.
      * 
      * @returns The merged series.
      * 
      * @example
      * <pre>
      * 
-     * const mergedSeries = series.merge(otherSeries);
+     * const mergedSeries = series1.merge(series2);
      * </pre>
      * 
      * <pre>
      * 
-     * const mergedSeries = seriesA.merge(seriesB, seriesC);
+     * const mergedSeries = series1.merge(series2, series3, etc);
      * </pre>
      */
     merge<MergedValueT = any>(...args: any[]): ISeries<IndexT, MergedValueT[]>;
@@ -2288,9 +2290,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Merge a collection of series into a single series.
+     * Merge multiple series into a single series.
+     * Values are merged by index.
+     * Values at each index are combined into arrays in the resulting series.
      * 
-     * @param series The collection of series to merge.
+     * @param series An array or series of series to merge.
      * 
      * @returns The merged series.
      * 
@@ -2339,9 +2343,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
    /**
-     * Merge one or more other series into this series.
+     * Merge one or more series into this series.
+     * Values are merged by index.
+     * Values at each index are combined into arrays in the resulting series.
      * 
-     * @param series... One or more other arguments to merge into the series.
+     * @param series... One or more other series to merge into the series.
      * 
      * @returns The merged series.
      * 
