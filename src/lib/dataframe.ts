@@ -537,7 +537,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Merge one or more dataframes into this single dataframe.
      * Rows are merged by indexed. 
-     * Same named columns in subsequent dataframes override columns earlier dataframes.
+     * Same named columns in subsequent dataframes override columns in earlier dataframes.
      * 
      * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 
@@ -3142,7 +3142,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Merge one or more dataframes into this dataframe.
      * Rows are merged by indexed. 
-     * Same named columns in subsequent dataframes override columns earlier dataframes.
+     * Same named columns in subsequent dataframes override columns in earlier dataframes.
      * 
      * @param otherDataFrames... One or more dataframes to merge into this dataframe.
      * 
