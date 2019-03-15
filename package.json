@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",

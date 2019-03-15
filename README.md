@@ -77,28 +77,7 @@ dataForge.readFileSync('./input-data-file.csv') // Read CSV file (or JSON!)
 
 ## From the browser
 
-Data-Forge also works in the browser, just don't include Data-Forge FS or try to call readFile or writeFile - the file system functions only work under Node.js.
-
-### Install
-
-Install via Bower (or NPM)
-
-    bower install --save data-forge
-
-### Include
-
-Include the code in your HTML
-
-    <script language="javascript" type="text/javascript" src="bower_components/data-forge/data-forge.js"></script>
-
 Data-Forge has been tested with Browserify and Webpack. Please see links to examples below.
-
-### Use
-
-Use it via the `dataForge` global variable.
-
-    var myDataframe = new dataForge.DataFrame(... your data here ...);
-    console.log(myDataframe.toString());
 
 ## Features
 
@@ -147,6 +126,7 @@ Fork it, make a change, submit a pull request. Want to chat? See my contact deta
 - [The guide](docs/guide.md)
 - [Key concepts](docs/concepts.md)
 - [API docs](https://data-forge.github.io/data-forge-ts/)
+- [FS API docs](https://data-forge.github.io/data-forge-fs/index.html)
 - [Data-Forge FS](https://github.com/data-forge/data-forge-fs/)
 - [Data-Forge Plot](https://github.com/data-forge/data-forge-plot/)
 - [Gitter](https://gitter.im/data-forge)
