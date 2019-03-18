@@ -46,17 +46,22 @@ export interface IFormatSpec {
 }
 
 /**
- * Specification that computes output columns for a pivot.
+ * An function that aggregates a series.
  */
-export interface IAggregatorSpec {
-    [index: string]: (values: ISeries<number, any>) => any
+export type SeriesAggregatorFn<IndexT, ValueT, OutputT> = (values: ISeries<IndexT, ValueT>) => OutputT;
+
+/**
+ * Specification that can aggregate a series for the pivot function to produce an output column for a dataframe.
+ */
+export interface IColumnAggregatorSpec {
+    [outputColumnName: string]: SeriesAggregatorFn<any, any, any>,
 } 
 
 /**
- * Specification for pivoting values in named columns.
+ * Specification that can aggregate a dataframe for the pivot to produce a new dataframe.
  */
 export interface IPivotAggregateSpec {
-    [index: string]: IAggregatorSpec;
+    [inputColumnName: string]: SeriesAggregatorFn<any, any, any> | IColumnAggregatorSpec;
 }
 
 /**
@@ -2116,20 +2121,40 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * // Simplest example.
      * // Group by the values in 'PivotColumn'.
      * // The unique set of values in 'PivotColumn' becomes the columns in the resulting dataframe.
-     * // The column 'ValueColumn' is averaged for each group and this becomes the 
-     * // values in the new column.
+     * // The column 'ValueColumn' is aggregated for each group and this becomes the 
+     * // values in the new output column.
      * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * // Multi-value column example.
-     * // Similar to the previous example except now we are aggregating multiple value columns.
+     * // Multiple input column example.
+     * // Similar to the previous example except now we are aggregating multiple input columns.
      * // Each group has the average computed for 'ValueColumnA' and the sum for 'ValueColumnB'.
      * const pivottedDf = df.pivot("PivotColumn", { 
-     *      "ValueColumnA": aValues => aValues.average(),
-     *      "ValueColumnB":  bValues => bValues.sum(),
+     *      ValueColumnA: aValues => aValues.average(),
+     *      ValueColumnB:  bValues => bValues.sum(),
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multiple output column example.
+     * // Similar to the previous example except now we are doing multiple aggregations for each input column.
+     * // The example produces an output dataframe with columns OutputColumnA, B, C and D.
+     * // OutputColumnA/B are the sum and average of ValueColumnA across each group as defined by PivotColumn.
+     * // OutputColumnC/D are the sum and average of ValueColumnB across each group as defined by PivotColumn.
+     * const pivottedDf = df.pivot("PivotColumn", { 
+     *      ValueColumnA: {
+     *          OutputColumnA: aValues => aValues.sum(),
+     *          OutputColumnB: aValues => aValues.average(),
+     *      },
+     *      ValueColumnB: {
+     *          OutputColumnC: bValues => aValues.sum(),
+     *          OutputColumnD: bValues => aValues.average(),
+     *      },
      * });
      * </pre>
      * 
@@ -2141,8 +2166,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * // We now group by the 'PivotColumnA' and then by 'PivotColumnB', effectively creating a 
      * // multi-level group.
      * const pivottedDf = df.pivot(["PivotColumnA", "PivotColumnB" ], { 
-     *      "ValueColumnA": aValues => aValues.average(),
-     *      "ValueColumnB":  bValues => bValues.sum(),
+     *      ValueColumnA: aValues => aValues.average(),
+     *      ValueColumnB:  bValues => bValues.sum(),
      * });
      * </pre>
      * 
@@ -2156,7 +2181,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * // If we expand out the internals of the pivot function, it will look something like this:
      * const pivottedDf = df.groupBy(row => row.PivotColumn)
      *          .select(group => ({
-     *              PivotColumn: group.deflate(row.ValueColumn).average()
+     *              PivotColumn: group.deflate(row => row.ValueColumn).average()
      *          }))
      *          .orderBy(row  => row.PivotColumn);
      * 
@@ -5926,20 +5951,40 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * // Simplest example.
      * // Group by the values in 'PivotColumn'.
      * // The unique set of values in 'PivotColumn' becomes the columns in the resulting dataframe.
-     * // The column 'ValueColumn' is averaged for each group and this becomes the 
-     * // values in the new column.
+     * // The column 'ValueColumn' is aggregated for each group and this becomes the 
+     * // values in the new output column.
      * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
      * </pre>
      * 
      * @example
      * <pre>
      * 
-     * // Multi-value column example.
-     * // Similar to the previous example except now we are aggregating multiple value columns.
+     * // Multiple input column example.
+     * // Similar to the previous example except now we are aggregating multiple input columns.
      * // Each group has the average computed for 'ValueColumnA' and the sum for 'ValueColumnB'.
      * const pivottedDf = df.pivot("PivotColumn", { 
-     *      "ValueColumnA": aValues => aValues.average(),
-     *      "ValueColumnB":  bValues => bValues.sum(),
+     *      ValueColumnA: aValues => aValues.average(),
+     *      ValueColumnB:  bValues => bValues.sum(),
+     * });
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multiple output column example.
+     * // Similar to the previous example except now we are doing multiple aggregations for each input column.
+     * // The example produces an output dataframe with columns OutputColumnA, B, C and D.
+     * // OutputColumnA/B are the sum and average of ValueColumnA across each group as defined by PivotColumn.
+     * // OutputColumnC/D are the sum and average of ValueColumnB across each group as defined by PivotColumn.
+     * const pivottedDf = df.pivot("PivotColumn", { 
+     *      ValueColumnA: {
+     *          OutputColumnA: aValues => aValues.sum(),
+     *          OutputColumnB: aValues => aValues.average(),
+     *      },
+     *      ValueColumnB: {
+     *          OutputColumnC: bValues => aValues.sum(),
+     *          OutputColumnD: bValues => aValues.average(),
+     *      },
      * });
      * </pre>
      * 
@@ -5951,8 +5996,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * // We now group by the 'PivotColumnA' and then by 'PivotColumnB', effectively creating a 
      * // multi-level group.
      * const pivottedDf = df.pivot(["PivotColumnA", "PivotColumnB" ], { 
-     *      "ValueColumnA": aValues => aValues.average(),
-     *      "ValueColumnB":  bValues => bValues.sum(),
+     *      ValueColumnA: aValues => aValues.average(),
+     *      ValueColumnB:  bValues => bValues.sum(),
      * });
      * </pre>
      * 
@@ -6008,7 +6053,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             const aggColumnName = valueColumnNameOrSpec as string;
 
-            const outputSpec: IAggregatorSpec = {};
+            const outputSpec: IColumnAggregatorSpec = {};
             outputSpec[aggColumnName] = aggregator!;
 
             aggSpec = {};
@@ -6016,6 +6061,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
         else {
             aggSpec = valueColumnNameOrSpec as IPivotAggregateSpec;
+
+            for (const inputColumnName of Object.keys(aggSpec)) {
+                const columnAggSpec = aggSpec[inputColumnName];
+                if (Sugar.Object.isFunction(columnAggSpec)) {
+                    aggSpec[inputColumnName] = {}; // Expand the pivot spec.
+                    (aggSpec[inputColumnName] as IColumnAggregatorSpec) [inputColumnName] = columnAggSpec;
+                }
+            }
         }
 
         const firstColumnName = columnNames[0];
@@ -6052,7 +6105,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             for (const valueColumnName of valueColumnNames) {
                 const outputColumnNames = outputColumnsMap[valueColumnName];
                 for (const outputColumName of outputColumnNames) {
-                    const aggregatorFn = aggSpec[valueColumnName][outputColumName];
+                    const aggregatorFn = (aggSpec[valueColumnName] as IColumnAggregatorSpec)[outputColumName];
                     row[outputColumName] = aggregatorFn(row.src.deflate((srcRow: any) => srcRow[valueColumnName])) 
                 }
             }
@@ -6544,13 +6597,19 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
         let sortLevel = 0;
 
         let parent = config.parent;
-
+        const parents = [];
         while (parent !== null) {
+            parents.push(parent);
+            parent = parent.config.parent;
+        }
+
+        parents.reverse();
+
+        for (const parent of parents) {
             const parentConfig = parent.config;
             valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, parentConfig.selector, parentConfig.direction));
             pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(parentConfig.selector), parentConfig.direction));
             ++sortLevel;
-            parent = parent.config.parent;
         }
 
         valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, config.selector, config.direction));

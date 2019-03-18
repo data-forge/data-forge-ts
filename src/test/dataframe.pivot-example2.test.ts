@@ -48,26 +48,11 @@ describe('DataFrame pivot examples 2', () => {
     //
 	it('Can pivot on Name column and sum values', () => {
 
-        /*todo: want to be able to do this!!
-        const pivotted =  df.pivot("Name", {
+       const pivotted =  df.pivot("Name", {
                 Account: values => values.sum(),
                 Price: values => values.sum(),
                 Quantity: values => values.sum(),
             });
-        */
-
-       const pivotted =  df.pivot("Name", {
-                Account: {
-                    Account: values => values.sum(),
-                },
-                Price: {
-                    Price: values => values.sum(),
-                },
-                Quantity: {
-                    Quantity: values => values.sum(),
-                },
-            });
-
             
         expect(pivotted.getColumnNames()).to.eql(["Name", "Account", "Price", "Quantity"]);
         expect(pivotted.toArray()).to.eql([
@@ -154,17 +139,10 @@ describe('DataFrame pivot examples 2', () => {
 	it('Can pivot on multiple columns and sum values', () => {
 
         const pivotted =  df.pivot(["Name","Rep","Manager"], {
-                Account: {
-                    Account: values => values.sum(),
-                },
-                Price: {
-                    Price: values => values.sum(),
-                },
-                Quantity: {
-                    Quantity: values => values.sum(),
-                },
-            })
-            .orderBy(row => row.Name); //TODO: This sorting should be needed! Something is wrong with the sorting in the pivot fn.
+                Account: values => values.sum(),
+                Price: values => values.sum(),
+                Quantity: values => values.sum(),
+            });
                 
         expect(pivotted.getColumnNames()).to.eql(["Name", "Rep", "Manager", "Account", "Price", "Quantity"]);
         expect(pivotted.toArray()).to.eql([
@@ -275,15 +253,9 @@ describe('DataFrame pivot examples 2', () => {
     it('Can pivot on multiple columns and sum values 2', () => {
 
         const pivotted =  df.pivot([ "Manager", "Rep" ], {
-            Account: {
-                Account: values => values.sum(),
-            },
-            Price: {
-                Price: values => values.sum(),
-            },
-            Quantity: {
-                Quantity: values => values.sum(),
-            },
+            Account: values => values.sum(),
+            Price: values => values.sum(),
+            Quantity: values => values.sum(),
         });
 
         expect(pivotted.getColumnNames()).to.eql([ "Manager", "Rep", "Account", "Price", "Quantity" ]);
@@ -334,9 +306,7 @@ describe('DataFrame pivot examples 2', () => {
     it('Can pivot on multiple columns and avg price', () => {
 
         const pivotted =  df.pivot([ "Manager", "Rep" ], {
-            Price: {
-                Price: values => values.average(),
-            },
+            Price: values => values.average(),
         });
 
         expect(pivotted.getColumnNames()).to.eql([ "Manager", "Rep", "Price" ]);
@@ -377,9 +347,7 @@ describe('DataFrame pivot examples 2', () => {
     it('Can pivot on multiple columns and sum price', () => {
 
         const pivotted =  df.pivot([ "Manager", "Rep" ], {
-            Price: {
-                Price: values => values.sum(),
-            },
+            Price: values => values.sum(),
         });
 
         expect(pivotted.getColumnNames()).to.eql([ "Manager", "Rep", "Price" ]);

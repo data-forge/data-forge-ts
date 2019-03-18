@@ -103,6 +103,47 @@ describe('DataFrame pivot examples', () => {
         ]);
     });
 
+    it('pivot can produce single output values', () => {
+
+        const pivotted = df.pivot(["regiment", "company"], {
+            TestScore: testScores => testScores.count(),
+        });
+
+        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "TestScore"]);
+		expect(pivotted.toArray()).to.eql([
+            {
+                regiment: "Dragoons",
+                company: "1st",
+                TestScore: 2,
+            },
+            {
+                regiment: "Dragoons",
+                company: "2nd",
+                TestScore: 2,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "1st",
+                TestScore: 2,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "2nd",
+                TestScore: 2,
+            },
+            {
+                regiment: "Scouts",
+                company: "1st",
+                TestScore: 2,
+            },
+            {
+                regiment: "Scouts",
+                company: "2nd",
+                TestScore: 2,
+            },
+        ]);
+    });
+
     it('pivot can produce multiple output values', () => {
 
         const pivotted = df.pivot(["regiment", "company"], {
