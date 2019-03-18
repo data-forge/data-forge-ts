@@ -5436,8 +5436,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Ascending, null);
+        const content = this.getContent();
+        return new OrderedDataFrame<IndexT, ValueT, SortT>({
+            columnNames: content.columnNames,
+            values: content.values, 
+            pairs: content.pairs, 
+            selector: selector, 
+            direction: Direction.Ascending, 
+            parent: null,
+        });
     }
 
     /**
@@ -5455,8 +5462,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * </pre>
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Descending, null);
+        const content = this.getContent();
+        return new OrderedDataFrame<IndexT, ValueT, SortT>({
+            columnNames: content.columnNames,
+            values: content.values, 
+            pairs: content.pairs, 
+            selector: selector, 
+            direction: Direction.Descending, 
+            parent: null,
+        });
     }
         
     /**
@@ -6462,17 +6476,52 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
 /**
  * @hidden
+ * The configuration for an ordered dataframe.
+ */
+interface IOrderedDataFrameConfig<IndexT, ValueT, SortT> {
+    //
+    // The order of columns for the data frame.
+    //
+    columnNames: string[] | Iterable<string>;
+
+    //
+    // The source values for the ordered dataframe.
+    //
+    values: Iterable<ValueT>;
+
+    //
+    // The source pairs (index,value) for the ordered dataframe.
+    //
+    pairs: Iterable<[IndexT, ValueT]>;
+
+    //
+    // The selector used to get the sorting key for the orderby operation.
+    //
+    selector: SelectorWithIndexFn<ValueT, SortT>;
+
+    //
+    // The sort direction, ascending or descending.
+    //
+    direction: Direction;
+
+    //
+    // The parent dataframe in the orderby operation or null if none.
+    //
+    parent: OrderedDataFrame<IndexT, ValueT, any> | null;
+}
+
+/**
+ * @hidden
  * Represents a dataframe that has been sorted.
  */
 class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any> 
     extends DataFrame<IndexT, ValueT>
     implements IOrderedDataFrame<IndexT, ValueT, SortT> {
 
-    parent: OrderedDataFrame<IndexT, ValueT, SortT> | null;
-    selector: SelectorWithIndexFn<ValueT, SortT>;
-    direction: Direction;
-    origValues: Iterable<ValueT>;
-    origPairs: Iterable<[IndexT, ValueT]>;
+    //
+    // Configuration for the ordered dataframe.
+    //
+    private config: IOrderedDataFrameConfig<IndexT, ValueT, SortT>;
 
     //
     // Helper function to create a sort spec.
@@ -6488,32 +6537,32 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
         return (pair: any, index: number) => selector(pair[1], index);
     }
 
-    constructor(values: Iterable<ValueT>, pairs: Iterable<[IndexT, ValueT]>, selector: SelectorWithIndexFn<ValueT, SortT>, direction: Direction, parent: OrderedDataFrame<IndexT, ValueT> | null) {
+    constructor(config: IOrderedDataFrameConfig<IndexT, ValueT, SortT>) {
 
         const valueSortSpecs: ISortSpec[] = [];
         const pairSortSpecs: ISortSpec[] = [];
         let sortLevel = 0;
 
+        let parent = config.parent;
+
         while (parent !== null) {
-            valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, parent.selector, parent.direction));
-            pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(parent.selector), parent.direction));
+            const parentConfig = parent.config;
+            valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, parentConfig.selector, parentConfig.direction));
+            pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(parentConfig.selector), parentConfig.direction));
             ++sortLevel;
-            parent = parent.parent;
+            parent = parent.config.parent;
         }
 
-        valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, selector, direction));
-        pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(selector), direction));
+        valueSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, config.selector, config.direction));
+        pairSortSpecs.push(OrderedDataFrame.makeSortSpec(sortLevel, OrderedDataFrame.makePairsSelector(config.selector), config.direction));
 
         super({
-            values: new OrderedIterable(values, valueSortSpecs),
-            pairs: new OrderedIterable(pairs, pairSortSpecs)
+            columnNames: config.columnNames,
+            values: new OrderedIterable(config.values, valueSortSpecs),
+            pairs: new OrderedIterable(config.pairs, pairSortSpecs)
         });
 
-        this.parent = parent;
-        this.selector = selector;
-        this.direction = direction;
-        this.origValues = values;
-        this.origPairs = pairs;
+        this.config = config;
     }
 
     /** 
@@ -6531,8 +6580,14 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
      * </pre>
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Ascending, this);
+        return new OrderedDataFrame<IndexT, ValueT, SortT>({
+            columnNames: this.config.columnNames,
+            values: this.config.values, 
+            pairs: this.config.pairs, 
+            selector: selector, 
+            direction: Direction.Ascending, 
+            parent: this,
+        });
     }
 
     /** 
@@ -6550,7 +6605,13 @@ class OrderedDataFrame<IndexT = number, ValueT = any, SortT = any>
      * </pre>
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedDataFrame<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedDataFrame<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
+        return new OrderedDataFrame<IndexT, ValueT, SortT>({
+            columnNames: this.config.columnNames,
+            values: this.config.values, 
+            pairs: this.config.pairs, 
+            selector: selector, 
+            direction: Direction.Descending, 
+            parent: this,
+        });
     }
 }

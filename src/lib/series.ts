@@ -4223,8 +4223,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries. Could just pass in 'this'. The getContent() wouldn't have to be evaluated here.
-        return new OrderedSeries<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Ascending, null);
+        const content = this.getContent();
+        return new OrderedSeries<IndexT, ValueT, SortT>({
+            values: content.values, 
+            pairs: content.pairs, 
+            selector: selector, 
+            direction: Direction.Ascending, 
+            parent: null,
+        });
     }
 
     /**
@@ -4247,8 +4253,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedSeries<IndexT, ValueT, SortT>(this.getContent().values, this.getContent().pairs, selector, Direction.Descending, null);
+        const content = this.getContent();
+        return new OrderedSeries<IndexT, ValueT, SortT>({
+            values: content.values, 
+            pairs: content.pairs, 
+            selector: selector, 
+            direction: Direction.Descending, 
+            parent: null,
+        });
     }
         
     /**
@@ -5012,17 +5024,48 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
 /**
  * @hidden
+ * The configuration for an ordered series.
+ */
+interface IOrderedSeriesConfig<IndexT, ValueT, SortT> {
+
+    //
+    // The source values for the ordered series.
+    //
+    values: Iterable<ValueT>;
+
+    //
+    // The source pairs (index,value) for the ordered series.
+    //
+    pairs: Iterable<[IndexT, ValueT]>;
+
+    //
+    // The selector used to get the sorting key for the orderby operation.
+    //
+    selector: SelectorWithIndexFn<ValueT, SortT>;
+
+    //
+    // The sort direction, ascending or descending.
+    //
+    direction: Direction;
+
+    //
+    // The parent series in the orderby operation or null if none.
+    //
+    parent: OrderedSeries<IndexT, ValueT, any> | null;
+}
+
+/**
+ * @hidden
  * A series that has been ordered.
  */
 class OrderedSeries<IndexT = number, ValueT = any, SortT = any> 
     extends Series<IndexT, ValueT>
     implements IOrderedSeries<IndexT, ValueT, SortT> {
 
-    parent: OrderedSeries<IndexT, ValueT, SortT> | null;
-    selector: SelectorWithIndexFn<ValueT, SortT>;
-    direction: Direction;
-    origValues: Iterable<ValueT>;
-    origPairs: Iterable<[IndexT, ValueT]>;
+    //
+    // Configuration for the ordered series.
+    //
+    config: IOrderedSeriesConfig<IndexT, ValueT, SortT>;
 
     //
     // Helper function to create a sort spec.
@@ -5038,32 +5081,31 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
         return (pair: any, index: number) => selector(pair[1], index);
     }
 
-    constructor(values: Iterable<ValueT>, pairs: Iterable<[IndexT, ValueT]>, selector: SelectorWithIndexFn<ValueT, SortT>, direction: Direction, parent: OrderedSeries<IndexT, ValueT> | null) {
+    constructor(config: IOrderedSeriesConfig<IndexT, ValueT, SortT>) {
 
         const valueSortSpecs: ISortSpec[] = [];
         const pairSortSpecs: ISortSpec[] = [];
         let sortLevel = 0;
 
+        let parent = config.parent;
+
         while (parent !== null) {
-            valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, parent.selector, parent.direction));
-            pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(parent.selector), parent.direction));
+            const parentConfig = parent.config;
+            valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, parentConfig.selector, parentConfig.direction));
+            pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(parentConfig.selector), parentConfig.direction));
             ++sortLevel;
-            parent = parent.parent;
+            parent = parentConfig.parent;
         }
 
-        valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, selector, direction));
-        pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(selector), direction));
+        valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, config.selector, config.direction));
+        pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(config.selector), config.direction));
 
         super({
-            values: new OrderedIterable(values, valueSortSpecs),
-            pairs: new OrderedIterable(pairs, pairSortSpecs)
+            values: new OrderedIterable(config.values, valueSortSpecs),
+            pairs: new OrderedIterable(config.pairs, pairSortSpecs)
         });
 
-        this.parent = parent;
-        this.selector = selector;
-        this.direction = direction;
-        this.origValues = values;
-        this.origPairs = pairs;
+        this.config = config;
     }
 
     /** 
@@ -5081,8 +5123,13 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
      * </pre>
      */
     thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Ascending, this);
+        return new OrderedSeries<IndexT, ValueT, SortT>({
+            values: this.config.values, 
+            pairs: this.config.pairs, 
+            selector: selector, 
+            direction: Direction.Ascending, 
+            parent: this,
+        });
     }
 
     /** 
@@ -5100,7 +5147,12 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
      * </pre>
      */
     thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
-        //TODO: Should pass a config fn to OrderedSeries.
-        return new OrderedSeries<IndexT, ValueT, SortT>(this.origValues, this.origPairs, selector, Direction.Descending, this);        
+        return new OrderedSeries<IndexT, ValueT, SortT>({
+            values: this.config.values,
+            pairs: this.config.pairs, 
+            selector: selector, 
+            direction: Direction.Descending, 
+            parent: this
+        });
     }
 }

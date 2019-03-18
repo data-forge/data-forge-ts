@@ -98,4 +98,83 @@ describe('DataFrame sort', () => {
         expect(sorted.getIndex().toArray()).to.eql([10, 11, 12, 13]);
 	});
 
+    it("orderby preserves column order - ascending - 1", () => {
+
+        const df = new DataFrame({
+            columnNames: ["A", "B"],
+            values: [
+                {
+                    A: 10,
+                    B: 20,
+                },
+                {
+                    A: 5,
+                    B: 30,
+                },
+            ],
+        });
+
+        const ordered = df.orderBy(row => row.A);
+        expect(ordered.getColumnNames()).to.eql(["A", "B"]);
+    });
+
+    it("orderby preserves column order - ascending - 1", () => {
+
+        const df = new DataFrame({
+            columnNames: ["B", "A"],
+            values: [
+                {
+                    A: 10,
+                    B: 20,
+                },
+                {
+                    A: 5,
+                    B: 30,
+                },
+            ],
+        });
+
+        const ordered = df.orderBy(row => row.A);
+        expect(ordered.getColumnNames()).to.eql(["B", "A"]);
+    });
+
+    it("orderby preserves column order - descending - 1", () => {
+
+        const df = new DataFrame({
+            columnNames: ["A", "B"],
+            values: [
+                {
+                    A: 10,
+                    B: 20,
+                },
+                {
+                    A: 5,
+                    B: 30,
+                },
+            ],
+        });
+
+        const ordered = df.orderByDescending(row => row.A);
+        expect(ordered.getColumnNames()).to.eql(["A", "B"]);
+    });
+
+    it("orderby preserves column order - descending - 1", () => {
+
+        const df = new DataFrame({
+            columnNames: ["B", "A"],
+            values: [
+                {
+                    A: 10,
+                    B: 20,
+                },
+                {
+                    A: 5,
+                    B: 30,
+                },
+            ],
+        });
+
+        const ordered = df.orderByDescending(row => row.A);
+        expect(ordered.getColumnNames()).to.eql(["B", "A"]);
+    });    
 });
