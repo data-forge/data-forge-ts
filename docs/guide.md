@@ -1194,11 +1194,11 @@ Fortunately (as with LINQ) there is actually a `sum` function (among other helpe
 Another good example is averaging a series where the first element in the series is used as the *seed*:
 
     var average = series
-    .skip(1)
-    .average(
-        series.first(), // The seed 
-        (prevValue, nextValue) => (prevValue + nextValue) / 2
-    );
+        .skip(1)
+        .average(
+            series.first(), // The seed 
+            (prevValue, nextValue) => (prevValue + nextValue) / 2
+        );
 
 This can be simplified by building on `sum`:
 
@@ -1230,6 +1230,105 @@ A dataframe can be aggregated in the same way, for example summarizing sales dat
             }
         );
 
+## Summarize
+
+If you are looking to summarize the data in a dataframe you can use the `summarize` function which is like using the `aggregate` function but is much simpler.
+
+Summarization takes an input dataframe and produces a single object that is a summary of all the values in the dataframe.
+
+To summarize all values in a dataframe, simply call `summarize` with no arguments:
+
+    const summary = df.summarize();
+    console.log(summary);
+
+We can add parameters to restrict which columns are summarized and how their values are aggregated. 
+
+Summarize a single column as follows:
+
+    const summary = df.summarize({
+        ColumnToBeSummed: series => series.sum(),
+    });
+    console.log(summary);
+
+But you probably want to summarize multiple columns:
+
+    const summary = df.summarize({
+        ColumnToBeSummed: series => series.sum(),
+        ColumnToBeAveraged: series => series.average(),
+    });
+
+We can simplify our code substantially by specifying the aggregation method as a named function:
+
+    const summary = df.summarize({
+        ColumnToBeSummed: Series.sum,
+        ColumnToBeAveraged: Series.average,
+        ColumnToBeCounted: Series.count,
+    });
+
+By the way, you aren't limited to Data-Forge's pre-defined functions, you can easily create your own:
+
+    function myAggregationFunction(someSeries) {
+        // TODO: Return your own summary of the series.
+    }
+
+    const summary = df.summarize({
+        SomeColumn: myAggregationFunction,
+    });
+
+We can generalize the structure so far to the following pattern:
+
+    const summary = df.summarize({
+        Column1: functionThatAggregatesSeries,
+        Column2: functionThatAggregatesSeries,
+        ColumnN: ...,
+    });
+
+We can take this further and produce multiple output columns from each input column:
+
+    const summary = df.summarize({
+        Column1: {
+            Column1_Sum: series => series.sum(),
+            Colum1_Avg: series => series.average(),
+            Column1_Count: series => series.count(),
+        },
+        Column2: {
+            Column2_Sum: series => series.sum(),
+            Colum2_Avg: series => series.average(),
+        },
+    });
+
+Again we can simply provide references to functions that do the series aggregation for us:
+
+    const summary = df.summarize({
+        Column1: {
+            Column1_Sum: Series.sum,
+            Colum1_Avg: Series.average,
+            Column1_Count: Series.count,
+        },
+        Column2: {
+            Column2_Sum: Series.sum,
+            Colum2_Avg: Series.average,
+        },
+    });
+
+Let's generalize a full pattern as follows:
+
+    const summary = df.summarize({
+        InputColumn1: {
+            OutputField1: functionThatAggregatesSeries,
+            OutputField2: functionThatAggregatesSeries,
+            ...
+        },
+        InputColumn2: {
+            OutputField3: functionThatAggregatesSeries,
+            OutputField4: functionThatAggregatesSeries,
+            ...
+        },
+        InputColumnN: ...
+    });
+
+Now go forth and summarize your dataframes!
+
 ## Group and Aggregate
 
 This an example of using `groupBy` and `aggregate` to summarize a dataframe:
@@ -1245,6 +1344,87 @@ This an example of using `groupBy` and `aggregate` to summarize a dataframe:
         .toArray(); // Convert to regular JS array.
 
 Please see example 12 in the [Data-Forge examples repo](https://github.com/data-forge/data-forge-js-examples-and-tests) for a working version of this.
+
+## Pivot
+
+You can use the `pivot` function for advanced reshaping and transformation of a dataframe.
+
+Pivoting combines grouping, aggregation and sorting operations into one simple function call.
+
+Before you try and understand how to pivot a dataframe make sure you understand how to summarize a dataframe by reading the earlier Summarize section.
+
+Here is the simplest example of a pivot that sums groups of values:
+
+    const pivotted = df.pivot("ColumnToGroupBy", "ColumnToSum", series => series.sum());
+
+This groups the dataframe by "ColumnToGroupBy" then for each group it aggregates the column "ColumnToSum" using the function `series => series.sum()`.
+
+As with the `summarize` function we can simplify our code and specify the aggregation method using named functions, for example:
+
+    const pivotted = df.pivot("ColumnToGroupBy", "ColumnToSum", Series.sum);
+
+We can generalize this pattern of usage as follows:
+
+    function functionThatAggregatesSeries(someSeries) {
+        // TODO: Return your own summary of the series.
+    }
+
+    const pivotted = df.pivot("ColumnToGroupBy", "ColumnToAggregate", functionThatAggregatesSeries);
+
+Perhaps the best way to understand what is happening is to expand out the `pivot` function, so we can see the underlying group, aggregation and sorting that `pivot` is doing for you:
+
+    const pivottedDf = df.groupBy(row => row.PivotColumn)
+        .select(group => ({
+            PivotColumn: group.first().PivotColumn,
+            ValueColumn: group.deflate(row => row.ValueColumn).average()
+        }))
+        .orderBy(row  => row.PivotColumn);
+
+Just remember that we are still only looking at the simplest example of pivotting. We are about to go deeper. I won't show you further expanded examples of pivot, but just remember that all it's doing under the hood is *group, aggregate and sort*.
+
+Now let's up the ante and use pivot to produce multiple output columns:
+
+    const pivotted = df.pivot("ColumnToGroupBy", {
+        ColumnToSum: series => series.sum(),
+        ColumnToAverage: series => series.average(),
+    });
+
+We can also use named functions to specify the aggregation method for each output:
+
+    const pivotted = df.pivot("ColumnToGroupBy", {
+        ColumnToSum: Series.sum,
+        ColumnToAverage: Series.average,
+    });
+
+The general pattern now look like this:
+
+    const pivotted = df.pivot("ColumnToGroupBy", {
+        Column1: functionThatAggregatesSeries,
+        Column2: functionThatAggregatesSeries,
+        ColumnN: ...
+    });
+
+We can take this further still and produce multiple output columns for each input column:
+
+    const pivotted = df.pivot("ColumnToGroupBy", {
+        InputColumn1: {
+            OutputColumn1: series => series.sum(),
+            OutputColumn2: series => series.average(),
+            ...
+        },
+        InputColumn1: {
+            OutputColumn3: series => series.count(),
+            ...
+        },
+        ...
+    });
+
+Pivot also supports nested multi-level grouping by passing in an array of column names:
+
+    const columnsToGroupBy = ["Column1", "Column2", "etc"];
+    const pivotted = df.pivot(columnsToGroupBy, {
+        ... pivot spec ...
+    });
 
 # Filling gaps and missing data
 

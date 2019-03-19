@@ -2984,6 +2984,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
+     * Static version of the count function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to be counted.
+     * 
+     * @returns Returns the count of values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      ColumnToBeCounted: Series.count,
+     * });
+     * </pre>
+     */
+    static count<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.count();
+    }
+    
+    /**
      * Count the number of values in the seriese
      *
      * @return Returns the count of all values.
@@ -3763,6 +3782,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
+     * Static version of the sum function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to be summed.
+     * 
+     * @returns Returns the sum of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      ColumnToBeSummed: Series.sum,
+     * });
+     * </pre>
+     */
+    static sum<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.sum();
+    }
+
+    /**
      * Sum the values in a series and returns the result.
      * 
      * @returns Returns the sum of the number values in the series.
@@ -3783,6 +3821,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return numberSeries.aggregate((prev: number, value: number) => prev + value);
     }
 
+    /**
+     * Static version of the average function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to be averaged.
+     * 
+     * @returns Returns the average of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      ColumnToBeAveraged: Series.average,
+     * });
+     * </pre>
+     */
+    static average<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.average();
+    }
+    
     /**
      * Average the values in a series and returns the result
      * 
@@ -3842,6 +3899,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
+     * Static version of the min function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to find the minimum of.
+     * 
+     * @returns Returns the minimum of number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      Column: Series.min,
+     * });
+     * </pre>
+     */
+    static min<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.min();
+    }
+
+    /**
      * Get the min value in the series.
      * 
      * @returns Returns the minimum of the number values in the series.
@@ -3858,6 +3934,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return numberSeries.aggregate((prev, value) => Math.min(prev, value));
     }
 
+    /**
+     * Static version of the max function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to find the maximum of.
+     * 
+     * @returns Returns the maximum of number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      Column: Series.max,
+     * });
+     * </pre>
+     */
+    static max<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.max();
+    }
+    
     /**
      * Get the max value in the series.
      * 

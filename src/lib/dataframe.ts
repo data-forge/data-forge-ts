@@ -51,16 +51,16 @@ export interface IFormatSpec {
 export type SeriesAggregatorFn<IndexT, ValueT, OutputT> = (values: ISeries<IndexT, ValueT>) => OutputT;
 
 /**
- * Specification that can aggregate a series for the pivot function to produce an output column for a dataframe.
+ * Specification that can produce multiple output columns from a single input column of a dataframe.
  */
 export interface IColumnAggregatorSpec {
     [outputColumnName: string]: SeriesAggregatorFn<any, any, any>,
 } 
 
 /**
- * Specification that can aggregate a dataframe for the pivot to produce a new dataframe.
+ * Specification that can aggregate multiple input columns in a dataframe to produce multiple output columns.
  */
-export interface IPivotAggregateSpec {
+export interface IMultiColumnAggregatorSpec {
     [inputColumnName: string]: SeriesAggregatorFn<any, any, any> | IColumnAggregatorSpec;
 }
 
@@ -2106,8 +2106,64 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<number, ResultValueT>;
 
     /**
+     * Produces a summary of dataframe. A bit like the 'aggregate' function but much simpler.
+     * 
+     * @param [spec] Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
+     * 
+     * @returns A object with fields that summary the values in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize();
+     * console.log(summary);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize({ // Summarize using pre-defined functions.
+     *      Column1: Series.sum,
+     *      Column2: Series.average,
+     *      Column3: Series.count,
+     * });
+     * console.log(summary);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize({ // Summarize using custom functions.
+     *      Column1: series => series.sum(),
+     *      Column2: series => series.std(),
+     *      ColumnN: whateverFunctionYouWant,
+     * });
+     * console.log(summary);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize({ // Multiple output fields per column.
+     *      Column1: {
+     *          OutputField1: Series.sum,
+     *          OutputField2: Series.average,
+     *      },
+     *      Column2: {
+     *          OutputField3: series => series.sum(),
+     *          OutputFieldN: whateverFunctionYouWant,
+     *      },
+     * });
+     * console.log(summary);
+     * </pre>
+     */
+    summarize<OutputValueT = any> (
+        spec?: IMultiColumnAggregatorSpec
+            ): OutputValueT;
+
+    /**
      * Reshape (or pivot) a dataframe based on column values.
-     * This is short-hand that combines grouping, aggregation and sorting.
+     * This is a powerful function that combines grouping, aggregation and sorting.
      *
      * @param columnOrColumns Column name whose values make the new DataFrame's columns.
      * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
@@ -2120,9 +2176,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * // Simplest example.
      * // Group by the values in 'PivotColumn'.
-     * // The unique set of values in 'PivotColumn' becomes the columns in the resulting dataframe.
      * // The column 'ValueColumn' is aggregated for each group and this becomes the 
-     * // values in the new output column.
+     * // values in the output column.
      * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
      * </pre>
      * 
@@ -2142,8 +2197,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * <pre>
      * 
      * // Multiple output column example.
-     * // Similar to the previous example except now we are doing multiple aggregations for each input column.
-     * // The example produces an output dataframe with columns OutputColumnA, B, C and D.
+     * // Similar to the previous example except now we are aggregating multiple outputs for each input column.
+     * // This example produces an output dataframe with columns OutputColumnA, B, C and D.
      * // OutputColumnA/B are the sum and average of ValueColumnA across each group as defined by PivotColumn.
      * // OutputColumnC/D are the sum and average of ValueColumnB across each group as defined by PivotColumn.
      * const pivottedDf = df.pivot("PivotColumn", { 
@@ -2162,9 +2217,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * <pre>
      * 
      * // Full multi-column example.
-     * // Similar to the previous example now we are pivotting on multiple columns.
-     * // We now group by the 'PivotColumnA' and then by 'PivotColumnB', effectively creating a 
-     * // multi-level group.
+     * // Similar to the previous example, but now we are pivotting on multiple columns.
+     * // We now group by 'PivotColumnA' and then by 'PivotColumnB', effectively creating a 
+     * // multi-level nested group.
      * const pivottedDf = df.pivot(["PivotColumnA", "PivotColumnB" ], { 
      *      ValueColumnA: aValues => aValues.average(),
      *      ValueColumnB:  bValues => bValues.sum(),
@@ -2174,14 +2229,15 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @example
      * <pre>
      * 
-     * // To help understand the pivot function, let's look at what it does internally.
+     * // To help understand the pivot function, let's expand it out and look at what it does internally.
      * // Take the simplest example:
      * const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.average());
      * 
      * // If we expand out the internals of the pivot function, it will look something like this:
      * const pivottedDf = df.groupBy(row => row.PivotColumn)
      *          .select(group => ({
-     *              PivotColumn: group.deflate(row => row.ValueColumn).average()
+     *              PivotColumn: group.first().PivotColumn,
+     *              ValueColumn: group.deflate(row => row.ValueColumn).average()
      *          }))
      *          .orderBy(row  => row.PivotColumn);
      * 
@@ -2194,7 +2250,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      */
     pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
-        valueColumnNameOrSpec: string | IPivotAggregateSpec, 
+        valueColumnNameOrSpec: string | IMultiColumnAggregatorSpec, 
         aggregator?: (values: ISeries<number, any>) => any
             ): IDataFrame<number, NewValueT>;
 
@@ -5936,8 +5992,109 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
+     * Produces a summary of dataframe. A bit like the 'aggregate' function but much simpler.
+     * 
+     * @param [spec] Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
+     * 
+     * @returns A object with fields that summary the values in the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize();
+     * console.log(summary);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize({ // Summarize using pre-defined functions.
+     *      Column1: Series.sum,
+     *      Column2: Series.average,
+     *      Column3: Series.count,
+     * });
+     * console.log(summary);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize({ // Summarize using custom functions.
+     *      Column1: series => series.sum(),
+     *      Column2: series => series.std(),
+     *      ColumnN: whateverFunctionYouWant,
+     * });
+     * console.log(summary);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = df.summarize({ // Multiple output fields per column.
+     *      Column1: {
+     *          OutputField1: Series.sum,
+     *          OutputField2: Series.average,
+     *      },
+     *      Column2: {
+     *          OutputField3: series => series.sum(),
+     *          OutputFieldN: whateverFunctionYouWant,
+     *      },
+     * });
+     * console.log(summary);
+     * </pre>
+     */
+    summarize<OutputValueT = any> (
+        spec?: IMultiColumnAggregatorSpec
+            ): OutputValueT {
+
+        if (spec && !isObject(spec)) {
+            throw new Error("Expected 'spec' parameter to 'DataFrame.summarize' to be an object that specifies how to summarize the dataframe.");
+        }
+
+        if (!spec) {
+            spec = {};
+
+            for (const columnName of this.getColumnNames()) {
+                const columnSpec: any = {};
+                columnSpec[columnName + "_sum"] = Series.sum;
+                columnSpec[columnName + "_average"] = Series.average;
+                columnSpec[columnName + "_count"] = Series.count;
+                spec[columnName] = columnSpec;
+
+            }
+        }
+
+        for (const inputColumnName of Object.keys(spec)) {
+            const inputSpec = spec[inputColumnName];
+            if (Sugar.Object.isFunction(inputSpec)) {
+                spec[inputColumnName] = {}; // Expand the spec.
+                (spec[inputColumnName] as IColumnAggregatorSpec) [inputColumnName] = inputSpec;
+            }
+        }
+
+        const inputColumnNames = Object.keys(spec);
+        const outputFieldsMap = toMap(
+            inputColumnNames, 
+            valueColumnName => valueColumnName, 
+            inputColumnName => Object.keys(spec![inputColumnName])
+        );
+
+        const output: any = {};
+        
+        for (const inputColumnName of inputColumnNames) {
+            const outputFieldNames = outputFieldsMap[inputColumnName];
+            for (const outputFieldName of outputFieldNames) {
+                const aggregatorFn = (spec[inputColumnName] as IColumnAggregatorSpec)[outputFieldName];
+                output[outputFieldName] = aggregatorFn(this.getSeries(inputColumnName));
+            }
+        }
+
+        return output;
+    }
+    
+    /**
      * Reshape (or pivot) a dataframe based on column values.
-     * This is short-hand that combines grouping, aggregation and sorting.
+     * This is a powerful function that combines grouping, aggregation and sorting.
      *
      * @param columnOrColumns Column name whose values make the new DataFrame's columns.
      * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
@@ -6024,7 +6181,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     pivot<NewValueT = ValueT> (
         columnOrColumns: string | Iterable<string>, 
-        valueColumnNameOrSpec: string | IPivotAggregateSpec, 
+        valueColumnNameOrSpec: string | IMultiColumnAggregatorSpec, 
         aggregator?: (values: ISeries<number, any>) => any
             ): IDataFrame<number, NewValueT> {
 
@@ -6045,7 +6202,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }
         }
 
-        let aggSpec: IPivotAggregateSpec;
+        let aggSpec: IMultiColumnAggregatorSpec;
 
         if (!Sugar.Object.isObject(valueColumnNameOrSpec)) {
             if (!isString(valueColumnNameOrSpec)) throw new Error("Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values to aggregate or a column spec that defines which column contains the value ot aggregate and the ways to aggregate that value.");
@@ -6060,7 +6217,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             aggSpec[aggColumnName] = outputSpec;
         }
         else {
-            aggSpec = valueColumnNameOrSpec as IPivotAggregateSpec;
+            aggSpec = valueColumnNameOrSpec as IMultiColumnAggregatorSpec;
 
             for (const inputColumnName of Object.keys(aggSpec)) {
                 const columnAggSpec = aggSpec[inputColumnName];

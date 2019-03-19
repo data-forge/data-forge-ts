@@ -208,6 +208,70 @@ describe('DataFrame pivot examples', () => {
         ]);
     });
 
+    it('can pivot with named functions', () => {
+
+        const pivotted = df.pivot(["regiment", "company"], {
+            TestScore: {
+                count: Series.count,
+                avg: Series.average,
+                min: Series.min,
+                max: Series.max,
+            }
+        });
+
+        expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "count", "avg", "min", "max"]);
+		expect(pivotted.toArray()).to.eql([
+            {
+                regiment: "Dragoons",
+                company: "1st",
+                avg: 3.5,
+                count: 2,
+                min: 3,
+                max: 4,
+            },
+            {
+                regiment: "Dragoons",
+                company: "2nd",
+                avg: 27.5,
+                count: 2,
+                min: 24,
+                max: 31,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "1st",
+                avg: 14.0,
+                count: 2,
+                min: 4,
+                max: 24,
+            },
+            {
+                regiment: "Nighthawks",
+                company: "2nd",
+                avg: 16.5,
+                count: 2,
+                min: 2,
+                max: 31,
+            },
+            {
+                regiment: "Scouts",
+                company: "1st",
+                avg: 2.5,
+                count: 2,
+                min: 2,
+                max: 3,
+            },
+            {
+                regiment: "Scouts",
+                company: "2nd",
+                avg: 2.5,
+                count: 2,
+                min: 2,
+                max: 3,
+            },
+        ]);
+    });
+
 	it('Create a pivot table of group means, by company and regiment - manual pivot', () => {
 
         const pivotted = df.groupBy(row => row.regiment)
