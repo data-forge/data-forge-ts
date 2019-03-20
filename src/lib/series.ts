@@ -3534,12 +3534,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         const rows = this.toPairs();
 
         const table = new Table();
-        rows.forEach((row, rowIndex) => {
-            row.forEach((cell, cellIndex) => {
+        for (let rowIndex = 0; rowIndex < rows.length; ++rowIndex) {
+            const row = rows[rowIndex];
+            for (let cellIndex = 0; cellIndex < row.length; ++cellIndex) {
+                const cell = row[cellIndex];
                 table.cell(header[cellIndex], cell);
-            });
+            }
             table.newRow();
-        });
+        }
 
         return table.toString();
     };
@@ -4242,27 +4244,27 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     * Zip together multiple series to create a new series.
     * Preserves the index of the first series.
     *
-    * @param series - Multiple arguments. Each can be either a series or an array of series.
+    * @param series - An iterable of series to be zipped.
     * @param zipper - Selector function that produces a new series based on the input series.
     * 
     * @returns Returns a single series zipped from multiple input series. 
     */
-    static zip<IndexT = any, ValueT = any, ResultT = any> (series: ISeries<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): ISeries<IndexT, ResultT> {
+    static zip<IndexT = any, ValueT = any, ResultT = any> (series: Iterable<ISeries<IndexT, ValueT>>, zipper: ZipNFn<ValueT, ResultT>): ISeries<IndexT, ResultT> {
 
-        if (!isArray(series)) throw new Error("Expected 'series' parameter to 'Series.zip' to be an array of series.");
+        const input = Array.from(series);
 
-        if (series.length === 0) {
+        if (input.length === 0) {
             return new Series<IndexT, ResultT>();
         }
 
-        const firstSeries = series[0];
+        const firstSeries = input[0];
         if (firstSeries.none()) {
             return new Series<IndexT, ResultT>();
         }
 
         return new Series<IndexT, ResultT>(() => {
             const firstSeriesUpCast = <Series<IndexT, ValueT>> firstSeries;
-            const upcast = <Series<IndexT, ValueT>[]> series; // Upcast so that we can access private index, values and pairs.
+            const upcast = <Series<IndexT, ValueT>[]> input; // Upcast so that we can access private index, values and pairs.
             
             return {
                 index: <Iterable<IndexT>> firstSeriesUpCast.getContent().index,
@@ -4981,8 +4983,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     detectTypes (): IDataFrame<number, ITypeFrequency> {
 
         return new DataFrame<number, ITypeFrequency>(() => {
-            const values = this.toArray();
-            const totalValues = values.length;
+            const totalValues = this.count();
 
             const typeFrequencies = this.select(value => {
                     let valueType: string = typeof(value);
@@ -5004,8 +5005,6 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                     ++typeInfo.count;
                     return accumulated;
                 });
-
-                
 
             return {
                 columnNames: ["Type", "Frequency"],
@@ -5036,17 +5035,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     detectValues (): IDataFrame<number, IValueFrequency> {
 
         return new DataFrame<number, IValueFrequency>(() => {
-            const values = this.toArray();
-            const totalValues = values.length;
-            const valueFrequencies = this.aggregate({}, (accumulated: any, value: any) => {
-                const valueKey = (value !== null && value.toString() || "null") + "-" + typeof(value);
-                let valueInfo = accumulated[valueKey];
+            const totalValues = this.count();
+            const valueFrequencies = this.aggregate(new Map<any, any>(), (accumulated: Map<any, any>, value: any) => {
+                let valueInfo = accumulated.get(value);
                 if (!valueInfo) {
                     valueInfo = {
                         count: 0,
                         value: value,
                     };
-                    accumulated[valueKey] = valueInfo;
+                    accumulated.set(value, valueInfo);
                 }
                 ++valueInfo.count;
                 return accumulated;
@@ -5054,14 +5051,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
             return {
                 columnNames: ["Value", "Frequency"],
-                rows: Object.keys(valueFrequencies)
-                    .map(valueKey => {
-                        const valueInfo = valueFrequencies[valueKey];
+                rows: Array.from(valueFrequencies.keys())
+                    .map(value => {
+                        const valueInfo = valueFrequencies.get(value);
                         return [
                             valueInfo.value,
                             (valueInfo.count / totalValues) * 100
                         ];
-                    })
+                    }),
             };
         });
     }

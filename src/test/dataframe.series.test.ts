@@ -1013,8 +1013,51 @@ describe('DataFrame series', () => {
 		expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
 		expect(modified.getColumnNames()).to.eql(["Column1", "Column2", "NewColumn"]);
 		expect(modified.getSeries("NewColumn").toArray()).to.eql([11, 22, 33]);
-	});    
+    });    
+    
+	it('can generate series - function with static values', () => {
 
+		var df = new DataFrame({
+                columnNames: ["Column1", "Column2"], 
+                rows: [
+					[1, 10],
+					[2, 20],
+					[3, 30],
+				],
+				index: [10, 11, 12]
+            });
+
+		var modified = df.generateSeries(row => ({
+                NewColumn: 22,
+			}));
+
+		expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
+		expect(modified.getColumnNames()).to.eql(["Column1", "Column2", "NewColumn"]);
+		expect(modified.getSeries("NewColumn").toArray()).to.eql([22, 22, 22]);
+	});
+    
+
+	it('can generate series - object with static values', () => {
+
+		var df = new DataFrame({
+                columnNames: ["Column1", "Column2"], 
+                rows: [
+                    [1, 10],
+                    [2, 20],
+                    [3, 30],
+                ],
+                index:[10, 11, 12]
+            });
+
+		var modified = df.generateSeries({
+				NewColumn: () => 5,
+			}); 
+			
+		expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
+		expect(modified.getColumnNames()).to.eql(["Column1", "Column2", "NewColumn"]);
+		expect(modified.getSeries("NewColumn").toArray()).to.eql([5, 5, 5]);
+	});    
+    
 	it('can inflate column to new columns', function () {
 
 		var df = new DataFrame({

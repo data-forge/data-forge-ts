@@ -80,6 +80,17 @@ export interface IColumnConfig {
 }
 
 /**
+ * Options for CSV output.
+ */
+export interface ICSVOutputOptions {
+    /**
+     * Enable or disable output of the CSV header line.
+     * Defaults to true.
+     */
+    header?: boolean;
+}
+
+/**
  * Used to configure a dataframe.
  */
 export interface IDataFrameConfig<IndexT, ValueT> {
@@ -178,7 +189,7 @@ export interface IColumnRenameSpec {
  * Specifies columns to transform and the user-defined selector function that does the transformation.
  */
 export interface IColumnTransformSpec {
-    [index: string]: SelectorWithIndexFn<any, any>;
+    [columnName: string]: SelectorWithIndexFn<any, any>;
 }
 
 /**
@@ -2406,8 +2417,15 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * const csvData = df.toCSV();
      * console.log(csvData);
      * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const csvData = df.toCSV({ header: false });
+     * console.log(csvData);
+     * </pre>
      */
-    toCSV (): string;
+    toCSV (options?: ICSVOutputOptions): string;
 
     /**
      * Serialize the dataframe to HTML.
@@ -3476,12 +3494,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
 
         if (Sugar.Object.isArray(columnOrColumns)) {
-            columnOrColumns.forEach(function (columnName) {
-                if (!isString(columnName)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");	
-            });
+            for (const columnName of columnOrColumns) {
+                if (!isString(columnName)) {
+                    throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");	
+                }
+            }
         }
         else {
-            if (!isString(columnOrColumns)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");
+            if (!isString(columnOrColumns)) {
+                throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");
+            }
 
             columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
         }
@@ -3533,12 +3555,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
 
         if (Sugar.Object.isArray(columnOrColumns)) {
-            columnOrColumns.forEach(function (columnName) {
-                if (!isString(columnName)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");	
-            });
+            for (const columnName of columnOrColumns) {
+                if (!isString(columnName)) {
+                    throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");	
+                }
+            }
         }
         else {
-            if (!isString(columnOrColumns)) throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");
+            if (!isString(columnOrColumns)) {
+                throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");
+            }
 
             columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
         }
@@ -3894,7 +3920,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
         if (!Sugar.Object.isObject(generator)) {
-            if (!isFunction(generator)) throw new Error("Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
+            if (!isFunction(generator)) {
+                throw new Error("Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
+            }
 
             const selector = generator as SelectorWithIndexFn<any, any>;
             const newColumns = this.select(selector) // Build a new dataframe.
@@ -4917,9 +4945,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const index = pair[0];
             const value = pair[1] as any;
             table.cell(header[0], index);
-            columnNames.forEach((columnName, columnIndex) => {
+            for (let columnIndex = 0; columnIndex < columnNames.length; ++columnIndex) {
+                const columnName = columnNames[columnIndex];
                 table.cell(header[columnIndex+1], value[columnName]);
-            });
+            }
             table.newRow();
         }
 
@@ -5408,7 +5437,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * Zip (or merge) together multiple dataframes to create a new dataframe.
     * Preserves the index of the first dataframe.
     *
-    * @param dataframes Array of input dataframes to be zipped together.
+    * @param input An iterable of datafames to be zipped.
     * @param zipper User-defined zipper function that merges rows. It produces rows for the new dataframe based-on rows from the input dataframes.
     * 
     * @return Returns a single dataframe zipped (or merged) from multiple input dataframes. 
@@ -5443,22 +5472,22 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * const zippedDf = DataFrame.zip([dfA, dfB], produceNewRow);
     * </pre>
     */
-    static zip<IndexT = any, ValueT = any, ResultT = any> (dataframes: IDataFrame<IndexT, ValueT>[], zipper: ZipNFn<ValueT, ResultT>): IDataFrame<IndexT, ResultT> {
+    static zip<IndexT = any, ValueT = any, ResultT = any> (dataframes: Iterable<IDataFrame<IndexT, ValueT>>, zipper: ZipNFn<ValueT, ResultT>): IDataFrame<IndexT, ResultT> {
 
-        if (!isArray(dataframes)) throw new Error("Expected 'dataframe' parameter to 'DataFrame.zip' to be an array of dataframes.");
+        const input = Array.from(dataframes);
 
-        if (dataframes.length === 0) {
+        if (input.length === 0) {
             return new DataFrame<IndexT, ResultT>();
         }
 
-        const firstSeries = dataframes[0];
+        const firstSeries = input[0];
         if (firstSeries.none()) {
             return new DataFrame<IndexT, ResultT>();
         }
 
         return new DataFrame<IndexT, ResultT>(() => {
             const firstSeriesUpCast = <DataFrame<IndexT, ValueT>> firstSeries;
-            const upcast = <DataFrame<IndexT, ValueT>[]> dataframes; // Upcast so that we can access private index, values and pairs.
+            const upcast = <DataFrame<IndexT, ValueT>[]> input; // Upcast so that we can access private index, values and pairs.
             
             return {
                 index: <Iterable<IndexT>> firstSeriesUpCast.getContent().index,
@@ -6513,11 +6542,21 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const csvData = df.toCSV();
      * console.log(csvData);
      * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const csvData = df.toCSV({ header: false });
+     * console.log(csvData);
+     * </pre>
      */
-    toCSV (): string {
-
-        const data = [this.getColumnNames()].concat(this.toRows());
-        return PapaParse.unparse(data);
+    toCSV (options?: ICSVOutputOptions): string {
+        const headerLine = options === undefined || options.header === undefined || options.header
+            ? [this.getColumnNames()]
+            : []
+            ;
+        const rows = headerLine.concat(this.toRows());
+        return PapaParse.unparse(rows, options);
     }
 
     /**

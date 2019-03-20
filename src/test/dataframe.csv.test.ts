@@ -36,4 +36,24 @@ describe('DataFrame csv', () => {
 		);
 	});
     
+	it('can save dataframe to csv with no header', function () {
+
+        var df = new DataFrame([
+            {
+                Column1: 'A',
+                Column2: 1,
+            },
+            {
+                Column1: 'B',
+                Column2: 2,
+            },
+        ]);
+
+		var csvData = df.toCSV({ header: false });
+		assert.isString(csvData);
+		expect(csvData).to.eql(
+			"A,1\r\n" +
+			"B,2"
+		);
+	});
 });
