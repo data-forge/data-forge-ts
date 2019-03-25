@@ -20,8 +20,10 @@
     "tw": "mocha --watch --opts ./src/test/mocha.opts",
     "test:watch": "nyc mocha --watch --opts ./src/test/mocha.opts",
     "api-docs": "typedoc --options typedoc.json --out docs/api ./src/index.ts ./src/lib/dataframe.ts ./src/lib/series.ts ./src/lib/index.ts",
-    "prepublishOnly": "tsc",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "prepublishOnly": "npm run test && npm run build && npm run pack",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "p": "npm run pack",
+    "pack": "webpack --config webpack.node.config.js"
   },
   "repository": {
     "type": "git",
@@ -73,9 +75,13 @@
     "mocha": "3.5.3",
     "nyc": "11.7.3",
     "source-map-support": "0.5.6",
+    "ts-loader": "^5.3.3",
     "ts-node": "6.0.2",
     "typedoc": "^0.11.1",
-    "typescript": "2.8.3"
+    "typescript": "2.8.3",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-node-externals": "^1.7.2"
   },
   "nyc": {
     "extension": [
