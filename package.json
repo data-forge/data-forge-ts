@@ -20,7 +20,7 @@
     "tw": "npm run test:watch",
     "test:watch": "nyc mocha --watch --opts ./src/test/mocha.opts",
     "api-docs": "typedoc --options typedoc.json --out docs/api ./src/index.ts ./src/lib/dataframe.ts ./src/lib/series.ts ./src/lib/index.ts",
-    "prepublishOnly": "npm run test && npm run build && npm run pack",
+    "prepublishOnly": "npm run clean && npm run test && npm run build && npm run pack",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "p": "npm run pack",
     "pack": "webpack --config webpack.node.config.js && npm run bundle-typedefs",
