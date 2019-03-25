@@ -32,17 +32,21 @@ If you notice any problems in this documentation [please log an issue](https://g
     - [Reading CSV files](#reading-csv-files)
       - [Synchronous version](#synchronous-version)
       - [Asynchronous version](#asynchronous-version)
+      - [Async/await version](#asyncawait-version)
     - [Writing CSV files](#writing-csv-files)
       - [Synchronous version](#synchronous-version-1)
       - [Asynchronous version](#asynchronous-version-1)
+      - [Async/await version](#asyncawait-version-1)
     - [Working with CSV data](#working-with-csv-data)
   - [Working with JSON files](#working-with-json-files)
     - [Reading JSON files](#reading-json-files)
-      - [Ayncrhonous version](#ayncrhonous-version)
+      - [Synchronous version](#synchronous-version-2)
       - [Asynchronous version](#asynchronous-version-2)
+      - [Async/await version](#asyncawait-version-2)
     - [Writing JSON files](#writing-json-files)
-      - [Syncrhonous version](#syncrhonous-version)
+      - [Synchronous version](#synchronous-version-3)
       - [Asynchronous version](#asynchronous-version-3)
+    - [Async/await version](#asyncawait-version-3)
     - [Working with JSON data](#working-with-json-data)
   - [Parsing column values](#parsing-column-values)
   - [Automatic column parsing](#automatic-column-parsing)
@@ -56,7 +60,6 @@ If you notice any problems in this documentation [please log an issue](https://g
   - [Replacing a column](#replacing-a-column)
   - [Generating a column](#generating-a-column)
   - [Transforming a column](#transforming-a-column)
-  - [Adding, replacing, generating and transforming multiple columns](#adding-replacing-generating-and-transforming-multiple-columns)
   - [Removing columns](#removing-columns)
   - [Getting a row or value by index](#getting-a-row-or-value-by-index)
 - [Data exploration and visualization](#data-exploration-and-visualization)
@@ -70,6 +73,7 @@ If you notice any problems in this documentation [please log an issue](https://g
 - [Data subsets](#data-subsets)
 - [Combining](#combining)
   - [Concatenation](#concatenation)
+  - [Merge](#merge)
   - [Join](#join)
   - [Zip](#zip)
 - [Collapsing unique values](#collapsing-unique-values)
@@ -175,7 +179,7 @@ import 'data-forge-fs';
 
 The file system module auguments the core Data-Forge API and adds readFile and writeFile function to support access to data files under Node.js. 
 
-To visualize data, installed [Data-Forge Plot](https://www.npmjs.com/package/data-forge-plot):
+To visualize data, also install [Data-Forge Plot](https://www.npmjs.com/package/data-forge-plot):
 
     npm install --save data-forge-plot
 
