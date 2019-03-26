@@ -6392,7 +6392,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         if (!isFunction(generator)) throw new Error("Expected 'generator' parameter to 'DataFrame.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
 
         return this.rollingWindow(2)
-            .selectMany((window): [IndexT, ValueT][] => {
+            .selectMany(window => {
                 const pairs = window.toPairs();
                 const pairA = pairs[0];
                 const pairB = pairs[1];
@@ -6408,6 +6408,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             .withIndex(pair => pair[0])
             .inflate(pair => pair[1])
             .concat(this.tail(1));
+            
     }
 
     /**

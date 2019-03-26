@@ -16,7 +16,6 @@ export class SeriesVariableWindowIterator<IndexT, ValueT> implements Iterator<IS
     iterator: Iterator<[IndexT, ValueT]>;
     nextValue: IteratorResult<[IndexT, ValueT]>;
     comparer: ComparerFn<ValueT>
-    windowIndex: number = 0;
     
     constructor(iterable: Iterable<[IndexT, ValueT]>, comparer: ComparerFn<ValueT>) {
         this.iterator = iterable[Symbol.iterator]();

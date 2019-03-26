@@ -3768,17 +3768,23 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         if (selector) {
             if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to Series.inflate to be a selector function.");
 
-            return new DataFrame<IndexT, ToT>({ //TODO: Pass a fn in here.
-                values: new SelectIterable(this.getContent().values, selector),
-                index: this.getContent().index,
-                pairs: new SelectIterable(this.getContent().pairs, (pair: [IndexT, ValueT], index: number): [IndexT, ToT] => [pair[0], selector(pair[1], index)]),
-            });            
+            return new DataFrame<IndexT, ToT>(() => {
+                const content = this.getContent();
+                return {
+                    values: new SelectIterable(content.values, selector),
+                    index: content.index,
+                    pairs: new SelectIterable(content.pairs, (pair: [IndexT, ValueT], index: number): [IndexT, ToT] => [pair[0], selector(pair[1], index)]),
+                };
+            });
         }
         else {
-            return new DataFrame<IndexT, ToT>({ //TODO: Pass a fn in here.
-                values: <Iterable<ToT>> <any> this.getContent().values,
-                index: this.getContent().index,
-                pairs: <Iterable<[IndexT, ToT]>> <any> this.getContent().pairs
+            return new DataFrame<IndexT, ToT>(() => {
+                const content = this.getContent();
+                return {
+                    values: <Iterable<ToT>> <any> content.values,
+                    index: content.index,
+                    pairs: <Iterable<[IndexT, ToT]>> <any> content.pairs,
+                };
             });
         }
     }

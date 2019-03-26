@@ -9,8 +9,8 @@ import { Series, ISeries } from '../series';
 export class SeriesWindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, ValueT>> {
 
     iterable: Iterable<[IndexT, ValueT]>;
+    iterator: Iterator<[IndexT, ValueT]> | undefined;
     period: number;
-    windowIndex: number = 0;
     
     constructor(iterable: Iterable<[IndexT, ValueT]>, period: number) {
         this.iterable = iterable;
@@ -19,21 +19,29 @@ export class SeriesWindowIterator<IndexT, ValueT> implements Iterator<ISeries<In
 
     next(): IteratorResult<ISeries<IndexT, ValueT>> {
 
-        const window = new Series<IndexT, ValueT>({
-            pairs: new TakeIterable(
-                new SkipIterable(
-                    this.iterable,
-                    this.windowIndex++ * this.period
-                ),
-                this.period
-            )
-        });
-
-        if (window.none()) {
-            // Nothing more to read from the underlying iterable.
-            // https://github.com/Microsoft/TypeScript/issues/8938
-            return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>)  // <= explicit cast here!;
+        if (!this.iterator) {
+            this.iterator = this.iterable[Symbol.iterator]();
         }
+
+        const curWindow = [];
+
+        for (let i = 0; i < this.period; ++i) {
+            const curPos = this.iterator.next();
+            if (curPos.done) {
+                // Underlying iterator is finished.
+                break;
+            }
+            curWindow.push(curPos.value);
+        }
+
+        if (curWindow.length === 0) {
+            // Underlying iterator doesn't have required number of elements.
+            return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>);
+        }
+    
+        const window = new Series<IndexT, ValueT>({
+            pairs: curWindow
+        });
 
         return {
             value: window,

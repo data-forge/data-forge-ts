@@ -17,7 +17,6 @@ export class DataFrameVariableWindowIterator<IndexT, ValueT> implements Iterator
     iterator: Iterator<[IndexT, ValueT]>;
     nextValue: IteratorResult<[IndexT, ValueT]>;
     comparer: ComparerFn<ValueT>
-    windowIndex: number = 0;
     
     constructor(columnNames: Iterable<string>, iterable: Iterable<[IndexT, ValueT]>, comparer: ComparerFn<ValueT>) {
         this.columnNames = columnNames;

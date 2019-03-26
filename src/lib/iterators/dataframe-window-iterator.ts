@@ -10,8 +10,8 @@ export class DataFrameWindowIterator<IndexT, ValueT> implements Iterator<IDataFr
 
     columnNames: Iterable<string>;
     iterable: Iterable<[IndexT, ValueT]>;
+    iterator: Iterator<[IndexT, ValueT]> | undefined;
     period: number;
-    windowIndex: number = 0;
     
     constructor(columnNames: Iterable<string>, iterable: Iterable<[IndexT, ValueT]>, period: number) {
         this.columnNames = columnNames;
@@ -21,22 +21,30 @@ export class DataFrameWindowIterator<IndexT, ValueT> implements Iterator<IDataFr
 
     next(): IteratorResult<IDataFrame<IndexT, ValueT>> {
 
+        if (!this.iterator) {
+            this.iterator = this.iterable[Symbol.iterator]();
+        }
+        
+        const curWindow = [];
+
+        for (let i = 0; i < this.period; ++i) {
+            const curPos = this.iterator.next();
+            if (curPos.done) {
+                // Underlying iterator is finished.
+                break;
+            }
+            curWindow.push(curPos.value);
+        }
+
+        if (curWindow.length === 0) {
+            // Underlying iterator doesn't have required number of elements.
+            return ({ done: true } as IteratorResult<IDataFrame<IndexT, ValueT>>);
+        }
+    
         const window = new DataFrame<IndexT, ValueT>({
             columnNames: this.columnNames,
-            pairs: new TakeIterable(
-                new SkipIterable(
-                    this.iterable,
-                    this.windowIndex++ * this.period
-                ),
-                this.period
-            )
+            pairs: curWindow
         });
-
-        if (window.none()) {
-            // Nothing more to read from the underlying iterable.
-            // https://github.com/Microsoft/TypeScript/issues/8938
-            return ({ done: true } as IteratorResult<IDataFrame<IndexT, ValueT>>)  // <= explicit cast here!;
-        }
 
         return {
             value: window,
