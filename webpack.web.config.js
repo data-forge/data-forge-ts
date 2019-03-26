@@ -4,13 +4,12 @@ const    nodeExternals = require("webpack-node-externals");
 module.exports = {
     entry: "./src/index.ts",
     output: {
-        path: path.resolve(__dirname, "dist", "node"),
+        path: path.resolve(__dirname, "dist", "web"),
         filename: "index.js",
-        libraryTarget: "commonjs2",
+        library: "dataForge",
     },
 
-    target: "node",
-    externals: [ nodeExternals() ], // Ignore all modules in node_modules folder.
+    target: "web",
     mode: "production",
     devtool: "source-map",
 

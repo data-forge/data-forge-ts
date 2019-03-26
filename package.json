@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -20,11 +20,13 @@
     "tw": "npm run test:watch",
     "test:watch": "nyc mocha --watch --opts ./src/test/mocha.opts",
     "api-docs": "typedoc --options typedoc.json --out docs/api ./src/index.ts ./src/lib/dataframe.ts ./src/lib/series.ts ./src/lib/index.ts",
-    "prepublishOnly": "npm run clean && npm run test && npm run build && npm run pack",
+    "prepublishOnly": "npm run clean && npm run test && npm run build && npm run pack:node && npm run pack:web",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "p": "npm run pack",
-    "pack": "webpack --config webpack.node.config.js && npm run bundle-typedefs",
-    "bundle-typedefs": "dts-bundle --name data-forge --main build/index.d.ts --baseDir = build --out ../dist/index.d.ts"  
+    "pn": "npm run pack:node",
+    "pack:node": "webpack --config webpack.node.config.js && npm run bundle-typedefs",
+    "pw": "npm run pack:web",
+    "pack:web": "webpack --config webpack.web.config.js",
+    "bundle-typedefs": "dts-bundle --name data-forge --main build/index.d.ts --baseDir = build --out ../dist/node/index.d.ts"  
 },
   "repository": {
     "type": "git",
