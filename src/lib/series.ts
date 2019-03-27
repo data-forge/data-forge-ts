@@ -1240,6 +1240,19 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     median (): number;
 
     /**
+     * Get the standard deviation of number values in the series. 
+     * 
+     * @returns Returns the standard deviation of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesStdDev = salesFigures.std();
+     * </pre>
+     */
+    std (): number;
+
+    /**
      * Get the min value in the series.
      * 
      * @returns Returns the minimum of the number values in the series.
@@ -3871,6 +3884,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
+     * Static version of the median function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to find the median of.
+     * 
+     * @returns Returns the median of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      InputColumn: Series.median,
+     * });
+     * </pre>
+     */
+    static median<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.median();
+    }
+
+    /**
      * Get the median value in the series. 
      * Note that this sorts the series, which can be expensive.
      * 
@@ -3904,6 +3936,58 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         // Odd
         return ordered[Math.floor(count / 2)];
+    }
+
+    /**
+     * Static version of the standard deviation function for use with summarize and pivot functions.
+     * 
+     * @param series Input series to find the standard deviation of.
+     * 
+     * @returns Returns the standard deviation of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      InputColumn: Series.std,
+     * });
+     * </pre>
+     */
+    static std<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.std();
+    }
+    
+    /**
+     * Get the standard deviation of number values in the series. 
+     * 
+     * @returns Returns the standard deviation of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesStdDev = salesFigures.std();
+     * </pre>
+     */
+    std (): number {
+
+        // Have to assume we are working with a number series here.
+        // Bake so we don't evaluate multiple times.
+        // TODO: Caching can help here.
+        const numberSeries = (<ISeries<IndexT, number>> <any> this.bake()); 
+        const valueCount = numberSeries.count();
+        if (valueCount === 0) {
+            return 0;
+        }
+
+        // https://en.wikipedia.org/wiki/Standard_deviation
+        const mean = numberSeries.average();
+        const sumOfSquaredDiffs = numberSeries
+            .select(value  => { 
+                const diffFromMean = value - mean;
+                return diffFromMean * diffFromMean;
+            })
+            .sum();
+        return Math.sqrt(sumOfSquaredDiffs / valueCount);
     }
 
     /**

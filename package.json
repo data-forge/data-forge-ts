@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -18,7 +18,7 @@
     "t": "npm run test",
     "test": "mocha --opts ./src/test/mocha.opts",
     "tw": "npm run test:watch",
-    "test:watch": "nyc mocha --watch --opts ./src/test/mocha.opts",
+    "test:watch": "mocha --watch --opts ./src/test/mocha.opts",
     "api-docs": "typedoc --options typedoc.json --out docs/api ./src/index.ts ./src/lib/dataframe.ts ./src/lib/series.ts ./src/lib/index.ts",
     "prepublishOnly": "npm run clean && npm run test && npm run build && npm run pack:web",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",

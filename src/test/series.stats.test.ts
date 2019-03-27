@@ -77,4 +77,17 @@ describe('Series stats', () => {
         expect(counted.toArray()).to.eql([1, 2, 0, 1, 0, 1, 2, 3, 0, 0, 0, 0, 1]);
         expect(counted.getIndex().toArray()).to.eql(range(10, 13).toArray());
     });
+
+    it('standard deviation of empty series is zero', ()=> {
+        
+        const series = new Series<number, number>([]);
+        expect(series.std()).to.eql(0);
+    });
+
+    it('can compute standard deviation', () => {
+        
+        const series = new Series<number, number>([2, 4, 4, 4, 5, 5, 7, 9]);
+        expect(series.average()).to.eql(5);
+        expect(series.std()).to.eql(2);
+    }); 
 });
