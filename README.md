@@ -47,7 +47,13 @@ https://github.com/data-forge/data-forge-ts/issues/3#issuecomment-438580174
 
 ## Install
 
-    npm install --save data-forge data-forge-fs
+To install for Node.js and the browser:
+
+    npm install --save data-forge
+
+If working in Node.js and you want the functions to read and write data files:
+
+    npm install --save data-forge-fs
 
 ## Quick start
 
@@ -78,6 +84,16 @@ dataForge.readFileSync('./input-data-file.csv') // Read CSV file (or JSON!)
 ## From the browser
 
 Data-Forge has been tested with Browserify and Webpack. Please see links to examples below.
+
+If you aren't using Browserify or Webpack, the npm package includes a pre-packed browser distribution that you can install and included in your HTML as follows:
+
+```html
+<script language="javascript" type="text/javascript" src="node_modules/data-forge/dist/web/index.js"></script>
+```
+
+This gives you the data-forge package mounted under the global variable `dataForge`.
+
+Please remember that you can't use data-forge-fs or the file system functions in the browser.
 
 ## Features
 

@@ -197,11 +197,19 @@ import 'data-forge-plot';
 
 ## Browser installation and setup
 
-Data-Forge can be used from the browser. You need to use Browserify or Webpack.
+Data-Forge can be used from the browser and has been tested with  Browserify and Webpack.
 
 Please see links to examples on [the main page](https://www.npmjs.com/package/data-forge).
 
-Don't attempt to install Data-Forge FS or Data-Forge Plot when using Data-Forge in the browser, that only works under Node.js.
+If you aren't using Browserify or Webpack, the npm package includes a pre-packed browser distribution that you can install and included in your HTML as follows:
+
+```html
+<script language="javascript" type="text/javascript" src="node_modules/data-forge/dist/web/index.js"></script>
+```
+
+This gives you the data-forge package mounted under the global variable `dataForge`.
+
+Please remember that you can't use data-forge-fs or data-forge-plot from the browser.
 
 ## Getting the code
 
