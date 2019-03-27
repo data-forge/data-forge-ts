@@ -74,11 +74,12 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface"><a href="interfaces/iaggregatorspec.html" class="tsd-kind-icon">IAggregator<wbr>Spec</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/ibucket.html" class="tsd-kind-icon">IBucket</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icsvoptions.html" class="tsd-kind-icon">ICSVOptions</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/icsvoutputoptions.html" class="tsd-kind-icon">ICSVOutput<wbr>Options</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumn.html" class="tsd-kind-icon">IColumn</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumnaggregatespec.html" class="tsd-kind-icon">IColumn<wbr>Aggregate<wbr>Spec</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/icolumnaggregatorspec.html" class="tsd-kind-icon">IColumn<wbr>Aggregator<wbr>Spec</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumnconfig.html" class="tsd-kind-icon">IColumn<wbr>Config</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumngenspec.html" class="tsd-kind-icon">IColumn<wbr>Gen<wbr>Spec</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumnrenamespec.html" class="tsd-kind-icon">IColumn<wbr>Rename<wbr>Spec</a></li>
@@ -90,9 +91,9 @@
 								<li class="tsd-kind-interface"><a href="interfaces/ifieldrecord.html" class="tsd-kind-icon">IField<wbr>Record</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/iformatspec.html" class="tsd-kind-icon">IFormat<wbr>Spec</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iindex.html" class="tsd-kind-icon">IIndex</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/imulticolumnaggregatorspec.html" class="tsd-kind-icon">IMulti<wbr>Column<wbr>Aggregator<wbr>Spec</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iordereddataframe.html" class="tsd-kind-icon">IOrdered<wbr>Data<wbr>Frame</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iorderedseries.html" class="tsd-kind-icon">IOrdered<wbr>Series</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ipivotaggregatespec.html" class="tsd-kind-icon">IPivot<wbr>Aggregate<wbr>Spec</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/iserializeddataframe.html" class="tsd-kind-icon">ISerialized<wbr>Data<wbr>Frame</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/iserializedindex.html" class="tsd-kind-icon">ISerialized<wbr>Index</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iseries.html" class="tsd-kind-icon">ISeries</a></li>
@@ -113,6 +114,7 @@
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#predicatefn" class="tsd-kind-icon">Predicate<wbr>Fn</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#selectorfn" class="tsd-kind-icon">Selector<wbr>Fn</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#selectorwithindexfn" class="tsd-kind-icon">Selector<wbr>With<wbr>Index<wbr>Fn</a></li>
+								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#seriesaggregatorfn" class="tsd-kind-icon">Series<wbr>Aggregator<wbr>Fn</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#seriesconfigfn" class="tsd-kind-icon">Series<wbr>Config<wbr>Fn</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#seriesselectorfn" class="tsd-kind-icon">Series<wbr>Selector<wbr>Fn</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="index.html#zip2fn" class="tsd-kind-icon">Zip2<wbr>Fn</a></li>
@@ -144,7 +146,7 @@
 					<div class="tsd-signature tsd-kind-icon">Aggregate<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L104">lib/series.ts:104</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L104">lib/series.ts:104</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -184,7 +186,7 @@
 					<div class="tsd-signature tsd-kind-icon">Callback<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L64">lib/series.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L64">lib/series.ts:64</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -223,7 +225,7 @@
 					<div class="tsd-signature tsd-kind-icon">Comparer<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L110">lib/series.ts:110</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L110">lib/series.ts:110</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -263,7 +265,7 @@
 					<div class="tsd-signature tsd-kind-icon">Data<wbr>Frame<wbr>Config<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/dataframe.ts#L195">lib/dataframe.ts:195</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L211">lib/dataframe.ts:211</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -288,7 +290,7 @@
 					<div class="tsd-signature tsd-kind-icon">Gap<wbr>Fill<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L122">lib/series.ts:122</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L122">lib/series.ts:122</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -322,7 +324,7 @@
 					<div class="tsd-signature tsd-kind-icon">Join<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L93">lib/series.ts:93</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L93">lib/series.ts:93</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -361,8 +363,8 @@
 					<div class="tsd-signature tsd-kind-icon">Predicate<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L98">lib/series.ts:98</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/index.ts#L9">lib/index.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L98">lib/series.ts:98</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/index.ts#L9">lib/index.ts:9</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -402,7 +404,7 @@
 					<div class="tsd-signature tsd-kind-icon">Selector<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L88">lib/series.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L88">lib/series.ts:88</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -439,7 +441,7 @@
 					<div class="tsd-signature tsd-kind-icon">Selector<wbr>With<wbr>Index<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L70">lib/series.ts:70</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L70">lib/series.ts:70</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -474,12 +476,48 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
+					<a name="seriesaggregatorfn" class="tsd-anchor"></a>
+					<h3>Series<wbr>Aggregator<wbr>Fn</h3>
+					<div class="tsd-signature tsd-kind-icon">Series<wbr>Aggregator<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L51">lib/dataframe.ts:51</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An function that aggregates a series.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><a href="interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">OutputT</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>values: <a href="interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">OutputT</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="seriesconfigfn" class="tsd-anchor"></a>
 					<h3>Series<wbr>Config<wbr>Fn</h3>
 					<div class="tsd-signature tsd-kind-icon">Series<wbr>Config<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L116">lib/series.ts:116</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L116">lib/series.ts:116</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -504,7 +542,7 @@
 					<div class="tsd-signature tsd-kind-icon">Series<wbr>Selector<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/dataframe.ts#L189">lib/dataframe.ts:189</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L205">lib/dataframe.ts:205</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -540,7 +578,7 @@
 					<div class="tsd-signature tsd-kind-icon">Zip2<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L79">lib/series.ts:79</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L79">lib/series.ts:79</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -574,7 +612,7 @@
 					<div class="tsd-signature tsd-kind-icon">Zip3<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L80">lib/series.ts:80</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L80">lib/series.ts:80</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -611,7 +649,7 @@
 					<div class="tsd-signature tsd-kind-icon">Zip4<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L81">lib/series.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L81">lib/series.ts:81</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -651,7 +689,7 @@
 					<div class="tsd-signature tsd-kind-icon">Zip5<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L82">lib/series.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L82">lib/series.ts:82</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -691,7 +729,7 @@
 					<div class="tsd-signature tsd-kind-icon">ZipNFn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/lib/series.ts#L78">lib/series.ts:78</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L78">lib/series.ts:78</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -735,7 +773,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/index.ts#L94">index.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L94">index.ts:94</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -770,7 +808,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/index.ts#L54">index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L54">index.ts:54</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -802,7 +840,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/index.ts#L37">index.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L37">index.ts:37</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -835,7 +873,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/index.ts#L220">index.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L220">index.ts:220</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -885,7 +923,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/index.ts#L180">index.ts:180</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L180">index.ts:180</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -923,7 +961,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/e69a953/src/index.ts#L201">index.ts:201</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L201">index.ts:201</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -979,19 +1017,22 @@
 						<a href="classes/series.html" class="tsd-kind-icon">Series</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/iaggregatorspec.html" class="tsd-kind-icon">IAggregator<wbr>Spec</a>
-					</li>
-					<li class=" tsd-kind-interface">
 						<a href="interfaces/ibucket.html" class="tsd-kind-icon">IBucket</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/icsvoptions.html" class="tsd-kind-icon">ICSVOptions</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/icsvoutputoptions.html" class="tsd-kind-icon">ICSVOutput<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/icolumn.html" class="tsd-kind-icon">IColumn</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/icolumnaggregatespec.html" class="tsd-kind-icon">IColumn<wbr>Aggregate<wbr>Spec</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/icolumnaggregatorspec.html" class="tsd-kind-icon">IColumn<wbr>Aggregator<wbr>Spec</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/icolumnconfig.html" class="tsd-kind-icon">IColumn<wbr>Config</a>
@@ -1026,14 +1067,14 @@
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/iindex.html" class="tsd-kind-icon">IIndex</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/imulticolumnaggregatorspec.html" class="tsd-kind-icon">IMulti<wbr>Column<wbr>Aggregator<wbr>Spec</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/iordereddataframe.html" class="tsd-kind-icon">IOrdered<wbr>Data<wbr>Frame</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/iorderedseries.html" class="tsd-kind-icon">IOrdered<wbr>Series</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/ipivotaggregatespec.html" class="tsd-kind-icon">IPivot<wbr>Aggregate<wbr>Spec</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/iserializeddataframe.html" class="tsd-kind-icon">ISerialized<wbr>Data<wbr>Frame</a>
@@ -1079,6 +1120,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="index.html#selectorwithindexfn" class="tsd-kind-icon">Selector<wbr>With<wbr>Index<wbr>Fn</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="index.html#seriesaggregatorfn" class="tsd-kind-icon">Series<wbr>Aggregator<wbr>Fn</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="index.html#seriesconfigfn" class="tsd-kind-icon">Series<wbr>Config<wbr>Fn</a>

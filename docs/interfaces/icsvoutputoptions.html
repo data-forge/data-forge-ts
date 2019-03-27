@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISerializedIndex | Data-Forge</title>
+	<title>ICSVOutputOptions | Data-Forge</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="iserializedindex.html">ISerializedIndex</a>
+					<a href="icsvoutputoptions.html">ICSVOutputOptions</a>
 				</li>
 			</ul>
-			<h1>Interface ISerializedIndex</h1>
+			<h1>Interface ICSVOutputOptions</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The serialized index for a dataframe.</p>
+						<p>Options for CSV output.</p>
 					</div>
 				</div>
 			</section>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ISerializedIndex</span>
+						<span class="target">ICSVOutputOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -84,8 +84,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iserializedindex.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iserializedindex.html#values" class="tsd-kind-icon">values</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="icsvoutputoptions.html#header" class="tsd-kind-icon">header</a></li>
 							</ul>
 						</section>
 					</div>
@@ -94,32 +93,18 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="header" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> header</h3>
+					<div class="tsd-signature tsd-kind-icon">header<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L272">lib/dataframe.ts:272</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L90">lib/dataframe.ts:90</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The data type of the index.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="values" class="tsd-anchor"></a>
-					<h3>values</h3>
-					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L277">lib/dataframe.ts:277</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Values in the index.</p>
+							<p>Enable or disable output of the CSV header line.
+							Defaults to true.</p>
 						</div>
 					</div>
 				</section>
@@ -138,13 +123,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="iserializedindex.html" class="tsd-kind-icon">ISerialized<wbr>Index</a>
+						<a href="icsvoutputoptions.html" class="tsd-kind-icon">ICSVOutput<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="iserializedindex.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="iserializedindex.html#values" class="tsd-kind-icon">values</a>
+								<a href="icsvoutputoptions.html#header" class="tsd-kind-icon">header</a>
 							</li>
 						</ul>
 					</li>

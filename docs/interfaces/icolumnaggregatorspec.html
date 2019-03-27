@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISerializedIndex | Data-Forge</title>
+	<title>IColumnAggregatorSpec | Data-Forge</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="iserializedindex.html">ISerializedIndex</a>
+					<a href="icolumnaggregatorspec.html">IColumnAggregatorSpec</a>
 				</li>
 			</ul>
-			<h1>Interface ISerializedIndex</h1>
+			<h1>Interface IColumnAggregatorSpec</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The serialized index for a dataframe.</p>
+						<p>Specification that can produce multiple output columns from a single input column of a dataframe.</p>
 					</div>
 				</div>
 			</section>
@@ -73,56 +73,18 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ISerializedIndex</span>
+						<span class="target">IColumnAggregatorSpec</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iserializedindex.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iserializedindex.html#values" class="tsd-kind-icon">values</a></li>
-							</ul>
-						</section>
+			<section class="tsd-panel tsd-kind-interface">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>outputColumnName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../index.html#seriesaggregatorfn" class="tsd-signature-type">SeriesAggregatorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Specification that can produce multiple output columns from a single input column of a dataframe.</p>
 					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L272">lib/dataframe.ts:272</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The data type of the index.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="values" class="tsd-anchor"></a>
-					<h3>values</h3>
-					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L277">lib/dataframe.ts:277</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Values in the index.</p>
-						</div>
-					</div>
-				</section>
+				</div>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -138,15 +100,7 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="iserializedindex.html" class="tsd-kind-icon">ISerialized<wbr>Index</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="iserializedindex.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="iserializedindex.html#values" class="tsd-kind-icon">values</a>
-							</li>
-						</ul>
+						<a href="icolumnaggregatorspec.html" class="tsd-kind-icon">IColumn<wbr>Aggregator<wbr>Spec</a>
 					</li>
 				</ul>
 				<ul class="after-current">
