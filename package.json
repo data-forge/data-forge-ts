@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -26,8 +26,8 @@
     "pack:node": "webpack --config webpack.node.config.js && npm run bundle-typedefs",
     "pw": "npm run pack:web",
     "pack:web": "webpack --config webpack.web.config.js",
-    "bundle-typedefs": "dts-bundle --name data-forge --main build/index.d.ts --baseDir = build --out ../dist/node/index.d.ts"  
-},
+    "bundle-typedefs": "dts-bundle --name data-forge --main build/index.d.ts --baseDir = build --out ../dist/node/index.d.ts"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/data-forge/data-forge-ts.git"
@@ -58,6 +58,7 @@
   },
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
+    "@data-forge/serialization": "^1.0.0",
     "chai": "4.1.2",
     "easy-table": "1.1.0",
     "lodash": "^4.17.11",

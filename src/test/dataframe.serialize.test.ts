@@ -1,8 +1,9 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import { Index } from '../lib/index';
-import { DataFrame, IDataFrame, ISerializedDataFrame } from '../lib/dataframe';
+import { DataFrame, IDataFrame } from '../lib/dataframe';
 import * as moment from 'moment';
+import { ISerializedDataFrame } from "@data-forge/serialization";
 
 describe('DataFrame serialization', () => {
 
