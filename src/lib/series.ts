@@ -15,16 +15,14 @@ import { DistinctIterable }  from './iterables/distinct-iterable';
 import { SeriesRollingWindowIterable }  from './iterables/series-rolling-window-iterable';
 import { SeriesVariableWindowIterable }  from './iterables/series-variable-window-iterable';
 import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
-import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
-import { isString, isObject, isNumber, isFunction, isArray} from 'lodash';
 import { IDataFrame, DataFrame } from './dataframe';
 import * as moment from 'moment';
-import { toMap } from './utils';
+import { toMap, isArray, isFunction, isNumber, isString, isDate } from './utils';
 import { range, replicate } from '..';
 import * as numeral from 'numeral';
 
@@ -2049,10 +2047,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     // Check that a value is an interable.
     //
     private static checkIterable<T>(input: T[] | Iterable<T>, fieldName: string): void {
-        if (Sugar.Object.isArray(input)) {
+        if (isArray(input)) {
             // Ok
         }
-        else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
+        else if (isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
             // Ok
         }
@@ -2153,11 +2151,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     constructor(config?: Iterable<ValueT> | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
         if (config) {
-            if (Sugar.Object.isFunction(config)) {
+            if (isFunction(config)) {
                 this.configFn = config;
             }
-            else if (Sugar.Object.isArray(config) || 
-                     Sugar.Object.isFunction((config as any)[Symbol.iterator])) {
+            else if (isArray(config) || 
+                     isFunction((config as any)[Symbol.iterator])) {
                 this.content = Series.initFromArray(config as Iterable<ValueT>);
             }
             else {
@@ -2269,18 +2267,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT> {
 
-        if (Sugar.Object.isFunction(newIndex)) {
+        if (isFunction(newIndex)) {
             return new Series<NewIndexT, ValueT>(() => ({
                 values: this.getContent().values,
                 index: this.select(newIndex),
             }));
         }
         else {
-            Series.checkIterable(newIndex, 'newIndex');
+            Series.checkIterable(newIndex as Iterable<NewIndexT>, 'newIndex');
             
             return new Series<NewIndexT, ValueT>(() => ({
                 values: this.getContent().values,
-                index: newIndex,
+                index: newIndex as Iterable<NewIndexT>,
             }));
         }
     };
@@ -2688,7 +2686,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     */
    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
 
-        if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
+        if (isFunction(seedOrSelector) && !selector) {
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
         }
         else {
@@ -3678,13 +3676,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         else if (value === null) {
             return null;
         }
-        else if (formatString && Sugar.Object.isDate(value)) {
+        else if (formatString && isDate(value)) {
             return moment(value).format(formatString);
         }
         else if (formatString && moment.isMoment(value)) {
             return value.format(formatString);
         }
-        else if (formatString && Sugar.Object.isNumber(value)) {
+        else if (formatString && isNumber(value)) {
             return numeral(value).format(formatString);
         }
         else {
@@ -4317,7 +4315,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         const concatInput: ISeries<IndexT, ValueT>[] = [this];
 
         for (const input of series) {
-            if (Sugar.Object.isArray(input)) {
+            if (isArray(input)) {
                 for (const subInput of input) {
                     concatInput.push(subInput);
                 }
@@ -4905,7 +4903,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         if (!isNumber(maxLength)) throw new Error("Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
 
         return this.select((value: any) => {
-                if (Sugar.Object.isString(value)) {
+                if (isString(value)) {
                     if (value.length > maxLength) {
                         return value.substring(0, maxLength);
                     }
@@ -5045,7 +5043,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             if (defaultSequence instanceof Series) {
                 return <ISeries<IndexT, ValueT>> defaultSequence;
             }
-            else if (Sugar.Object.isArray(defaultSequence)) {
+            else if (isArray(defaultSequence)) {
                 return new Series<IndexT, ValueT>(defaultSequence);
             }
             else {
@@ -5078,7 +5076,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             const typeFrequencies = this.select(value => {
                     let valueType: string = typeof(value);
                     if (valueType === "object") {
-                        if (Sugar.Object.isDate(value)) {
+                        if (isDate(value)) {
                             valueType = "date";
                         }
                     }

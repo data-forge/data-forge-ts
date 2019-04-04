@@ -1031,7 +1031,7 @@ describe('DataFrame series', () => {
                 NewColumn: 22,
 			}));
 
-		expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
+        expect(df.getColumnNames()).to.eql(["Column1", "Column2"]);
 		expect(modified.getColumnNames()).to.eql(["Column1", "Column2", "NewColumn"]);
 		expect(modified.getSeries("NewColumn").toArray()).to.eql([22, 22, 22]);
 	});

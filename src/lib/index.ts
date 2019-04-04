@@ -1,5 +1,4 @@
 import { ISeries, Series, SeriesConfigFn } from './series';
-import * as Sugar from 'sugar';
 import * as moment from 'moment';
 import { determineType } from './utils';
 

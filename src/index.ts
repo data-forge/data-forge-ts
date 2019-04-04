@@ -1,13 +1,12 @@
-import * as Sugar from 'sugar';
 export { Index, IIndex } from './lib/index';
 export { Series, ISeries, SelectorWithIndexFn } from './lib/series';
 export { DataFrame, IDataFrame } from './lib/dataframe';
-
-import { isString, isObject, isNumber, isFunction, isArray } from 'lodash';
 import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
 import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
+import { isString, isObject, isArray, isNumber } from './lib/utils';
+import { isFunction } from 'util';
 
 const PapaParse = require('papaparse');
 
@@ -98,7 +97,7 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
         if (!isObject(config)) throw new Error("Expected 'config' parameter to 'dataForge.fromCSV' to be an object with CSV parsing configuration options.");
 
         if (config.columnNames) {
-            if (!Sugar.Object.isFunction(config.columnNames[Symbol.iterator])) {
+            if (!isFunction(config.columnNames[Symbol.iterator])) {
                 if (!isArray(config.columnNames)) throw new Error("Expect 'columnNames' field of 'config' parameter to DataForge.fromCSV to be an array or iterable of strings that specifies column names.")
             }
 
@@ -128,7 +127,7 @@ export function fromCSV (csvTextString: string, config?: ICSVOptions) {
 
     let columnNames;
     rows = rows.map(row => {
-            return row.map(cell => Sugar.Object.isString(cell) ? cell.trim() : cell); // Trim each cell that is still a string.
+            return row.map(cell => isString(cell) ? cell.trim() : cell); // Trim each cell that is still a string.
         });
 
     if (config && config.columnNames) {

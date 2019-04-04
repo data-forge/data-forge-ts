@@ -16,17 +16,15 @@ import { DistinctIterable }  from './iterables/distinct-iterable';
 import { DataFrameRollingWindowIterable }  from './iterables/dataframe-rolling-window-iterable';
 import { DataFrameVariableWindowIterable }  from './iterables/dataframe-variable-window-iterable';
 import { OrderedIterable, Direction, ISortSpec, SelectorFn as SortSelectorFn }  from './iterables/ordered-iterable';
-import * as Sugar from 'sugar';
 import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
-import { isString, isObject, isNumber, isFunction, isArray, isUndefined } from 'lodash';
 import * as moment from 'moment';
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
-import { toMap, makeDistinct, mapIterable, determineType, toMap2 } from './utils';
+import { toMap, makeDistinct, mapIterable, determineType, toMap2, isArray, isString, isFunction, isObject, isUndefined, isNumber } from './utils';
 import { ISerializedDataFrame } from "@data-forge/serialization";
 
 const PapaParse = require('papaparse');
@@ -2555,10 +2553,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     // Check that a value is an interable.
     //
     private static checkIterable<T>(input: T[] | Iterable<T>, fieldName: string): void {
-        if (Sugar.Object.isArray(input)) {
+        if (isArray(input)) {
             // Ok
         }
-        else if (Sugar.Object.isFunction(input[Symbol.iterator])) {
+        else if (isFunction(input[Symbol.iterator])) {
             // Assume it's an iterable.
             // Ok
         }
@@ -2587,8 +2585,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         if (config.columns) {
             let columnsConfig: any = config.columns;
 
-            if (Sugar.Object.isArray(columnsConfig) ||
-                Sugar.Object.isFunction((columnsConfig as any)[Symbol.iterator])) {
+            if (isArray(columnsConfig) ||
+                isFunction((columnsConfig as any)[Symbol.iterator])) {
 
                 const iterableColumnsConfig = columnsConfig as Iterable<IColumnConfig>;
                 columnNames = Array.from(iterableColumnsConfig).map(column => column.name);
@@ -2708,11 +2706,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     constructor(config?: Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
         if (config) {
-            if (Sugar.Object.isFunction(config)) {
+            if (isFunction(config)) {
                 this.configFn = config;
             }
-            else if (Sugar.Object.isArray(config) || 
-                     Sugar.Object.isFunction((config as any)[Symbol.iterator])) {
+            else if (isArray(config) || 
+                     isFunction((config as any)[Symbol.iterator])) {
                 this.content = DataFrame.initFromArray(config as Iterable<ValueT>);
             }
             else {
@@ -2892,7 +2890,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): IDataFrame<NewIndexT, ValueT> {
 
-        if (Sugar.Object.isFunction(newIndex)) {
+        if (isFunction(newIndex)) {
             return new DataFrame<NewIndexT, ValueT>(() => {
                 const content = this.getContent();
                 return {
@@ -2903,14 +2901,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             });
         }
         else {
-            DataFrame.checkIterable(newIndex, 'newIndex');
+            DataFrame.checkIterable(newIndex as Iterable<NewIndexT>, 'newIndex');
 
             return new DataFrame<NewIndexT, ValueT>(() => {
                 const content = this.getContent();
                 return {
                     columnNames: content.columnNames,
                     values: content.values,
-                    index: newIndex,    
+                    index: newIndex as Iterable<NewIndexT>,
                 };
             });
         }
@@ -3059,9 +3057,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     withSeries<OutputValueT = any, SeriesValueT = any> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, OutputValueT> {
 
-        if (!Sugar.Object.isObject(columnNameOrSpec)) {
+        if (!isObject(columnNameOrSpec)) {
             if (!isString(columnNameOrSpec)) throw new Error("Expected 'columnNameOrSpec' parameter to 'DataFrame.withSeries' function to be a string that specifies the column to set or replace.");
-            if (!Sugar.Object.isFunction(series as Object)) {
+            if (!isFunction(series as Object)) {
                 if (!isObject(series)) throw new Error("Expected 'series' parameter to 'DataFrame.withSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
             }
         }
@@ -3069,7 +3067,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (!isUndefined(series)) throw new Error("Expected 'series' parameter to 'DataFrame.withSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
-        if (Sugar.Object.isObject(columnNameOrSpec)) {
+        if (isObject(columnNameOrSpec)) {
             const columnSpec: IColumnGenSpec = <IColumnGenSpec> columnNameOrSpec;
             const columnNames = Object.keys(columnSpec);
             let workingDataFrame: IDataFrame<IndexT, ValueT> = this;
@@ -3085,7 +3083,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         if (this.none()) { // We have an empty data frame.
             let importSeries: ISeries<IndexT, SeriesValueT>;
     
-            if (Sugar.Object.isFunction(series as Object)) {
+            if (isFunction(series as Object)) {
                 importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
             }
             else { 
@@ -3104,7 +3102,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return new DataFrame<IndexT, OutputValueT>(() => {    
             let importSeries: ISeries<IndexT, SeriesValueT>;
     
-            if (Sugar.Object.isFunction(series as Object)) {
+            if (isFunction(series as Object)) {
                 importSeries = (series! as SeriesSelectorFn<IndexT, ValueT, SeriesValueT>)(this);
             }
             else { 
@@ -3251,9 +3249,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     ensureSeries<SeriesValueT> (columnNameOrSpec: string | IColumnGenSpec, series?: ISeries<IndexT, SeriesValueT> | SeriesSelectorFn<IndexT, ValueT, SeriesValueT>): IDataFrame<IndexT, ValueT> {
 
-        if (!Sugar.Object.isObject(columnNameOrSpec)) {
+        if (!isObject(columnNameOrSpec)) {
             if (!isString(columnNameOrSpec)) throw new Error("Expected 'columnNameOrSpec' parameter to 'DataFrame.ensureSeries' function to be a string that specifies the column to set or replace.");
-            if (!Sugar.Object.isFunction(series as Object)) {
+            if (!isFunction(series as Object)) {
                 if (!isObject(series)) throw new Error("Expected 'series' parameter to 'DataFrame.ensureSeries' to be a Series object or a function that takes a dataframe and produces a Series.");
             }
         }
@@ -3261,7 +3259,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (!isUndefined(series)) throw new Error("Expected 'series' parameter to 'DataFrame.ensureSeries' to not be set when 'columnNameOrSpec is an object.");
         }
 
-        if (Sugar.Object.isObject(columnNameOrSpec)) {
+        if (isObject(columnNameOrSpec)) {
             const columnSpec: IColumnGenSpec = <IColumnGenSpec> columnNameOrSpec;
             const columnNames = Object.keys(columnNameOrSpec);
             let workingDataFrame = <IDataFrame<IndexT,any>> this;
@@ -3339,7 +3337,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     dropSeries<NewValueT = ValueT> (columnOrColumns: string | string[]): IDataFrame<IndexT, NewValueT> {
 
-        if (!Sugar.Object.isArray(columnOrColumns)) {
+        if (!isArray(columnOrColumns)) {
             if (!isString(columnOrColumns)) throw new Error("'DataFrame.dropSeries' expected either a string or an array or strings.");
 
             columnOrColumns = [columnOrColumns]; // Convert to array for coding convenience.
@@ -3441,7 +3439,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     bringToFront (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
 
-        if (Sugar.Object.isArray(columnOrColumns)) {
+        if (isArray(columnOrColumns)) {
             for (const columnName of columnOrColumns) {
                 if (!isString(columnName)) {
                     throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToFront' function to specify a column or columns via a string or an array of strings.");	
@@ -3502,7 +3500,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
 
-        if (Sugar.Object.isArray(columnOrColumns)) {
+        if (isArray(columnOrColumns)) {
             for (const columnName of columnOrColumns) {
                 if (!isString(columnName)) {
                     throw new Error("Expect 'columnOrColumns' parameter to 'DataFrame.bringToBack' function to specify a column or columns via a string or an array of strings.");	
@@ -3867,7 +3865,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
-        if (!Sugar.Object.isObject(generator)) {
+        if (!isObject(generator)) {
             if (!isFunction(generator)) {
                 throw new Error("Expected 'generator' parameter to 'DataFrame.generateSeries' function to be a function or an object.");
             }
@@ -4162,7 +4160,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     */
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT {
 
-        if (Sugar.Object.isFunction(seedOrSelector) && !selector) {
+        if (isFunction(seedOrSelector) && !selector) {
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
         }
         else if (selector) {
@@ -4924,7 +4922,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     parseInts (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
 
-        if (Sugar.Object.isArray(columnNameOrNames)) {
+        if (isArray(columnNameOrNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of columnNameOrNames) {
                 working = working.parseInts(columnName);
@@ -4958,7 +4956,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     parseFloats (columnNameOrNames: string | string[]): IDataFrame<IndexT, ValueT> {
 
-        if (Sugar.Object.isArray(columnNameOrNames)) {
+        if (isArray(columnNameOrNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of columnNameOrNames) {
                 working = working.parseFloats(columnName);
@@ -5000,7 +4998,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to 'DataFrame.parseDates' to be a string (if specified).");
         }
 
-        if (Sugar.Object.isArray(columnNameOrNames)) {
+        if (isArray(columnNameOrNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of columnNameOrNames) {
                 working = working.parseDates(columnName, formatString);
@@ -5041,7 +5039,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     toStrings (columnNames: string | string[] | IFormatSpec, formatString?: string): IDataFrame<IndexT, ValueT> {
 
-        if (Sugar.Object.isObject(columnNames)) {
+        if (isObject(columnNames)) {
             for (const columnName of Object.keys(columnNames)) {
                 if (!isString((columnNames as any)[columnName])) throw new Error("Expected values of 'columnNames' parameter to be strings when a format spec is passed in.");
             }
@@ -5049,7 +5047,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (!isUndefined(formatString)) throw new Error("Optional 'formatString' parameter to 'DataFrame.toStrings' should not be set when passing in a format spec.");
         }
         else {
-            if (!Sugar.Object.isArray(columnNames)) {
+            if (!isArray(columnNames)) {
                 if (!isString(columnNames)) throw new Error("Expected 'columnNames' parameter to 'DataFrame.toStrings' to be a string, array of strings or format spec that specifes which columns should be converted to strings.");
             }
 
@@ -5058,7 +5056,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }    
         }
 
-        if (Sugar.Object.isObject(columnNames)) {
+        if (isObject(columnNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of Object.keys(columnNames)) {
                 working = working.toStrings(columnName, formatString);
@@ -5066,7 +5064,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             
             return working;
         }
-        else if (Sugar.Object.isArray(columnNames)) {
+        else if (isArray(columnNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of columnNames) {
                 const columnFormatString = (columnNames as any)[columnName];
@@ -5102,7 +5100,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const output: any = {};
             for (const key of Object.keys(row)) {
                 const value = row[key];
-                if (Sugar.Object.isString(value)) {
+                if (isString(value)) {
                     output[key] = value.substring(0, maxLength);
                 }
                 else {
@@ -5368,7 +5366,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         const concatInput: IDataFrame<IndexT, ValueT>[] = [this];
 
         for (const input of dataframes) {
-            if (Sugar.Object.isArray(input)) {
+            if (isArray(input)) {
                 for (const subInput of input) {
                     concatInput.push(subInput);
                 }
@@ -6043,7 +6041,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         for (const inputColumnName of Object.keys(spec)) {
             const inputSpec = spec[inputColumnName];
-            if (Sugar.Object.isFunction(inputSpec)) {
+            if (isFunction(inputSpec)) {
                 spec[inputColumnName] = {}; // Expand the spec.
                 (spec[inputColumnName] as IColumnAggregatorSpec) [inputColumnName] = inputSpec;
             }
@@ -6164,7 +6162,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         let columnNames: string[];
 
-        if (Sugar.Object.isString(columnOrColumns)) {
+        if (isString(columnOrColumns)) {
             columnNames = [columnOrColumns];
         }
         else {
@@ -6181,7 +6179,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         let aggSpec: IMultiColumnAggregatorSpec;
 
-        if (!Sugar.Object.isObject(valueColumnNameOrSpec)) {
+        if (!isObject(valueColumnNameOrSpec)) {
             if (!isString(valueColumnNameOrSpec)) throw new Error("Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values to aggregate or a column spec that defines which column contains the value ot aggregate and the ways to aggregate that value.");
             if (!isFunction(aggregator)) throw new Error("Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
 
@@ -6198,7 +6196,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             for (const inputColumnName of Object.keys(aggSpec)) {
                 const columnAggSpec = aggSpec[inputColumnName];
-                if (Sugar.Object.isFunction(columnAggSpec)) {
+                if (isFunction(columnAggSpec)) {
                     aggSpec[inputColumnName] = {}; // Expand the pivot spec.
                     (aggSpec[inputColumnName] as IColumnAggregatorSpec) [inputColumnName] = columnAggSpec;
                 }
@@ -6388,7 +6386,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (defaultDataFrame instanceof DataFrame) {
                 return <IDataFrame<IndexT, ValueT>> defaultDataFrame;
             }
-            else if (Sugar.Object.isArray(defaultDataFrame)) {
+            else if (isArray(defaultDataFrame)) {
                 return new DataFrame<IndexT, ValueT>(defaultDataFrame);
             }
             else {
