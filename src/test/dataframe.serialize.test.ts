@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 import 'mocha';
 import { Index } from '../lib/index';
 import { DataFrame, IDataFrame } from '../lib/dataframe';
-import * as moment from 'moment';
+import * as moment from "dayjs";
 import { ISerializedDataFrame } from "@data-forge/serialization";
 
 describe('DataFrame serialization', () => {
@@ -71,7 +71,7 @@ describe('DataFrame serialization', () => {
             },
             values: [
                 { 
-                    A: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) 
+                    A: moment("2018/05/15", "YYYY/MM/DD").toISOString() 
                 },
             ]
         });
@@ -131,7 +131,7 @@ describe('DataFrame serialization', () => {
                 values: [ 10, ],
             },
             values: [
-                { A: moment("2018/05/15", "YYYY/MM/DD").toISOString(true) },
+                { A: moment("2018/05/15", "YYYY/MM/DD").toISOString() },
             ]
         });
         
@@ -158,7 +158,7 @@ describe('DataFrame serialization', () => {
                 A: "number",            },
             index: {
                 type: "date",
-                values: [ moment("2018/05/15", "YYYY/MM/DD").toISOString(true), ],
+                values: [ moment("2018/05/15", "YYYY/MM/DD").toISOString(), ],
             },
             values: [
                 { A: 1, },
@@ -176,7 +176,7 @@ describe('DataFrame serialization', () => {
             },
             index: {
                 type: "date",
-                values: [ moment("2018/05/15", "YYYY/MM/DD").toISOString(true), ],
+                values: [ moment("2018/05/15", "YYYY/MM/DD").toISOString(), ],
             },
             values: [
                 { A: 10, },

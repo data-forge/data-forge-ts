@@ -21,7 +21,7 @@ import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
-import * as moment from 'moment';
+import * as moment from "dayjs";
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import { toMap, makeDistinct, mapIterable, determineType, toMap2, isArray, isString, isFunction, isObject, isUndefined, isNumber } from './utils';
@@ -6575,7 +6575,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         const indexType = index.getType();
         
         if (indexType === "date") {
-            indexValues = indexValues.map(index => moment(index).toISOString(true)); // Manually serialize date value, they aren't supported directly by JSON.
+            indexValues = indexValues.map(index => moment(index).toISOString()); // Manually serialize date value, they aren't supported directly by JSON.
         }
 
         let cloned = false;
@@ -6589,7 +6589,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }
 
                 for (const row of rows) {
-                    row[column.name] = moment(row[column.name]).toISOString(true); // Manually serialize date value.
+                    row[column.name] = moment(row[column.name]).toISOString(); // Manually serialize date value.
                 }
             }
         }
@@ -6643,13 +6643,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }
     
                 for (const row of rows) {
-                    row[columnName] = moment(row[columnName], moment.ISO_8601).toDate(); // Manually deserialize data value.
+                    row[columnName] = moment(row[columnName]).toDate(); // Manually deserialize data value.
                 }
             }
         }
 
         if (input.index && input.index.type === "date") {
-            indexValues = indexValues.map(value => moment(value, moment.ISO_8601).toDate()); // Manually deserialize data value.
+            indexValues = indexValues.map(value => moment(value).toDate()); // Manually deserialize data value.
         }
 
         return new DataFrame<IndexT, ValueT>({

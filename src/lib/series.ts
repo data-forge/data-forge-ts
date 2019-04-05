@@ -21,7 +21,9 @@ import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
 const Table = require('easy-table');
 import { IDataFrame, DataFrame } from './dataframe';
-import * as moment from 'moment';
+import * as moment from "dayjs";
+import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+moment.extend(customParseFormat);
 import { toMap, isArray, isFunction, isNumber, isString, isDate } from './utils';
 import { range, replicate } from '..';
 import * as numeral from 'numeral';
@@ -3678,9 +3680,6 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
         else if (formatString && isDate(value)) {
             return moment(value).format(formatString);
-        }
-        else if (formatString && moment.isMoment(value)) {
-            return value.format(formatString);
         }
         else if (formatString && isNumber(value)) {
             return numeral(value).format(formatString);

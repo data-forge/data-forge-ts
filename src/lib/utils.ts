@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import * as moment from "dayjs";
 const t = require('typy').default;
 
 //
@@ -71,9 +71,6 @@ export function determineType (value: any): string {
         return "string";
     }
     else if (value instanceof Date) {
-        return "date";
-    }
-    else if (moment.isMoment(value)) {
         return "date";
     }
     else if (isBoolean(value)) {

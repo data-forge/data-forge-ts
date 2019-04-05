@@ -3,7 +3,7 @@ import 'mocha';
 import { Index } from '../lib/index';
 import { Series } from '../lib/series';
 import { DataFrame } from '../lib/dataframe';
-import * as moment from "moment";
+import * as moment from "dayjs";
 
 describe('Series merge', () => {
 

@@ -1,5 +1,5 @@
 import { ISeries, Series, SeriesConfigFn } from './series';
-import * as moment from 'moment';
+import * as moment from "dayjs";
 import { determineType } from './utils';
 
 /**

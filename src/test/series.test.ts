@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 import 'mocha';
 import { Series, Index, DataFrame } from '../index';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
-import * as moment from 'moment';
+import * as moment from "dayjs";
 
 describe('Series', () => {
     

@@ -4,7 +4,7 @@ import { Index } from '../lib/index';
 import { DataFrame } from '../lib/dataframe';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 import { Series } from '../lib/series';
-import * as moment from "moment";
+import * as moment from "dayjs";
 
 describe('DataFrame merge', () => {
 

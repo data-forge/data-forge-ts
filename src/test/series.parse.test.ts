@@ -1,7 +1,7 @@
 import * as dataForge from '../index';
 import { assert, expect } from 'chai';
 import 'mocha';
-import * as moment from 'moment';
+import * as moment from "dayjs";
 
 const Series = dataForge.Series;
 
@@ -154,17 +154,6 @@ describe('Series parse', () => {
 			'2015-03-02',
 		]);
 	});
-
-	it('can specify format string for date series - with moment', () => {
-
-		var series = new Series({ index: [1], values: [moment(new Date(2015, 1, 3))]});
-		var converted = series.toStrings('YYYY-DD-MM');
-
-		expect(converted.getIndex().toArray()).to.eql([1]);
-		expect(converted.toArray()).to.eql([
-			'2015-03-02',
-		]);
-    });
 
     it('can specify format string for number series', () => {
 

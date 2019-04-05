@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -60,9 +60,9 @@
   "dependencies": {
     "@data-forge/serialization": "^1.0.0",
     "chai": "4.1.2",
+    "dayjs": "^1.8.12",
     "easy-table": "1.1.0",
     "mock-require": "2.0.2",
-    "moment": "2.22.1",
     "numeral": "^2.0.6",
     "papaparse": "4.4.0",
     "statman-stopwatch": "2.7.0",
