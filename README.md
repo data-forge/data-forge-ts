@@ -23,6 +23,8 @@ Need to get in touch? Please see my contact details at the end.
 
 ## BREAKING CHANGES
 
+As of v1.6.9 the dependencies Sugar, Lodash and Moment have been factored out (or replaced with smaller dependencies). This more than halves the bundle size. Hopefully this won't cause any problems - but please log an issue if something changes that you weren't expecting.
+
 As of v1.3.0 file system support has been removed from the Data-Forge core API. This is after repeated issues from users trying to get Data-Forge working in the browser, especially under AngularJS 6.
 
 Functions for reading and writing files have been moved to the separate code library [Data-Forge FS](https://github.com/data-forge/data-forge-fs).
