@@ -5167,6 +5167,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     bucket (numBuckets: number): IDataFrame<IndexT, IBucket> {
 
+        if (!isNumber(numBuckets)) {
+            throw new Error(`Expected 'numBuckets' parameter to 'Series.bucket' to be a number.`);
+        }
+
         if (this.none()) {
             return new DataFrame();
         }
