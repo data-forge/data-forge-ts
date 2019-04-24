@@ -1,7 +1,8 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import * as dataForge from '../index';
-import * as moment from "dayjs";
+// @ts-ignore
+import moment from "dayjs/esm";
 
 describe('csv integration', () => {
 

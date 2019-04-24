@@ -58,5 +58,6 @@ typings/
 .env
 
 *.bak
+/.rpt2_cache
 build/
 dist/

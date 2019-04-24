@@ -8,7 +8,8 @@ import { DataFrame, IDataFrame } from '.';
 import { isString, isObject, isArray, isNumber } from './lib/utils';
 import { isFunction } from 'util';
 
-const PapaParse = require('papaparse');
+// @ts-ignore
+import PapaParse from 'papaparse';
 
 /**
  * Represents a field from a JavaScript object.

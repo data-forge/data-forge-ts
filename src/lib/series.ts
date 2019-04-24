@@ -19,14 +19,17 @@ import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
-const Table = require('easy-table');
+// @ts-ignore
+import Table from 'easy-table';
 import { IDataFrame, DataFrame } from './dataframe';
-import * as moment from "dayjs";
-import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+// @ts-ignore
+import moment from "dayjs/esm";
+// @ts-ignore
+import customParseFormat from 'dayjs/esm/plugin/customParseFormat';
 moment.extend(customParseFormat);
 import { toMap, isArray, isFunction, isNumber, isString, isDate } from './utils';
 import { range, replicate } from '..';
-import * as numeral from 'numeral';
+import numeral from 'numeral';
 
 /**
  * Used to configure a series.
