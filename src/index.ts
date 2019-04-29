@@ -7,6 +7,9 @@ import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
 import { isString, isObject, isArray, isNumber } from './lib/utils';
 import { isFunction } from 'util';
+import * as moment from "dayjs";
+import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+moment.extend(customParseFormat);
 
 const PapaParse = require('papaparse');
 
