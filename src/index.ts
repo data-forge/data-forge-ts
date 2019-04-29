@@ -11,7 +11,8 @@ import * as moment from "dayjs";
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 moment.extend(customParseFormat);
 
-const PapaParse = require('papaparse');
+// @ts-ignore
+import PapaParse from 'papaparse';
 
 /**
  * Represents a field from a JavaScript object.

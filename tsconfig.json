@@ -5,6 +5,7 @@
     "target": "es5",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNT'. */
     "downlevelIteration": true,
     "module": "commonjs",                     /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
+    "esModuleInterop": true,
     "lib": [                                  /* Specify library files to be included in the compilation:  */
         "es2015",
         "esnext.asynciterable"

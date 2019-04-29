@@ -1,5 +1,5 @@
-import * as moment from "dayjs";
-const t = require('typy').default;
+// @ts-ignore
+import t from "typy";
 
 //
 // Various shared utility functions.
