@@ -7,8 +7,10 @@ import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
 import { isString, isObject, isArray, isNumber } from './lib/utils';
 import { isFunction } from 'util';
-import * as moment from "dayjs";
-import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+// @ts-ignore
+import moment from "dayjs/esm";
+// @ts-ignore
+import customParseFormat from 'dayjs/esm/plugin/customParseFormat';
 moment.extend(customParseFormat);
 
 // @ts-ignore
