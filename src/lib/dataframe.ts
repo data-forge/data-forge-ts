@@ -20,14 +20,17 @@ import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
-const Table = require('easy-table');
-import * as moment from "dayjs";
+// @ts-ignore
+import Table from 'easy-table';
+// @ts-ignore
+import moment from "dayjs/esm";
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import { toMap, makeDistinct, mapIterable, determineType, toMap2, isArray, isString, isFunction, isObject, isUndefined, isNumber } from './utils';
 import { ISerializedDataFrame } from "@data-forge/serialization";
 
-const PapaParse = require('papaparse');
+// @ts-ignore
+import PapaParse from 'papaparse';
 
 /** 
  * An object whose fields specify the data for named columns.

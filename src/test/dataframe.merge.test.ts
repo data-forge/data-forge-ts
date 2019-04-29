@@ -4,7 +4,8 @@ import { Index } from '../lib/index';
 import { DataFrame } from '../lib/dataframe';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 import { Series } from '../lib/series';
-import * as moment from "dayjs";
+// @ts-ignore
+import moment from "dayjs/esm";
 
 describe('DataFrame merge', () => {
 
