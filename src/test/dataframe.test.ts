@@ -4,7 +4,7 @@ import { Index } from '../lib/index';
 import { DataFrame } from '../lib/dataframe';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 
 describe('DataFrame', () => {
 

@@ -1,6 +1,6 @@
 import { ISeries, Series, SeriesConfigFn } from './series';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 import { determineType } from './utils';
 
 /**

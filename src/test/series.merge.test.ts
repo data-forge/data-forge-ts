@@ -4,7 +4,7 @@ import { Index } from '../lib/index';
 import { Series } from '../lib/series';
 import { DataFrame } from '../lib/dataframe';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 
 describe('Series merge', () => {
 

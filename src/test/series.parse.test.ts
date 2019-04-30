@@ -2,7 +2,7 @@ import * as dataForge from '../index';
 import { assert, expect } from 'chai';
 import 'mocha';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 
 const Series = dataForge.Series;
 

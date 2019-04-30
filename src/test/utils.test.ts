@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 import 'mocha';
 import { determineType, isObject, isNumber, isString, isDate, isBoolean, isUndefined, isFunction } from '../lib/utils';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 
 describe("utils", () => {
 

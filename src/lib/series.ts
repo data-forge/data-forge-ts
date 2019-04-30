@@ -23,9 +23,9 @@ import { SkipWhileIterable } from './iterables/skip-while-iterable';
 import Table from 'easy-table';
 import { IDataFrame, DataFrame } from './dataframe';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 // @ts-ignore
-import customParseFormat from 'dayjs/esm/plugin/customParseFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 moment.extend(customParseFormat);
 import { toMap, isArray, isFunction, isNumber, isString, isDate } from './utils';
 import { range, replicate } from '..';
