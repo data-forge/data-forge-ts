@@ -16,3 +16,4 @@ tsconfig.json
 coverage/
 *.bak
 webpack.*
+rollup.config.js
