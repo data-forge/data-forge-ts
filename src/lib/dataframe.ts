@@ -23,7 +23,7 @@ import { SkipWhileIterable } from './iterables/skip-while-iterable';
 // @ts-ignore
 import Table from 'easy-table';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, SelectorFn, AggregateFn, Zip2Fn, Zip3Fn, Zip4Fn, Zip5Fn, ZipNFn, CallbackFn, JoinFn, GapFillFn, ISeriesConfig } from './series';
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import { toMap, makeDistinct, mapIterable, determineType, toMap2, isArray, isString, isFunction, isObject, isUndefined, isNumber } from './utils';

@@ -3,7 +3,7 @@ import 'mocha';
 import { Index } from '../lib/index';
 import { DataFrame, IDataFrame } from '../lib/dataframe';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 import { ISerializedDataFrame } from "@data-forge/serialization";
 
 describe('DataFrame serialization', () => {

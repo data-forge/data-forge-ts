@@ -8,9 +8,9 @@ import { DataFrame, IDataFrame } from '.';
 import { isString, isObject, isArray, isNumber } from './lib/utils';
 import { isFunction } from 'util';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 // @ts-ignore
-import customParseFormat from 'dayjs/esm/plugin/customParseFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 moment.extend(customParseFormat);
 
 // @ts-ignore

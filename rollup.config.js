@@ -11,6 +11,10 @@ export default {
     output: {
         file: path.resolve(__dirname, "dist", "esm", "index.esm.js"),
         format: "esm",
+        paths: {
+            dayjs: "dayjs/esm",
+            "dayjs/plugin/customParseFormat": "dayjs/esm/plugin/customParseFormat",
+        },
     },
     plugins: [
         typescript({

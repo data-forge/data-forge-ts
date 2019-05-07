@@ -3,7 +3,7 @@ import 'mocha';
 import { Series, Index, DataFrame } from '../index';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 // @ts-ignore
-import moment from "dayjs/esm";
+import moment from "dayjs";
 
 describe('Series', () => {
     
