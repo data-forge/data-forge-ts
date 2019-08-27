@@ -28,6 +28,7 @@ import { ISeries, Series, SelectorWithIndexFn, PredicateFn, ComparerFn, Selector
 import { ColumnNamesIterable } from './iterables/column-names-iterable';
 import { toMap, makeDistinct, mapIterable, determineType, toMap2, isArray, isString, isFunction, isObject, isUndefined, isNumber } from './utils';
 import { ISerializedDataFrame } from "@data-forge/serialization";
+import JSON5 from 'json5';
 
 // @ts-ignore
 import PapaParse from 'papaparse';
@@ -2354,6 +2355,20 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * </pre>
      */
     toJSON (): string;
+
+    /**
+     * Serialize the dataframe to the JSON5 data format.
+     * 
+     * @return Returns a string in the JSON5 data format that represents the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsonData = df.toJSON5();
+     * console.log(jsonData);
+     * </pre>
+     */
+    toJSON5 (): string;
 
     /**
      * Serialize the dataframe to the CSV data format.
@@ -6479,6 +6494,22 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     toJSON (): string {
         return JSON.stringify(this.toArray(), null, 4);
+    }
+
+    /**
+     * Serialize the dataframe to the JSON5 data format.
+     * 
+     * @return Returns a string in the JSON5 data format that represents the dataframe.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const jsonData = df.toJSON5();
+     * console.log(jsonData);
+     * </pre>
+     */
+    toJSON5 (): string {
+        return JSON5.stringify(this.toArray(), null, 4);
     }
 
     /**

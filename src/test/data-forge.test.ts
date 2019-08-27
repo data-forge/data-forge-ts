@@ -68,7 +68,7 @@ describe('data-forge', () => {
 					'"Column2": 2' +
 				'}' +
 			']';
-		var dataFrame = dataForge.fromJSON(jsData);
+		var dataFrame = dataForge.fromJSON5(jsData);
 
 		expect(dataFrame.getColumnNames()).to.eql(['Column1', 'Column2']);
 		expect(dataFrame.toRows()).to.eql([
