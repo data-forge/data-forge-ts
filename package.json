@@ -62,9 +62,11 @@
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
     "@data-forge/serialization": "^1.0.0",
+    "@types/json5": "0.0.30",
     "chai": "4.1.2",
     "dayjs": "^1.8.12",
     "easy-table": "1.1.0",
+    "json5": "^2.1.0",
     "mock-require": "2.0.2",
     "numeral": "^2.0.6",
     "papaparse": "4.4.0",

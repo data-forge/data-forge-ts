@@ -53,6 +53,30 @@ describe('data-forge', () => {
 		]);
 	});
 
+	it('can load from JSON5 array', () => {
+
+		var jsData =
+			'[' +
+			  '/*Column A*/' +
+				'{' +
+					'"Column1": "A",' +
+					'"Column2": 1' +
+				'},' +
+				'/* Column B */' +
+				'{' +
+					'"Column1": "B",' +
+					'"Column2": 2' +
+				'}' +
+			']';
+		var dataFrame = dataForge.fromJSON5(jsData);
+
+		expect(dataFrame.getColumnNames()).to.eql(['Column1', 'Column2']);
+		expect(dataFrame.toRows()).to.eql([
+			['A', 1],
+			['B', 2],
+		]);
+	});
+
 	it('uneven columns loaded from json result in undefined values', () => {
 
 		var jsData = 
