@@ -7,6 +7,7 @@ import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
 import { isString, isObject, isArray, isNumber } from './lib/utils';
 import { isFunction } from 'util';
+import JSON5 from 'json5';
 // @ts-ignore
 import moment from "dayjs";
 // @ts-ignore
@@ -62,6 +63,22 @@ export function fromJSON (jsonTextString: string): IDataFrame<number, any> {
 
     return new DataFrame<number, any>({
         values: JSON.parse(jsonTextString)
+    });
+}
+
+/**
+ * Deserialize a dataframe from a JSON5 text string.
+ *
+ * @param jsonTextString The JSON5 text to deserialize.
+ * 
+ * @returns Returns a dataframe that has been deserialized from the JSON data.
+ */
+export function fromJSON5 (jsonTextString: string): IDataFrame<number, any> {
+    
+    if (!isString(jsonTextString)) throw new Error("Expected 'jsonTextString' parameter to 'dataForge.fromJSON5' to be a string containing data encoded in the JSON5 format.");
+
+    return new DataFrame<number, any>({
+        values: JSON5.parse(jsonTextString)
     });
 }
 
