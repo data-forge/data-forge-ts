@@ -16,8 +16,8 @@ Need to get in touch? Please see my contact details at the end.
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
 [![Coverage Status](https://coveralls.io/repos/github/data-forge/data-forge-ts/badge.svg?branch=master)](https://coveralls.io/github/data-forge/data-forge-ts?branch=master)
 [![npm version](https://badge.fury.io/js/data-forge.svg)](https://badge.fury.io/js/data-forge)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/data-forge/data-forge-ts/blob/master/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/data-forge/data-forge-ts/issues/)
+[![License](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/data-forge/data-forge-ts/blob/master/LICENSE)
+[![Issues](http://img.shields.io/github/issues/USER/REPO.svg)]( https://github.com/USER/REPO/issues )
 
 **Please note** that this TypeScript repository replaces the [previous JavaScript version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
