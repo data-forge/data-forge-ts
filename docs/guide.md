@@ -1,11 +1,21 @@
 # The Data-Forge Guide
 
-
 This is the guide to using Data-Forge.
 
-If you notice any problems in this documentation [please log an issue](https://github.com/data-forge/data-forge-ts/issues/new).
-
 <a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="../images/support2.png"></a>
+
+Data-Forge is a open-source toolkit for data transformation and analysis in JavaScript and TypeScript. This guide will help you dive deeper into Data-Forge and equip you with skills to build more complex data processing pipelines.
+
+This document is a constant work in progress. If you notice any problems [please log an issue](https://github.com/data-forge/data-forge-ts/issues/new). 
+
+Please also consider forking this repo, then add or update this document based on your own experimentation or experience with Data-Forge and then submit a pull-request. I'm happy to accept contributions to both code and documentation! 
+
+For other resources and documentation please [visit the home page](http://data-forge-js.com/) or view [the repo's main README](https://github.com/data-forge/data-forge-ts).
+
+Happy data wrangling!
+
+<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="../images/support3.png"></a>
+
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -28,7 +38,6 @@ If you notice any problems in this documentation [please log an issue](https://g
     - [DataFrame](#dataframe)
     - [Series](#series)
   - [Geting data out](#geting-data-out)
-<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="../images/support3.png"></a>
     - [DataFrame](#dataframe-1)
     - [Series](#series-1)
   - [Setting an index](#setting-an-index)
