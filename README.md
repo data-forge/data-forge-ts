@@ -1,5 +1,9 @@
 # Data-Forge
 
+<div style="float: right;">
+    Float right test
+</div>
+
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
 *Implemented* in TypeScript.<br>
@@ -163,7 +167,3 @@ Please reach and tell me what you are doing with Data-Forge or how you'd like to
 - Email: ashley@codecapers.com.au
 - Linkedin: www.linkedin.com/in/ashleydavis75
 - Web: www.codecapers.com.au
-
-<div style="float: right;">
-    Float right test
-</div>
