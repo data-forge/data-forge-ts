@@ -1,10 +1,11 @@
 # The Data-Forge Guide
 
-<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="../images/support2.png"></a>
 
 This is the guide to using Data-Forge.
 
 If you notice any problems in this documentation [please log an issue](https://github.com/data-forge/data-forge-ts/issues/new).
+
+<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="../images/support2.png"></a>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -22,12 +23,12 @@ If you notice any problems in this documentation [please log an issue](https://g
 - [A note about JavaScript anonymous functions](#a-note-about-javascript-anonymous-functions)
 - [Immutability and Chained Functions](#immutability-and-chained-functions)
 - [Lazy evaluation through iterators](#lazy-evaluation-through-iterators)
-<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="../images/support3.png"></a>
 - [Basic Usage](#basic-usage)
   - [Getting data in](#getting-data-in)
     - [DataFrame](#dataframe)
     - [Series](#series)
   - [Geting data out](#geting-data-out)
+<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="../images/support3.png"></a>
     - [DataFrame](#dataframe-1)
     - [Series](#series-1)
   - [Setting an index](#setting-an-index)
