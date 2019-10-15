@@ -2,18 +2,14 @@
 
 <a target="_blank" href="http://data-forge-js.com/"><img align="right" src="images/logo.png"></a>
 
-<img align="right" src="images/support1.png">
-
-<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="images/support1.png"></a>
-
-<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="images/support2.png"></a>
-
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
 *Implemented* in TypeScript.<br>
 *Used* in JavaScript ES5+ or TypeScript.
 
 To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
+
+<img align="right" src="images/support1.png">
 
 Want to get in touch? Please see my contact details at the end.
 
@@ -22,6 +18,8 @@ Want to get in touch? Please see my contact details at the end.
 [![npm version](https://badge.fury.io/js/data-forge.svg)](https://badge.fury.io/js/data-forge)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Issues](http://img.shields.io/github/issues/data-forge/data-forge-ts.svg)](https://github.com/data-forge/data-forge-ts/blob/master/issues)
+
+<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="images/support2.png"></a>
 
 **Please note** that this TypeScript repository replaces the [previous JavaScript version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
@@ -32,6 +30,8 @@ As of v1.6.9 the dependencies Sugar, Lodash and Moment have been factored out (o
 As of v1.3.0 file system support has been removed from the Data-Forge core API. This is after repeated issues from users trying to get Data-Forge working in the browser, especially under AngularJS 6.
 
 Functions for reading and writing files have been moved to the separate code library [Data-Forge FS](https://github.com/data-forge/data-forge-fs).
+
+<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="images/support3.png"></a>
 
 If you are using the file read and write functions prior to 1.3.0 then your code will no longer work when you upgrade to 1.3.0. The fix is simple though, where usually you would just require in Data-Forge as follows:
 
