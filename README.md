@@ -1,8 +1,6 @@
 # Data-Forge
 
-<div style="float: right;">
-    Float right test
-</div>
+<img align="right" src="logo.png">
 
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
