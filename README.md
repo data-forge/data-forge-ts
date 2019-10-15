@@ -1,7 +1,5 @@
 # Data-Forge
 
-<img align="right" src="images/support1.png">
-
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
 *Implemented* in TypeScript.<br>
