@@ -1,6 +1,12 @@
 # Data-Forge
 
-<a href="http://data-forge-js.com/"><img align="right" src="logo.png"></a>
+<a target="_blank" href="http://data-forge-js.com/"><img align="right" src="images/logo.png"></a>
+
+<img align="right" src="images/support1.png">
+
+<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="images/support2.png"></a>
+
+<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="images/support2.png"></a>
 
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 

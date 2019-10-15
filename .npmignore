@@ -17,4 +17,4 @@ coverage/
 *.bak
 webpack.*
 rollup.config.js
-logo.png
+images/
