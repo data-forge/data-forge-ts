@@ -1,19 +1,15 @@
 # Data-Forge
 
-<img align="right" src="logo.png">
+<a href="http://data-forge-js.com/"><img align="right" src="logo.png"></a>
 
 The JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.
 
 *Implemented* in TypeScript.<br>
 *Used* in JavaScript ES5+ or TypeScript.
 
-Need to plot charts? Check out [Data-Forge Plot](http://www.the-data-wrangler.com/introducing-data-forge-plot/).
+To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
 
-Need to learn data wrangling? See my book [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2) or blog [The Data Wrangler](http://www.the-data-wrangler.com/).
-
-Do prototyping and data analysis in JavaScript with [Data-Forge Notebook](http://www.data-forge-notebook.com/).
-
-Need to get in touch? Please see my contact details at the end.
+Want to get in touch? Please see my contact details at the end.
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
 [![Coverage Status](https://coveralls.io/repos/github/data-forge/data-forge-ts/badge.svg?branch=master)](https://coveralls.io/github/data-forge/data-forge-ts?branch=master)
