@@ -14,9 +14,6 @@ For other resources and documentation please [visit the home page](http://data-f
 
 Happy data wrangling!
 
-<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="../images/support3.png"></a>
-
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -118,6 +115,8 @@ Happy data wrangling!
 # Project Overview
 
 This section is a short overview of the aims, principles and implementation methods for this project.
+
+<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="../images/support3.png"></a>
 
 ## Project Aims
 
