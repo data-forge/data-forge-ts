@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "module": "dist/esm/index.esm.js",
   "main": "build/index.js",
@@ -63,18 +63,18 @@
   "homepage": "https://github.com/data-forge/data-forge-ts#readme",
   "dependencies": {
     "@data-forge/serialization": "^1.0.0",
-    "@types/json5": "0.0.30",
-    "chai": "4.1.2",
     "dayjs": "^1.8.12",
     "easy-table": "1.1.0",
     "json5": "^2.1.0",
-    "mock-require": "2.0.2",
     "numeral": "^2.0.6",
     "papaparse": "4.4.0",
-    "statman-stopwatch": "2.7.0",
     "typy": "^3.0.1"
   },
   "devDependencies": {
+    "chai": "4.1.2",
+    "mock-require": "2.0.2",
+    "statman-stopwatch": "2.7.0",
+    "@types/json5": "0.0.30",
     "@types/chai": "4.0.4",
     "@types/mocha": "2.2.43",
     "@types/mock-require": "2.0.0",
