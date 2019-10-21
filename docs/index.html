@@ -85,7 +85,6 @@
 								<li class="tsd-kind-interface"><a href="interfaces/icolumnrenamespec.html" class="tsd-kind-icon">IColumn<wbr>Rename<wbr>Spec</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumnspec.html" class="tsd-kind-icon">IColumn<wbr>Spec</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/icolumntransformspec.html" class="tsd-kind-icon">IColumn<wbr>Transform<wbr>Spec</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/icolumntypes.html" class="tsd-kind-icon">IColumn<wbr>Types</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/idataframe.html" class="tsd-kind-icon">IData<wbr>Frame</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/idataframeconfig.html" class="tsd-kind-icon">IData<wbr>Frame<wbr>Config</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/ifieldrecord.html" class="tsd-kind-icon">IField<wbr>Record</a></li>
@@ -94,8 +93,6 @@
 								<li class="tsd-kind-interface"><a href="interfaces/imulticolumnaggregatorspec.html" class="tsd-kind-icon">IMulti<wbr>Column<wbr>Aggregator<wbr>Spec</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iordereddataframe.html" class="tsd-kind-icon">IOrdered<wbr>Data<wbr>Frame</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iorderedseries.html" class="tsd-kind-icon">IOrdered<wbr>Series</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/iserializeddataframe.html" class="tsd-kind-icon">ISerialized<wbr>Data<wbr>Frame</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/iserializedindex.html" class="tsd-kind-icon">ISerialized<wbr>Index</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iseries.html" class="tsd-kind-icon">ISeries</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/iseriesconfig.html" class="tsd-kind-icon">ISeries<wbr>Config</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/itypefrequency.html" class="tsd-kind-icon">IType<wbr>Frequency</a></li>
@@ -129,6 +126,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function"><a href="index.html#fromcsv" class="tsd-kind-icon">fromCSV</a></li>
 								<li class="tsd-kind-function"><a href="index.html#fromjson" class="tsd-kind-icon">fromJSON</a></li>
+								<li class="tsd-kind-function"><a href="index.html#fromjson5" class="tsd-kind-icon">fromJSON5</a></li>
 								<li class="tsd-kind-function"><a href="index.html#fromobject" class="tsd-kind-icon">from<wbr>Object</a></li>
 								<li class="tsd-kind-function"><a href="index.html#matrix" class="tsd-kind-icon">matrix</a></li>
 								<li class="tsd-kind-function"><a href="index.html#range" class="tsd-kind-icon">range</a></li>
@@ -143,10 +141,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="aggregatefn" class="tsd-anchor"></a>
 					<h3>Aggregate<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Aggregate<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Aggregate<wbr>Fn&lt;ValueT, ToT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L104">lib/series.ts:104</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L107">lib/series.ts:107</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -155,6 +153,15 @@
 							and returns the new result.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT</h4>
+						</li>
+						<li>
+							<h4>ToT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -183,10 +190,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="callbackfn" class="tsd-anchor"></a>
 					<h3>Callback<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Callback<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Callback<wbr>Fn&lt;ValueT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L64">lib/series.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L67">lib/series.ts:67</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -194,6 +201,12 @@
 							<p>A user-defined callback function that can be applied to each value.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -222,10 +235,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="comparerfn" class="tsd-anchor"></a>
 					<h3>Comparer<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Comparer<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Comparer<wbr>Fn&lt;ValueT1, ValueT2&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L110">lib/series.ts:110</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L113">lib/series.ts:113</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -234,6 +247,15 @@
 							returns true (truthy) if they are equivalent or false (falsy) if not.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT1</h4>
+						</li>
+						<li>
+							<h4>ValueT2</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -262,12 +284,21 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="dataframeconfigfn" class="tsd-anchor"></a>
 					<h3>Data<wbr>Frame<wbr>Config<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Data<wbr>Frame<wbr>Config<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Data<wbr>Frame<wbr>Config<wbr>Fn&lt;IndexT, ValueT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L211">lib/dataframe.ts:211</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/dataframe.ts#L213">lib/dataframe.ts:213</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>IndexT</h4>
+						</li>
+						<li>
+							<h4>ValueT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -287,12 +318,21 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="gapfillfn" class="tsd-anchor"></a>
 					<h3>Gap<wbr>Fill<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Gap<wbr>Fill<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Gap<wbr>Fill<wbr>Fn&lt;ValueT, ResultT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L122">lib/series.ts:122</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L125">lib/series.ts:125</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT</h4>
+						</li>
+						<li>
+							<h4>ResultT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -321,10 +361,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="joinfn" class="tsd-anchor"></a>
 					<h3>Join<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Join<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Join<wbr>Fn&lt;ValueT1, ValueT2, ResultT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L93">lib/series.ts:93</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L96">lib/series.ts:96</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -332,6 +372,18 @@
 							<p>A user-defined function that joins two values and produces a result.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT1</h4>
+						</li>
+						<li>
+							<h4>ValueT2</h4>
+						</li>
+						<li>
+							<h4>ResultT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -360,11 +412,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="predicatefn" class="tsd-anchor"></a>
 					<h3>Predicate<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Predicate<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Predicate<wbr>Fn&lt;ValueT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L98">lib/series.ts:98</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/index.ts#L9">lib/index.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L101">lib/series.ts:101</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/index.ts#L9">lib/index.ts:9</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -373,6 +425,12 @@
 							A predicate function for testing a value against another.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -401,10 +459,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="selectorfn" class="tsd-anchor"></a>
 					<h3>Selector<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Selector<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Selector<wbr>Fn&lt;FromT, ToT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L88">lib/series.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L91">lib/series.ts:91</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -413,6 +471,15 @@
 							Transforms a value into another kind of value.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>FromT</h4>
+						</li>
+						<li>
+							<h4>ToT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -438,10 +505,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="selectorwithindexfn" class="tsd-anchor"></a>
 					<h3>Selector<wbr>With<wbr>Index<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Selector<wbr>With<wbr>Index<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Selector<wbr>With<wbr>Index<wbr>Fn&lt;FromT, ToT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L70">lib/series.ts:70</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L73">lib/series.ts:73</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -450,6 +517,15 @@
 							Transforms a value into another kind of value.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>FromT</h4>
+						</li>
+						<li>
+							<h4>ToT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -478,10 +554,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="seriesaggregatorfn" class="tsd-anchor"></a>
 					<h3>Series<wbr>Aggregator<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Series<wbr>Aggregator<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Series<wbr>Aggregator<wbr>Fn&lt;IndexT, ValueT, OutputT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L51">lib/dataframe.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/dataframe.ts#L53">lib/dataframe.ts:53</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -489,6 +565,18 @@
 							<p>An function that aggregates a series.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>IndexT</h4>
+						</li>
+						<li>
+							<h4>ValueT</h4>
+						</li>
+						<li>
+							<h4>OutputT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -514,12 +602,21 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="seriesconfigfn" class="tsd-anchor"></a>
 					<h3>Series<wbr>Config<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Series<wbr>Config<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Series<wbr>Config<wbr>Fn&lt;IndexT, ValueT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L116">lib/series.ts:116</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L119">lib/series.ts:119</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>IndexT</h4>
+						</li>
+						<li>
+							<h4>ValueT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -539,10 +636,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="seriesselectorfn" class="tsd-anchor"></a>
 					<h3>Series<wbr>Selector<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Series<wbr>Selector<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Series<wbr>Selector<wbr>Fn&lt;IndexT, DataFrameValueT, SeriesValueT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/dataframe.ts#L205">lib/dataframe.ts:205</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/dataframe.ts#L207">lib/dataframe.ts:207</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -550,6 +647,18 @@
 							<p>A selector function that can select a series from a dataframe.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>IndexT</h4>
+						</li>
+						<li>
+							<h4>DataFrameValueT</h4>
+						</li>
+						<li>
+							<h4>SeriesValueT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -575,12 +684,24 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="zip2fn" class="tsd-anchor"></a>
 					<h3>Zip2<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Zip2<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Zip2<wbr>Fn&lt;T1, T2, ReturnT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L79">lib/series.ts:79</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L82">lib/series.ts:82</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T1</h4>
+						</li>
+						<li>
+							<h4>T2</h4>
+						</li>
+						<li>
+							<h4>ReturnT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -609,12 +730,27 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="zip3fn" class="tsd-anchor"></a>
 					<h3>Zip3<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Zip3<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Zip3<wbr>Fn&lt;T1, T2, T3, ReturnT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L80">lib/series.ts:80</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L83">lib/series.ts:83</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T1</h4>
+						</li>
+						<li>
+							<h4>T2</h4>
+						</li>
+						<li>
+							<h4>T3</h4>
+						</li>
+						<li>
+							<h4>ReturnT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -646,12 +782,30 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="zip4fn" class="tsd-anchor"></a>
 					<h3>Zip4<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Zip4<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Zip4<wbr>Fn&lt;T1, T2, T3, T4, ReturnT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L81">lib/series.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L84">lib/series.ts:84</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T1</h4>
+						</li>
+						<li>
+							<h4>T2</h4>
+						</li>
+						<li>
+							<h4>T3</h4>
+						</li>
+						<li>
+							<h4>T4</h4>
+						</li>
+						<li>
+							<h4>ReturnT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -686,12 +840,33 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="zip5fn" class="tsd-anchor"></a>
 					<h3>Zip5<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Zip5<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">Zip5<wbr>Fn&lt;T1, T2, T3, T4, T5, ReturnT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L82">lib/series.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L85">lib/series.ts:85</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T1</h4>
+						</li>
+						<li>
+							<h4>T2</h4>
+						</li>
+						<li>
+							<h4>T3</h4>
+						</li>
+						<li>
+							<h4>T4</h4>
+						</li>
+						<li>
+							<h4>T5</h4>
+						</li>
+						<li>
+							<h4>ReturnT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -726,10 +901,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="zipnfn" class="tsd-anchor"></a>
 					<h3>ZipNFn</h3>
-					<div class="tsd-signature tsd-kind-icon">ZipNFn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<div class="tsd-signature tsd-kind-icon">ZipNFn&lt;ValueT, ReturnT&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/lib/series.ts#L78">lib/series.ts:78</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L81">lib/series.ts:81</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -738,6 +913,15 @@
 							Used to &#39;zip together&#39; multiple series or dataframes.</p>
 						</div>
 					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>ValueT</h4>
+						</li>
+						<li>
+							<h4>ReturnT</h4>
+						</li>
+					</ul>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -773,7 +957,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L94">index.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L116">index.ts:116</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -808,7 +992,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L54">index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L60">index.ts:60</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -831,6 +1015,38 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="fromjson5" class="tsd-anchor"></a>
+					<h3>fromJSON5</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">fromJSON5<span class="tsd-signature-symbol">(</span>jsonTextString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L76">index.ts:76</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deserialize a dataframe from a JSON5 text string.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>jsonTextString: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The JSON5 text to deserialize.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a dataframe that has been deserialized from the JSON data.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="fromobject" class="tsd-anchor"></a>
 					<h3>from<wbr>Object</h3>
 					<ul class="tsd-signatures tsd-kind-function">
@@ -840,7 +1056,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L37">index.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L43">index.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -873,7 +1089,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L220">index.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L242">index.ts:242</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -923,7 +1139,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L180">index.ts:180</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L202">index.ts:202</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -961,7 +1177,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/32e65fe/src/index.ts#L201">index.ts:201</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/index.ts#L223">index.ts:223</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1049,9 +1265,6 @@
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/icolumntransformspec.html" class="tsd-kind-icon">IColumn<wbr>Transform<wbr>Spec</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/icolumntypes.html" class="tsd-kind-icon">IColumn<wbr>Types</a>
-					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/idataframe.html" class="tsd-kind-icon">IData<wbr>Frame</a>
 					</li>
@@ -1075,12 +1288,6 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/iorderedseries.html" class="tsd-kind-icon">IOrdered<wbr>Series</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/iserializeddataframe.html" class="tsd-kind-icon">ISerialized<wbr>Data<wbr>Frame</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/iserializedindex.html" class="tsd-kind-icon">ISerialized<wbr>Index</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/iseries.html" class="tsd-kind-icon">ISeries</a>
@@ -1152,6 +1359,9 @@
 						<a href="index.html#fromjson" class="tsd-kind-icon">fromJSON</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="index.html#fromjson5" class="tsd-kind-icon">fromJSON5</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="index.html#fromobject" class="tsd-kind-icon">from<wbr>Object</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -1180,6 +1390,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -1228,7 +1439,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
