@@ -9,6 +9,9 @@ The JavaScript data transformation and analysis toolkit inspired by Pandas and L
 
 To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
 
+Read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
+<a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
+
 Want to get in touch? Please see my contact details at the end.
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
