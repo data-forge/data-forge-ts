@@ -2396,7 +2396,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
    toArray (): any[] {
         const values = [];
         for (const value of this.getContent().values) {
-            if (value !== undefined) {
+            if (value !== undefined && value !== null) {
                 values.push(value);
             }
         }
@@ -2418,7 +2418,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     toPairs (): ([IndexT, ValueT])[] {
         const pairs = [];
         for (const pair of this.getContent().pairs) {
-            if (pair[1] != undefined) {
+            if (pair[1] !== undefined && pair[1] !== null) {
                 pairs.push(pair);
             }
         }
@@ -3565,12 +3565,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Helper function to parse a string to an int.
     //
-    static parseInt (value: any | undefined, valueIndex: number): number | undefined {
-        if (value === undefined) {
+    static parseInt (value: any | undefined | null, valueIndex: number): number | undefined {
+        if (value === undefined || value === null) {
             return undefined;
         }
         else {
-            if (!isString(value)) throw new Error("Called Series.parseInts, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+            if (!isString(value)) {
+                throw new Error("Called Series.parseInts, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
+            }
 
             if (value.length === 0) {
                 return undefined;
@@ -3598,8 +3600,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Helper function to parse a string to a float.
     //
-    static parseFloat (value: any | undefined, valueIndex: number): number | undefined {
-        if (value === undefined) {
+    static parseFloat (value: any | undefined | null, valueIndex: number): number | undefined {
+        if (value === undefined || value === null) {
             return undefined;
         }
         else {
@@ -3631,8 +3633,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Helper function to parse a string to a date.
     //
-    static parseDate (value: any | undefined, valueIndex: number, formatString?: string): Date | undefined {
-        if (value === undefined) {
+    static parseDate (value: any | undefined | null, valueIndex: number, formatString?: string): Date | undefined {
+        if (value === undefined || value === null) {
             return undefined;
         }
         else {
@@ -3674,7 +3676,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Helper function to convert a value to a string.
     //
-    static toString(value: any | undefined, formatString?: string): string | undefined | null {
+    static toString(value: any | undefined | null, formatString?: string): string | undefined | null {
         if (value === undefined) {
             return undefined;
         }
@@ -4902,18 +4904,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     truncateStrings (maxLength: number): ISeries<IndexT, ValueT> {
 
-        if (!isNumber(maxLength)) throw new Error("Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
+        if (!isNumber(maxLength)) {
+            throw new Error("Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
+        }
 
         return this.select((value: any) => {
-                if (isString(value)) {
-                    if (value.length > maxLength) {
-                        return value.substring(0, maxLength);
-                    }
+            if (isString(value)) {
+                if (value.length > maxLength) {
+                    return value.substring(0, maxLength);
                 }
+            }
 
-                return value;
-            });
-    };    
+            return value;
+        });
+    };
 
     /**
      * Insert a pair at the start of the series.

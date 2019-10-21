@@ -67,6 +67,26 @@ describe('DataFrame series', () => {
 		]);
     });
 
+	it('when a series is extracted from a dataframe, null values are stripped out.', () => {
+		
+		var dataFrame = new DataFrame({
+			columnNames: [ "S" ],
+			rows: [
+				[null],
+				[11],
+				[null],
+				[12],
+				[null],
+			]
+        });
+		
+		var series = dataFrame.getSeries('S');
+		expect(series.toPairs()).to.eql([
+			[1, 11],
+			[3, 12],
+		]);
+    });
+
 	it('retreive a non-existing column results in an empty series', () => {
 
 		var dataFrame = new DataFrame({
@@ -537,6 +557,23 @@ describe('DataFrame series', () => {
         expect(column.type).to.eql("number");
     });
 
+    it('column with null initial values reports type correctly', () => {
+
+		var dataFrame = new DataFrame({
+			columnNames: [ "Column" ],
+			rows: [
+				[null],
+				[5],
+			]
+        });
+        
+        const columns = dataFrame.getColumns();
+        expect(columns.count()).to.eql(1);
+        
+        const column = columns.first();
+        expect(column.type).to.eql("number");
+    });
+
     it('column with fully undefined values reports type as undefined', () => {
 
 		var dataFrame = new DataFrame({
@@ -544,6 +581,23 @@ describe('DataFrame series', () => {
 			rows: [
 				[undefined],
 				[undefined],
+			]
+        });
+        
+        const columns = dataFrame.getColumns();
+        expect(columns.count()).to.eql(1);
+        
+        const column = columns.first();
+        expect(column.type).to.eql("undefined");
+    });
+
+    it('column with fully null values reports type as undefined', () => {
+
+		var dataFrame = new DataFrame({
+			columnNames: [ "Column" ],
+			rows: [
+				[null],
+				[null],
 			]
         });
         

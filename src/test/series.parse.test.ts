@@ -35,6 +35,15 @@ describe('Series parse', () => {
 		expect(parsed.toArray()).to.eql([]);
 	});
 
+	it('can parse string series to int - with null', () => {
+
+		var series = new Series({ index: [10], values: [null]});
+		var parsed = series.parseInts();
+
+		expect(parsed.getIndex().toArray()).to.eql([10]);
+		expect(parsed.toArray()).to.eql([]);
+	});
+
 	it('can parse string series to int - throws when source value is not a string', () => {
 
 		var series = new Series({ index: [10], values: [5]});
@@ -66,6 +75,15 @@ describe('Series parse', () => {
 	it('can parse string series to float - with undefined', () => {
 
 		var series = new Series({ index: [10], values: [undefined]});
+		var parsed = series.parseFloats();
+
+		expect(parsed.getIndex().toArray()).to.eql([10]);
+		expect(parsed.toArray()).to.eql([]);
+	});
+
+	it('can parse string series to float - with null', () => {
+
+		var series = new Series({ index: [10], values: [null]});
 		var parsed = series.parseFloats();
 
 		expect(parsed.getIndex().toArray()).to.eql([10]);
@@ -109,6 +127,15 @@ describe('Series parse', () => {
 		expect(parsed.toArray()).to.eql([]);
 	});
 
+	it('can parse string series to date - with null', () => {
+
+		var series = new Series({ index: [10], values: [null]});
+		var parsed = series.parseDates();
+
+		expect(parsed.getIndex().toArray()).to.eql([10]);
+		expect(parsed.toArray()).to.eql([]);
+    });
+    
 	it('can parse string series to date - throws when source value is not a string', () => {
 
 		var series = new Series({ index: [10], values: [5] });
@@ -135,12 +162,11 @@ describe('Series parse', () => {
 
 		expect(converted.getIndex().toArray()).to.eql([1, 2, 3, 4, 5, 6]);
 		const row = converted.toArray();
-        expect(row.length).to.eql(5);
+        expect(row.length).to.eql(4);
         expect(row[0]).to.eql("1");
-        expect(row[1]).to.eql(null);
-        expect(row[2]).to.eql("foo");
-        expect(row[3]).to.eql("5.5");
-        expect(row[4]).to.satisfy((value: string) => {
+        expect(row[1]).to.eql("foo");
+        expect(row[2]).to.eql("5.5");
+        expect(row[3]).to.satisfy((value: string) => {
         	return value.startsWith("Sun Feb 01 2015 00:00:00 GMT"); // Don't care about timezone part of string.
         });
 	});

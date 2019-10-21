@@ -351,6 +351,21 @@ describe('DataFrame constructor', () => {
 		}).to.throw();
 	});
 
+	it("can handle null row", function () {
+		var d = new DataFrame({
+			columnNames: ["c1", "c2"],
+			rows: <any[][]> [ // Cast is here to allow this in TypeScript. Normally this is not allowed, but it can be done in JavaScript so I want to handle it.
+				[1, 2],
+				null,
+				[5, 2]
+			],
+		});
+
+		expect(function () {
+			d.toArray();
+		}).to.throw();
+	});
+
     it('can get rows from dataframe', () => {
         const dataFrame = new DataFrame([
             { A: 10, B: 100 }, 

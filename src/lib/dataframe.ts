@@ -2813,7 +2813,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const columnNames = this.getColumnNames();
             return {
                 values: columnNames.map(columnName => {
-                    const series = this.getSeries(columnName).skipWhile(value => value === undefined);
+                    const series = this.getSeries(columnName).skipWhile(value => value === undefined || value === null);
                     const firstValue = series.any() ? series.first() : undefined;
                     return {
                         name: columnName,
@@ -3645,7 +3645,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     toArray (): any[] {
         const values = [];
         for (const value of this.getContent().values) {
-            if (value !== undefined) {
+            if (value !== undefined && value !== null) {
                 values.push(value);
             }
         }
@@ -3667,7 +3667,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     toPairs (): ([IndexT, ValueT])[] {
         const pairs = [];
         for (const pair of this.getContent().pairs) {
-            if (pair[1] != undefined) {
+            if (pair[1] != undefined && pair[1] !== null) {
                 pairs.push(pair);
             }
         }

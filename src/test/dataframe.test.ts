@@ -86,9 +86,24 @@ describe('DataFrame', () => {
         expect(dataframe.toArray()).to.eql([10, 20]);
     });
 
+    it('toArray strips null values', () => {
+
+        var dataframe = new DataFrame([10, null, 20, null]);
+        expect(dataframe.toArray()).to.eql([10, 20]);
+    });
+
     it('toPairs strips undefined values', () => {
 
         var dataframe = new DataFrame([10, undefined, 20, undefined]);
+        expect(dataframe.toPairs()).to.eql([
+            [0, 10], 
+            [2, 20]
+        ]);
+    });
+
+    it('toPairs strips null values', () => {
+
+        var dataframe = new DataFrame([10, null, 20, null]);
         expect(dataframe.toPairs()).to.eql([
             [0, 10], 
             [2, 20]

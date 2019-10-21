@@ -77,9 +77,25 @@ describe('Series', () => {
         expect(series.toArray()).to.eql([10, 20]);
     });
 
+    it('Series.toArray strips null values', () => {
+
+        var series = new Series([10, null, 20, null]);
+        expect(series.toArray()).to.eql([10, 20]);
+    });
+
+
     it('Series.toPairs strips undefined values', () => {
 
         var series = new Series([10, undefined, 20, undefined]);
+        expect(series.toPairs()).to.eql([
+            [0, 10], 
+            [2, 20]
+        ]);
+    });
+
+    it('Series.toPairs strips null values', () => {
+
+        var series = new Series([10, null, 20, null]);
         expect(series.toPairs()).to.eql([
             [0, 10], 
             [2, 20]
@@ -823,7 +839,7 @@ describe('Series', () => {
 		var series = new Series({ index: [1, 2, 3, 4], values: [null, undefined, 1, new Date(2015, 1, 1)] });
 		var truncated = series.truncateStrings(20);
 
-		expect(truncated.toArray()).to.eql([null, 1, new Date(2015, 1, 1)]);
+		expect(truncated.toArray()).to.eql([1, new Date(2015, 1, 1)]);
     });
     
 	it('can insert pair at start of empty series', () => {

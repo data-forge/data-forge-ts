@@ -73,7 +73,6 @@ describe('DataFrame parse', () => {
             ['1', '2'],
             ['10', '11'],
         ]);
-
     });
 
     it('can use format spec to convert columns to strings', () => {
