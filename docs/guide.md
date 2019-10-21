@@ -10,9 +10,14 @@ This document is a constant work in progress. If you notice any problems [please
 
 Please also consider forking this repo, then add or update this document based on your own experimentation or experience with Data-Forge and then submit a pull-request. I'm happy to accept contributions to both code and documentation! 
 
+You can also read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
+<a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
+
 For other resources and documentation please [visit the home page](http://data-forge-js.com/) or view [the repo's main README](https://github.com/data-forge/data-forge-ts).
 
 Happy data wrangling!
+
+
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
