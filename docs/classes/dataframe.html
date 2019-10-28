@@ -3111,8 +3111,8 @@ const pivottedDf = df.pivot("PivotColumn", {
          OutputColumnB: aValues => aValues.average(),
      },
      ValueColumnB: {
-         OutputColumnC: bValues => aValues.sum(),
-         OutputColumnD: bValues => aValues.average(),
+         OutputColumnC: bValues => bValues.sum(),
+         OutputColumnD: bValues => bValues.average(),
      },
 });
 </pre>
