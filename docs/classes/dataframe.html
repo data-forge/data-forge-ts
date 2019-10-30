@@ -3140,7 +3140,7 @@ const pivottedDf = df.pivot("PivotColumn", "ValueColumn", values => values.avera
 // If we expand out the internals of the pivot function, it will look something like this:
 const pivottedDf = df.groupBy(row => row.PivotColumn)
          .select(group => ({
-             PivotColumn: group.deflate(row.ValueColumn).average()
+             PivotColumn: group.deflate(row => row.ValueColumn).average()
          }))
          .orderBy(row  => row.PivotColumn);
 
