@@ -1945,7 +1945,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Creates a new dataframe by merging two input dataframes.
-     * The resulting dataframe contains only those rows that are only present in or or the other of the dataframes, not both.
+     * The resulting dataframe contains only those rows that are only present in one or the other of the dataframes, not both.
      *
      * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
@@ -2168,8 +2168,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *          OutputColumnB: aValues => aValues.average(),
      *      },
      *      ValueColumnB: {
-     *          OutputColumnC: bValues => aValues.sum(),
-     *          OutputColumnD: bValues => aValues.average(),
+     *          OutputColumnC: bValues => bValues.sum(),
+     *          OutputColumnD: bValues => bValues.average(),
      *      },
      * });
      * </pre>
@@ -5803,7 +5803,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Creates a new dataframe by merging two input dataframes.
-     * The resulting dataframe contains only those rows that are only present in or or the other of the dataframes, not both.
+     * The resulting dataframe contains only those rows that are only present in one or the other of the dataframes, not both.
      *
      * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
@@ -6132,8 +6132,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *          OutputColumnB: aValues => aValues.average(),
      *      },
      *      ValueColumnB: {
-     *          OutputColumnC: bValues => aValues.sum(),
-     *          OutputColumnD: bValues => aValues.average(),
+     *          OutputColumnC: bValues => bValues.sum(),
+     *          OutputColumnD: bValues => bValues.average(),
      *      },
      * });
      * </pre>
@@ -6161,7 +6161,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * // If we expand out the internals of the pivot function, it will look something like this:
      * const pivottedDf = df.groupBy(row => row.PivotColumn)
      *          .select(group => ({
-     *              PivotColumn: group.deflate(row.ValueColumn).average()
+     *              PivotColumn: group.deflate(row => row.ValueColumn).average()
      *          }))
      *          .orderBy(row  => row.PivotColumn);
      * 

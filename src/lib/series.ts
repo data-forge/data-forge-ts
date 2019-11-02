@@ -1674,7 +1674,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
 
     /**
      * Creates a new series by merging two input series.
-     * The resulting series contains only those values that are only present in or or the other of the series, not both.
+     * The resulting series contains only those values that are only present in one or the other of the series, not both.
      *
      * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
@@ -4708,7 +4708,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /**
      * Creates a new series by merging two input series.
-     * The resulting series contains only those values that are only present in or or the other of the series, not both.
+     * The resulting series contains only those values that are only present in one or the other of the series, not both.
      *
      * @param inner The 'inner' series to join (the series you are callling the function on is the 'outer' series).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer series.
