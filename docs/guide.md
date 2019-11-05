@@ -238,7 +238,7 @@ Install via NPM as described in previous sections or clone, fork or download the
 
 # Key Concepts
 
-The concepts section has been moved to [a separate file](docs/concepts.md).
+The concepts section has been moved to [a separate file](./concepts.md).
 
 # A note about JavaScript anonymous functions
 
