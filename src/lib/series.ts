@@ -535,6 +535,63 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
 
     /**
+     * Compute the absolute range of values in each period.
+     * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+     * 
+     * @param period - Period for computing the range.
+     * 
+     * @returns Returns a new series where each value indicates the absolute range of values for each period in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const closingPrice = ... series of closing prices for a particular stock ...
+     * const volatility = closingPrice.amountRange();
+     * </pre>
+     */
+    amountRange (period: number): ISeries<IndexT, number>;
+
+    /**
+     * Compute the range of values in each period in proportion to the latest value.
+     * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param period - Period for computing the range.
+     * 
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
+     * 
+     * @returns Returns a new series where each value indicates the proportionate range of values for each period in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const closingPrice = ... series of closing prices for a particular stock ...
+     * const proportionVolatility = closingPrice.proportionRange();
+     * </pre>
+     */
+    proportionRange (period: number): ISeries<IndexT, number>;
+
+    /**
+     * Compute the range of values in each period in proportion to the latest value.
+     * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param period - Period for computing the range.
+     * 
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
+     * 
+     * @returns Returns a new series where each value indicates the proportionate range of values for each period in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const closingPrice = ... series of closing prices for a particular stock ...
+     * const percentVolatility = closingPrice.percentRange();
+     * </pre>
+     */
+    percentRange (period: number): ISeries<IndexT, number>;
+
+    /**
      * Compute the amount of change between pairs or sets of values in the series.
      * 
      * @param [period] Optional period for computing the change - defaults to 2.
@@ -2707,6 +2764,88 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
     }
    
+    /**
+     * Compute the absolute range of values in each period.
+     * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+     * 
+     * @param period - Period for computing the range.
+     * 
+     * @returns Returns a new series where each value indicates the absolute range of values for each period in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const closingPrice = ... series of closing prices for a particular stock ...
+     * const volatility = closingPrice.amountRange();
+     * </pre>
+     */
+    amountRange (period: number): ISeries<IndexT, number> {
+        return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
+            .rollingWindow(period)
+            .select((window): [IndexT, number] => {
+                const max = window.max();
+                const min = window.min();
+                const amountRange = max - min; // Compute range of values in the period.
+                return [window.getIndex().last(), amountRange]; // Return new index and value.
+            })
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
+    }   
+
+    /**
+     * Compute the range of values in each period in proportion to the latest value.
+     * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param period - Period for computing the range.
+     * 
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
+     * 
+     * @returns Returns a new series where each value indicates the proportionate range of values for each period in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const closingPrice = ... series of closing prices for a particular stock ...
+     * const proportionVolatility = closingPrice.proportionRange();
+     * </pre>
+     */
+    proportionRange (period: number): ISeries<IndexT, number> {
+        return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
+            .rollingWindow(period)
+            .select((window): [IndexT, number] => {
+                const max = window.max();
+                const min = window.min();
+                const amountRange = max - min; // Compute range of values in the period.
+                const pctRange = amountRange / window.last(); // Compute proportion change.
+                return [window.getIndex().last(), pctRange]; // Return new index and value.
+            })
+            .withIndex(pair => pair[0])
+            .select(pair => pair[1]);
+    }    
+
+    /**
+     * Compute the range of values in each period in proportion to the latest value.
+     * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+     * Proportions are expressed as 0-1 values.
+     * 
+     * @param period - Period for computing the range.
+     * 
+     * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
+     * 
+     * @returns Returns a new series where each value indicates the proportionate range of values for each period in the original series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const closingPrice = ... series of closing prices for a particular stock ...
+     * const percentVolatility = closingPrice.percentRange();
+     * </pre>
+     */
+    percentRange (period: number): ISeries<IndexT, number> {
+        return this.proportionRange(period).select(v => v * 100);
+    }
+
     /**
      * Compute the amount of change between pairs or sets of values in the series.
      * 
