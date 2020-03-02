@@ -204,6 +204,26 @@ describe('Series window', () => {
 		expect(modified.toArray()).to.eql([1, 2, 4]);
     });
 
+	it('can compute range', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.amountRange(3);
+		expect(modified.toArray()).to.eql([3, 6]);
+    });    
+
+	it('can compute proportion range', function () {
+
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.proportionRange(3);
+		expect(modified.toArray()).to.eql([0.75, 0.75]);
+    });
+
+	it('can compute pct range', function () {
+		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
+		var modified = series.percentRange(3);
+		expect(modified.toArray()).to.eql([75, 75]);
+    });
+
 	it('can compute amount changed with custom period', function () {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 4, 8] });
