@@ -416,6 +416,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Each value in the new series is a chunk of data from the original series.
      *
      * @param period The number of values to include in each data window.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a chunk (data window) of the original series.
      * 
@@ -441,7 +442,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Partition a series into a new series of *rolling data windows*. 
      * Each value in the new series is a rolling chunk of data from the original series.
      *
-     * @param period The number of data values to include in each data window.
+     * @param period The number of data values to include in each data window. 
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a rolling chunk of the original series.
      * 
@@ -547,6 +549,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
      * 
      * @param period - Period for computing the range.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the absolute range of values for each period in the original series.
      * 
@@ -554,10 +557,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * <pre>
      * 
      * const closingPrice = ... series of closing prices for a particular stock ...
-     * const volatility = closingPrice.amountRange();
+     * const volatility = closingPrice.amountRange(5);
      * </pre>
      */
-    amountRange (period: number): ISeries<IndexT, number>;
+    amountRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the range of values in each period in proportion to the latest value.
@@ -565,6 +568,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Proportions are expressed as 0-1 values.
      * 
      * @param period - Period for computing the range.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -574,10 +578,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * <pre>
      * 
      * const closingPrice = ... series of closing prices for a particular stock ...
-     * const proportionVolatility = closingPrice.proportionRange();
+     * const proportionVolatility = closingPrice.proportionRange(5);
      * </pre>
      */
-    proportionRange (period: number): ISeries<IndexT, number>;
+    proportionRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the range of values in each period in proportion to the latest value.
@@ -585,6 +589,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Proportions are expressed as 0-1 values.
      * 
      * @param period - Period for computing the range.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -594,15 +599,16 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * <pre>
      * 
      * const closingPrice = ... series of closing prices for a particular stock ...
-     * const percentVolatility = closingPrice.percentRange();
+     * const percentVolatility = closingPrice.percentRange(5);
      * </pre>
      */
-    percentRange (period: number): ISeries<IndexT, number>;
+    percentRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the amount of change between pairs or sets of values in the series.
      * 
      * @param [period] Optional period for computing the change - defaults to 2.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
      * 
@@ -619,13 +625,14 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
      * </pre>
      */
-    amountChange (period?: number): ISeries<IndexT, number>;
+    amountChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the proportion change between pairs or sets of values in the series.
      * Proportions are expressed as 0-1 values.
      * 
      * @param [period] Optional period for computing the proportion - defaults to 2.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -642,13 +649,14 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
      * </pre>
      */
-    proportionChange (period?: number): ISeries<IndexT, number>;
+    proportionChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the percentage change between pairs or sets of values in the series.
      * Percentages are expressed as 0-100 values.
      * 
      * @param [period] Optional period for computing the percentage - defaults to 2.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
      * 
@@ -665,7 +673,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
      * </pre>
      */
-    percentChange (period?: number): ISeries<IndexT, number>;
+    percentChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * For each period, compute the proportion of values that are less than the last value in the period.
@@ -2594,6 +2602,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Each value in the new series is a chunk of data from the original series.
      *
      * @param period The number of values to include in each data window.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a chunk (data window) of the original series.
      * 
@@ -2627,6 +2636,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Each value in the new series is a rolling chunk of data from the original series.
      *
      * @param period The number of data values to include in each data window.
+     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a rolling chunk of the original series.
      * 
@@ -2784,12 +2794,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * <pre>
      * 
      * const closingPrice = ... series of closing prices for a particular stock ...
-     * const volatility = closingPrice.amountRange();
+     * const volatility = closingPrice.amountRange(5);
      * </pre>
      */
-    amountRange (period: number): ISeries<IndexT, number> {
+    amountRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
-            .rollingWindow(period, WhichIndex.End)
+            .rollingWindow(period, whichIndex)
             .select(window => window.max() - window.min());
     }   
 
@@ -2808,12 +2818,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * <pre>
      * 
      * const closingPrice = ... series of closing prices for a particular stock ...
-     * const proportionVolatility = closingPrice.proportionRange();
+     * const proportionVolatility = closingPrice.proportionRange(5);
      * </pre>
      */
-    proportionRange (period: number): ISeries<IndexT, number> {
+    proportionRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
-            .rollingWindow(period)
+            .rollingWindow(period, whichIndex)
             .select(window => (window.max() - window.min()) / window.last());
     }    
 
@@ -2832,11 +2842,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * <pre>
      * 
      * const closingPrice = ... series of closing prices for a particular stock ...
-     * const percentVolatility = closingPrice.percentRange();
+     * const percentVolatility = closingPrice.percentRange(5);
      * </pre>
      */
-    percentRange (period: number): ISeries<IndexT, number> {
-        return this.proportionRange(period).select(v => v * 100);
+    percentRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+        return this.proportionRange(period, whichIndex).select(v => v * 100);
     }
 
     /**
@@ -2859,9 +2869,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
      * </pre>
      */
-    amountChange (period?: number): ISeries<IndexT, number> {
+    amountChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
-            .rollingWindow(period === undefined ? 2 : period)
+            .rollingWindow(period === undefined ? 2 : period, whichIndex)
             .select(window => window.last() - window.first());
     }   
 
@@ -2886,9 +2896,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
      * </pre>
      */
-    proportionChange (period?: number): ISeries<IndexT, number> {
+    proportionChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
-            .rollingWindow(period === undefined ? 2 : period)
+            .rollingWindow(period === undefined ? 2 : period, whichIndex)
             .select(window => (window.last() - window.first())  / window.first());
     }    
 
@@ -2913,8 +2923,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
      * </pre>
      */
-    percentChange (period?: number): ISeries<IndexT, number> {
-        return this.proportionChange(period).select(v => v * 100);
+    percentChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+        return this.proportionChange(period, whichIndex).select(v => v * 100);
     }    
     
     /**
