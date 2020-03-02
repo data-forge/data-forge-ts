@@ -3,19 +3,21 @@
 //
 
 import { SeriesRollingWindowIterator } from '../iterators/series-rolling-window-iterator';
-import { ISeries } from '../series';
+import { ISeries, WhichIndex } from '../series';
 
-export class SeriesRollingWindowIterable<IndexT, ValueT> implements Iterable<ISeries<IndexT, ValueT>> {
+export class SeriesRollingWindowIterable<IndexT, ValueT> implements Iterable<[IndexT,ISeries<IndexT, ValueT>]> {
 
     iterable: Iterable<[IndexT, ValueT]>;
     period: number;
+    whichIndex: WhichIndex;
 
-    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number) {
+    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number, whichIndex: WhichIndex) {
         this.iterable = iterable;
         this.period = period;
+        this.whichIndex = whichIndex;
     }
 
-    [Symbol.iterator](): Iterator<ISeries<IndexT, ValueT>> {
-        return new SeriesRollingWindowIterator(this.iterable, this.period);
+    [Symbol.iterator](): Iterator<[IndexT,ISeries<IndexT, ValueT>]> {
+        return new SeriesRollingWindowIterator(this.iterable, this.period, this.whichIndex);
     }
 }

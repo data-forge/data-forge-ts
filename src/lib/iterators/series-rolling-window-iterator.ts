@@ -4,21 +4,23 @@
 
 import { TakeIterable } from '../iterables/take-iterable';
 import { SkipIterable } from '../iterables/skip-iterable';
-import { Series, ISeries } from '../series';
+import { Series, ISeries, WhichIndex } from '../series';
 
-export class SeriesRollingWindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, ValueT>> {
+export class SeriesRollingWindowIterator<IndexT, ValueT> implements Iterator<[IndexT,ISeries<IndexT, ValueT>]> {
 
     iterable: Iterable<[IndexT, ValueT]>;
     iterator: Iterator<[IndexT, ValueT]> | undefined;
     period: number;
+    whichIndex: WhichIndex;
     curWindow: [IndexT, ValueT][] | undefined; 
     
-    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number) {
+    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number, whichIndex: WhichIndex) {
         this.iterable = iterable;
         this.period = period;
+        this.whichIndex = whichIndex;
     }
 
-    next(): IteratorResult<ISeries<IndexT, ValueT>> {
+    next(): IteratorResult<[IndexT,ISeries<IndexT, ValueT>]> {
 
         if (!this.curWindow) {
             this.curWindow = [];
@@ -27,7 +29,7 @@ export class SeriesRollingWindowIterator<IndexT, ValueT> implements Iterator<ISe
                 const curPos = this.iterator.next();
                 if (curPos.done) {
                     // Underlying iterator doesn't have required number of elements.
-                    return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>);
+                    return ({ done: true } as IteratorResult<[IndexT,ISeries<IndexT, ValueT>]>);
                 }
                 this.curWindow.push(curPos.value);
             }
@@ -38,7 +40,7 @@ export class SeriesRollingWindowIterator<IndexT, ValueT> implements Iterator<ISe
             const curPos = this.iterator!.next();
             if (curPos.done) {
                 // Underlying iterator doesn't have enough elements left.
-                return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>);
+                return ({ done: true } as IteratorResult<[IndexT,ISeries<IndexT, ValueT>]>);
             }
 
             this.curWindow.push(curPos.value); // Add next item to window.
@@ -49,7 +51,8 @@ export class SeriesRollingWindowIterator<IndexT, ValueT> implements Iterator<ISe
         });
 
         return {
-            value: window,
+            //TODO: The way the index is figured out could have much better performance.
+            value: [this.whichIndex === WhichIndex.Start ? window.getIndex().first() : window.getIndex().last(), window],
             done: false,
         };
     }

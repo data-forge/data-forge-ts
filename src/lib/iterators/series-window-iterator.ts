@@ -4,20 +4,22 @@
 
 import { TakeIterable } from '../iterables/take-iterable';
 import { SkipIterable } from '../iterables/skip-iterable';
-import { Series, ISeries } from '../series';
+import { Series, ISeries, WhichIndex } from '../series';
 
-export class SeriesWindowIterator<IndexT, ValueT> implements Iterator<ISeries<IndexT, ValueT>> {
+export class SeriesWindowIterator<IndexT, ValueT> implements Iterator<[IndexT,ISeries<IndexT, ValueT>]> {
 
     iterable: Iterable<[IndexT, ValueT]>;
     iterator: Iterator<[IndexT, ValueT]> | undefined;
     period: number;
+    whichIndex: WhichIndex;
     
-    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number) {
+    constructor(iterable: Iterable<[IndexT, ValueT]>, period: number, whichIndex: WhichIndex) {
         this.iterable = iterable;
         this.period = period;
+        this.whichIndex = whichIndex;
     }
 
-    next(): IteratorResult<ISeries<IndexT, ValueT>> {
+    next(): IteratorResult<[IndexT,ISeries<IndexT, ValueT>]> {
 
         if (!this.iterator) {
             this.iterator = this.iterable[Symbol.iterator]();
@@ -36,7 +38,7 @@ export class SeriesWindowIterator<IndexT, ValueT> implements Iterator<ISeries<In
 
         if (curWindow.length === 0) {
             // Underlying iterator doesn't have required number of elements.
-            return ({ done: true } as IteratorResult<ISeries<IndexT, ValueT>>);
+            return ({ done: true } as IteratorResult<[IndexT,ISeries<IndexT, ValueT>]>);
         }
     
         const window = new Series<IndexT, ValueT>({
@@ -44,8 +46,10 @@ export class SeriesWindowIterator<IndexT, ValueT> implements Iterator<ISeries<In
         });
 
         return {
-            value: window,
+            //TODO: The way the index is figured out could have much better performance.
+            value: [this.whichIndex === WhichIndex.Start ? window.getIndex().first() : window.getIndex().last(), window],
             done: false,
         };
+
     }
 }

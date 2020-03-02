@@ -187,6 +187,14 @@ export interface IBucket {
 }
 
 /**
+ * Specifies where from a data window the index is pulled from: the start of the window, the end or from the middle.
+ */
+export enum WhichIndex {
+    Start = "start",
+    End = "end",
+}
+
+/**
  * Interface that represents a series.
  * A series contains an indexed sequence of values.
  * A series indexed by time is a timeseries.
@@ -427,7 +435,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(weeklySales.toString());
      * </pre>
      */
-    window (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+    window (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>>;
 
     /** 
      * Partition a series into a new series of *rolling data windows*. 
@@ -445,7 +453,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(rollingWeeklySales.toString());
      * </pre>
      */
-    rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>>;
+    rollingWindow (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>>;
 
     /**
      * Partition a series into a new series of variable-length *data windows* 
@@ -2605,12 +2613,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(weeklySales.toString());
      * </pre>
      */
-    window (period: number): ISeries<number, ISeries<IndexT, ValueT>> {
+    window (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>> {
 
         if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'Series.window' to be a number.");
 
-        return new Series<number, ISeries<IndexT, ValueT>>(() => ({
-            values: new SeriesWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
+        return new Series<IndexT, ISeries<IndexT, ValueT>>(() => ({
+            pairs: new SeriesWindowIterable<IndexT, ValueT>(this.getContent().pairs, period, whichIndex || WhichIndex.End),
         }));
     }
 
@@ -2630,12 +2638,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(rollingWeeklySales.toString());
      * </pre>
      */
-    rollingWindow (period: number): ISeries<number, ISeries<IndexT, ValueT>> {
+    rollingWindow (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>> {
 
         if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'Series.rollingWindow' to be a number.");
 
-        return new Series<number, ISeries<IndexT, ValueT>>(() => ({
-            values: new SeriesRollingWindowIterable<IndexT, ValueT>(this.getContent().pairs, period)
+        return new Series<IndexT, ISeries<IndexT, ValueT>>(() => ({
+            pairs: new SeriesRollingWindowIterable<IndexT, ValueT>(this.getContent().pairs, period, whichIndex || WhichIndex.End),
         }));
     }
 
