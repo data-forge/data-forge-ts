@@ -2789,15 +2789,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     amountRange (period: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
-            .rollingWindow(period)
-            .select((window): [IndexT, number] => {
-                const max = window.max();
-                const min = window.min();
-                const amountRange = max - min; // Compute range of values in the period.
-                return [window.getIndex().last(), amountRange]; // Return new index and value.
-            })
-            .withIndex(pair => pair[0])
-            .select(pair => pair[1]);
+            .rollingWindow(period, WhichIndex.End)
+            .select(window => window.max() - window.min());
     }   
 
     /**
@@ -2821,15 +2814,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     proportionRange (period: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
             .rollingWindow(period)
-            .select((window): [IndexT, number] => {
-                const max = window.max();
-                const min = window.min();
-                const amountRange = max - min; // Compute range of values in the period.
-                const pctRange = amountRange / window.last(); // Compute proportion change.
-                return [window.getIndex().last(), pctRange]; // Return new index and value.
-            })
-            .withIndex(pair => pair[0])
-            .select(pair => pair[1]);
+            .select(window => (window.max() - window.min()) / window.last());
     }    
 
     /**
@@ -2877,14 +2862,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     amountChange (period?: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
             .rollingWindow(period === undefined ? 2 : period)
-            .select((window): [IndexT, number] => {
-                const first = window.first();
-                const last = window.last();
-                const amountChange = last - first; // Compute amount of change.
-                return [window.getIndex().last(), amountChange]; // Return new index and value.
-            })
-            .withIndex(pair => pair[0])
-            .select(pair => pair[1]);
+            .select(window => window.last() - window.first());
     }   
 
     /**
@@ -2911,15 +2889,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     proportionChange (period?: number): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>> <any> this) // Have to assume this is a number series.
             .rollingWindow(period === undefined ? 2 : period)
-            .select((window): [IndexT, number] => {
-                const first = window.first();
-                const last = window.last();
-                const amountChange = last - first; // Compute amount of change.
-                const pctChange = amountChange / first; // Compute proportion change.
-                return [window.getIndex().last(), pctChange]; // Return new index and value.
-            })
-            .withIndex(pair => pair[0])
-            .select(pair => pair[1]);
+            .select(window => (window.last() - window.first())  / window.first());
     }    
 
     /**
@@ -2976,17 +2946,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
     
         return this.rollingWindow(period+1) // +1 to account for the last value being used.
-            .select<[IndexT, number]>(window => {
+            .select(window => {
                 const latestValue = window.last();
                 const numLowerValues = window.head(-1).where(prevMomentum => prevMomentum < latestValue).count();
                 const proportionRank = numLowerValues / period!;
-                return [
-                    window.getIndex().last(),
-                    proportionRank
-                ];
-            })
-            .withIndex(pair => pair[0])
-            .select(pair => pair[1]);
+                return proportionRank;
+            });
     }
 
     /**
