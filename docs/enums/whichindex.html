@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IValueFrequency | Data-Forge</title>
+	<title>WhichIndex | Data-Forge</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="ivaluefrequency.html">IValueFrequency</a>
+					<a href="whichindex.html">WhichIndex</a>
 				</li>
 			</ul>
-			<h1>Interface IValueFrequency</h1>
+			<h1>Enumeration WhichIndex</h1>
 		</div>
 	</div>
 </header>
@@ -65,84 +65,45 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Represents the frequency of a value in a series or dataframe.
-						Represents the frequency of a value in a series or dataframe.</p>
+						<p>Specifies where from a data window the index is pulled from: the start of the window, the end or from the middle.</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">IValueFrequency</span>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#column" class="tsd-kind-icon">Column</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#frequency" class="tsd-kind-icon">Frequency</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ivaluefrequency.html#value" class="tsd-kind-icon">Value</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="whichindex.html#end" class="tsd-kind-icon">End</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="whichindex.html#start" class="tsd-kind-icon">Start</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="column" class="tsd-anchor"></a>
-					<h3>Column</h3>
-					<div class="tsd-signature tsd-kind-icon">Column<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="end" class="tsd-anchor"></a>
+					<h3>End</h3>
+					<div class="tsd-signature tsd-kind-icon">End<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;end&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/dataframe.ts#L244">lib/dataframe.ts:244</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L194">lib/series.ts:194</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Name of the column containing the value.</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="frequency" class="tsd-anchor"></a>
-					<h3>Frequency</h3>
-					<div class="tsd-signature tsd-kind-icon">Frequency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="start" class="tsd-anchor"></a>
+					<h3>Start</h3>
+					<div class="tsd-signature tsd-kind-icon">Start<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;start&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/dataframe.ts#L254">lib/dataframe.ts:254</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L156">lib/series.ts:156</a></li>
+							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L193">lib/series.ts:193</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The frequency of the value&#39;s appearance in the series or dataframe.
-							The frequency of the value&#39;s appearance in the series or dataframe.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="value" class="tsd-anchor"></a>
-					<h3>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/dataframe.ts#L249">lib/dataframe.ts:249</a></li>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L151">lib/series.ts:151</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The value.
-							The value.</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -158,17 +119,14 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="ivaluefrequency.html" class="tsd-kind-icon">IValue<wbr>Frequency</a>
+					<li class="current tsd-kind-enum">
+						<a href="whichindex.html" class="tsd-kind-icon">Which<wbr>Index</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#column" class="tsd-kind-icon">Column</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="whichindex.html#end" class="tsd-kind-icon">End</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#frequency" class="tsd-kind-icon">Frequency</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ivaluefrequency.html#value" class="tsd-kind-icon">Value</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="whichindex.html#start" class="tsd-kind-icon">Start</a>
 							</li>
 						</ul>
 					</li>

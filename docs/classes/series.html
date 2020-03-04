@@ -117,6 +117,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="series.html#aggregate" class="tsd-kind-icon">aggregate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#all" class="tsd-kind-icon">all</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#amountchange" class="tsd-kind-icon">amount<wbr>Change</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#amountrange" class="tsd-kind-icon">amount<wbr>Range</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#any" class="tsd-kind-icon">any</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#appendpair" class="tsd-kind-icon">append<wbr>Pair</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#at" class="tsd-kind-icon">at</a></li>
@@ -163,8 +164,10 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#parsefloats" class="tsd-kind-icon">parse<wbr>Floats</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#parseints" class="tsd-kind-icon">parse<wbr>Ints</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#percentchange" class="tsd-kind-icon">percent<wbr>Change</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#percentrange" class="tsd-kind-icon">percent<wbr>Range</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#percentrank" class="tsd-kind-icon">percent<wbr>Rank</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#proportionchange" class="tsd-kind-icon">proportion<wbr>Change</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#proportionrange" class="tsd-kind-icon">proportion<wbr>Range</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#proportionrank" class="tsd-kind-icon">proportion<wbr>Rank</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#resetindex" class="tsd-kind-icon">reset<wbr>Index</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="series.html#reverse" class="tsd-kind-icon">reverse</a></li>
@@ -225,7 +228,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2119">lib/series.ts:2119</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2192">lib/series.ts:2192</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -292,7 +295,7 @@ const series = new Series(lazyInit);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#___iterator">__@iterator</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2207">lib/series.ts:2207</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2280">lib/series.ts:2280</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -328,7 +331,7 @@ for (const value of series) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#after">after</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3492">lib/series.ts:3492</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3614">lib/series.ts:3614</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -384,7 +387,7 @@ const result = timeSeries.after(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2692">lib/series.ts:2692</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2767">lib/series.ts:2767</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -459,7 +462,7 @@ var salesDataSummary = salesData.aggregate({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#all">all</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3243">lib/series.ts:3243</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3365">lib/series.ts:3365</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -494,14 +497,14 @@ const result = series.all(salesFigure => salesFigure > 100); // Returns true if 
 					<a name="amountchange" class="tsd-anchor"></a>
 					<h3>amount<wbr>Change</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">amount<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">amount<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#amountchange">amountChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2730">lib/series.ts:2730</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2872">lib/series.ts:2872</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -529,9 +532,58 @@ const amountChanged = salesFigures.amountChanged(7); // Amount that sales has ch
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> period: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series where each value indicates the amount of change from the previous number value in the original series.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="amountrange" class="tsd-anchor"></a>
+					<h3>amount<wbr>Range</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">amount<wbr>Range<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#amountrange">amountRange</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2800">lib/series.ts:2800</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compute the absolute range of values in each period.
+									The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const closingPrice = ... series of closing prices for a particular stock ...
+const volatility = closingPrice.amountRange(5);
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>period: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Period for computing the range.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new series where each value indicates the absolute range of values for each period in the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -546,7 +598,7 @@ const amountChanged = salesFigures.amountChanged(7); // Amount that sales has ch
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#any">any</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3283">lib/series.ts:3283</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3405">lib/series.ts:3405</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -594,7 +646,7 @@ const result = series.any(); // Do we have any sales figures at all?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4961">lib/series.ts:4961</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5083">lib/series.ts:5083</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -638,7 +690,7 @@ const appendedSeries = series.appendPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#at">at</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3108">lib/series.ts:3108</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3230">lib/series.ts:3230</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -690,7 +742,7 @@ const value = series.at(date);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#average">average</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3877">lib/series.ts:3877</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3999">lib/series.ts:3999</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -722,7 +774,7 @@ const averageSales = salesFigures.average();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3742">lib/series.ts:3742</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3864">lib/series.ts:3864</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -754,7 +806,7 @@ const baked = series.bake();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#before">before</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3454">lib/series.ts:3454</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3576">lib/series.ts:3576</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -810,7 +862,7 @@ const result = timeSeries.before(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#between">between</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3531">lib/series.ts:3531</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3653">lib/series.ts:3653</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -872,7 +924,7 @@ const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#bucket">bucket</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L5175">lib/series.ts:5175</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5297">lib/series.ts:5297</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -915,7 +967,7 @@ console.log(buckets.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#cast">cast</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2223">lib/series.ts:2223</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2296">lib/series.ts:2296</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -954,7 +1006,7 @@ const castSeries = series.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4318">lib/series.ts:4318</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4440">lib/series.ts:4440</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1020,7 +1072,7 @@ const concatenated = a.concat(otherSeries);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3032">lib/series.ts:3032</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3154">lib/series.ts:3154</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1052,7 +1104,7 @@ const numValues = series.count();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#counter">counter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4100">lib/series.ts:4100</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4222">lib/series.ts:4222</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1096,7 +1148,7 @@ console.log(counted.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L5046">lib/series.ts:5046</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5168">lib/series.ts:5168</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1147,7 +1199,7 @@ expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L5077">lib/series.ts:5077</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5199">lib/series.ts:5199</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1181,7 +1233,7 @@ console.log(dataTypes.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L5129">lib/series.ts:5129</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5251">lib/series.ts:5251</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1215,7 +1267,7 @@ console.log(dataValues.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4161">lib/series.ts:4161</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4283">lib/series.ts:4283</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1267,7 +1319,7 @@ const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3416">lib/series.ts:3416</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3538">lib/series.ts:3538</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1323,7 +1375,7 @@ const result = timeSeries.endAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#except">except</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4609">lib/series.ts:4609</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4731">lib/series.ts:4731</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1398,7 +1450,7 @@ const remainingCustomers = allCustomers.except(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L5000">lib/series.ts:5000</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5122">lib/series.ts:5122</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1463,7 +1515,7 @@ const remainingCustomers = allCustomers.except(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#first">first</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3052">lib/series.ts:3052</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3174">lib/series.ts:3174</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1495,7 +1547,7 @@ const firstValue = series.first();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3218">lib/series.ts:3218</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3340">lib/series.ts:3340</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1538,7 +1590,7 @@ series.forEach(value => {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#getindex">getIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2238">lib/series.ts:2238</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2311">lib/series.ts:2311</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1569,7 +1621,7 @@ const index = series.getIndex();
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L5210">lib/series.ts:5210</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5332">lib/series.ts:5332</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1594,7 +1646,7 @@ const index = series.getIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4189">lib/series.ts:4189</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4311">lib/series.ts:4311</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1648,7 +1700,7 @@ for (const productSalesGroup of salesByProduct) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4248">lib/series.ts:4248</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4370">lib/series.ts:4370</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1707,7 +1759,7 @@ for (const priceGroup of priceGroups) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#head">head</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3142">lib/series.ts:3142</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3264">lib/series.ts:3264</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1749,7 +1801,7 @@ const sample = series.head(10); // Take a sample of 10 values from the start of 
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#inflate">inflate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3781">lib/series.ts:3781</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3903">lib/series.ts:3903</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1805,7 +1857,7 @@ const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // E
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4938">lib/series.ts:4938</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5060">lib/series.ts:5060</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1849,7 +1901,7 @@ const insertedSeries = series.insertPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4549">lib/series.ts:4549</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4671">lib/series.ts:4671</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1925,7 +1977,7 @@ const intersectionOfCustomerRecords = customerRecordsA.intersection(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#invert">invert</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4079">lib/series.ts:4079</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4201">lib/series.ts:4201</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1958,7 +2010,7 @@ const inverted = series.invert();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#join">join</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4668">lib/series.ts:4668</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4790">lib/series.ts:4790</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2046,13 +2098,13 @@ const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4743">lib/series.ts:4743</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4865">lib/series.ts:4865</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Creates a new series by merging two input series.
-									The resulting series contains only those values that are only present in or or the other of the series, not both.</p>
+									The resulting series contains only those values that are only present in one or the other of the series, not both.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
@@ -2136,7 +2188,7 @@ const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.jo
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4808">lib/series.ts:4808</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4930">lib/series.ts:4930</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2226,7 +2278,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4867">lib/series.ts:4867</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4989">lib/series.ts:4989</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2316,7 +2368,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#last">last</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3072">lib/series.ts:3072</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3194">lib/series.ts:3194</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2348,7 +2400,7 @@ const lastValue = series.last();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#max">max</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4061">lib/series.ts:4061</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4183">lib/series.ts:4183</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2380,7 +2432,7 @@ const maxSales = salesFigures.max();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#median">median</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3919">lib/series.ts:3919</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4041">lib/series.ts:4041</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2413,7 +2465,7 @@ const medianSales = salesFigures.median();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#merge">merge</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2381">lib/series.ts:2381</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2454">lib/series.ts:2454</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2463,7 +2515,7 @@ const mergedSeries = series1.merge(series2, series3, etc);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#min">min</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4025">lib/series.ts:4025</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4147">lib/series.ts:4147</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2495,7 +2547,7 @@ const minSales = salesFigures.min();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#none">none</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3327">lib/series.ts:3327</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3449">lib/series.ts:3449</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2541,7 +2593,7 @@ const result = series.none(); // Do we have zero sales figures?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4414">lib/series.ts:4414</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4536">lib/series.ts:4536</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2594,7 +2646,7 @@ const orderedSeries = series.orderBy(value => value.NestedValue);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4444">lib/series.ts:4444</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4566">lib/series.ts:4566</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2647,7 +2699,7 @@ const orderedSeries = series.orderByDescending(value => value.NestedValue);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3667">lib/series.ts:3667</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3789">lib/series.ts:3789</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2685,7 +2737,7 @@ const parsed = series.parseDates();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3629">lib/series.ts:3629</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3751">lib/series.ts:3751</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2717,7 +2769,7 @@ const parsed = series.parseFloats();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3596">lib/series.ts:3596</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3718">lib/series.ts:3718</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2742,14 +2794,14 @@ const parsed = series.parseInts();
 					<a name="percentchange" class="tsd-anchor"></a>
 					<h3>percent<wbr>Change</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">percent<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">percent<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#percentchange">percentChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2799">lib/series.ts:2799</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2926">lib/series.ts:2926</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2778,9 +2830,59 @@ const percentChanged = salesFigures.amountChanged(7); // Percent that sales has 
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> period: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series where each value indicates the percent change from the previous number value in the original series.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="percentrange" class="tsd-anchor"></a>
+					<h3>percent<wbr>Range</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">percent<wbr>Range<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#percentrange">percentRange</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2848">lib/series.ts:2848</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compute the range of values in each period in proportion to the latest value.
+										The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+									Proportions are expressed as 0-1 values.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const closingPrice = ... series of closing prices for a particular stock ...
+const percentVolatility = closingPrice.percentRange(5);
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>period: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Period for computing the range.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new series where each value indicates the proportion change from the previous number value in the original series.</p>
 						</li>
 					</ul>
 				</section>
@@ -2795,7 +2897,7 @@ const percentChanged = salesFigures.amountChanged(7); // Percent that sales has 
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#percentrank">percentRank</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2864">lib/series.ts:2864</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2986">lib/series.ts:2986</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2832,14 +2934,14 @@ const percentRank = series.percentRank(100);
 					<a name="proportionchange" class="tsd-anchor"></a>
 					<h3>proportion<wbr>Change</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">proportion<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">proportion<wbr>Change<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#proportionchange">proportionChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2764">lib/series.ts:2764</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2899">lib/series.ts:2899</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2868,6 +2970,56 @@ const proportionChanged = salesFigures.amountChanged(7); // Proportion that sale
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> period: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new series where each value indicates the proportion change from the previous number value in the original series.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="proportionrange" class="tsd-anchor"></a>
+					<h3>proportion<wbr>Range</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">proportion<wbr>Range<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#proportionrange">proportionRange</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2824">lib/series.ts:2824</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compute the range of values in each period in proportion to the latest value.
+										The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
+									Proportions are expressed as 0-1 values.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const closingPrice = ... series of closing prices for a particular stock ...
+const proportionVolatility = closingPrice.proportionRange(5);
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>period: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Period for computing the range.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series where each value indicates the proportion change from the previous number value in the original series.</p>
@@ -2885,7 +3037,7 @@ const proportionChanged = salesFigures.amountChanged(7); // Proportion that sale
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#proportionrank">proportionRank</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2822">lib/series.ts:2822</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2949">lib/series.ts:2949</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2929,7 +3081,7 @@ const proportionRank = series.proportionRank(100);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#resetindex">resetIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2302">lib/series.ts:2302</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2375">lib/series.ts:2375</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2961,7 +3113,7 @@ const seriesWithResetIndex = series.resetIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4131">lib/series.ts:4131</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4253">lib/series.ts:4253</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2986,14 +3138,14 @@ const reversed = series.reverse();
 					<a name="rollingwindow" class="tsd-anchor"></a>
 					<h3>rolling<wbr>Window</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">rolling<wbr>Window<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">rolling<wbr>Window<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2576">lib/series.ts:2576</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2651">lib/series.ts:2651</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3020,8 +3172,11 @@ console.log(rollingWeeklySales.toString());
 										<p>The number of data values to include in each data window.</p>
 									</div>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series, each value of which is a rolling chunk of the original series.</p>
 						</li>
 					</ul>
@@ -3037,7 +3192,7 @@ console.log(rollingWeeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#select">select</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2474">lib/series.ts:2474</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2547">lib/series.ts:2547</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3092,7 +3247,7 @@ const transformedSeries = series.select(value => transformValue(value));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2507">lib/series.ts:2507</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2580">lib/series.ts:2580</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3149,7 +3304,7 @@ const modifiedSeries = series.selectMany(value => produceOutputValues(value));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2636">lib/series.ts:2636</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2711">lib/series.ts:2711</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3198,7 +3353,7 @@ const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2889">lib/series.ts:2889</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3011">lib/series.ts:3011</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3239,7 +3394,7 @@ const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original s
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2932">lib/series.ts:2932</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3054">lib/series.ts:3054</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3280,7 +3435,7 @@ const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100)
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2910">lib/series.ts:2910</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3032">lib/series.ts:3032</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3321,7 +3476,7 @@ const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100)
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3378">lib/series.ts:3378</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3500">lib/series.ts:3500</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3377,7 +3532,7 @@ const result = timeSeries.startAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#std">std</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3973">lib/series.ts:3973</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4095">lib/series.ts:4095</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3409,7 +3564,7 @@ const salesStdDev = salesFigures.std();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#sum">sum</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3837">lib/series.ts:3837</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3959">lib/series.ts:3959</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3441,7 +3596,7 @@ const totalSales = salesFigures.sum();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3168">lib/series.ts:3168</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3290">lib/series.ts:3290</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3483,7 +3638,7 @@ const sample = series.tail(12); // Take a sample of 12 values from the end of th
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#take">take</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2951">lib/series.ts:2951</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3073">lib/series.ts:3073</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3521,7 +3676,7 @@ const seriesWithRowsTaken = series.take(15); // Take only the first 15 values fr
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2996">lib/series.ts:2996</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3118">lib/series.ts:3118</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3562,7 +3717,7 @@ const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); 
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2974">lib/series.ts:2974</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3096">lib/series.ts:3096</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3603,7 +3758,7 @@ const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); 
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#toarray">toArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2396">lib/series.ts:2396</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2469">lib/series.ts:2469</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3634,7 +3789,7 @@ const values = series.toArray();
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2445">lib/series.ts:2445</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2518">lib/series.ts:2518</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3732,7 +3887,7 @@ const someObject = series.toObject(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#topairs">toPairs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2418">lib/series.ts:2418</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2491">lib/series.ts:2491</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3765,7 +3920,7 @@ const pairs = series.toPairs();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3547">lib/series.ts:3547</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3669">lib/series.ts:3669</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3798,7 +3953,7 @@ console.log(series.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3722">lib/series.ts:3722</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3844">lib/series.ts:3844</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3842,7 +3997,7 @@ const result = series.toStrings("0.00");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4905">lib/series.ts:4905</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L5027">lib/series.ts:5027</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3883,7 +4038,7 @@ const truncated = series.truncateStrings(10); // Truncate all string values to m
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#union">union</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4505">lib/series.ts:4505</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4627">lib/series.ts:4627</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3967,7 +4122,7 @@ const mergedCustomerRecords = customerRecordsA
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2608">lib/series.ts:2608</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2683">lib/series.ts:2683</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4030,7 +4185,7 @@ const variableWindows = series.variableWindow(rowComparer);
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#where">where</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3193">lib/series.ts:3193</a></li>
+                    <li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3315">lib/series.ts:3315</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -4065,14 +4220,14 @@ const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we
 					<a name="window" class="tsd-anchor"></a>
 					<h3>window</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">window<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">window<span class="tsd-signature-symbol">(</span>period<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, whichIndex<span class="tsd-signature-symbol">?: </span><a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#window">window</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2551">lib/series.ts:2551</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2625">lib/series.ts:2625</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4107,8 +4262,11 @@ console.log(weeklySales.toString());
 										<p>The number of values to include in each data window.</p>
 									</div>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> whichIndex: <a href="../enums/whichindex.html" class="tsd-signature-type">WhichIndex</a></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Returns a new series, each value of which is a chunk (data window) of the original series.</p>
 						</li>
 					</ul>
@@ -4124,7 +4282,7 @@ console.log(weeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#withindex">withIndex</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2273">lib/series.ts:2273</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2346">lib/series.ts:2346</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4191,7 +4349,7 @@ const indexedSeries = series.withIndex(value => value + 20);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4385">lib/series.ts:4385</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4507">lib/series.ts:4507</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4241,7 +4399,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4386">lib/series.ts:4386</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4508">lib/series.ts:4508</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -4280,7 +4438,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iseries.html">ISeries</a>.<a href="../interfaces/iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4387">lib/series.ts:4387</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4509">lib/series.ts:4509</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -4336,7 +4494,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3862">lib/series.ts:3862</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3984">lib/series.ts:3984</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4384,7 +4542,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4267">lib/series.ts:4267</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4389">lib/series.ts:4389</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4425,7 +4583,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3017">lib/series.ts:3017</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3139">lib/series.ts:3139</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4473,7 +4631,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4046">lib/series.ts:4046</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4168">lib/series.ts:4168</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4521,7 +4679,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3903">lib/series.ts:3903</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4025">lib/series.ts:4025</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4569,7 +4727,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L2323">lib/series.ts:2323</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L2396">lib/series.ts:2396</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4620,7 +4778,7 @@ const mergedSeries = Series.merge([series1, series2, etc]);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4010">lib/series.ts:4010</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4132">lib/series.ts:4132</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4668,7 +4826,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3636">lib/series.ts:3636</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3758">lib/series.ts:3758</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -4700,7 +4858,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3603">lib/series.ts:3603</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3725">lib/series.ts:3725</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -4729,7 +4887,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3568">lib/series.ts:3568</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3690">lib/series.ts:3690</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -4758,7 +4916,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3958">lib/series.ts:3958</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4080">lib/series.ts:4080</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4806,7 +4964,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3822">lib/series.ts:3822</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3944">lib/series.ts:3944</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4854,7 +5012,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L3679">lib/series.ts:3679</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L3801">lib/series.ts:3801</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -4885,7 +5043,7 @@ const summary = dataFrame.summarize({
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/dac426b/src/lib/series.ts#L4344">lib/series.ts:4344</a></li>
+									<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/aef820d/src/lib/series.ts#L4466">lib/series.ts:4466</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4960,6 +5118,9 @@ const summary = dataFrame.summarize({
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#amountchange" class="tsd-kind-icon">amount<wbr>Change</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="series.html#amountrange" class="tsd-kind-icon">amount<wbr>Range</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#any" class="tsd-kind-icon">any</a>
@@ -5100,10 +5261,16 @@ const summary = dataFrame.summarize({
 								<a href="series.html#percentchange" class="tsd-kind-icon">percent<wbr>Change</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="series.html#percentrange" class="tsd-kind-icon">percent<wbr>Range</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#percentrank" class="tsd-kind-icon">percent<wbr>Rank</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#proportionchange" class="tsd-kind-icon">proportion<wbr>Change</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="series.html#proportionrange" class="tsd-kind-icon">proportion<wbr>Range</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="series.html#proportionrank" class="tsd-kind-icon">proportion<wbr>Rank</a>
