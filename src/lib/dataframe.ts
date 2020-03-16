@@ -1580,6 +1580,29 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     truncateStrings (maxLength: number): IDataFrame<IndexT, ValueT>;
 
     /**
+     * Produces a new dataframe with all number values rounded to the specified number of places.
+     *
+     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * 
+     * @returns Returns a new dataframe with all number values rounded to the specified number of places.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = ... your data frame ...
+     * const rounded = df.round(); // Round numbers to two decimal places.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = ... your data frame ...
+     * const rounded = df.round(3); // Round numbers to three decimal places.
+     * </pre>
+     */
+    round (numDecimalPlaces?: number): IDataFrame<IndexT, ValueT>;
+
+    /**
      * Forces lazy evaluation to complete and 'bakes' the dataframe into memory.
      * 
      * @return Returns a dataframe that has been 'baked', all lazy evaluation has completed.  
@@ -5120,6 +5143,53 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 const value = row[key];
                 if (isString(value)) {
                     output[key] = value.substring(0, maxLength);
+                }
+                else {
+                    output[key] = value;
+                }
+            }
+           return <ValueT> output;
+        });
+    }
+
+    /**
+     * Produces a new dataframe with all number values rounded to the specified number of places.
+     *
+     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * 
+     * @returns Returns a new dataframe with all number values rounded to the specified number of places.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = ... your data frame ...
+     * const rounded = df.round(); // Round numbers to two decimal places.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const df = ... your data frame ...
+     * const rounded = df.round(3); // Round numbers to three decimal places.
+     * </pre>
+     */
+    round (numDecimalPlaces?: number): IDataFrame<IndexT, ValueT> {
+
+        if (numDecimalPlaces !== undefined) {
+            if (!isNumber(numDecimalPlaces)) {
+                throw new Error("Expected 'numDecimalPlaces' parameter to 'DataFrame.round' to be a number.");
+            }
+        }
+        else {
+            numDecimalPlaces = 2; // Default to two decimal places.
+        }
+
+        return this.select((row: any) => {
+            const output: any = {};
+            for (const key of Object.keys(row)) {
+                const value = row[key];
+                if (isNumber(value)) {
+                    output[key] = parseFloat(value.toFixed(numDecimalPlaces));
                 }
                 else {
                     output[key] = value;

@@ -1015,6 +1015,15 @@ describe('DataFrame', () => {
 		var dataframe = new DataFrame({ values: [5, 6] });
 		var defaulted = dataframe.defaultIfEmpty([1, 2]);
 		expect(defaulted.toArray()).to.eql([5, 6]);
-	});
+    });
+    
+    it('can round numbers', () => {
+        const rounded = new DataFrame([{ A: 10.125, B: 5.0123 }, { A: 0.0178, B: -0.016 }]);
+        expect(rounded.round(2).toArray()).to.eql([{ A: 10.13, B: 5.01 } , { A: 0.02, B: -0.02 }]);
+    });
        
+    it('round ignores strings', () => {
+        const rounded = new DataFrame([{ A: "10.125", B: "5.0123" }, { A: "0.0178", B: "-0.016" }]);
+        expect(rounded.round(2).toArray()).to.eql([{ A: "10.125", B: "5.0123" } , { A: "0.0178", B: "-0.016" }]);
+    });
 });

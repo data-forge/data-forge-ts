@@ -1884,6 +1884,29 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     truncateStrings (maxLength: number): ISeries<IndexT, ValueT>;
 
     /**
+     * Produces a new series with all number values rounded to the specified number of places.
+     *
+     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * 
+     * @returns Returns a new series with all number values rounded to the specified number of places.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = ... your data series ...
+     * const rounded = series.round(); // Round numbers to two decimal places.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = ... your data series ...
+     * const rounded = series.round(3); // Round numbers to three decimal places.
+     * </pre>
+     */
+    round (numDecimalPlaces?: number): ISeries<IndexT, ValueT>;
+
+    /**
      * Insert a pair at the start of the series.
      * Doesn't modify the original series! The returned series is entirely new and contains values from the original series plus the inserted pair.
      *
@@ -5040,6 +5063,47 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return value;
         });
     };
+
+    /**
+     * Produces a new series with all number values rounded to the specified number of places.
+     *
+     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * 
+     * @returns Returns a new series with all number values rounded to the specified number of places.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = ... your data series ...
+     * const rounded = series.round(); // Round numbers to two decimal places.
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = ... your data series ...
+     * const rounded = series.round(3); // Round numbers to three decimal places.
+     * </pre>
+     */
+    round (numDecimalPlaces?: number): ISeries<IndexT, ValueT> {
+
+        if (numDecimalPlaces !== undefined) {
+            if (!isNumber(numDecimalPlaces)) {
+                throw new Error("Expected 'numDecimalPlaces' parameter to 'Series.round' to be a number.");
+            }
+        }
+        else {
+            numDecimalPlaces = 2; // Default to two decimal places.
+        }
+        
+        return this.select((value: any) => {
+            if (isNumber(value)) {
+                return parseFloat(value.toFixed(numDecimalPlaces));
+            }
+
+            return value;
+        });
+    }
 
     /**
      * Insert a pair at the start of the series.

@@ -958,7 +958,6 @@ describe('Series', () => {
         expect((new Series([5])).bucket(10).count()).to.eql(1);
     });
 
-
     it('can divide values into buckets', () => {
 
         var series = new Series([1, 1, 3, 4, 5, 5, 6, 9, 10, 10]);
@@ -1039,5 +1038,15 @@ describe('Series', () => {
                 Max: 12.25,
             },
         ]);
-    });    
+    });
+    
+    it('can round numbers', () => {
+        const rounded = new Series([10.125, 0.0178]);
+        expect(rounded.round(2).toArray()).to.eql([10.13, 0.02]);
+    });
+
+    it('round ignores non-numbers', () => {
+        const rounded = new Series(["10.125", "0.0178"]);
+        expect(rounded.round(2).toArray()).to.eql(["10.125", "0.0178"]);
+    });
 });
