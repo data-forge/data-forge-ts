@@ -20,6 +20,13 @@ Want to get in touch? Please see my contact details at the end.
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Issues](http://img.shields.io/github/issues/data-forge/data-forge-ts.svg)](https://github.com/data-forge/data-forge-ts/blob/master/issues)
 
+<a 
+    href="https://github.com/sponsors/ashleydavis"
+    target="_blank"
+    >
+    Sponsor my open-source work
+</a>
+and receive a free licence for Data-Forge Notebook
 
 **Please note** that this TypeScript repository replaces the [previous JavaScript version of Data-Forge](https://github.com/data-forge/data-forge-js).
 

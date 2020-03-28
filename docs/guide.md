@@ -15,9 +15,15 @@ You can also read about <a target="_blank" href="http://js4ds.org/#s:dataforge">
 
 For other resources and documentation please [visit the home page](http://data-forge-js.com/) or view [the repo's main README](https://github.com/data-forge/data-forge-ts).
 
+<a 
+    href="https://github.com/sponsors/ashleydavis"
+    target="_blank"
+    >
+    Sponsor my open-source work
+</a>
+and receive a free licence for Data-Forge Notebook
+
 Happy data wrangling!
-
-
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
