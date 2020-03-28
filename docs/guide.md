@@ -21,7 +21,14 @@ For other resources and documentation please [visit the home page](http://data-f
     >
     Sponsor my open-source work
 </a>
-and receive a free licence for Data-Forge Notebook
+and receive a free licence for 
+<a 
+    href="https://www.data-forge-notebook.com/"
+    target="_blank"
+    >
+    Data-Forge Notebook
+</a>.
+
 
 Happy data wrangling!
 

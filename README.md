@@ -26,7 +26,13 @@ Want to get in touch? Please see my contact details at the end.
     >
     Sponsor my open-source work
 </a>
-and receive a free licence for Data-Forge Notebook
+and receive a free licence for 
+<a 
+    href="https://www.data-forge-notebook.com/"
+    target="_blank"
+    >
+    Data-Forge Notebook
+</a>.
 
 **Please note** that this TypeScript repository replaces the [previous JavaScript version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
