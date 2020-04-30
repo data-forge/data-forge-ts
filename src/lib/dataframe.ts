@@ -2517,6 +2517,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     //
     private content: IDataFrameContent<IndexT, ValueT> | null = null;
     
+    // 
+    // Indexed content of the dataframe.
+    // 
+    private indexedContent: Record<string, ValueT> | null = null;
+    
     private static readonly defaultCountIterable = new CountIterable();
     private static readonly defaultEmptyIterable = new EmptyIterable();
     
@@ -2778,6 +2783,18 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     private getContent(): IDataFrameContent<IndexT, ValueT> { 
         this.lazyInit();
         return this.content!;
+    }
+    
+    // 
+    // Lazy builds content index, does basic hash lookup.
+    private getRowByIndex(index: IndexT): ValueT | undefined {
+        if (!this.indexedContent) {
+            this.indexedContent = {};
+            for (const pair of this.getContent().pairs) {
+                this.indexedContent[String(pair[0])] = pair[1]
+            }
+        }
+        return this.indexedContent[String(index)];
     }
     
     /**
@@ -3904,7 +3921,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * })
      * </pre>
      */
-    generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
+    generateSeries<NewValueT = ValueT>(generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
         if (!isObject(generator)) {
             if (!isFunction(generator)) {
@@ -3914,10 +3931,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const selector = generator as SelectorWithIndexFn<any, any>;
             const newColumns = this.select(selector) // Build a new dataframe.
                 .bake(); //TODO: Bake should be needed here, but it causes problems if not.
-            const newColumnNames = newColumns.getColumnNames(); 
+            const newColumnNames = newColumns.getColumnNames();
 
             let working: IDataFrame<IndexT, any> = this;
- 
+
             //TODO: There must be a cheaper implementation!
             for (const newColumnName of newColumnNames) {
                 working = working.withSeries(newColumnName, newColumns.getSeries(newColumnName));
@@ -3964,7 +3981,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.deflate' function to be a selector function.");
         }
 
-        return new Series<IndexT, ToT>(() => { 
+        return new Series<IndexT, ToT>(() => {
             const content = this.getContent();
             if (selector) {
                 return {
@@ -3975,7 +3992,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                             pair[0],
                             selector(pair[1], index)
                         ];
-                    }),    
+                    }),
                 };
             }
             else {
@@ -4014,7 +4031,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
      * </pre>
      */
-    inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
+    inflateSeries<NewValueT = ValueT>(columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
 
         if (!isString(columnName)) throw new Error("Expected 'columnName' parameter to 'DataFrame.inflateSeries' to be a string that is the name of the column to inflate.");
 
@@ -4477,13 +4494,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         // A specialised index could improve this.
         //
 
-        for (const pair of this.getContent().pairs) {
-            if (pair[0] === index) {
-                return pair[1];
-            }
-        }
-
-        return undefined;
+        return this.getRowByIndex(index);
     }
     
     /** 
