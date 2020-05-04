@@ -41,7 +41,7 @@ export interface IColumnSpec {
 }
 
 /**
- * Specifes the format per column when converting columns to strings.
+ * Specifies the format per column when converting columns to strings.
  */
 export interface IFormatSpec {
     [index: string]: string;
@@ -141,7 +141,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
     /**
      * Set to true to consider all rows/values in the dataframe when
      * determining the column names. Otherwise only the first row is considered.
-     * You should use this if you have ireggular fields in the objects that
+     * You should use this if you have irregular fields in the objects that
      * make up the rows/values of the dataframe.
      */
     considerAllRows?: boolean,
@@ -306,7 +306,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * @example
      * <pre>
      * 
-     * for (const column in df.getColummns()) {
+     * for (const column in df.getColumns()) {
      *      console.log("Column name: ");
      *      console.log(column.name);
      * 
@@ -602,7 +602,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @param columnNames Specifies the new order for columns.
      * 
-     * @return Returns a new dataframe with columns reodered according to the order of the array of column names that is passed in.
+     * @return Returns a new dataframe with columns reordered according to the order of the array of column names that is passed in.
      * 
      * @example
      * <pre>
@@ -644,7 +644,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * @example
      * <pre>
-     * const modifiedDf = df.bringToBack(["NewSecondLastCollumn, ""NewLastColumn"]);
+     * const modifiedDf = df.bringToBack(["NewSecondLastColumn, ""NewLastColumn"]);
      * </pre>
      */
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT>;
@@ -715,7 +715,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * const someObject = df.toObject(
      *      row => row.SomeColumn, // Specify the column to use for field names in the output object.
-     *      row => row.SomeOtherColumn // Specifi the column to use as the value for each field.
+     *      row => row.SomeOtherColumn // Specify the column to use as the value for each field.
      * );
      * </pre>
      */
@@ -969,7 +969,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Eliminates adjacent duplicate rows.
      * 
      * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
-     * thus ajacent equivalent rows are collapsed down to the last row.
+     * thus adjacent equivalent rows are collapsed down to the last row.
      *
      * @param [selector] Optional selector function to determine the value used to compare for equivalence.
      * 
@@ -1211,7 +1211,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Filter the dataframe using user-defined predicate function.
      *
-     * @param predicate Predicte function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
+     * @param predicate Predicate function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
      * 
      * @return Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
      * 
@@ -1224,7 +1224,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Invoke a callback function for each roew in the dataframe.
+     * Invoke a callback function for each row in the dataframe.
      *
      * @param callback The calback function to invoke for each row.
      * 
@@ -1648,7 +1648,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Collects rows in the dataframe into a {@link Series} of groups according to a user-defined selector function.
      *
-     * @param selector User-defined selector function that specifies the criteriay to group by.
+     * @param selector User-defined selector function that specifies the criteria to group by.
      *
      * @return Returns a {@link Series} of groups. Each group is a dataframe with rows that have been grouped by the 'selector' function.
      * 
@@ -2517,6 +2517,11 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     //
     private content: IDataFrameContent<IndexT, ValueT> | null = null;
     
+    // 
+    // Indexed content of the dataframe.
+    // 
+    private indexedContent: Record<string, ValueT> | null = null;
+    
     private static readonly defaultCountIterable = new CountIterable();
     private static readonly defaultEmptyIterable = new EmptyIterable();
     
@@ -2773,11 +2778,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     //
-    // Ensure the dataframe content is lazy initalised and return it.
+    // Ensure the dataframe content is lazy initialised and return it.
     //
     private getContent(): IDataFrameContent<IndexT, ValueT> { 
         this.lazyInit();
         return this.content!;
+    }
+    
+    // 
+    // Lazy builds content index, does basic hash lookup.
+    private getRowByIndex(index: IndexT): ValueT | undefined {
+        if (!this.indexedContent) {
+            this.indexedContent = {};
+            for (const pair of this.getContent().pairs) {
+                this.indexedContent[String(pair[0])] = pair[1]
+            }
+        }
+        return this.indexedContent[String(index)];
     }
     
     /**
@@ -2822,7 +2839,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * @example
      * <pre>
      * 
-     * for (const column in df.getColummns()) {
+     * for (const column in df.getColumns()) {
      *      console.log("Column name: ");
      *      console.log(column.name);
      * 
@@ -3420,7 +3437,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @param columnNames Specifies the new order for columns.
      * 
-     * @return Returns a new dataframe with columns reodered according to the order of the array of column names that is passed in.
+     * @return Returns a new dataframe with columns reordered according to the order of the array of column names that is passed in.
      * 
      * @example
      * <pre>
@@ -3536,7 +3553,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * @example
      * <pre>
-     * const modifiedDf = df.bringToBack(["NewSecondLastCollumn, ""NewLastColumn"]);
+     * const modifiedDf = df.bringToBack(["NewSecondLastColumn, ""NewLastColumn"]);
      * </pre>
      */
     bringToBack (columnOrColumns: string | string[]): IDataFrame<IndexT, ValueT> {
@@ -3710,7 +3727,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * const someObject = df.toObject(
      *      row => row.SomeColumn, // Specify the column to use for fields in the object.
-     *      row => row.SomeOtherColumn // Specifi the column to use as the value for each field.
+     *      row => row.SomeOtherColumn // Specify the column to use as the value for each field.
      * );
      * </pre>
      */
@@ -3904,7 +3921,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * })
      * </pre>
      */
-    generateSeries<NewValueT = ValueT> (generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
+    generateSeries<NewValueT = ValueT>(generator: SelectorWithIndexFn<any, any> | IColumnTransformSpec): IDataFrame<IndexT, NewValueT> {
 
         if (!isObject(generator)) {
             if (!isFunction(generator)) {
@@ -3914,10 +3931,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             const selector = generator as SelectorWithIndexFn<any, any>;
             const newColumns = this.select(selector) // Build a new dataframe.
                 .bake(); //TODO: Bake should be needed here, but it causes problems if not.
-            const newColumnNames = newColumns.getColumnNames(); 
+            const newColumnNames = newColumns.getColumnNames();
 
             let working: IDataFrame<IndexT, any> = this;
- 
+
             //TODO: There must be a cheaper implementation!
             for (const newColumnName of newColumnNames) {
                 working = working.withSeries(newColumnName, newColumns.getSeries(newColumnName));
@@ -3964,7 +3981,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'DataFrame.deflate' function to be a selector function.");
         }
 
-        return new Series<IndexT, ToT>(() => { 
+        return new Series<IndexT, ToT>(() => {
             const content = this.getContent();
             if (selector) {
                 return {
@@ -3975,7 +3992,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                             pair[0],
                             selector(pair[1], index)
                         ];
-                    }),    
+                    }),
                 };
             }
             else {
@@ -4014,7 +4031,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
      * </pre>
      */
-    inflateSeries<NewValueT = ValueT> (columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
+    inflateSeries<NewValueT = ValueT>(columnName: string, selector?: SelectorWithIndexFn<IndexT, any>): IDataFrame<IndexT, ValueT> {
 
         if (!isString(columnName)) throw new Error("Expected 'columnName' parameter to 'DataFrame.inflateSeries' to be a string that is the name of the column to inflate.");
 
@@ -4131,7 +4148,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Eliminates adjacent duplicate rows.
      * 
      * For each group of adjacent rows that are equivalent only returns the last index/row for the group, 
-     * thus ajacent equivalent rows are collapsed down to the last row.
+     * thus adjacent equivalent rows are collapsed down to the last row.
      *
      * @param [selector] Optional selector function to determine the value used to compare for equivalence.
      * 
@@ -4477,13 +4494,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         // A specialised index could improve this.
         //
 
-        for (const pair of this.getContent().pairs) {
-            if (pair[0] === index) {
-                return pair[1];
-            }
-        }
-
-        return undefined;
+        return this.getRowByIndex(index);
     }
     
     /** 
@@ -4706,7 +4717,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         else {
             // Just check if empty.
             const iterator = this[Symbol.iterator]()
-            return iterator.next().done;
+            return iterator.next().done || false;
         }
 
         return true; // Nothing failed the predicate.
@@ -5624,7 +5635,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * This is basically a concatenation and then elimination of duplicates.
      *
      * @param other The other dataframes to merge.
-     * @param [selector] Optional user-defined selector function that selects the value to compare to detemrine distinctness.
+     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
      * @return Returns the union of the two dataframes.
      * 
@@ -6269,7 +6280,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         if (!isObject(valueColumnNameOrSpec)) {
             if (!isString(valueColumnNameOrSpec)) throw new Error("Expected 'value' parameter to 'DataFrame.pivot' to be a string that identifies the column whose values to aggregate or a column spec that defines which column contains the value ot aggregate and the ways to aggregate that value.");
-            if (!isFunction(aggregator)) throw new Error("Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggegrate pivoted values.");
+            if (!isFunction(aggregator)) throw new Error("Expected 'aggregator' parameter to 'DataFrame.pivot' to be a function to aggregate pivoted values.");
 
             const aggColumnName = valueColumnNameOrSpec as string;
 
