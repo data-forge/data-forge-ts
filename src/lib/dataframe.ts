@@ -2520,7 +2520,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     // 
     // Indexed content of the dataframe.
     // 
-    private indexedContent: Record<string, ValueT> | null = null;
+    private indexedContent: Map<any, ValueT> | null = null;
     
     private static readonly defaultCountIterable = new CountIterable();
     private static readonly defaultEmptyIterable = new EmptyIterable();
@@ -2787,14 +2787,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     
     // 
     // Lazy builds content index, does basic hash lookup.
+    //
     private getRowByIndex(index: IndexT): ValueT | undefined {
         if (!this.indexedContent) {
-            this.indexedContent = {};
+            this.indexedContent = new Map<any, ValueT>();
             for (const pair of this.getContent().pairs) {
-                this.indexedContent[String(pair[0])] = pair[1]
+                this.indexedContent.set(pair[0], pair[1]);
             }
         }
-        return this.indexedContent[String(index)];
+       
+        return this.indexedContent.get(index);
     }
     
     /**

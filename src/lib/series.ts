@@ -2117,6 +2117,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     private content: ISeriesContent<IndexT, ValueT> | null = null;
 
+    // 
+    // Indexed content of the dataframe.
+    // 
+    private indexedContent: Map<any, ValueT> | null = null;
+
     private static readonly defaultCountIterable = new CountIterable();
     private static readonly defaultEmptyIterable = new EmptyIterable();
 
@@ -2283,6 +2288,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     private getContent(): ISeriesContent<IndexT, ValueT> { 
         this.lazyInit();
         return this.content!;
+    }
+
+    // 
+    // Lazy builds content index, does basic hash lookup.
+    //
+    private getRowByIndex(index: IndexT): ValueT | undefined {
+        if (!this.indexedContent) {
+            this.indexedContent = new Map<any, ValueT>();
+            for (const pair of this.getContent().pairs) {
+                this.indexedContent.set(pair[0], pair[1]);
+            }
+        }
+       
+        return this.indexedContent.get(index);
     }
 
     /**
@@ -3256,18 +3275,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return undefined;
         }
 
-        //
-        // This is pretty expensive.
-        // A specialised index could improve this.
-        //
-
-        for (const pair of this.getContent().pairs) {
-            if (pair[0] === index) {
-                return pair[1];
-            }
-        }
-
-        return undefined;
+        return this.getRowByIndex(index);
     }
     
     /** 
