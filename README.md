@@ -5,16 +5,12 @@ The JavaScript data transformation and analysis toolkit inspired by Pandas and L
 *Implemented* in TypeScript.<br>
 *Used* in JavaScript ES5+ or TypeScript.
 
-<a href="#support-the-developer">Skip to the end to see how you can **support the developer.**</a>
-
-<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="images/support2.png"></a>
-
 To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
 
 Read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
 <a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
 
-Want to get in touch? Please see my contact details at the end.
+**Scroll** to the end to get in touch or to [support the developer](#support-the-developer).
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
 [![Coverage Status](https://coveralls.io/repos/github/data-forge/data-forge-ts/badge.svg?branch=master)](https://coveralls.io/github/data-forge/data-forge-ts?branch=master)
@@ -41,8 +37,6 @@ and receive a free licence for
 ## BREAKING CHANGES
 
 As of v1.6.9 the dependencies Sugar, Lodash and Moment have been factored out (or replaced with smaller dependencies). This more than halves the bundle size. Hopefully this won't cause any problems - but please log an issue if something changes that you weren't expecting.
-
-<a target="_blank" href="http://bit.ly/2t2cJu2"><img align="right" src="images/support3.png"></a>
 
 As of v1.3.0 file system support has been removed from the Data-Forge core API. This is after repeated issues from users trying to get Data-Forge working in the browser, especially under AngularJS 6.
 
@@ -192,3 +186,15 @@ You can help support my work in any of the following ways:
 - [Sponsor me on GitHub](https://github.com/sponsors/ashleydavis).
 - Purchase [Data-Forge Notebook](https://www.data-forge-notebook.com/).
 - Purchase either of my books [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2) or [Bootsrapping Microservices](http://bit.ly/2o0aDsP).
+
+# Support the developer
+
+Star this repo or [sponsor the developer on GitHub](https://github.com/sponsors/ashleydavis).
+
+Here's some other ways you can support the developer...
+
+<a class="support" target="_blank" href="http://bit.ly/2o0aDsP"><img src="images/support1.png"></a>
+
+<a class="support" target="_blank" href="https://www.data-forge-notebook.com/"><img src="images/support2.png"></a>
+
+<a class="support" target="_blank" href="http://bit.ly/2t2cJu2"><img src="images/support3.png"></a>
