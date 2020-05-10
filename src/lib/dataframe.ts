@@ -4491,11 +4491,6 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             return undefined;
         }
 
-        //
-        // This is pretty expensive.
-        // A specialised index could improve this.
-        //
-
         return this.getRowByIndex(index);
     }
     
