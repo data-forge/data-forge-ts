@@ -716,6 +716,13 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * </pre>
      */
     percentRank (period?: number): ISeries<IndexT, number>;
+
+    /**
+     * Generates a cumulative sum across a series.
+     * 
+     * @returns Returns a new series that is the cumulative sum of values across the input series.
+     */
+    cumsum (): ISeries<IndexT, number>;
     
     /**
      * Skip a number of values in the series.
@@ -3036,7 +3043,21 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     
         return this.proportionRank(period).select(proportion => proportion * 100);
     }
-    
+
+    /**
+     * Generates a cumulative sum across a series.
+     * 
+     * @returns Returns a new series that is the cumulative sum of values across the input series.
+     */
+    cumsum (): ISeries<IndexT, number> {
+        return new Series<IndexT, number>(() => {
+            let working = 0;
+            const pairs: any[][] = this.toPairs();
+            const output: any = pairs.map(([index, value]) => ([index, working += value]));
+            return { pairs: output };
+        });
+    }
+
     /**
      * Skip a number of values in the series.
      *

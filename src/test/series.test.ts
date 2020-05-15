@@ -1049,4 +1049,9 @@ describe('Series', () => {
         const rounded = new Series(["10.125", "0.0178"]);
         expect(rounded.round(2).toArray()).to.eql(["10.125", "0.0178"]);
     });
+
+    it("cumulative sum", () => {
+        const series = new Series([1, 2, 3, 4, 5]);
+        expect(series.cumsum().toArray()).to.eql([1, 3, 6, 10, 15]);
+    });
 });
