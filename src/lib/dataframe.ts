@@ -20,6 +20,9 @@ import { IIndex, Index } from './index';
 import { ExtractElementIterable } from './iterables/extract-element-iterable';
 import { SkipIterable } from './iterables/skip-iterable';
 import { SkipWhileIterable } from './iterables/skip-while-iterable';
+import { RepeatIterable } from './iterables/repeat-iterable';
+import { TileIterable } from './iterables/tile-iterable';
+import { RavelIterable } from './iterables/ravel-iterable';
 // @ts-ignore
 import Table from 'easy-table';
 // @ts-ignore
@@ -2237,6 +2240,45 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
         valueColumnNameOrSpec: string | IMultiColumnAggregatorSpec, 
         aggregator?: (values: ISeries<number, any>) => any
             ): IDataFrame<number, NewValueT>;
+
+    /**
+     * Unpivot a DataFrame from wide to long format, optionally leaving identifiers set.
+     * This is a powerful function that combines grouping, aggregation and sorting.
+     *
+     * @param idColumnOrColumns Column(s) to use as identifier variables.
+     * @param valueColumnOrColumns Column(s) to unpivot.
+     *
+     * @return Returns a new dataframe that has been unpivoted based on a particular column's values. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Use column in 'idColumnOrColumns' as the identity column.
+     * // The column name passed in 'valueColumnOrColumns' forms the 'variable' column
+     * // and the values are used to populate the 'value' column of the new dataframe.
+     * const moltenDf = df.melt("A", "B");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multiple value columns example.
+     * // Similar to the previous example except now the variable column will constitute
+     * // of multiple values.
+     * const moltenDf = df.melt("A", ["B", "C"]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multiple identity and value columns example.
+     * const moltenDf = df.melt(["A", "B"], ["C", "D"]);
+     * </pre>
+     */
+    melt<NewValueT = ValueT> (
+        idColumnOrColumns: string | Iterable<string>,
+        valueColumnOrColumns: string | Iterable<string>
+            ): IDataFrame<IndexT, NewValueT>;
 
     /**
      * Insert a pair at the start of the dataframe.
@@ -6349,6 +6391,107 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         return ordered;
+    }
+
+    /**
+     * Unpivot a DataFrame from wide to long format, optionally leaving identifiers set.
+     * This is a powerful function that combines grouping, aggregation and sorting.
+     *
+     * @param idColumnOrColumns Column(s) to use as identifier variables.
+     * @param valueColumnOrColumns Column(s) to unpivot.
+     *
+     * @return Returns a new dataframe that has been unpivoted based on a particular column's values. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Use column in 'idColumnOrColumns' as the identity column.
+     * // The column name passed in 'valueColumnOrColumns' forms the 'variable' column
+     * // and the values are used to populate the 'value' column of the new dataframe.
+     * const moltenDf = df.melt("A", "B");
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multiple value columns example.
+     * // Similar to the previous example except now the variable column will constitute
+     * // of multiple values.
+     * const moltenDf = df.melt("A", ["B", "C"]);
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Multiple identity and value columns example.
+     * const moltenDf = df.melt(["A", "B"], ["C", "D"]);
+     * </pre>
+     */
+    melt<ValueT> (
+        idColumnOrColumns: string | Iterable<string>,
+        valueColumnOrColumns: string | Iterable<string>
+    ): IDataFrame<IndexT, ValueT> {
+        let idColumnNames: string[];
+        let valueColumnNames: string[];
+
+        if (isString(idColumnOrColumns)) {
+            idColumnNames = [idColumnOrColumns];
+        }
+        else {
+            if (!isArray(idColumnOrColumns)) throw new Error("Expected 'idColumnOrColumns' parameter to 'DataFrame.melt' to be a string or an array of strings that identifies the column(s) whose values make the new DataFrame's identity columns.");
+
+            idColumnNames = Array.from(idColumnOrColumns);
+
+            for (const columnName of idColumnNames) {
+                if (!isString(columnName)) throw new Error("Expected 'idColumnOrColumns' parameter to 'DataFrame.melt' to be a string or an array of strings that identifies the column(s) whose values make the new DataFrame's identity columns.");
+            }
+        }
+
+        if (isString(valueColumnOrColumns)) {
+            valueColumnNames = [valueColumnOrColumns];
+        }
+        else {
+            if (!isArray(valueColumnOrColumns)) throw new Error("Expected 'valueColumnOrColumns' parameter to 'DataFrame.melt' to be a string or an array of strings that identifies the column(s) whose molten values make the new DataFrame's 'variable' and 'value' columns.");
+
+            valueColumnNames = Array.from(valueColumnOrColumns);
+
+            for (const columnName of valueColumnNames) {
+                if (!isString(columnName)) throw new Error("Expected 'valueColumnOrColumns' parameter to 'DataFrame.melt' to be a string or an array of strings that identifies the column(s) whose molten values make the new DataFrame's 'variable' and 'value' columns.");
+            }
+        }
+
+        const K: number = valueColumnNames.length;
+        const N: number = this.count();
+        let mdata: IDataFrame<IndexT, any> = new DataFrame<IndexT, ValueT>();
+        let original: IDataFrame<IndexT, any> = this.subset(idColumnNames.concat(valueColumnNames));
+
+        for (let col of idColumnNames){
+            original = original.dropSeries(col);
+
+            const idData = this.getSeries(col);
+            const columnData = new TileIterable(idData, K);
+            const columnSeries: ISeries<IndexT, ValueT> = new Series(columnData);
+
+            mdata = mdata.withSeries(col, columnSeries);
+        }
+
+        const seriesArray = [];
+
+        for (const col of original.getColumns()) {
+            seriesArray.push(this.getSeries(col.name));
+        }
+
+        const columnData = new RavelIterable(seriesArray);
+        const columnSeries: ISeries<IndexT, ValueT> = new Series(columnData);
+
+        mdata = mdata.withSeries('value', columnSeries);
+
+        const valueColumnData = new RepeatIterable(valueColumnNames, N);
+        const valueColumnSeries: ISeries<IndexT, ValueT> = new Series(valueColumnData);
+
+        mdata = mdata.withSeries('variable', valueColumnSeries);
+
+        return mdata;
     }
     
     /**
