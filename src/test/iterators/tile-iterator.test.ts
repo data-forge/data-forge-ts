@@ -3,7 +3,7 @@ import 'mocha';
 import { TileIterator } from '../../lib/iterators/tile-iterator';
 import { ArrayIterable } from '../../lib/iterables/array-iterable';
 
-describe('repeat iterator', function () {
+describe('tile iterator', function () {
 
     it('iterator for empty array', function () {
         var sampleIterator: Iterable<any> = new ArrayIterable([]);
