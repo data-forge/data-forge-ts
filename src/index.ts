@@ -30,7 +30,7 @@ export interface IFieldRecord {
      * The value of the field.
      */
     Value: any;
-};
+}
 
 /**
  * Convert a regular JavaScript obejct to a dataframe.

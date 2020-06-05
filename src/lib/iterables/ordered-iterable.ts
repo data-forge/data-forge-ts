@@ -56,7 +56,7 @@ class SortOperation {
 
         return (this.sortSpec.direction === Direction.Descending) ? -comparison : comparison;
     }
-};
+}
 
 export class OrderedIterable implements Iterable<any> {
 

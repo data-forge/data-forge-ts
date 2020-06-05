@@ -59,7 +59,7 @@ export interface ISeriesConfig<IndexT, ValueT> {
      * and does not need to be lazily evaluated.
      */
     baked?: boolean,
-};
+}
 
 /**
  * A user-defined callback function that can be applied to each value.
@@ -2171,7 +2171,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             // Not ok
             throw new Error("Expected '" + fieldName + "' field of Series config object to be an array of values or an iterable of values.");
         }
-    };
+    }
 
     //
     // Initialise series content from a config object.
@@ -2408,7 +2408,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 index: newIndex as Iterable<NewIndexT>,
             }));
         }
-    };
+    }
 
     /**
      * Resets the {@link Index} of the series back to the default zero-based sequential integer index.
@@ -2736,7 +2736,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return new Series<number, ISeries<IndexT, ValueT>>(() => ({
             values: new SeriesVariableWindowIterable<IndexT, ValueT>(this.getContent().pairs, comparer)
         }));
-    };    
+    }
 
     /**
      * Eliminates adjacent duplicate values.
@@ -3141,7 +3141,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             values: new TakeIterable(this.getContent().values, numRows),
             pairs: new TakeIterable(this.getContent().pairs, numRows)
         }));
-    };
+    }
 
     /**
      * Takes values from the series while a condition evaluates to true or truthy.
@@ -3398,7 +3398,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return this;
-    };
+    }
 
     /**
      * Evaluates a predicate function for every value in the series to determine 
@@ -3734,7 +3734,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return table.toString();
-    };
+    }
 
     //
     // Helper function to parse a string to an int.
@@ -3769,7 +3769,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     parseInts (): ISeries<IndexT, number> {
         return <ISeries<IndexT, number>> this.select(Series.parseInt);
-    };
+    }
 
     //
     // Helper function to parse a string to a float.
@@ -3802,7 +3802,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     parseFloats (): ISeries<IndexT, number> {
         return <ISeries<IndexT, number>> this.select(Series.parseFloat);
-    };
+    }
 
     //
     // Helper function to parse a string to a date.
@@ -3925,7 +3925,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             pairs: this.toPairs(),
             baked: true,
         });
-    };
+    }
 
     /** 
      * Converts (inflates) a series to a {@link DataFrame}.
@@ -4686,7 +4686,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return this.concat(other).distinct(selector);
-    };
+    }
 
     /**
      * Creates a new series by merging two input series.
@@ -4747,7 +4747,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                     .where(innerValue => outerKey === innerSelector!(innerValue))
                     .any();
             });
-    };
+    }
 
     /**
      * Creates a new series by merging two input series.
@@ -4807,7 +4807,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                     .where(innerValue => outerKey === innerSelector!(innerValue))
                     .none();
             });
-    };
+    }
 
    /**
      * Creates a new series by merging two input series.
@@ -4943,7 +4943,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             .concat(intersectionResults)
             .concat(innerResult)
             .resetIndex();
-    };
+    }
 
     /**
      * Creates a new series by merging two input series.
@@ -5002,7 +5002,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return outerResult
             .concat(intersectionResults)
             .resetIndex();
-    };
+    }
 
     /**
      * Creates a new series by merging two input series.
@@ -5091,7 +5091,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
             return value;
         });
-    };
+    }
 
     /**
      * Produces a new series with all number values rounded to the specified number of places.

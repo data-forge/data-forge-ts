@@ -23,6 +23,6 @@ export class ExtractElementIterator implements Iterator<any> {
                 done: false,
                 value: result.value[this.extractIndex]
             };
-        };
+        }
     }
 }
