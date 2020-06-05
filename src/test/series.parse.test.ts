@@ -167,7 +167,7 @@ describe('Series parse', () => {
         expect(row[1]).to.eql("foo");
         expect(row[2]).to.eql("5.5");
         expect(row[3]).to.satisfy((value: string) => {
-        	return value.startsWith("Sun Feb 01 2015 00:00:00 GMT"); // Don't care about timezone part of string.
+			return value.startsWith("Sun Feb 01 2015 00:00:00 GMT"); // Don't care about timezone part of string.
         });
 	});
 

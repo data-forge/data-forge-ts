@@ -47,9 +47,9 @@ describe('DataFrame zip', () => {
 
 	it('can zip multiple data-frames', () => {
 
-	 	var df1 = new DataFrame({ columnNames: ["a", "b"], rows: [[1, 2], [3, 4]] });
-	 	var df2 = new DataFrame({ columnNames: ["c", "d"], rows: [[6, 5], [8, 7]] });
-	 	var df3 = new DataFrame({ columnNames: ["e", "f"], rows: [[9, 10], [11, 12]] });
+		var df1 = new DataFrame({ columnNames: ["a", "b"], rows: [[1, 2], [3, 4]] });
+		var df2 = new DataFrame({ columnNames: ["c", "d"], rows: [[6, 5], [8, 7]] });
+		var df3 = new DataFrame({ columnNames: ["e", "f"], rows: [[9, 10], [11, 12]] });
 
 		var zipped = DataFrame.zip([df1, df2, df3], rows => {
 				return Object.assign({}, rows.at(0), rows.at(1), rows.at(2));
@@ -81,9 +81,9 @@ describe('DataFrame zip', () => {
 
 	it('can zip multiple data-frames with ragged rows', () => {
 
-	 	var df1 = new DataFrame({ columnNames: ["a", "b"], rows: [[1, 2], [3, 4]] });
-	 	var df2 = new DataFrame({ columnNames: ["c", "d"], rows: [[6, 5]] });
-	 	var df3 = new DataFrame({ columnNames: ["e", "f"], rows: [[9, 10], [11, 12]] });
+		var df1 = new DataFrame({ columnNames: ["a", "b"], rows: [[1, 2], [3, 4]] });
+		var df2 = new DataFrame({ columnNames: ["c", "d"], rows: [[6, 5]] });
+		var df3 = new DataFrame({ columnNames: ["e", "f"], rows: [[9, 10], [11, 12]] });
 
 		var zipped = DataFrame.zip([df1, df2, df3], rows => {
 				return Object.assign({}, rows.at(0), rows.at(1), rows.at(2));
