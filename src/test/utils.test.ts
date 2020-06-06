@@ -43,6 +43,7 @@ describe("utils", () => {
     });
 
     it("a function is not a object", () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         expect(isObject(() => {})).to.eql(false);
     });
     
@@ -70,6 +71,7 @@ describe("utils", () => {
     });
 
     it("can detect function", () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         expect(isFunction(() => {})).to.eql(true);
     });
 });
