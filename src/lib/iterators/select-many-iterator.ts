@@ -27,7 +27,7 @@ export class SelectManyIterator<ValueT, ToT> implements Iterator<ToT> {
                     return ({ done: true } as IteratorResult<ToT>)  // <= explicit cast here!;
                 }
 
-                let outputIterable = this.selector(result.value, this.index++);
+                const outputIterable = this.selector(result.value, this.index++);
                 this.outputIterator = outputIterable[Symbol.iterator]();
             }
 

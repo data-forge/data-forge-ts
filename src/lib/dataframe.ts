@@ -2686,8 +2686,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 columnNames = Object.keys(columnsConfig);
             }
 
-            let columnIterables: any[] = [];
-            for (let columnName of columnNames) {
+            const columnIterables: any[] = [];
+            for (const columnName of columnNames) {
                 DataFrame.checkIterable(columnsConfig[columnName], columnName);
                 columnIterables.push(columnsConfig[columnName]);
             }
@@ -3081,7 +3081,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     hasSeries (columnName: string): boolean {
         const columnNameLwr = columnName.toLowerCase();
-        for (let existingColumnName of this.getColumnNames()) {
+        for (const existingColumnName of this.getColumnNames()) {
             if (existingColumnName.toLowerCase() === columnNameLwr) {
                 return true;
             }
@@ -6465,7 +6465,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         let mdata: IDataFrame<IndexT, any> = new DataFrame<IndexT, ValueT>();
         let original: IDataFrame<IndexT, any> = this.subset(idColumnNames.concat(valueColumnNames));
 
-        for (let col of idColumnNames){
+        for (const col of idColumnNames){
             original = original.dropSeries(col);
 
             const idData = this.getSeries(col);
