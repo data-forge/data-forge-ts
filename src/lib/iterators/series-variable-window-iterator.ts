@@ -38,6 +38,7 @@ export class SeriesVariableWindowIterator<IndexT, ValueT> implements Iterator<IS
         let prevValue = this.nextValue.value;
 
         // Pull values until there is one that doesn't compare.
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             this.nextValue = this.iterator.next();
             if (this.nextValue.done) {

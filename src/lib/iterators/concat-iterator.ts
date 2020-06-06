@@ -28,7 +28,7 @@ export class ConcatIterator<T> implements Iterator<T> {
     }
 
     next(): IteratorResult<T> {
-
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             if (this.curIterator == null) {
                 // Finished iterating all sub-iterators.
