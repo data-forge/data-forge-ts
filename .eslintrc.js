@@ -9,6 +9,8 @@ module.exports = {
       'plugin:@typescript-eslint/recommended',
     ],
     rules: {
-        'no-var': 1
+        'no-var': 1,
+        '@typescript-eslint/no-this-alias': 0,
+        '@typescript-eslint/ban-ts-comment': 0
     }
   };
