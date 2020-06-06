@@ -7,9 +7,9 @@ export class TileIterator<T> implements Iterator<T> {
 
     iterator: Iterator<T>;
     iterable: Iterable<T>;
-    count: number = 0;
-    repetition: number = 0;
-    firstIteration: boolean = true;
+    count = 0;
+    repetition = 0;
+    firstIteration = true;
 
     constructor(iterable: Iterable<T>, count: number) {
         this.iterable = iterable;

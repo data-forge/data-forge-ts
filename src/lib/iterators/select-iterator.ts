@@ -8,7 +8,7 @@ export class SelectIterator<ValueT, ToT> implements Iterator<ToT> {
 
     iterator: Iterator<ValueT>;
     selector: SelectorFn<ValueT, ToT>;
-    index: number = 0;
+    index = 0;
 
     constructor(iterator: Iterator<ValueT>, selector: SelectorFn<ValueT, ToT>) {
         this.iterator = iterator;

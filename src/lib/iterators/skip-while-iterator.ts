@@ -11,7 +11,7 @@ export class SkipWhileIterator<T> implements Iterator<T> {
 
     childIterator: Iterator<T>;
     predicate: PredicateFn<T>;
-    doneSkipping: boolean = false;
+    doneSkipping = false;
 
     constructor(childIterator: Iterator<T>, predicate: PredicateFn<T>) {
         this.childIterator = childIterator;

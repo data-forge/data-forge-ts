@@ -10,7 +10,7 @@
 export class RavelIterator<T> implements Iterator<T> {
 
     iterators: Iterator<T>[];
-    iteratorIndex: number = 0;
+    iteratorIndex = 0;
 
     constructor(iterables: Iterable<T>[]) {
         this.iterators = iterables.map(iterable => iterable[Symbol.iterator]());

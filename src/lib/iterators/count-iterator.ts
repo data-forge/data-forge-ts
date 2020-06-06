@@ -5,7 +5,7 @@
 
 export class CountIterator implements Iterator<number> {
 
-    index: number = 0;
+    index = 0;
 
     next(): IteratorResult<number> {
         return {

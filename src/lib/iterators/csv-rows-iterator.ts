@@ -6,7 +6,7 @@ export class CsvRowsIterator implements Iterator<any> {
 
     columnNames: string[];
     rowsIterator: Iterator<any>;
-    index: number = 0;
+    index = 0;
 
     constructor(columnNames: Iterable<string>, rowsIterable: Iterable<any>) {
         this.columnNames = Array.from(columnNames);

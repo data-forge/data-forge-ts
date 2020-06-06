@@ -9,7 +9,7 @@ export class SelectManyIterator<ValueT, ToT> implements Iterator<ToT> {
     iterator: Iterator<ValueT>;
     outputIterator: Iterator<ToT> | null;
     selector: SelectorFn<ValueT, ToT>;
-    index: number = 0;
+    index = 0;
 
     constructor(iterator: Iterator<ValueT>, selector: SelectorFn<ValueT, ToT>) {
         this.iterator = iterator;
