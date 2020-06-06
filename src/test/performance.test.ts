@@ -2,6 +2,7 @@ import { assert, expect } from 'chai';
 import 'mocha';
 import * as dataForge from '../index';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Stopwatch = require('statman-stopwatch');
 
 describe('performance', () => {
