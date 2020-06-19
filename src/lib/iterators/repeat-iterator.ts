@@ -7,7 +7,7 @@ export class RepeatIterator<T> implements Iterator<T> {
 
     iterator: Iterator<T>;
     count: number;
-    repetition: number = 0;
+    repetition = 0;
     result: IteratorResult<T>;
 
     constructor(iterable: Iterable<T>, count: number) {

@@ -11,7 +11,7 @@ export class TakeWhileIterator<T> implements Iterator<T> {
 
     childIterator: Iterator<T>;
     predicate: PredicateFn<T>;
-    done: boolean = false;
+    done = false;
 
     constructor(childIterator: Iterator<T>, predicate: PredicateFn<T>) {
         this.childIterator = childIterator;

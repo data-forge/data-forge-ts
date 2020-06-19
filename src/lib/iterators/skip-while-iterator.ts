@@ -11,7 +11,7 @@ export class SkipWhileIterator<T> implements Iterator<T> {
 
     childIterator: Iterator<T>;
     predicate: PredicateFn<T>;
-    doneSkipping: boolean = false;
+    doneSkipping = false;
 
     constructor(childIterator: Iterator<T>, predicate: PredicateFn<T>) {
         this.childIterator = childIterator;
@@ -19,6 +19,7 @@ export class SkipWhileIterator<T> implements Iterator<T> {
     }
 
     next(): IteratorResult<T> {
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             var result = this.childIterator.next();
             if (result.done) {

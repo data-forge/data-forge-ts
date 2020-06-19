@@ -744,7 +744,7 @@ describe('DataFrame', () => {
 	it('can aggregate dataframe with separate functions per column', () => {
 
 		var df = new DataFrame({
-		    columnNames: ["Column1", "Column2"], 
+			columnNames: ["Column1", "Column2"], 
 			rows: [
                 [1, 10],
                 [2, 20],

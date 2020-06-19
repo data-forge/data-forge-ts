@@ -9,7 +9,7 @@ export class SelectManyIterator<ValueT, ToT> implements Iterator<ToT> {
     iterator: Iterator<ValueT>;
     outputIterator: Iterator<ToT> | null;
     selector: SelectorFn<ValueT, ToT>;
-    index: number = 0;
+    index = 0;
 
     constructor(iterator: Iterator<ValueT>, selector: SelectorFn<ValueT, ToT>) {
         this.iterator = iterator;
@@ -18,6 +18,7 @@ export class SelectManyIterator<ValueT, ToT> implements Iterator<ToT> {
     }
 
     next(): IteratorResult<ToT> {     
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             if (this.outputIterator === null) {
                 var result = this.iterator.next();
@@ -26,7 +27,7 @@ export class SelectManyIterator<ValueT, ToT> implements Iterator<ToT> {
                     return ({ done: true } as IteratorResult<ToT>)  // <= explicit cast here!;
                 }
 
-                let outputIterable = this.selector(result.value, this.index++);
+                const outputIterable = this.selector(result.value, this.index++);
                 this.outputIterator = outputIterable[Symbol.iterator]();
             }
 

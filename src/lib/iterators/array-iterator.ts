@@ -6,7 +6,7 @@ export class ArrayIterator<T> implements Iterator<T> {
 
     arr: T[];
 
-    index: number = 0;
+    index = 0;
 
     constructor(arr: T[]) {
         this.arr = arr;

@@ -8,7 +8,7 @@ import t from "typy";
 export function* mapIterable<InT, OutT> (items: Iterable<InT>, mapFn: (item: InT) => OutT): Iterable<OutT> {
     const iterator = items[Symbol.iterator]();
     while (true) {
-        let result = iterator.next();
+        const result = iterator.next();
         if (result.done) {
             break;
         }
@@ -20,8 +20,8 @@ export function* mapIterable<InT, OutT> (items: Iterable<InT>, mapFn: (item: InT
 // Helper function to only return distinct items.
 //
 export function makeDistinct<ItemT, KeyT>(items: Iterable<ItemT>, selector?: (item: ItemT) => KeyT): ItemT[] {
-    let set: any = {};
-    let output: any[] = [];
+    const set: any = {};
+    const output: any[] = [];
     for (const item of items) {
         var key = selector && selector(item) || item;
         if (!set[key]) {
@@ -38,7 +38,7 @@ export function makeDistinct<ItemT, KeyT>(items: Iterable<ItemT>, selector?: (it
 // Helper function to map an array of objects.
 //
 export function toMap<InT, KeyT, ValueT>(items: Iterable<InT>, keySelector: (item: InT) => KeyT, valueSelector: (item: InT) => ValueT): any {
-    let output: any = {};
+    const output: any = {};
     for (const item of items) {
         var key = keySelector(item);
         output[key] = valueSelector(item);
@@ -50,7 +50,7 @@ export function toMap<InT, KeyT, ValueT>(items: Iterable<InT>, keySelector: (ite
 // Helper function to map an array of objects.
 //
 export function toMap2<InT, KeyT, ValueT>(items: Iterable<InT>, keySelector: (item: InT) => KeyT, valueSelector: (item: InT) => ValueT): Map<KeyT, ValueT> {
-    let output = new Map<KeyT, ValueT>();
+    const output = new Map<KeyT, ValueT>();
     for (const item of items) {
         output.set(keySelector(item), valueSelector(item));
     }

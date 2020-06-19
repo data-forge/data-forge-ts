@@ -77,7 +77,7 @@ export class Index<IndexT> extends Series<number, IndexT> implements IIndex<Inde
         }
 
         return this._type;
-    };
+    }
 
     /**
      * Get the less than operation for the index.
@@ -100,7 +100,7 @@ export class Index<IndexT> extends Series<number, IndexT> implements IIndex<Inde
             default:
                 throw new Error("No less than operation available for type: " + this.getType());
         }
-    };
+    }
 
     /**
      * Get the less than or equal to operation for the index.
@@ -132,6 +132,6 @@ export class Index<IndexT> extends Series<number, IndexT> implements IIndex<Inde
             default:
                 throw new Error("No greater than operation available for type: " + this.getType());
         }
-    };
+    }
 
 }

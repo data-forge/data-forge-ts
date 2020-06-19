@@ -658,8 +658,8 @@ describe('DataFrame series', () => {
 			[3],
 		]);
     });
-    
-   	it('can generate new series', () => {
+
+	it('can generate new series', () => {
 
 		var dataFrame = new DataFrame({
 				columnNames: ["A"],
@@ -951,7 +951,7 @@ describe('DataFrame series', () => {
 	it('can transform multiple columns', () => {
 
 		var df = new DataFrame({
-		        columnNames: ["Column1", "Column2"], 
+				columnNames: ["Column1", "Column2"], 
 				rows: [
 					['A', 1],
 					['B', 2],

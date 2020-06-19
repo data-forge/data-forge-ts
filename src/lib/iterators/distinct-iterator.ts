@@ -19,7 +19,7 @@ export class DistinctIterator<FromT, ToT> implements Iterator<FromT> {
     }
 
     next(): IteratorResult<FromT> {
-        
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             const result = this.iterator.next();
             if (result.done) {

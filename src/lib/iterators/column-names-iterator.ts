@@ -21,8 +21,8 @@ export class ColumnNamesIterator implements Iterator<string> {
                 var combinedFields: any = {};
                 
                 // Check all items.
-                for (let value of this.values) {
-                    for (let fieldName of Object.keys(value)) {
+                for (const value of this.values) {
+                    for (const fieldName of Object.keys(value)) {
                         combinedFields[fieldName] = true;
                     }
                 }

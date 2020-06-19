@@ -153,7 +153,7 @@ export interface IDataFrameConfig<IndexT, ValueT> {
      * Explicitly specify data for named columns to put in the dataframe.
      */
     columns?: Iterable<IColumnConfig> | IColumnSpec,
-};
+}
 
 /** 
  * Represents a named column in a dataframe.
@@ -2652,7 +2652,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             // Not ok
             throw new Error("Expected '" + fieldName + "' field of DataFrame config object to be an array of values or an iterable of values.");
         }
-    };
+    }
 
     //
     // Initialise dataframe content from a config object.
@@ -2686,8 +2686,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 columnNames = Object.keys(columnsConfig);
             }
 
-            let columnIterables: any[] = [];
-            for (let columnName of columnNames) {
+            const columnIterables: any[] = [];
+            for (const columnName of columnNames) {
                 DataFrame.checkIterable(columnsConfig[columnName], columnName);
                 columnIterables.push(columnsConfig[columnName]);
             }
@@ -3081,7 +3081,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     hasSeries (columnName: string): boolean {
         const columnNameLwr = columnName.toLowerCase();
-        for (let existingColumnName of this.getColumnNames()) {
+        for (const existingColumnName of this.getColumnNames()) {
             if (existingColumnName.toLowerCase() === columnNameLwr) {
                 return true;
             }
@@ -3418,7 +3418,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }),
             }
         });
-    };
+    }
     
     /**
      * Create a new dataframe with the requested column or columns dropped.
@@ -3713,7 +3713,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }),
             };
         });
-    };
+    }
     
     /**
     * Extract values from the dataframe as an array.
@@ -4047,7 +4047,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 };
             }
         });
-    };
+    }
 
     /** 
      * Inflate a named {@link Series} in the dataframe to 1 or more new series in the new dataframe.
@@ -4393,7 +4393,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 pairs: new TakeIterable(content.pairs, numRows)
             };
         });
-    };
+    }
 
     /**
      * Takes rows from the dataframe while a condition evaluates to true or truthy.
@@ -5727,7 +5727,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         return this.concat(other).distinct(selector);
-    };
+    }
 
     /**
      * Creates a new dataframe by merging two input dataframes.
@@ -5788,7 +5788,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                     .where(innerValue => outerKey === innerSelector!(innerValue))
                     .any();
             });
-    };
+    }
 
     /**
      * Creates a new dataframe by merging two input dataframes.
@@ -5848,7 +5848,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                     .where(innerValue => outerKey === innerSelector!(innerValue))
                     .none();
             });
-    };
+    }
 
    /**
      * Creates a new dataframe by merging two input dataframes.
@@ -5984,7 +5984,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             .concat(intersectionResults)
             .concat(innerResult)
             .resetIndex();
-    };
+    }
 
     /**
      * Creates a new dataframe by merging two input dataframes.
@@ -6043,7 +6043,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return outerResult
             .concat(intersectionResults)
             .resetIndex();
-    };
+    }
 
     /**
      * Creates a new dataframe by merging two input dataframes.
@@ -6465,7 +6465,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         let mdata: IDataFrame<IndexT, any> = new DataFrame<IndexT, ValueT>();
         let original: IDataFrame<IndexT, any> = this.subset(idColumnNames.concat(valueColumnNames));
 
-        for (let col of idColumnNames){
+        for (const col of idColumnNames){
             original = original.dropSeries(col);
 
             const idData = this.getSeries(col);

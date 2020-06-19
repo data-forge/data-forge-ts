@@ -57,7 +57,7 @@ describe('data-forge', () => {
 
 		var jsData =
 			'[' +
-			  '/*Column A*/' +
+				'/*Column A*/' +
 				'{' +
 					'"Column1": "A",' +
 					'"Column2": 1' +
