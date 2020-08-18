@@ -351,6 +351,87 @@ describe('DataFrame columns', () => {
 		]);
 	});
 
+    it('case sensitive columns are renamed to be unique with caseSensitive' , () => {
+
+		var df = new DataFrame({
+			columnNames: [
+				"some-column",
+				"some-Column",
+			],
+			rows: [
+				[1, 2],
+				[3, 4],
+            ],
+            caseSensitive: false,
+		});
+
+		expect(df.getColumnNames()).to.eql(["some-column.1", "some-Column.2"]);
+		expect(df.toArray()).to.eql([
+			{
+				"some-column.1": 1,
+				"some-Column.2": 2,
+			},
+			{
+				"some-column.1": 3,
+				"some-Column.2": 4,
+			},
+		]);
+    });
+       
+    it('duplicates columns are renamed to be unique with caseSensitive', () => {
+
+		var df = new DataFrame({
+			columnNames: [
+				"some-column",
+				"some-column",
+			],
+			rows: [
+				[1, 2],
+				[3, 4],
+            ],
+            caseSensitive: true,
+		});
+
+		expect(df.getColumnNames()).to.eql(["some-column.1", "some-column.2"]);
+		expect(df.toArray()).to.eql([
+			{
+				"some-column.1": 1,
+				"some-column.2": 2,
+			},
+			{
+				"some-column.1": 3,
+				"some-column.2": 4,
+			},
+		]);
+    });
+
+    it('case sensitive columns are treated as unique with caseSensitive' , () => {
+
+		var df = new DataFrame({
+			columnNames: [
+				"some-column",
+				"some-Column",
+			],
+			rows: [
+				[1, 2],
+				[3, 4],
+            ],
+            caseSensitive: true,
+		});
+
+		expect(df.getColumnNames()).to.eql(["some-column", "some-Column"]);
+		expect(df.toArray()).to.eql([
+			{
+				"some-column": 1,
+				"some-Column": 2,
+			},
+			{
+				"some-column": 3,
+				"some-Column": 4,
+			},
+		]);
+    });
+
 	it('can check that column exists', () => {
 		
 		var dataFrame = new DataFrame({
