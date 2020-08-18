@@ -153,6 +153,13 @@ export interface IDataFrameConfig<IndexT, ValueT> {
      * Explicitly specify data for named columns to put in the dataframe.
      */
     columns?: Iterable<IColumnConfig> | IColumnSpec,
+
+    /**
+     * Explicitly set this value if you want columnNames to be caseSensitive.
+     * Default behaviour is to treat column names as case insensitive
+     */
+
+    caseSensitive?: boolean,
 }
 
 /** 
@@ -2598,13 +2605,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     //
     // Initialise dataframe column names.
     //
-    private static initColumnNames(inputColumnNames: Iterable<string>): Iterable<string> {
+    private static initColumnNames(inputColumnNames: Iterable<string>, isCaseSensitive?: boolean): Iterable<string> {
         const outputColumnNames: string[] = [];
         const columnNamesMap: any = {};
     
         // Search for duplicate column names.
         for (const columnName of inputColumnNames) {
-            const columnNameLwr = columnName.toLowerCase();
+            const columnNameLwr = isCaseSensitive !== undefined  && isCaseSensitive ? columnName : columnName.toLowerCase();
+
             if (columnNamesMap[columnNameLwr] === undefined) {
                 columnNamesMap[columnNameLwr] = 1;
             }
@@ -2616,7 +2624,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         const columnNoMap: any = {};
 
         for (const columnName of inputColumnNames) {
-            const columnNameLwr = columnName.toLowerCase();
+            const columnNameLwr = isCaseSensitive !== undefined  && isCaseSensitive ? columnName : columnName.toLowerCase();
             if (columnNamesMap[columnNameLwr] > 1) {
                 let curColumnNo = 1;
 
@@ -2696,7 +2704,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
         else {
             if (config.columnNames) {
-                columnNames = this.initColumnNames(config.columnNames);
+                columnNames = this.initColumnNames(config.columnNames, config.caseSensitive);
             }
 
             if (config.rows) {
