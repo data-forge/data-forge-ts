@@ -5493,13 +5493,19 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
         let sortLevel = 0;
 
         let parent = config.parent;
-
+        const parents = [];
         while (parent !== null) {
+            parents.push(parent);
+            parent = parent.config.parent;
+        }
+
+        parents.reverse();
+
+        for (const parent of parents) {
             const parentConfig = parent.config;
             valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, parentConfig.selector, parentConfig.direction));
             pairSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, OrderedSeries.makePairsSelector(parentConfig.selector), parentConfig.direction));
             ++sortLevel;
-            parent = parentConfig.parent;
         }
 
         valueSortSpecs.push(OrderedSeries.makeSortSpec(sortLevel, config.selector, config.direction));
