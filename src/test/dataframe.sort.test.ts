@@ -30,7 +30,7 @@ describe('DataFrame sort', () => {
         });
 		var sorted = dataframe
 			.orderBy(row => row.v)
-            .thenBy(row => row.i);               
+            .thenBy(row => row.i);
 		expect(sorted.toArray()).to.eql([
 			{
 				i: 3,
@@ -177,4 +177,132 @@ describe('DataFrame sort', () => {
         const ordered = df.orderByDescending(row => row.A);
         expect(ordered.getColumnNames()).to.eql(["B", "A"]);
     });    
+
+    it("sorting with uneven columns", () => {
+
+        const data = [
+            { 'account.name': 'Cash' },
+            { 'account.name': 'Investments/IRA' },
+            { 'account.name': 'Cash', date: '2020-01-01' },
+            { 'account.name': 'Cash', date: '2020-01-01', memo: 'orange' },
+            { 'account.name': 'Investments', date: '2020-01-01' },
+            { 'account.name': 'Investments' },
+            { 'account.name': 'Cash', date: '2020-01-01', memo: 'apple' },
+            { 'account.name': 'Investments', date: '2020-01-01', memo: 'apple' },
+            { 'account.name': 'Investments', date: '2020-01-01', memo: 'orange' },
+            { 'account.name': 'Investments/IRA', date: '2020-01-01', memo: 'apple' },
+            { 'account.name': 'Investments/IRA', date: '2020-01-01' },
+            { 'account.name': 'Investments/IRA', date: '2020-01-01', memo: 'orange' },
+            { 'account.name': 'Cash', date: '2020-02-01', memo: 'apple' },
+            { 'account.name': 'Cash', date: '2020-02-01' },
+            { 'account.name': 'Cash', date: '2020-02-01', memo: 'orange' },
+            { 'account.name': 'Investments', date: '2020-02-01', memo: 'apple' },
+            { 'account.name': 'Investments', date: '2020-02-01', memo: 'orange' },
+            { 'account.name': 'Investments', date: '2020-02-01' },
+            { 'account.name': 'Investments/IRA', date: '2020-02-01' },
+            { 'account.name': 'Investments/IRA', date: '2020-02-01', memo: 'apple' },
+            { 'account.name': 'Investments/IRA', date: '2020-02-01', memo: 'orange' },
+        ];
+        
+        const df = new DataFrame({ values: data, considerAllRows: true })
+            //.parseDates("date", "YYYY-MM-DD")
+            .orderBy((r) => r['account.name'])
+            .thenBy((r) => r.date)
+            .thenBy((r) => r.memo);
+        expect(df.toArray()).to.eql([
+            {
+                "account.name": "Cash",
+                "date": "2020-01-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-01-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-01-01"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-02-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-02-01"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-02-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Cash"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-01-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-01-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-02-01"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-02-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-02-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-01-01"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-01-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-01-01"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-01-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-02-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-02-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-02-01"
+            },
+            {
+                "account.name": "Investments/IRA"
+            }
+        ]);        
+    })
 });

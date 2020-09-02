@@ -103,4 +103,130 @@ describe('Series sort', () => {
         expect(sorted.getIndex().toArray()).to.eql([10, 11, 12, 13]);
 	});
 
+    it("sorting with uneven columns", () => {
+
+        const data = [
+            { 'account.name': 'Cash' },
+            { 'account.name': 'Investments/IRA' },
+            { 'account.name': 'Cash', date: '2020-01-01' },
+            { 'account.name': 'Cash', date: '2020-01-01', memo: 'orange' },
+            { 'account.name': 'Investments', date: '2020-01-01' },
+            { 'account.name': 'Investments' },
+            { 'account.name': 'Cash', date: '2020-01-01', memo: 'apple' },
+            { 'account.name': 'Investments', date: '2020-01-01', memo: 'apple' },
+            { 'account.name': 'Investments', date: '2020-01-01', memo: 'orange' },
+            { 'account.name': 'Investments/IRA', date: '2020-01-01', memo: 'apple' },
+            { 'account.name': 'Investments/IRA', date: '2020-01-01' },
+            { 'account.name': 'Investments/IRA', date: '2020-01-01', memo: 'orange' },
+            { 'account.name': 'Cash', date: '2020-02-01', memo: 'apple' },
+            { 'account.name': 'Cash', date: '2020-02-01' },
+            { 'account.name': 'Cash', date: '2020-02-01', memo: 'orange' },
+            { 'account.name': 'Investments', date: '2020-02-01', memo: 'apple' },
+            { 'account.name': 'Investments', date: '2020-02-01', memo: 'orange' },
+            { 'account.name': 'Investments', date: '2020-02-01' },
+            { 'account.name': 'Investments/IRA', date: '2020-02-01' },
+            { 'account.name': 'Investments/IRA', date: '2020-02-01', memo: 'apple' },
+            { 'account.name': 'Investments/IRA', date: '2020-02-01', memo: 'orange' },
+        ];
+
+        const series = new Series(data)
+            .orderBy((r) => r['account.name'])
+            .thenBy((r) => r.date)
+            .thenBy((r) => r.memo);
+        expect(series.toArray()).to.eql([
+            {
+                "account.name": "Cash",
+                "date": "2020-01-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-01-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-01-01"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-02-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-02-01"
+            },
+            {
+                "account.name": "Cash",
+                "date": "2020-02-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Cash"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-01-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-01-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-02-01"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-02-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-02-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments"
+            },
+            {
+                "account.name": "Investments",
+                "date": "2020-01-01"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-01-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-01-01"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-01-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-02-01",
+                "memo": "apple"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-02-01",
+                "memo": "orange"
+            },
+            {
+                "account.name": "Investments/IRA",
+                "date": "2020-02-01"
+            },
+            {
+                "account.name": "Investments/IRA"
+            }
+        ]);        
+    });
 });
