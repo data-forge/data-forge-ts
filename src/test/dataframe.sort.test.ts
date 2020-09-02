@@ -203,9 +203,8 @@ describe('DataFrame sort', () => {
             { 'account.name': 'Investments/IRA', date: '2020-02-01', memo: 'apple' },
             { 'account.name': 'Investments/IRA', date: '2020-02-01', memo: 'orange' },
         ];
-        
+
         const df = new DataFrame({ values: data, considerAllRows: true })
-            //.parseDates("date", "YYYY-MM-DD")
             .orderBy((r) => r['account.name'])
             .thenBy((r) => r.date)
             .thenBy((r) => r.memo);
@@ -304,5 +303,5 @@ describe('DataFrame sort', () => {
                 "account.name": "Investments/IRA"
             }
         ]);        
-    })
+    });
 });
