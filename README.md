@@ -10,27 +10,15 @@ To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
 Read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
 <a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
 
-**Scroll** to the end to get in touch or to [support the developer](#support-the-developer).
+<a href="#support-the-developer">Skip to the end to see how you can **support the developer.**</a>
+
+Love this? Please star this repo and [follow me on Twitter](https://twitter.com/ashleydavis75)
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
 [![Coverage Status](https://coveralls.io/repos/github/data-forge/data-forge-ts/badge.svg?branch=master)](https://coveralls.io/github/data-forge/data-forge-ts?branch=master)
 [![npm version](https://badge.fury.io/js/data-forge.svg)](https://badge.fury.io/js/data-forge)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Issues](http://img.shields.io/github/issues/data-forge/data-forge-ts.svg)](https://github.com/data-forge/data-forge-ts/blob/master/issues)
-
-<a 
-    href="https://github.com/sponsors/ashleydavis"
-    target="_blank"
-    >
-    Sponsor my open-source work
-</a>
-and receive a free licence for 
-<a 
-    href="https://www.data-forge-notebook.com/"
-    target="_blank"
-    >
-    Data-Forge Notebook
-</a>.
 
 **Please note** that this TypeScript repository replaces the [previous JavaScript version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
@@ -181,20 +169,17 @@ Please reach and tell me what you are doing with Data-Forge or how you'd like to
 
 You can help support my work in any of the following ways:
 
-- Star this repository (and my other repos [here](https://github.com/data-forge), [here](https://github.com/grademark) and [here](https://github.com/data-forge-notebook)).
+- [Follow the developer on Twitter](https://twitter.com/ashleydavis75)
+- Star this repository (and my other repos [here](https://github.com/miniql), [here](https://github.com/data-forge), [here](https://github.com/grademark) and [here](https://github.com/data-forge-notebook)).
 - Share links to my work on Twitter and other social media.
 - [Sponsor me on GitHub](https://github.com/sponsors/ashleydavis).
 - Purchase [Data-Forge Notebook](https://www.data-forge-notebook.com/).
-- Purchase either of my books [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2) or [Bootsrapping Microservices](http://bit.ly/2o0aDsP).
+- Purchase either of my books [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2) or [Bootstrapping Microservices](http://bit.ly/2o0aDsP).
 
-# Support the developer
+<a target="_blank" href="https://www.data-forge-notebook.com/"><img src="images/support1.png"></a>
 
-Star this repo or [sponsor the developer on GitHub](https://github.com/sponsors/ashleydavis).
+<a target="_blank" href="http://bit.ly/2o0aDsP"><img src="images/support3.png"></a>
 
-Here's some other ways you can support the developer...
+<a target="_blank" href="http://bit.ly/2t2cJu2"><img src="images/support2.png"></a>
 
-<a class="support" target="_blank" href="http://bit.ly/2o0aDsP"><img src="images/support1.png"></a>
 
-<a class="support" target="_blank" href="https://www.data-forge-notebook.com/"><img src="images/support2.png"></a>
-
-<a class="support" target="_blank" href="http://bit.ly/2t2cJu2"><img src="images/support3.png"></a>
