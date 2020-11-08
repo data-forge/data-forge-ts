@@ -1978,7 +1978,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Creates a new dataframe by merging two input dataframes.
-     * The resulting dataframe contains only those rows that are only present in one or the other of the dataframes, not both.
+     * The resulting dataframe contains only those rows that are only present in one or the other of the dataframes, or both.
      *
      * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
@@ -1995,7 +1995,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * <pre>
      * 
      * // Join together two sets of customers to find those
-     * // that have bought either product A or product B, not not both.
+     * // that have bought either product A or product B, or both.
      * const customerWhoBoughtProductA = ...
      * const customerWhoBoughtProductB = ...
      * const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
@@ -5931,7 +5931,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Creates a new dataframe by merging two input dataframes.
-     * The resulting dataframe contains only those rows that are only present in one or the other of the dataframes, not both.
+     * The resulting dataframe contains only those rows that are only present in one or the other of the dataframes, or both.
      *
      * @param inner The 'inner' dataframe to join (the dataframe you are callling the function on is the 'outer' dataframe).
      * @param outerKeySelector User-defined selector function that chooses the join key from the outer dataframe.
@@ -5948,7 +5948,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * <pre>
      * 
      * // Join together two sets of customers to find those
-     * // that have bought either product A or product B, not not both.
+     * // that have bought either product A or product B, or both.
      * const customerWhoBoughtProductA = ...
      * const customerWhoBoughtProductB = ...
      * const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.joinOuter(
