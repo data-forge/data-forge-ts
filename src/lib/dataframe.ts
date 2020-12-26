@@ -86,6 +86,8 @@ export interface IColumnConfig {
 
 /**
  * Options for CSV output.
+ * 
+ * The options object is passed directly to PapaParse, please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
  */
 export interface ICSVOutputOptions {
     /**
@@ -2444,6 +2446,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Serialize the dataframe to the CSV data format.
+     * 
+     * @param options Options for CSV output. The options object is passed directly to PapaParse, please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
      * 
      * @return Returns a string in the CSV data format that represents the dataframe.
      * 
@@ -6743,6 +6747,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
     /**
      * Serialize the dataframe to the CSV data format.
+     * 
+     * @param options Options for CSV output. The options object is passed directly to PapaParse, please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
      * 
      * @return Returns a string in the CSV data format that represents the dataframe.
      * 
