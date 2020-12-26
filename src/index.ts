@@ -109,7 +109,7 @@ export interface ICSVOptions {
  * Deserialize a DataFrame from a CSV text string.
  *
  * @param csvTextString The CSV text to deserialize.
- * @param [config] Optional configuration options for parsing the CSV data.
+ * @param config Optional configuration options for parsing the CSV data.
  * 
  * @returns Returns a dataframe that has been deserialized from the CSV data.
  */

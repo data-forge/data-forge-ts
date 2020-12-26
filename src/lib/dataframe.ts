@@ -475,7 +475,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Create a new dataframe with a replaced or additional column specified by the passed-in series.
      *
      * @param columnNameOrSpec The name of the column to add or replace or a {@link IColumnGenSpec} that defines the columns to add.
-     * @param [series] When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
+     * @param series When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
      *
      * @return Returns a new dataframe replacing or adding a particular named column.
      * 
@@ -538,7 +538,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Add a series to the dataframe, but only if it doesn't already exist.
      * 
      * @param columnNameOrSpec The name of the series to add or a {@link IColumnGenSpec} that specifies the columns to add.
-     * @param [series] If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
+     * @param series If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
      * 
      * @return Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
      * 
@@ -862,7 +862,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /** 
      * Converts (deflates) a dataframe to a {@link Series}.
      *
-     * @param [selector] Optional user-defined selector function that transforms each row to produce the series.
+     * @param selector Optional user-defined selector function that transforms each row to produce the series.
      *
      * @return Returns a series that was created from the original dataframe.
      * 
@@ -888,7 +888,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *  into the original dataframe using {@link withSeries}.
      *
      * @param columnName Name of the series to inflate.
-     * @param [selector] Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
+     * @param selector Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
      * 
      * @return Returns a new dataframe with a column inflated to 1 or more new columns.
      * 
@@ -983,7 +983,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
      * thus adjacent equivalent rows are collapsed down to the last row.
      *
-     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * @param selector Optional selector function to determine the value used to compare for equivalence.
      * 
      * @return Returns a new dataframe with groups of adjacent duplicate rows collapsed to a single row per group.
      * 
@@ -998,7 +998,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Aggregate the rows in the dataframe to a single result.
      *
-     * @param [seed] Optional seed value for producing the aggregation.
+     * @param seed Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregate value.
      * 
      * @return Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
@@ -1274,7 +1274,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * If no predicate is specified then it simply checks if the dataframe contains more than zero rows.
      *
-     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for any row in the sequence, otherwise returns false. 
      * If no predicate is passed it returns true if the dataframe contains any rows at all. 
@@ -1300,7 +1300,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * If no predicate is specified then it simply checks if the dataframe contains zero rows.
      *
-     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for zero rows in the dataframe, otherwise returns false. Returns false for an empty dataframe.
      * 
@@ -1529,7 +1529,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Parse a column with string values and convert it to a column with date values.
      *
      * @param columnNameOrNames -Specifies the column name or array of column names to parse.
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * @return Returns a new dataframe with a particular named column parsed as dates.
      * 
@@ -1551,7 +1551,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Convert a column of values of different types to a column of string values.
      *
      * @param columnNames Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -1594,7 +1594,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Produces a new dataframe with all number values rounded to the specified number of places.
      *
-     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * @param numDecimalPlaces The number of decimal places, defaults to 2.
      * 
      * @returns Returns a new dataframe with all number values rounded to the specified number of places.
      * 
@@ -1682,7 +1682,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
      *
-     * @param [selector] Optional selector that specifies the criteria for grouping.
+     * @param selector Optional selector that specifies the criteria for grouping.
      *
      * @return Returns a {@link Series} of groups. Each group is a dataframe with rows that are the same or have been grouped by the 'selector' function.
      * 
@@ -1818,7 +1818,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * This is basically a concatenation and then elimination of duplicates.
      *
      * @param other The other dataframes to merge.
-     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
+     * @param selector Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
      * @return Returns the union of the two dataframes.
      * 
@@ -1872,8 +1872,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * These are only the rows that appear in both dataframes.
      *
      * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
      * @return Returns a new dataframe that contains the intersection of rows from the two input dataframes.
      * 
@@ -1910,8 +1910,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * This is essentially subtracting the rows from the 2nd dataframe from the 1st and creating a new dataframe with the remaining rows.
      *
      * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
      * @return Returns a new dataframe that contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
      * 
@@ -2104,7 +2104,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Produces a summary of dataframe. A bit like the 'aggregate' function but much simpler.
      * 
-     * @param [spec] Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
+     * @param spec Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
      * 
      * @returns A object with fields that summary the values in the dataframe.
      * 
@@ -2163,7 +2163,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      *
      * @param columnOrColumns Column name whose values make the new DataFrame's columns.
      * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
-     * @param [aggregator] Optional function used to aggregate pivotted vales. 
+     * @param aggregator Optional function used to aggregate pivotted vales. 
      *
      * @return Returns a new dataframe that has been pivoted based on a particular column's values. 
      * 
@@ -3134,7 +3134,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Create a new dataframe with a replaced or additional column specified by the passed-in series.
      *
      * @param columnNameOrSpec The name of the column to add or replace or a {@link IColumnGenSpec} that defines the columns to add.
-     * @param [series] When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
+     * @param series When columnNameOrSpec is a string that identifies the column to add, this specifies the {@link Series} to add to the dataframe or a function that produces a series (given a dataframe).
      *
      * @return Returns a new dataframe replacing or adding a particular named column.
      * 
@@ -3326,7 +3326,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Add a series to the dataframe, but only if it doesn't already exist.
      * 
      * @param columnNameOrSpec The name of the series to add or a {@link IColumnGenSpec} that specifies the columns to add.
-     * @param [series] If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
+     * @param series If columnNameOrSpec is a string that specifies the name of the series to add, this specifies the actual {@link Series} to add or a selector that generates the series given the dataframe.
      * 
      * @return Returns a new dataframe with the specified series added, if the series didn't already exist. Otherwise if the requested series already exists the same dataframe is returned.
      * 
@@ -4015,7 +4015,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /** 
      * Converts (deflates) a dataframe to a {@link Series}.
      *
-     * @param [selector] Optional selector function that transforms each row to produce the series.
+     * @param selector Optional selector function that transforms each row to produce the series.
      *
      * @return Returns a series that was created from the deflated from  the original dataframe.
      * 
@@ -4069,7 +4069,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *  into the original dataframe using {@link withSeries}.
      *
      * @param columnName Name of the series to inflate.
-     * @param [selector] Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
+     * @param selector Optional selector function that transforms each value in the column to new columns. If not specified it is expected that each value in the column is an object whose fields define the new column names.
      * 
      * @return Returns a new dataframe with a column inflated to 1 or more new columns.
      * 
@@ -4206,7 +4206,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * For each group of adjacent rows that are equivalent only returns the last index/row for the group, 
      * thus adjacent equivalent rows are collapsed down to the last row.
      *
-     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * @param selector Optional selector function to determine the value used to compare for equivalence.
      * 
      * @return Returns a new dataframe with groups of adjacent duplicate rows collapsed to a single row per group.
      * 
@@ -4236,7 +4236,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Aggregate the rows in the dataframe to a single result.
      *
-     * @param [seed] Optional seed value for producing the aggregation.
+     * @param seed Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregated value.
      * 
      * @return Returns a new value that has been aggregated from the dataframe using the 'selector' function. 
@@ -4689,7 +4689,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * If no predicate is specified then it simply checks if the dataframe contains more than zero rows.
      *
-     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for any row in the dataframe, otherwise returns false. 
      * If no predicate is passed it returns true if the dataframe contains any rows at all. 
@@ -4735,7 +4735,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * 
      * If no predicate is specified then it simply checks if the dataframe contains zero rows.
      *
-     * @param [predicate] Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each row. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for zero rows in the dataframe, otherwise returns false. Returns false for an empty dataframe.
      * 
@@ -5076,7 +5076,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Parse a column with string values and convert it to a column with date values.
      *
      * @param columnNameOrNames Specifies the column name or array of column names to parse.
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Moment is used for date parsing.
      * https://momentjs.com
@@ -5118,7 +5118,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Convert a column of values of different types to a column of string values.
      *
      * @param columnNames Specifies the column name or array of column names to convert to strings. Can also be a format spec that specifies which columns to convert and what their format should be. 
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -5217,7 +5217,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Produces a new dataframe with all number values rounded to the specified number of places.
      *
-     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * @param numDecimalPlaces The number of decimal places, defaults to 2.
      * 
      * @returns Returns a new dataframe with all number values rounded to the specified number of places.
      * 
@@ -5686,7 +5686,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * This is basically a concatenation and then elimination of duplicates.
      *
      * @param other The other dataframes to merge.
-     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
+     * @param selector Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
      * @return Returns the union of the two dataframes.
      * 
@@ -5747,8 +5747,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * These are only the rows that appear in both dataframes.
      *
      * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
      * @return Returns a new dataframe that contains the intersection of rows from the two input dataframes.
      * 
@@ -5808,8 +5808,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * This is essentially subtracting the rows from the 2nd dataframe from the 1st and creating a new dataframe with the remaining rows.
      *
      * @param inner The inner dataframe to merge (the dataframe you call the function on is the 'outer' dataframe).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer dataframe that is used to match the two dataframes.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner dataframe that is used to match the two dataframes.
      * 
      * @return Returns a new dataframe that contains only the rows from the 1st dataframe that don't appear in the 2nd dataframe.
      * 
@@ -6119,7 +6119,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Produces a summary of dataframe. A bit like the 'aggregate' function but much simpler.
      * 
-     * @param [spec] Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
+     * @param spec Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
      * 
      * @returns A object with fields that summary the values in the dataframe.
      * 
@@ -6223,7 +6223,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      *
      * @param columnOrColumns Column name whose values make the new DataFrame's columns.
      * @param valueColumnNameOrSpec Column name or column spec that defines the columns whose values should be aggregated.
-     * @param [aggregator] Optional function used to aggregate pivotted vales. 
+     * @param aggregator Optional function used to aggregate pivotted vales. 
      *
      * @return Returns a new dataframe that has been pivoted based on a particular column's values. 
      * 

@@ -416,7 +416,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Each value in the new series is a chunk of data from the original series.
      *
      * @param period The number of values to include in each data window.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a chunk (data window) of the original series.
      * 
@@ -443,7 +443,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Each value in the new series is a rolling chunk of data from the original series.
      *
      * @param period The number of data values to include in each data window. 
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a rolling chunk of the original series.
      * 
@@ -488,7 +488,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
      * thus ajacent equivalent values are collapsed down to the last value.
      *
-     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * @param selector Optional selector function to determine the value used to compare for equivalence.
      * 
      * @return Returns a new series with groups of adjacent duplicate vlaues collapsed to a single value per group.
      * 
@@ -506,7 +506,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Aggregate the values in the series to a single result.
      *
-     * @param [seed] Optional seed value for producing the aggregation.
+     * @param seed Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each value in the series and produces the aggregated value.
      * 
      * @return Returns a new value that has been aggregated from the series using the 'selector' function. 
@@ -549,7 +549,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
      * 
      * @param period - Period for computing the range.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the absolute range of values for each period in the original series.
      * 
@@ -568,7 +568,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Proportions are expressed as 0-1 values.
      * 
      * @param period - Period for computing the range.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -589,7 +589,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Proportions are expressed as 0-1 values.
      * 
      * @param period - Period for computing the range.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -607,8 +607,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Compute the amount of change between pairs or sets of values in the series.
      * 
-     * @param [period] Optional period for computing the change - defaults to 2.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param period Optional period for computing the change - defaults to 2.
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
      * 
@@ -631,8 +631,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Compute the proportion change between pairs or sets of values in the series.
      * Proportions are expressed as 0-1 values.
      * 
-     * @param [period] Optional period for computing the proportion - defaults to 2.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param period Optional period for computing the proportion - defaults to 2.
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -655,8 +655,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Compute the percentage change between pairs or sets of values in the series.
      * Percentages are expressed as 0-100 values.
      * 
-     * @param [period] Optional period for computing the percentage - defaults to 2.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param period Optional period for computing the percentage - defaults to 2.
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
      * 
@@ -679,7 +679,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * For each period, compute the proportion of values that are less than the last value in the period.
      * Proportions are expressed as 0-1 values.
      * 
-     * @param [period] Optional period for computing the proportion rank - defaults to 2.
+     * @param period Optional period for computing the proportion rank - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the proportion rank value for that period.
      * 
@@ -700,7 +700,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * For each period, compute the percent of values that are less than the last value in the period.
      * Percent are expressed as 0-100 values.
      * 
-     * @param [period] Optional period for computing the percent rank - defaults to 2.
+     * @param period Optional period for computing the percent rank - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the percent rank value for that period.
      * 
@@ -962,7 +962,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * 
      * If no predicate is specified then it simply checks if the series contains more than zero values.
      *
-     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for any value in the series, otherwise returns false. 
      * If no predicate is passed it returns true if the series contains any values at all.
@@ -988,7 +988,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * 
      * If no predicate is specified then it simply checks if the series contains zero values.
      *
-     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for zero values in the series, otherwise returns false. Returns false for an empty series.
      * 
@@ -1200,7 +1200,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Parse a series with string values and convert it to a series with date values.
      *
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Moment is used for date parsing.
      * https://momentjs.com
@@ -1218,7 +1218,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Convert a series of values of different types to a series containing string values.
      *
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -1258,7 +1258,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /** 
      * Converts (inflates) a series to a {@link DataFrame}.
      *
-     * @param [selector] Optional user-defined selector function that transforms each value to produce the dataframe.
+     * @param selector Optional user-defined selector function that transforms each value to produce the dataframe.
      *
      * @returns Returns a dataframe that was created from the original series.
      * 
@@ -1411,7 +1411,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Provide a user-defined selector to specify criteria for determining the distinctness.
      * This can be used to remove duplicate values from the series.
      *
-     * @param [selector] Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
+     * @param selector Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
      * 
      * @return Returns a series containing only unique values in the series. 
      * 
@@ -1454,7 +1454,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
      *
-     * @param [selector] Optional selector that specifies the criteria for grouping.
+     * @param selector Optional selector that specifies the criteria for grouping.
      *
      * @return Returns a new series of groups. Each group is a series with values that are the same or have been grouped by the 'selector' function.
      * 
@@ -1592,7 +1592,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * This is basically a concatenation and then elimination of duplicates.
      *
      * @param other The other series to merge.
-     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
+     * @param selector Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
      * @return Returns the union of the two series.
      * 
@@ -1646,8 +1646,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * These are only the values that appear in both series.
      *
      * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
      * @return Returns a new series that contains the intersection of values from the two input series.
      * 
@@ -1684,8 +1684,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * This is essentially subtracting the values from the 2nd series from the 1st and creating a new series with the remaining values.
      *
      * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
      * @return Returns a new series that contains only the values from the 1st series that don't appear in the 2nd series.
      * 
@@ -1893,7 +1893,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Produces a new series with all number values rounded to the specified number of places.
      *
-     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * @param numDecimalPlaces The number of decimal places, defaults to 2.
      * 
      * @returns Returns a new series with all number values rounded to the specified number of places.
      * 
@@ -2651,7 +2651,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Each value in the new series is a chunk of data from the original series.
      *
      * @param period The number of values to include in each data window.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a chunk (data window) of the original series.
      * 
@@ -2685,7 +2685,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Each value in the new series is a rolling chunk of data from the original series.
      *
      * @param period The number of data values to include in each data window.
-     * @param [whichIndex] Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
+     * @param whichIndex Sets which side of the window the index comes from: start or end. Can be "start" or "end", defaults to "end".
      * 
      * @return Returns a new series, each value of which is a rolling chunk of the original series.
      * 
@@ -2744,7 +2744,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * For each group of adjacent values that are equivalent only returns the last index/row for the group, 
      * thus ajacent equivalent values are collapsed down to the last value.
      *
-     * @param [selector] Optional selector function to determine the value used to compare for equivalence.
+     * @param selector Optional selector function to determine the value used to compare for equivalence.
      * 
      * @return Returns a new series with groups of adjacent duplicate vlaues collapsed to a single value per group.
      * 
@@ -2777,7 +2777,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Aggregate the values in the series to a single result.
      *
-     * @param [seed] Optional seed value for producing the aggregation.
+     * @param seed Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each value in the series and produces the aggregated value.
      * 
      * @return Returns a new value that has been aggregated from the series using the 'selector' function. 
@@ -2901,7 +2901,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Compute the amount of change between pairs or sets of values in the series.
      * 
-     * @param [period] Optional period for computing the change - defaults to 2.
+     * @param period Optional period for computing the change - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the amount of change from the previous number value in the original series.  
      * 
@@ -2928,7 +2928,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Compute the proportion change between pairs or sets of values in the series.
      * Proportions are expressed as 0-1 values.
      * 
-     * @param [period] Optional period for computing the proportion - defaults to 2.
+     * @param period Optional period for computing the proportion - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the proportion change from the previous number value in the original series.
      * 
@@ -2955,7 +2955,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Compute the percentage change between pairs or sets of values in the series.
      * Percentages are expressed as 0-100 values.
      * 
-     * @param [period] Optional period for computing the percentage - defaults to 2.
+     * @param period Optional period for computing the percentage - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the percent change from the previous number value in the original series.
      * 
@@ -2980,7 +2980,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * For each period, compute the proportion of values that are less than the last value in the period.
      * Proportions are expressed as 0-1 values.
      * 
-     * @param [period] Optional period for computing the proportion rank - defaults to 2.
+     * @param period Optional period for computing the proportion rank - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the proportion rank value for that period.
      * 
@@ -3017,7 +3017,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * For each period, compute the percent of values that are less than the last value in the period.
      * Percent are expressed as 0-100 values.
      * 
-     * @param [period] Optional period for computing the percent rank - defaults to 2.
+     * @param period Optional period for computing the percent rank - defaults to 2.
      * 
      * @returns Returns a new series where each value indicates the percent rank value for that period.
      * 
@@ -3436,7 +3436,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * If no predicate is specified then it simply checks if the series contains more than zero values.
      *
-     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for any value in the series, otherwise returns false. 
      * If no predicate is passed it returns true if the series contains any values at all.
@@ -3482,7 +3482,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * If no predicate is specified then it simply checks if the series contains zero values.
      *
-     * @param [predicate] Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
+     * @param predicate Optional predicate function that receives each value. It should return true/truthy for a match, otherwise false/falsy.
      *
      * @return Returns true if the predicate has returned truthy for zero values in the series, otherwise returns false. Returns false for an empty series.
      * 
@@ -3825,7 +3825,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Parse a series with string values and convert it to a series with date values.
      *
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Moment is used for date parsing.
      * https://momentjs.com
@@ -3871,7 +3871,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Convert a series of values of different types to a series containing string values.
      *
-     * @param [formatString] Optional formatting string for dates.
+     * @param formatString Optional formatting string for dates.
      * 
      * Numeral.js is used for number formatting.
      * http://numeraljs.com/
@@ -3930,7 +3930,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /** 
      * Converts (inflates) a series to a {@link DataFrame}.
      *
-     * @param [selector] Optional user-defined selector function that transforms each value to produce the dataframe.
+     * @param selector Optional user-defined selector function that transforms each value to produce the dataframe.
      *
      * @returns Returns a dataframe that was created from the original series.
      * 
@@ -4316,7 +4316,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Provide a user-defined selector to specify criteria for determining the distinctness.
      * This can be used to remove duplicate values from the series.
      *
-     * @param [selector] Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
+     * @param selector Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
      * 
      * @return Returns a series containing only unique values in the series. 
      * 
@@ -4394,7 +4394,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
      *
-     * @param [selector] Optional selector that specifies the criteria for grouping.
+     * @param selector Optional selector that specifies the criteria for grouping.
      *
      * @return Returns a new series of groups. Each group is a series with values that are the same or have been grouped by the 'selector' function.
      * 
@@ -4633,7 +4633,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * This is basically a concatenation and then elimination of duplicates.
      *
      * @param other The other series to merge.
-     * @param [selector] Optional user-defined selector function that selects the value to compare to determine distinctness.
+     * @param selector Optional user-defined selector function that selects the value to compare to determine distinctness.
      * 
      * @return Returns the union of the two series.
      * 
@@ -4694,8 +4694,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * These are only the values that appear in both series.
      *
      * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
      * @return Returns a new series that contains the intersection of values from the two input series.
      * 
@@ -4755,8 +4755,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * This is essentially subtracting the values from the 2nd series from the 1st and creating a new series with the remaining values.
      *
      * @param inner The inner series to merge (the series you call the function on is the 'outer' series).
-     * @param [outerSelector] Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
-     * @param [innerSelector] Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
+     * @param outerSelector Optional user-defined selector function that selects the key from the outer series that is used to match the two series.
+     * @param innerSelector Optional user-defined selector function that selects the key from the inner series that is used to match the two series.
      * 
      * @return Returns a new series that contains only the values from the 1st series that don't appear in the 2nd series.
      * 
@@ -5096,7 +5096,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Produces a new series with all number values rounded to the specified number of places.
      *
-     * @param [numDecimalPlaces] The number of decimal places, defaults to 2.
+     * @param numDecimalPlaces The number of decimal places, defaults to 2.
      * 
      * @returns Returns a new series with all number values rounded to the specified number of places.
      * 
