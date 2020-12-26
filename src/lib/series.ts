@@ -3204,7 +3204,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Count the number of values in the seriese
+     * Count the number of values in the series.
      *
      * @return Returns the count of all values.
      * 
