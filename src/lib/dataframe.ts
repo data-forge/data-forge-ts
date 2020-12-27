@@ -87,7 +87,7 @@ export interface IColumnConfig {
 /**
  * Options for CSV output.
  * 
- * The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
+ * The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#unparse-config-default).
  */
 export interface ICSVOutputOptions {
     /**
@@ -2447,7 +2447,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     /**
      * Serialize the dataframe to the CSV data format.
      * 
-     * @param options Options for CSV output. The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
+     * @param options Options for CSV output. The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#unparse-config-default).
      * 
      * @return Returns a string in the CSV data format that represents the dataframe.
      * 
@@ -6748,7 +6748,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Serialize the dataframe to the CSV data format.
      * 
-     * @param options Options for CSV output. The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
+     * @param options Options for CSV output. The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#unparse-config-default).
      * 
      * @return Returns a string in the CSV data format that represents the dataframe.
      * 
