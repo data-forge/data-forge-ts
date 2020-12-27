@@ -61,10 +61,12 @@ Happy data wrangling!
       - [Synchronous version](#synchronous-version)
       - [Asynchronous version](#asynchronous-version)
       - [Async/await version](#asyncawait-version)
+      - [CSV parsing options](#csv-parsing-options)
     - [Writing CSV files](#writing-csv-files)
       - [Synchronous version](#synchronous-version-1)
       - [Asynchronous version](#asynchronous-version-1)
       - [Async/await version](#asyncawait-version-1)
+      - [CSV output options](#csv-output-options)
     - [Working with CSV data](#working-with-csv-data)
   - [Working with JSON files](#working-with-json-files)
     - [Reading JSON files](#reading-json-files)
@@ -620,6 +622,10 @@ async function myAsyncFunction() {
 }
 ```
 
+#### CSV parsing options
+
+The options object passed to `parseCSV` is passed directly to [PapaParse.parse](https://www.papaparse.com/docs#strings), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
+
 ### Writing CSV files
 
 #### Synchronous version
@@ -647,6 +653,16 @@ async function myAsyncFunction(df) {
     await df.asCSV().writeFile('some-other-csv-file.csv');
 }
 ```
+
+#### CSV output options
+
+CSV output options can be provided to `asCSV` like this:
+
+```javascrtipt
+df.asCSV(options)
+```
+
+The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#unparse-config-default).
 
 ### Working with CSV data
 
