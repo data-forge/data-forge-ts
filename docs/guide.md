@@ -68,6 +68,10 @@ Happy data wrangling!
       - [Async/await version](#asyncawait-version-1)
       - [CSV output options](#csv-output-options)
     - [Working with CSV data](#working-with-csv-data)
+      - [CSV input](#csv-input)
+      - [CSV parsing options](#csv-parsing-options-1)
+      - [CSV output](#csv-output)
+      - [CSV output options](#csv-output-options-1)
   - [Working with JSON files](#working-with-json-files)
     - [Reading JSON files](#reading-json-files)
       - [Synchronous version](#synchronous-version-2)
@@ -668,6 +672,8 @@ The options object is passed directly to [PapaParse.unparse](https://www.papapar
 
 **NOTE:** The `fromCSV`  and `toCSV` functions **do** work in the browser, because they are in-memory operations and don't deal directly with any files.
 
+#### CSV input
+
 If you already have CSV data (loaded into a string) you can parse it into a dataframe via `fromCSV`:
 
 ```javascript
@@ -682,11 +688,28 @@ const inputCsvData = // ... some string with CSV data ...
 const df = dataForge.fromCSV(inputCsvData, { columnNames: ["some", "explicit", "column", "names"] });
 ```
 
+#### CSV parsing options
+
+The options object passed to `fromCSV` is passed directly to [PapaParse.parse](https://www.papaparse.com/docs#strings), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#config).
+
+#### CSV output
+
 You can stringify a dataframe to CSV by calling `toCSV`:
 
 ```javascript
 const outputCsvData = df.toCSV();
 ```
+
+#### CSV output options
+
+CSV output options can be provided to `toCSV` like this:
+
+```javascrtipt
+df.toCSV(options)
+```
+
+The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#unparse-config-default).
+
 
 ## Working with JSON files 
 
