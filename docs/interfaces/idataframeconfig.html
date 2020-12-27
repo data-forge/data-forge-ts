@@ -96,6 +96,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="idataframeconfig.html#baked" class="tsd-kind-icon">baked</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="idataframeconfig.html#casesensitive" class="tsd-kind-icon">case<wbr>Sensitive</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="idataframeconfig.html#columnnames" class="tsd-kind-icon">column<wbr>Names</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="idataframeconfig.html#columns" class="tsd-kind-icon">columns</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="idataframeconfig.html#considerallrows" class="tsd-kind-icon">consider<wbr>All<wbr>Rows</a></li>
@@ -116,7 +117,7 @@
 					<div class="tsd-signature tsd-kind-icon">baked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L139">lib/dataframe.ts:139</a></li>
+							<li>Defined in lib/dataframe.ts:144</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -127,12 +128,28 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="casesensitive" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> case<wbr>Sensitive</h3>
+					<div class="tsd-signature tsd-kind-icon">case<wbr>Sensitive<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in lib/dataframe.ts:164</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Explicitly set this value if you want columnNames to be caseSensitive.
+							Default behaviour is to treat column names as case insensitive</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="columnnames" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> column<wbr>Names</h3>
 					<div class="tsd-signature tsd-kind-icon">column<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L133">lib/dataframe.ts:133</a></li>
+							<li>Defined in lib/dataframe.ts:138</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -151,7 +168,7 @@
 					<div class="tsd-signature tsd-kind-icon">columns<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><a href="icolumnconfig.html" class="tsd-signature-type">IColumnConfig</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="icolumnspec.html" class="tsd-signature-type">IColumnSpec</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L152">lib/dataframe.ts:152</a></li>
+							<li>Defined in lib/dataframe.ts:157</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -166,7 +183,7 @@
 					<div class="tsd-signature tsd-kind-icon">consider<wbr>All<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L147">lib/dataframe.ts:147</a></li>
+							<li>Defined in lib/dataframe.ts:152</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -184,7 +201,7 @@
 					<div class="tsd-signature tsd-kind-icon">index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L117">lib/dataframe.ts:117</a></li>
+							<li>Defined in lib/dataframe.ts:122</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -200,7 +217,7 @@
 					<div class="tsd-signature tsd-kind-icon">pairs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L124">lib/dataframe.ts:124</a></li>
+							<li>Defined in lib/dataframe.ts:129</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -217,7 +234,7 @@
 					<div class="tsd-signature tsd-kind-icon">rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L111">lib/dataframe.ts:111</a></li>
+							<li>Defined in lib/dataframe.ts:116</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -234,7 +251,7 @@
 					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/data-forge/data-forge-ts/blob/5fb2aa8/src/lib/dataframe.ts#L104">lib/dataframe.ts:104</a></li>
+							<li>Defined in lib/dataframe.ts:109</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -264,6 +281,9 @@
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="idataframeconfig.html#baked" class="tsd-kind-icon">baked</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="idataframeconfig.html#casesensitive" class="tsd-kind-icon">case<wbr>Sensitive</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="idataframeconfig.html#columnnames" class="tsd-kind-icon">column<wbr>Names</a>
