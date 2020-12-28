@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.8.14",
+  "version": "1.8.15",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "module": "dist/esm/index.esm.js",
   "main": "build/index.js",

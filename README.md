@@ -15,10 +15,8 @@ Read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge fo
 Love this? Please star this repo and [follow me on Twitter](https://twitter.com/ashleydavis75)
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
-[![Coverage Status](https://coveralls.io/repos/github/data-forge/data-forge-ts/badge.svg?branch=master)](https://coveralls.io/github/data-forge/data-forge-ts?branch=master)
 [![npm version](https://badge.fury.io/js/data-forge.svg)](https://badge.fury.io/js/data-forge)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
-[![Issues](http://img.shields.io/github/issues/data-forge/data-forge-ts.svg)](https://github.com/data-forge/data-forge-ts/blob/master/issues)
 
 **Please note** that this TypeScript repository replaces the [previous JavaScript version of Data-Forge](https://github.com/data-forge/data-forge-js).
 
