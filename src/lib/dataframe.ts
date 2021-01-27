@@ -2612,9 +2612,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     private static initColumnNames(inputColumnNames: Iterable<string>, isCaseSensitive?: boolean): Iterable<string> {
         const outputColumnNames: string[] = [];
         const columnNamesMap: any = {};
-    
+
+        // Convert column names to strings.
+        const columnNames = Array.from(inputColumnNames).map(columnName => columnName.toString());
+
         // Search for duplicate column names.
-        for (const columnName of inputColumnNames) {
+        for (const columnName of columnNames) {
             const columnNameLwr = isCaseSensitive !== undefined  && isCaseSensitive ? columnName : columnName.toLowerCase();
 
             if (columnNamesMap[columnNameLwr] === undefined) {
@@ -2627,7 +2630,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         const columnNoMap: any = {};
 
-        for (const columnName of inputColumnNames) {
+        for (const columnName of columnNames) {
             const columnNameLwr = isCaseSensitive !== undefined  && isCaseSensitive ? columnName : columnName.toLowerCase();
             if (columnNamesMap[columnNameLwr] > 1) {
                 let curColumnNo = 1;

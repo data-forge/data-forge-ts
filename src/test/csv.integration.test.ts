@@ -73,7 +73,15 @@ describe('csv integration', () => {
 			'bar',			
 		]);
     });
-    
+
+    it('can use dynamic typing with a number column', () => {
+		
+        const df = dataForge.fromCSV(`"Column Name","123"\ndata1,data2`, {
+            dynamicTyping: true,
+        });
+        expect(df.getColumnNames()).to.eql(["Column Name", "123"]);
+    });
+
 	it('can read CSV with explicit header', () => {
 		
 		var csv =
