@@ -4010,12 +4010,17 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     sum (): number {
 
-        if (this.none()) {
-            return 0;
+        let total = 0;
+
+        for (const value of this) {
+            if (value === null || value === undefined) {
+                continue; // Skip empty values.
+            }
+
+            total += value as any as number; // Assumes this is a number series.
         }
 
-        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
-        return numberSeries.aggregate((prev: number, value: number) => prev + value);
+        return total;
     }
 
     /**
@@ -4050,13 +4055,23 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     average (): number {
 
-        const count = this.count();
-        if (count > 0) {
-            return this.sum() / count;
+        let total = 0;
+        let count = 0;
+
+        for (const value of this) {
+            if (value === null || value === undefined) {
+                continue; // Skip empty values.
+            }
+
+            count += 1;
+            total += value as any as number; // Assumes this is a number series.
         }
-        else {
+
+        if (count === 0) {
             return 0;
         }
+
+        return total / count;
     }
 
     /**
@@ -4095,7 +4110,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         //
         // From here: http://stackoverflow.com/questions/5275115/add-a-median-method-to-a-list
         //
-        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
+        // Have to assume we are working with a number series here.
+        const numberSeries = <ISeries<IndexT, number>> <any> this.where(value => value !== null && value !== undefined);
 
         const count = numberSeries.count();
         if (count === 0) {
@@ -4146,24 +4162,29 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     std (): number {
 
-        // Have to assume we are working with a number series here.
-        // Bake so we don't evaluate multiple times.
-        // TODO: Caching can help here.
-        const numberSeries = (<ISeries<IndexT, number>> <any> this.bake()); 
-        const valueCount = numberSeries.count();
-        if (valueCount === 0) {
+        // https://en.wikipedia.org/wiki/Standard_deviation
+        const average = this.average();
+        let count = 0;
+        let sumOfSquaredDiffs = 0;
+
+        for (const value of this) {
+            if (value === null || value === undefined) {
+                // Skip empty values.
+                continue;
+            }
+
+            count += 1;
+            const numberValue = value as any as number;
+            const diffFromMean = numberValue - average; // Assume input series are numbers.
+            const diffFromMeanSqr = diffFromMean * diffFromMean;
+            sumOfSquaredDiffs += diffFromMeanSqr
+        }
+
+        if (count === 0) {
             return 0;
         }
 
-        // https://en.wikipedia.org/wiki/Standard_deviation
-        const mean = numberSeries.average();
-        const sumOfSquaredDiffs = numberSeries
-            .select(value  => { 
-                const diffFromMean = value - mean;
-                return diffFromMean * diffFromMean;
-            })
-            .sum();
-        return Math.sqrt(sumOfSquaredDiffs / valueCount);
+        return Math.sqrt(sumOfSquaredDiffs / count);
     }
 
     /**
@@ -4198,8 +4219,27 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     min (): number {
 
-        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
-        return numberSeries.aggregate((prev, value) => Math.min(prev, value));
+        let min: number | undefined;
+
+        for (const value of this) {
+            if (value === null || value === undefined) {
+                continue; // Skip empty values.
+            }
+
+            const numberValue = value as any as number; // Have to assume we are working with a number series here.;
+            if (min === undefined) {
+                min = numberValue;
+            }
+            else {
+                min = Math.min(min, numberValue);
+            }
+        }
+
+        if (min === undefined) {
+            return 0;
+        }
+
+        return min;
     }
 
     /**
@@ -4234,8 +4274,27 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     max (): number {
 
-        const numberSeries = <ISeries<IndexT, number>> <any> this; // Have to assume we are working with a number series here.
-        return numberSeries.aggregate((prev, value) => Math.max(prev, value));
+        let max: number | undefined;
+
+        for (const value of this) {
+            if (value === null || value === undefined) {
+                continue; // Skip empty values.
+            }
+
+            const numberValue = value as any as number; // Have to assume we are working with a number series here.;
+            if (max === undefined) {
+                max = numberValue;
+            }
+            else {
+                max = Math.max(max, numberValue);
+            }
+        }
+
+        if (max === undefined) {
+            return 0;
+        }
+
+        return max;
     }
     
     /**
@@ -4251,8 +4310,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     invert (): ISeries<IndexT, number> {
-        const inputSeries = this as any as ISeries<IndexT, number>;
-        return inputSeries.select(value => -value);
+        return this
+            .select(value => {
+                if (value === null || value === undefined) {
+                    return value;
+                }
+                else {
+                    return -(value as any as number); // Assume input is a number series.
+                }
+            }); 
     }
 
     /**
