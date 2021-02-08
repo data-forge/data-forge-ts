@@ -1645,6 +1645,8 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * This can be used to remove duplicate rows from the dataframe.
      *
      * @param selector User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.
+     * Note that the selector determines the object used for the comparison.  If teh selector returns a new instance of an array or a
+     * javascript object, distinct will always include all rows since the object instances are different even if the members are the same.  
      * 
      * @return Returns a dataframe containing only unique values as determined by the 'selector' function. 
      * 
@@ -1653,6 +1655,10 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * 
      * // Remove duplicate rows by customer id. Will return only a single row per customer.
      * const distinctCustomers = salesDf.distinct(sale => sale.CustomerId);
+     * 
+     * // Remove duplicate rows across mutliple columns
+     * const safeJoinChar = '$';
+     * const distinctCustomers = salesDf.distinct(sale => [sale.CustomerId, sale.MonthOfYear].join(safeJoinChar));
      * </pre>
      */
     distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): IDataFrame<IndexT, ValueT>;
