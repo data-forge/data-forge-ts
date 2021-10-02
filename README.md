@@ -10,8 +10,6 @@ To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
 Read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
 <a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
 
-<a target="_blank" href="http://www.codecapers.com.au/#support-my-work">Click here to **support the developer.**</a>
-
 Love this? Please star this repo and [click here to support my work](https://www.codecapers.com.au/about#support-my-work)
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
