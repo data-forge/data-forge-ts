@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { Series } from '../lib/series';
 
-describe.only('Series.frequency', () => {
+describe('Series.frequency', () => {
 
 	it('can create frequency table for small data set', () => {
 
