@@ -478,7 +478,7 @@ const anyCustomers = df.any(); // Do we have any customers at all?
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2326</li>
+									<li>Defined in lib/dataframe.ts:2336</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -853,7 +853,7 @@ const castDf = df.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1750</li>
+									<li>Defined in lib/dataframe.ts:1760</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -951,7 +951,7 @@ const numRows = df.count();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2385</li>
+									<li>Defined in lib/dataframe.ts:2395</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1055,7 +1055,7 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2401</li>
+									<li>Defined in lib/dataframe.ts:2411</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1090,7 +1090,7 @@ console.log(dataTypes.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2417</li>
+									<li>Defined in lib/dataframe.ts:2427</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1125,7 +1125,7 @@ console.log(dataValues.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1658</li>
+									<li>Defined in lib/dataframe.ts:1668</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1141,6 +1141,13 @@ console.log(dataValues.toString());
 const distinctCustomers = salesDf.distinct(sale => sale.CustomerId);
 </pre>
 									</dd>
+									<dt>example</dt>
+									<dd><pre>
+// Remove duplicate rows across mutliple columns
+const safeJoinChar = '$';
+const distinctCustomers = salesDf.distinct(sale => [sale.CustomerId, sale.MonthOfYear].join(safeJoinChar));
+</pre>
+									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1154,7 +1161,9 @@ const distinctCustomers = salesDf.distinct(sale => sale.CustomerId);
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> selector: <a href="../index.html#selectorfn" class="tsd-signature-type">SelectorFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.</p>
+										<p>User-defined selector function that specifies the criteria used to make comparisons for duplicate rows.
+											Note that the selector determines the object used for the comparison.  If the selector returns a new instance of an array or a
+										javascript object, distinct will always include all rows since the object instances are different even if the members are the same.</p>
 									</div>
 								</li>
 							</ul>
@@ -1373,7 +1382,7 @@ const modifiedDf = df.ensureSeries({
                 <aside class="tsd-sources">
         <p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#except">except</a></p>
         <ul>
-                    <li>Defined in lib/dataframe.ts:1938</li>
+                    <li>Defined in lib/dataframe.ts:1948</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1509,7 +1518,7 @@ catch (err) {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2360</li>
+									<li>Defined in lib/dataframe.ts:2370</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1865,7 +1874,7 @@ const series = df.getSeries("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1680</li>
+									<li>Defined in lib/dataframe.ts:1690</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1919,7 +1928,7 @@ for (const productSalesGroup of salesByProduct) {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1710</li>
+									<li>Defined in lib/dataframe.ts:1720</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2130,7 +2139,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2308</li>
+									<li>Defined in lib/dataframe.ts:2318</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2174,7 +2183,7 @@ const insertedDf = df.insertPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1901</li>
+									<li>Defined in lib/dataframe.ts:1911</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2256,7 +2265,7 @@ const intersectionOfCustomerRecords = customerRecordsA.intersection(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#join">join</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1974</li>
+									<li>Defined in lib/dataframe.ts:1984</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2344,7 +2353,7 @@ const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2015</li>
+									<li>Defined in lib/dataframe.ts:2025</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2434,7 +2443,7 @@ const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.jo
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2056</li>
+									<li>Defined in lib/dataframe.ts:2066</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2524,7 +2533,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2097</li>
+									<li>Defined in lib/dataframe.ts:2107</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2646,7 +2655,7 @@ const lastRow = df.last();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#melt">melt</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2287</li>
+									<li>Defined in lib/dataframe.ts:2297</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2818,7 +2827,7 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1796</li>
+									<li>Defined in lib/dataframe.ts:1806</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2866,7 +2875,7 @@ const orderedDf = salesDf.orderBy(sale => sale.Amount);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1812</li>
+									<li>Defined in lib/dataframe.ts:1822</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3061,7 +3070,7 @@ const withParsedColumns = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#pivot">pivot</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2247</li>
+									<li>Defined in lib/dataframe.ts:2257</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3615,7 +3624,7 @@ const dfWithDuplicateRowsRemoved = df.sequentialDistinct(row => row.ColumnA);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2495</li>
+									<li>Defined in lib/dataframe.ts:2505</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3926,7 +3935,7 @@ const subsetDf = df.subset(["ColumnA", "ColumnB"]);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#summarize">summarize</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2156</li>
+									<li>Defined in lib/dataframe.ts:2166</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4173,7 +4182,7 @@ const dfWithRowsTaken = df.takeWhile(row => row.CustomerName === "Fred"); // Tak
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:2517</li>
+									<li>Defined in lib/dataframe.ts:2527</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4220,7 +4229,7 @@ const orderedDf = salesDf.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:2533</li>
+									<li>Defined in lib/dataframe.ts:2543</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4302,7 +4311,7 @@ const values = df.toArray();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tocsv">toCSV</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2468</li>
+									<li>Defined in lib/dataframe.ts:2478</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4351,7 +4360,7 @@ console.log(csvData);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tohtml">toHTML</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2475</li>
+									<li>Defined in lib/dataframe.ts:2485</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4375,7 +4384,7 @@ console.log(csvData);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tojson">toJSON</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2431</li>
+									<li>Defined in lib/dataframe.ts:2441</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4408,7 +4417,7 @@ console.log(jsonData);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#tojson5">toJSON5</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2445</li>
+									<li>Defined in lib/dataframe.ts:2455</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4795,7 +4804,7 @@ const truncatedDf = df.truncateString(100);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#union">union</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1864</li>
+									<li>Defined in lib/dataframe.ts:1874</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5202,7 +5211,7 @@ const modifiedDf = df.withSeries({
                 <aside class="tsd-sources">
         <p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
         <ul>
-                    <li>Defined in lib/dataframe.ts:1777</li>
+                    <li>Defined in lib/dataframe.ts:1787</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -5261,7 +5270,7 @@ const zippedDf = dfA.zip(dfB, produceNewRow);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1778</li>
+									<li>Defined in lib/dataframe.ts:1788</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5300,7 +5309,7 @@ const zippedDf = dfA.zip(dfB, produceNewRow);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1779</li>
+									<li>Defined in lib/dataframe.ts:1789</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5348,7 +5357,7 @@ const zippedDf = dfA.zip(dfB, produceNewRow);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="idataframe.html">IDataFrame</a>.<a href="idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:1780</li>
+									<li>Defined in lib/dataframe.ts:1790</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
