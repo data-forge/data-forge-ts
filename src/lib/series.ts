@@ -200,12 +200,6 @@ export enum WhichIndex {
 export interface IFrequencyTableOptions {
 
     /**
-     * Sets the number of groups in the frequency table.
-     * Defaults to 10.
-     */
-    numGroups?: number;
-
-    /**
      * Lower boundary (if defined).
      */
     lower?: number;
@@ -224,16 +218,6 @@ export interface IFrequencyTableOptions {
      * Enables capturing of values for each group.
      */
     captureValues?: boolean;
-
-    /**
-     * Function applied to the minimum value (e.g. to round it). 
-     */
-    roundLower?: (input: number) => number;
-
-    /**
-     * Function applied to the interval (e.g. to round it). 
-     */
-    roundInterval?: (input: number) => number;
 }
 
 /**
@@ -5618,20 +5602,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             let interval = options && options.interval;
 
             const range = upper - lower;
-            let numGroups = options && options.numGroups;
-            if (numGroups === undefined) {
-                if (interval !== undefined) {
-                    numGroups = Math.ceil(range / interval);
-                }
-                else {
-                    numGroups = 10;
-                }
-                
-                if (numValues < numGroups) {
-                    numGroups = numValues;
-                }
+            let numGroups: number;
+            if (interval !== undefined) {
+                numGroups = Math.ceil(range / interval);
             }
-
+            else {
+                numGroups = 10;
+            }
+            
+            if (numValues < numGroups) {
+                numGroups = numValues;
+            }
+            
             if (interval === undefined) {
                 interval = range / (numGroups-1); 
             }

@@ -7,12 +7,12 @@ describe.only('Series.frequency', () => {
 	it('can create frequency table for small data set', () => {
 
 		const series = new Series([ 1, 2, 3, 4 ]);
-        const frequencyTable = series.frequency().toArray();
+        const frequencyTable = series.frequency({ captureValues: true }).toArray();
         expect(frequencyTable).to.eql([
-            { lower: 1, upper: 2, count: 1, proportion: 0.25, cumulative: 0.25 },
-            { lower: 2, upper: 3, count: 1, proportion: 0.25, cumulative: 0.5 },
-            { lower: 3, upper: 4, count: 1, proportion: 0.25, cumulative: 0.75 },
-            { lower: 4, upper: 5, count: 1, proportion: 0.25, cumulative: 1.0 },
+            { lower: 1, upper: 2, count: 1, proportion: 0.25, cumulative: 0.25, values: [ 1 ] },
+            { lower: 2, upper: 3, count: 1, proportion: 0.25, cumulative: 0.5, values: [ 2 ] },
+            { lower: 3, upper: 4, count: 1, proportion: 0.25, cumulative: 0.75, values: [ 3 ] },
+            { lower: 4, upper: 5, count: 1, proportion: 0.25, cumulative: 1.0, values: [ 4 ] },
         ]);
 	});
 
@@ -126,5 +126,5 @@ describe.only('Series.frequency', () => {
             }
         ]);
     });
-
+  
 });
