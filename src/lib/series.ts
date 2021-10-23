@@ -2122,8 +2122,33 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Counts frequencies in the series to produce a frequency table.
      * 
+     * @param options - Options for computing the frequency table (e.g. `numGroups` which defaults to 10).
+     * 
+     * @returns Returns a dataframe for the frequency table showing the frequency for the band of values in each group.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([ 1, 2, 3, 4 ]);
+     * // Or 
+     * const series = dataFrame.getSeries("SomeColumn");
+     *  
+     * const frequencyTable = series.frequency();
+     * console.log(frequencyTable.toArray());
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([ 37, 63, 56, 54, 39, 49, 55, 114, 59, 55 ]);
+     * const frequencyTable = series.frequency({ 
+     *      lower: 40,
+     *      upper: 90,
+     *      interval: 10,
+     * })
+     * console.log(frequencyTable.toArray());
+     * </pre>
      */
-    frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry>; 
+    frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry>;
 }
 
 /**
@@ -5558,6 +5583,28 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @param options - Options for computing the frequency table (e.g. `numGroups` which defaults to 10).
      * 
      * @returns Returns a dataframe for the frequency table showing the frequency for the band of values in each group.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([ 1, 2, 3, 4 ]);
+     * // Or 
+     * const series = dataFrame.getSeries("SomeColumn");
+     *  
+     * const frequencyTable = series.frequency();
+     * console.log(frequencyTable.toArray());
+     * </pre>
+     * @example
+     * <pre>
+     * 
+     * const series = new Series([ 37, 63, 56, 54, 39, 49, 55, 114, 59, 55 ]);
+     * const frequencyTable = series.frequency({ 
+     *      lower: 40,
+     *      upper: 90,
+     *      interval: 10,
+     * })
+     * console.log(frequencyTable.toArray());
+     * </pre>
      */
     frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry> {
 
@@ -5613,7 +5660,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             if (numValues < numGroups) {
                 numGroups = numValues;
             }
-            
+
             if (interval === undefined) {
                 interval = range / (numGroups-1); 
             }
