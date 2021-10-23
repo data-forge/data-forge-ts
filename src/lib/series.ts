@@ -158,6 +158,8 @@ export interface IValueFrequency {
 
 /**
  * Places a value in a bucket or range of values.
+ * 
+ * WARNING: This interface is deprecated and will be removed in the future.
  */
 export interface IBucket {
     /**
@@ -2105,6 +2107,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Organise all values in the series into the specified number of buckets.
      * Assumes that the series is a series of numbers.
+     * 
+     * WARNING: This function is deprecated and will be removed in the future.
      * 
      * @param numBuckets - The number of buckets to create.
      * 
@@ -5536,7 +5540,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Organise all values in the series into the specified number of buckets.
      * Assumes that the series is a series of numbers.
-     * 
+     *
+     * WARNING: This function is deprecated and will be removed in the future.
+     *  
      * @param numBuckets - The number of buckets to create.
      * 
      * @returns Returns a dataframe containing bucketed values. The input values are divided up into these buckets.
@@ -5549,6 +5555,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     bucket (numBuckets: number): IDataFrame<IndexT, IBucket> {
+
+        console.warn(`Series.bucket is deprecated and will be removed in the future.`);
 
         if (!isNumber(numBuckets)) {
             throw new Error(`Expected 'numBuckets' parameter to 'Series.bucket' to be a number.`);
