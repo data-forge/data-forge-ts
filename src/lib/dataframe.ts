@@ -5175,7 +5175,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         if (isObject(columnNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of Object.keys(columnNames)) {
-                working = working.toStrings(columnName, formatString);
+                const columnFormatString = (columnNames as any)[columnName];
+                working = working.toStrings(columnName, columnFormatString)
             }
             
             return working;
@@ -5183,8 +5184,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         else if (isArray(columnNames)) {
             let working: IDataFrame<IndexT, ValueT> = this;
             for (const columnName of columnNames) {
-                const columnFormatString = (columnNames as any)[columnName];
-                working = working.toStrings(columnName, columnFormatString);
+                working = working.toStrings(columnName, formatString);
             }
             
             return working;

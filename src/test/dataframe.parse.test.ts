@@ -58,6 +58,24 @@ describe('DataFrame parse', () => {
 
     });
 
+    it('can convert single series to strings with format spec', () => {
+
+        var df = new DataFrame({
+            columnNames: ["V1", "V2"],
+            rows: [
+                [1, 2],
+                [10, 11],
+            ],
+        });
+
+        var converted = df.toStrings("V1", "0.00");
+        expect(converted.toRows()).to.eql([
+            ['1.00', 2],
+            ['10.00', 11],
+        ]);
+
+    });
+
     it('can convert multiple series to strings', () => {
 
         var df = new DataFrame({
@@ -75,6 +93,23 @@ describe('DataFrame parse', () => {
         ]);
     });
 
+    it('can convert multiple series to strings with format spec', () => {
+
+        var df = new DataFrame({
+            columnNames: ["V1", "V2"],
+            rows: [
+                [1, 2],
+                [10, 11],
+            ],
+        });
+
+        var converted = df.toStrings(["V1", "V2"], "0.00");
+        expect(converted.toRows()).to.eql([
+            ['1.00', '2.00'],
+            ['10.00', '11.00'],
+        ]);
+    });
+
     it('can use format spec to convert columns to strings', () => {
 
         var df = new DataFrame({
@@ -87,8 +122,8 @@ describe('DataFrame parse', () => {
 
         var converted = df.toStrings({ V1: "0.00", V2: "0.00" });
         expect(converted.toRows()).to.eql([
-            ['1', '2'],
-            ['10', '11'],
+            ['1.00', '2.00'],
+            ['10.00', '11.00'],
         ]);
     });
 
@@ -104,8 +139,8 @@ describe('DataFrame parse', () => {
 
         var converted = df.toStrings({ V2: "0.00" });
         expect(converted.toRows()).to.eql([
-            [1, '2'],
-            [10, '11'],
+            [1, '2.00'],
+            [10, '11.00'],
         ]);
     });
 });
