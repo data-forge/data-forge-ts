@@ -195,6 +195,86 @@ export enum WhichIndex {
 }
 
 /**
+ * Options to the `Series.frequency` function.
+ */
+export interface IFrequencyTableOptions {
+
+    /**
+     * Sets the number of groups in the frequency table.
+     * Defaults to 10.
+     */
+    numGroups?: number;
+
+    /**
+     * Lower boundary (if defined).
+     */
+    lower?: number;
+
+    /**
+     * Upper boundary (if defined).
+     */
+    upper?: number;
+
+     /**
+     * Directly sets the interval (if defined). This is the range of each group.
+     */
+    interval?: number;
+    
+    /**
+     * Enables capturing of values for each group.
+     */
+    captureValues?: boolean;
+
+    /**
+     * Function applied to the minimum value (e.g. to round it). 
+     */
+    roundLower?: (input: number) => number;
+
+    /**
+     * Function applied to the interval (e.g. to round it). 
+     */
+    roundInterval?: (input: number) => number;
+}
+
+/**
+ * Defines a record in the frequency table output by the `Series.frequency` function.
+ */
+export interface IFrequencyTableEntry {
+
+    /**
+     * Lower value in this group of the frequency table.
+     */
+    lower?: number;
+
+    /** 
+     * Upper value in this group of the frequency table.  
+     */
+    upper?: number;
+
+    /**
+     * Count of values in this group.
+     */
+    count: number;
+
+    /**
+     * Proportion (0-1) of values in this group.
+     */
+    proportion: number;
+
+    /**
+     * Cumulative proportion of values in this and earlier groups.
+     */
+    cumulative: number;
+
+    /**
+     * The values that were record in this group.
+     * (if enabled in the options).
+     */
+    values?: number[];
+}
+
+
+/**
  * Interface that represents a series.
  * A series contains an indexed sequence of values.
  * A series indexed by time is a timeseries.
@@ -2054,6 +2134,12 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * </pre>
      */
     bucket (numBuckets: number): IDataFrame<IndexT, IBucket>;    
+
+    /**
+     * Counts frequencies in the series to produce a frequency table.
+     * 
+     */
+    frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry>; 
 }
 
 /**
@@ -5480,6 +5566,160 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 };
             })
             .inflate();
+    }
+
+    /**
+     * Counts frequencies in the series to produce a frequency table.
+     * 
+     * @param options - Options for computing the frequency table (e.g. `numGroups` which defaults to 10).
+     * 
+     * @returns Returns a dataframe for the frequency table showing the frequency for the band of values in each group.
+     */
+    frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry> {
+
+        if (this.none()) {
+            return new DataFrame();
+        }
+
+        return new DataFrame(() => {
+            const numberSeries = this as any as ISeries<IndexT, number>;
+
+            const captureValues = options && options.captureValues || false;
+
+            let min = Number.MAX_VALUE;
+            let max = Number.MIN_VALUE;
+            let numValues = 0;
+
+            //
+            // Compute min, max and total.
+            //
+            for (const value of numberSeries) {
+                min = Math.min(value, min);
+                max = Math.max(value, max);
+                numValues += 1;
+            }
+
+            let lower: number;
+            if (options && options.lower !== undefined) {
+                lower = options.lower;
+            }
+            else {
+                lower = min;
+            }
+
+            let upper: number;
+            if (options && options.upper !== undefined) {
+                upper = options.upper;
+            }
+            else {
+                upper = max;
+            }
+
+            let interval = options && options.interval;
+
+            const range = upper - lower;
+            let numGroups = options && options.numGroups;
+            if (numGroups === undefined) {
+                if (interval !== undefined) {
+                    numGroups = Math.ceil(range / interval);
+                }
+                else {
+                    numGroups = 10;
+                }
+                
+                if (numValues < numGroups) {
+                    numGroups = numValues;
+                }
+            }
+
+            if (interval === undefined) {
+                interval = range / (numGroups-1); 
+            }
+
+            const groups = new Array<IFrequencyTableEntry>(numGroups);
+
+            // 
+            // Initialize groups.
+            //
+            for (let groupIndex = 0; groupIndex < numGroups; ++groupIndex) {
+                const minValue = lower + (groupIndex * interval);
+                groups[groupIndex] = {
+                    lower: minValue,
+                    upper: minValue + interval,
+                    count: 0,
+                    proportion: 0,  
+                    cumulative: 0,
+                };
+
+                if (captureValues) {
+                    groups[groupIndex].values = [];
+                }
+            }
+
+            const beforeGroup: IFrequencyTableEntry = {
+                upper: lower,
+                count: 0,
+                proportion: 0,  
+                cumulative: 0,
+            };
+            if (captureValues) {
+                beforeGroup.values = [];
+            }
+
+            const afterGroup: IFrequencyTableEntry = {
+                lower: upper,
+                count: 0,
+                proportion: 0,  
+                cumulative: 0,
+            };
+            if (captureValues) {
+                afterGroup.values = [];
+            }
+
+            //
+            // Count groups.
+            //
+            for (const value of numberSeries) {
+                let group: IFrequencyTableEntry;
+                if (value < lower) {
+                    group = beforeGroup; // Value is less than the body of the data set.
+                }
+                else if (value > upper) {
+                    group = afterGroup; // Value is more than the body of the data set.
+                }
+                else {
+                    const groupIndex = Math.floor((value - lower) / interval);
+                    group = groups[groupIndex]; // Value is within the body of the data set.
+                }
+                group.count += 1;
+                if (captureValues) {
+                    group.values!.push(value);
+                }
+            }
+
+            let cumulative = 0;
+
+            if (beforeGroup.count > 0) {
+                groups.unshift(beforeGroup);
+            }
+
+            if (afterGroup.count > 0) {
+                groups.push(afterGroup)
+            }
+
+            //
+            // Compute proportions.
+            //
+            for (const group of groups) {
+                group.proportion = group.count / numValues;
+                cumulative += group.proportion;
+                group.cumulative = cumulative; 
+            }
+
+            return {
+                values: groups,
+            };
+        });
     }
 
     /***
