@@ -32,25 +32,25 @@ describe('Series stats', () => {
 	it('can average series', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: [1, 2, 3] });
-		expect(series.average()).to.eql(2);
+		expect(series.mean()).to.eql(2);
 	});
 
 	it('average of an empty series is zero', () => {
 
 		var series = new Series({ index: [], values: [] });
-		expect(series.average()).to.eql(0);
+		expect(series.mean()).to.eql(0);
 	});
 
     it('average filters out nulls', () => {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 3, null] });
-		expect(series.average()).to.eql(2);
+		expect(series.mean()).to.eql(2);
 	});
 
     it('average filters out undefineds', () => {
 
 		var series = new Series({ index: [0, 1, 2, 3], values: [1, 2, 3, undefined] });
-		expect(series.average()).to.eql(2);
+		expect(series.mean()).to.eql(2);
 	});
 
     it('can get median of even series', () => {
@@ -158,21 +158,21 @@ describe('Series stats', () => {
     it('can compute standard deviation', () => {
         
         const series = new Series<number, number>([2, 4, 4, 4, 5, 5, 7, 9]);
-        expect(series.average()).to.eql(5);
+        expect(series.mean()).to.eql(5);
         expect(series.std()).to.eql(2);
     }); 
 
     it('standard deviation ignores nulls', () => {
         
         const series = new Series<number, any>([2, 4, 4, null, 4, 5, 5, 7, 9]);
-        expect(series.average()).to.eql(5);
+        expect(series.mean()).to.eql(5);
         expect(series.std()).to.eql(2);
     }); 
 
     it('standard deviation ignores undefineds', () => {
         
         const series = new Series<number, any>([2, 4, 4, undefined, 4, 5, 5, 7, 9]);
-        expect(series.average()).to.eql(5);
+        expect(series.mean()).to.eql(5);
         expect(series.std()).to.eql(2);
     }); 
 });

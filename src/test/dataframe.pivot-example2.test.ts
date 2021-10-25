@@ -306,7 +306,7 @@ describe('DataFrame pivot examples 2', () => {
     it('Can pivot on multiple columns and avg price', () => {
 
         const pivotted =  df.pivot([ "Manager", "Rep" ], {
-            Price: values => values.average(),
+            Price: values => values.mean(),
         });
 
         expect(pivotted.getColumnNames()).to.eql([ "Manager", "Rep", "Price" ]);
@@ -389,7 +389,7 @@ describe('DataFrame pivot examples 2', () => {
 
         const pivotted =  df.pivot([ "Manager", "Rep" ], {
             Price: {
-                Price_Average: values => values.average(),
+                Price_Average: values => values.mean(),
                 Price_Count: values => values.count(),
             },
         });

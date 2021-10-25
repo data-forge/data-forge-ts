@@ -114,7 +114,7 @@ describe('DataFrame summarize', () => {
         const summary = df.summarize({ 
             A: { 
                 sum: series => series.sum(),
-                avg: series => series.average(),
+                avg: series => series.mean(),
             },
         });
         expect(summary).to.eql({
@@ -143,11 +143,11 @@ describe('DataFrame summarize', () => {
         const summary = df.summarize({
             A: { 
                 A_sum: series => series.sum(),
-                A_avg: series => series.average(),
+                A_avg: series => series.mean(),
             },
             B: { 
                 B_sum: series => series.sum(),
-                B_avg: series => series.average(),
+                B_avg: series => series.mean(),
             },
         });
         expect(summary).to.eql({
@@ -178,11 +178,11 @@ describe('DataFrame summarize', () => {
         const summary = df.summarize({
             A: { 
                 A_sum: Series.sum,
-                A_avg: Series.average,
+                A_avg: Series.mean,
             },
             B: { 
                 B_sum: Series.sum,
-                B_avg: Series.average,
+                B_avg: Series.mean,
             },
         });
         expect(summary).to.eql({

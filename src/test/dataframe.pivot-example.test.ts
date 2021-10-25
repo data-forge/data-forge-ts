@@ -27,7 +27,7 @@ describe('DataFrame pivot examples', () => {
 
 	it('Create a pivot table of group means, by company and regiment', () => {
 
-        const pivotted = df.pivot(["regiment", "company"], "TestScore", testScores => testScores.average());
+        const pivotted = df.pivot(["regiment", "company"], "TestScore", testScores => testScores.mean());
                 
         expect(pivotted.getColumnNames()).to.eql(["regiment", "company", "TestScore"]);
 		expect(pivotted.toArray()).to.eql([
@@ -149,7 +149,7 @@ describe('DataFrame pivot examples', () => {
         const pivotted = df.pivot(["regiment", "company"], {
             TestScore: {
                 count: testScores => testScores.count(),
-                avg: testScores => testScores.average(),
+                avg: testScores => testScores.mean(),
                 min: testScores => testScores.min(),
                 max: testScores => testScores.max(),
             }
@@ -213,7 +213,7 @@ describe('DataFrame pivot examples', () => {
         const pivotted = df.pivot(["regiment", "company"], {
             TestScore: {
                 count: Series.count,
-                avg: Series.average,
+                avg: Series.mean,
                 min: Series.min,
                 max: Series.max,
             }
@@ -280,7 +280,7 @@ describe('DataFrame pivot examples', () => {
                     .inflate(companyGroup => ({
                         regiment: regimentGroup.first().regiment,
                         company: companyGroup.first().company,
-                        TestScore: companyGroup.deflate(row => row.TestScore).average()
+                        TestScore: companyGroup.deflate(row => row.TestScore).mean()
                     }))
             )
             .orderBy(row => row.regiment)

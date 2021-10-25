@@ -1362,7 +1362,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     sum (): number;
 
     /**
-     * Average the values in a series and returns the result
+     * Average the values in a series and returns the result.
+     * This is an alias of `mean`.
      * 
      * @returns Returns the average of the number values in the series.
      * 
@@ -1373,6 +1374,19 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * </pre>
      */
     average (): number;
+
+    /**
+     * Computes and returns the mean value of a set of values.
+     * 
+     * @returns Returns the mean of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const averageSales = salesFigures.mean();
+     * </pre>
+     */
+    mean (): number;
 
     /**
      * Get the median value in the series. 
@@ -4153,7 +4167,40 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
     average (): number {
+        return this.mean();
+    }
 
+    /**
+     * Static version of the mean function for use with summarize and pivot functions.
+     * 
+     * @param series Input series for which to compute the mean.
+     * 
+     * @returns Returns the mean of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      ColumnToBeAveraged: Series.mean,
+     * });
+     * </pre>
+     */
+    static mean<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.mean();
+    }
+     
+    /**
+     * Computes and returns the mean value of a set of values.
+     * 
+     * @returns Returns the mean of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const averageSales = salesFigures.mean();
+     * </pre>
+     */
+     mean (): number {
         let total = 0;
         let count = 0;
 
@@ -4171,7 +4218,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return total / count;
-    }
+     }
 
     /**
      * Static version of the median function for use with summarize and pivot functions.
