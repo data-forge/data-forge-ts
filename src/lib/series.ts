@@ -1401,6 +1401,21 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * </pre>
      */
     median (): number;
+    
+    /**
+     * Get the mode of the values in the series. 
+     * The mode is the most frequent value in the series.
+     * Note that this reads the entire series into memory, which can be expensive.
+     * 
+     * @returns Returns the mode of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modeSales = salesFigures.mode();
+     * </pre>
+     */
+    mode (): any;
 
     /**
      * Get the standard deviation of number values in the series. 
@@ -4274,6 +4289,60 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         // Odd
         return ordered[Math.floor(count / 2)];
+    }
+
+    /**
+     * Static version of the mode function for use with summarize and pivot functions.
+     * 
+     * @param series Input series for which to find the mode.
+     * 
+     * @returns Returns the mode of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      InputColumn: Series.mode,
+     * });
+     * </pre>
+     */
+    static mode<IndexT = any> (series: ISeries<IndexT, any>): any {
+        return series.mode();
+    }
+
+    /**
+     * Get the mode of the values in the series. 
+     * The mode is the most frequent value in the series.
+     * Note that this reads the entire series into memory, which can be expensive.
+     * 
+     * @returns Returns the mode of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const modeSales = salesFigures.mode();
+     * </pre>
+     */
+    mode (): any {
+
+        if (this.none()) {
+            return undefined;
+        }
+
+        const lookup = new Map<any, number>();
+
+        for (const value of this) {
+            if (lookup.has(value))  {
+                lookup.set(value, lookup.get(value)! + 1);
+            }
+            else {
+                lookup.set(value, 1);
+            }
+        }
+
+        const entries = Array.from(lookup.entries());
+        entries.sort((a, b) => b[1] - a[1]);
+        return entries[0][0];
     }
 
     /**

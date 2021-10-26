@@ -83,7 +83,36 @@ describe('Series stats', () => {
 		expect(series.median()).to.eql(2.5);
 	});
 
-	it('can get series minimum', () => {
+    it('can get mode', () => {
+
+        const series = new Series([1, 1, 2, 2, 2, 3, 4, 4, 5]);
+        const mode = series.mode();
+        expect(mode).to.eql(2);
+    });
+
+    it('mode gets first set when there are two most frequent', () => {
+
+        const series = new Series([1, 1, 2, 2]);
+        const mode = series.mode();
+        expect(mode).to.eql(1);
+    });
+
+    it('mode can handle different types', () => {
+
+        const series = new Series([1, 2, "hello", 3, "hello"]);
+        const mode = series.mode();
+        expect(mode).to.eql("hello");
+    });
+
+    it('mode returns undefined for empty data set', () => {
+
+        const series = new Series();
+        const mode = series.mode();
+        expect(mode).to.eql(undefined);
+
+    });
+
+    it('can get series minimum', () => {
 
 		var series = new Series({ index: [0, 1, 2], values: [5, 2.5, 3] });
 		expect(series.min()).to.eql(2.5);
