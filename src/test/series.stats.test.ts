@@ -148,6 +148,24 @@ describe('Series stats', () => {
 		expect(series.max()).to.eql(6);
 	});
 
+    it('can get series range', () => {
+
+        const series = new Series([ 4, 5, 6 ]);
+        expect(series.range()).to.equal(2);
+    });
+
+    it ('range of empty series is zero', () => {
+
+        const series = new Series();
+        expect(series.range()).to.equal(0);
+    });
+
+    it ('range of series handles negative numbers', () => {
+
+        const series = new Series([4, -2]);
+        expect(series.range()).to.equal(6);
+    });
+
     it('can invert series', () => {
 
 		var series = new Series([5, -1, 2, -10, 3, 0]);

@@ -1457,6 +1457,19 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     max (): number;
 
     /**
+     * Get the range of values in the series.
+     * 
+     * @returns Returns the range of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const range = salesFigures.range();
+     * </pre>
+     */
+    range (): number;
+
+    /**
      * Invert the sign of every number value in the series.
      * This assumes that the input series contains numbers.
      * 
@@ -4510,6 +4523,39 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return max;
+    }
+
+    /**
+     * Static version of the range function for use with summarize and pivot functions.
+     * 
+     * @param series Input series for which to find the range of values.
+     * 
+     * @returns Returns the range of number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      Column: Series.range,
+     * });
+     * </pre>
+     */
+    static range<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.range();
+    }
+    /**
+     * Get the range of values in the series.
+     * 
+     * @returns Returns the range of the number values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const range = salesFigures.range();
+     * </pre>
+     */
+    range (): number {
+        return this.max() - this.min();
     }
     
     /**
