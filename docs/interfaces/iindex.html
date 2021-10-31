@@ -193,6 +193,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iindex.html#truncatestrings" class="tsd-kind-icon">truncate<wbr>Strings</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iindex.html#union" class="tsd-kind-icon">union</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iindex.html#variablewindow" class="tsd-kind-icon">variable<wbr>Window</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iindex.html#variance" class="tsd-kind-icon">variance</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iindex.html#where" class="tsd-kind-icon">where</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="iindex.html#window" class="tsd-kind-icon">window</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited"><a href="iindex.html#withindex" class="tsd-kind-icon">with<wbr>Index</a></li>
@@ -579,7 +580,7 @@ const result = series.any(); // Do we have any sales figures at all?
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2058</li>
+									<li>Defined in lib/series.ts:2071</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -858,7 +859,7 @@ const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#bucket">bucket</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2166</li>
+									<li>Defined in lib/series.ts:2179</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -941,7 +942,7 @@ const castSeries = series.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1630</li>
+									<li>Defined in lib/series.ts:1643</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1039,7 +1040,7 @@ const numValues = series.count();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#counter">counter</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1502</li>
+									<li>Defined in lib/series.ts:1515</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1107,7 +1108,7 @@ console.log(counted.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2117</li>
+									<li>Defined in lib/series.ts:2130</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1158,7 +1159,7 @@ expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2132</li>
+									<li>Defined in lib/series.ts:2145</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1192,7 +1193,7 @@ console.log(dataTypes.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2147</li>
+									<li>Defined in lib/series.ts:2160</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1226,7 +1227,7 @@ console.log(dataValues.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1538</li>
+									<li>Defined in lib/series.ts:1551</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1337,7 +1338,7 @@ const result = timeSeries.endAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#except">except</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1820</li>
+									<li>Defined in lib/series.ts:1833</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1418,7 +1419,7 @@ const remainingCustomers = allCustomers.except(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2092</li>
+									<li>Defined in lib/series.ts:2105</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1558,7 +1559,7 @@ series.forEach(value => {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#frequency">frequency</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2197</li>
+									<li>Defined in lib/series.ts:2210</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1739,7 +1740,7 @@ const index = series.getIndex();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1560</li>
+									<li>Defined in lib/series.ts:1573</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1793,7 +1794,7 @@ for (const productSalesGroup of salesByProduct) {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1590</li>
+									<li>Defined in lib/series.ts:1603</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1956,7 +1957,7 @@ const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // E
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2040</li>
+									<li>Defined in lib/series.ts:2053</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2000,7 +2001,7 @@ const insertedSeries = series.insertPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1783</li>
+									<li>Defined in lib/series.ts:1796</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2082,7 +2083,7 @@ const intersectionOfCustomerRecords = customerRecordsA.intersection(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#invert">invert</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1484</li>
+									<li>Defined in lib/series.ts:1497</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2115,7 +2116,7 @@ const inverted = series.invert();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#join">join</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1856</li>
+									<li>Defined in lib/series.ts:1869</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2203,7 +2204,7 @@ const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1897</li>
+									<li>Defined in lib/series.ts:1910</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2293,7 +2294,7 @@ const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.jo
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1938</li>
+									<li>Defined in lib/series.ts:1951</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2383,7 +2384,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1979</li>
+									<li>Defined in lib/series.ts:1992</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2505,7 +2506,7 @@ const lastValue = series.last();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#max">max</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1457</li>
+									<li>Defined in lib/series.ts:1470</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2652,7 +2653,7 @@ const mergedSeries = series1.merge(series2, series3, etc);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#min">min</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1444</li>
+									<li>Defined in lib/series.ts:1457</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2767,7 +2768,7 @@ const result = series.none(); // Do we have zero sales figures?
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1673</li>
+									<li>Defined in lib/series.ts:1686</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2820,7 +2821,7 @@ const orderedSeries = series.orderBy(value => value.NestedValue);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1694</li>
+									<li>Defined in lib/series.ts:1707</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3284,7 +3285,7 @@ const proportionRank = series.proportionRank(100);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#range">range</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1470</li>
+									<li>Defined in lib/series.ts:1483</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3348,7 +3349,7 @@ const seriesWithResetIndex = series.resetIndex();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1515</li>
+									<li>Defined in lib/series.ts:1528</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3430,7 +3431,7 @@ console.log(rollingWeeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#round">round</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2022</li>
+									<li>Defined in lib/series.ts:2035</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3822,7 +3823,7 @@ const result = timeSeries.startAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#std">std</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1431</li>
+									<li>Defined in lib/series.ts:1444</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4295,7 +4296,7 @@ const result = series.toStrings("0.00");
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1999</li>
+									<li>Defined in lib/series.ts:2012</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4336,7 +4337,7 @@ const truncated = series.truncateStrings(10); // Truncate all string values to m
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#union">union</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1746</li>
+									<li>Defined in lib/series.ts:1759</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4474,29 +4475,61 @@ const variableWindows = series.variableWindow(rowComparer);
 
 </section>
                 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-    <a name="where" class="tsd-anchor"></a>
-        <h3>where</h3>
+    <a name="variance" class="tsd-anchor"></a>
+        <h3>variance</h3>
 
         <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-        <li class="tsd-signature tsd-kind-icon">where<span class="tsd-signature-symbol">(</span>predicate<span class="tsd-signature-symbol">: </span><a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></li>
+        <li class="tsd-signature tsd-kind-icon">variance<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 </ul>
 
 <ul class="tsd-descriptions">
         <li class="tsd-description">
                 <aside class="tsd-sources">
-        <p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#where">where</a></p>
+        <p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#variance">variance</a></p>
         <ul>
-                    <li>Defined in lib/series.ts:990</li>
+                    <li>Defined in lib/series.ts:1431</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
                 <div class="lead">
-                    <p>Filter the series using user-defined predicate function.</p>
+                    <p>Get the variance of number values in the series.</p>
 
                 </div>
                 <dl class="tsd-comment-tags">
                         <dt>example</dt>
                         <dd><pre>
+
+const salesVariance = salesFigures.variance();
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+							<p>Returns the variance of the values in the series.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a name="where" class="tsd-anchor"></a>
+					<h3>where</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">where<span class="tsd-signature-symbol">(</span>predicate<span class="tsd-signature-symbol">: </span><a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#where">where</a></p>
+								<ul>
+									<li>Defined in lib/series.ts:990</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Filter the series using user-defined predicate function.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
 
 const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we only have sales figures greater than 100.
 </pre>
@@ -4654,7 +4687,7 @@ const indexedSeries = series.withIndex(value => value + 20);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1649</li>
+									<li>Defined in lib/series.ts:1662</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4704,7 +4737,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1650</li>
+									<li>Defined in lib/series.ts:1663</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -4743,7 +4776,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1651</li>
+									<li>Defined in lib/series.ts:1664</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -4791,7 +4824,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1652</li>
+									<li>Defined in lib/series.ts:1665</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5096,6 +5129,9 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="iindex.html#variablewindow" class="tsd-kind-icon">variable<wbr>Window</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+								<a href="iindex.html#variance" class="tsd-kind-icon">variance</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="iindex.html#where" class="tsd-kind-icon">where</a>
