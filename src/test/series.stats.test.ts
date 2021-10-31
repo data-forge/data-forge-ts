@@ -196,6 +196,30 @@ describe('Series stats', () => {
         expect(counted.getIndex().toArray()).to.eql(range(10, 13).toArray());
     });
 
+    it('variance of empty series is zero', ()=> {
+        
+        const series = new Series<number, number>();
+        expect(series.variance()).to.eql(0);
+    });
+
+    it('can compute variance', () => {
+        
+        const series = new Series<number, number>([2, 4, 4, 4, 5, 5, 7, 9]);
+        expect(series.variance()).to.eql(4);
+    }); 
+
+    it('variance ignores nulls', () => {
+        
+        const series = new Series<number, any>([2, 4, 4, null, 4, 5, 5, 7, 9]);
+        expect(series.variance()).to.eql(4);
+    }); 
+
+    it('variance ignores undefineds', () => {
+        
+        const series = new Series<number, any>([2, 4, 4, undefined, 4, 5, 5, 7, 9]);
+        expect(series.variance()).to.eql(4);
+    }); 
+
     it('standard deviation of empty series is zero', ()=> {
         
         const series = new Series<number, number>([]);

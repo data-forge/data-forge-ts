@@ -1418,6 +1418,19 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     mode (): any;
 
     /**
+     * Get the variance of number values in the series. 
+     * 
+     * @returns Returns the variance of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesVariance = salesFigures.variance();
+     * </pre>
+     */
+    variance (): number;
+
+    /**
      * Get the standard deviation of number values in the series. 
      * 
      * @returns Returns the standard deviation of the values in the series.
@@ -4359,6 +4372,58 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
+     * Static version of the variiance function for use with summarize and pivot functions.
+     * 
+     * @param series Input series for which to find the variance.
+     * 
+     * @returns Returns the variance of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      InputColumn: Series.variance,
+     * });
+     * </pre>
+     */
+     static variance<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.variance();
+    }
+    
+    /**
+     * Get the variance of number values in the series. 
+     * 
+     * @returns Returns the variance of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesVariance = salesFigures.variance();
+     * </pre>
+     */
+     variance (): number {
+
+        if (this.none()) {
+            return 0;
+        }
+
+        const average = this.mean();
+        let count = 0;
+        let sumOfSquaredDiffs = 0;
+        const numberSeries = <ISeries<IndexT, number>> <any> this.where(value => value !== null && value !== undefined);
+
+        for (const value of numberSeries) {
+            count += 1;
+            const numberValue = value as any as number;
+            const diffFromMean = numberValue - average; // Assume input series are numbers.
+            const diffFromMeanSqr = diffFromMean * diffFromMean;
+            sumOfSquaredDiffs += diffFromMeanSqr
+        }
+
+        return sumOfSquaredDiffs / count;
+    }
+
+    /**
      * Static version of the standard deviation function for use with summarize and pivot functions.
      * 
      * @param series Input series to find the standard deviation of.
@@ -4390,29 +4455,11 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     std (): number {
 
-        // https://en.wikipedia.org/wiki/Standard_deviation
-        const average = this.average();
-        let count = 0;
-        let sumOfSquaredDiffs = 0;
-
-        for (const value of this) {
-            if (value === null || value === undefined) {
-                // Skip empty values.
-                continue;
-            }
-
-            count += 1;
-            const numberValue = value as any as number;
-            const diffFromMean = numberValue - average; // Assume input series are numbers.
-            const diffFromMeanSqr = diffFromMean * diffFromMean;
-            sumOfSquaredDiffs += diffFromMeanSqr
-        }
-
-        if (count === 0) {
+        if (this.none()) {
             return 0;
         }
 
-        return Math.sqrt(sumOfSquaredDiffs / count);
+        return Math.sqrt(this.variance());
     }
 
     /**
@@ -4509,7 +4556,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                 continue; // Skip empty values.
             }
 
-            const numberValue = value as any as number; // Have to assume we are working with a number series here.;
+            const numberValue = value as any as number; // Have to assume we are working with a number series here.
             if (max === undefined) {
                 max = numberValue;
             }
