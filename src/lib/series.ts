@@ -429,11 +429,13 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /**
-     * Generates a new series by repeatedly calling a user-defined selector function on each value in the original series.
-     *
-     * @param selector A user-defined selector function that transforms each row to create the new dataframe.
+     * Generates a new series by repeatedly calling a user-defined transfomration function on each value in the original series.
      * 
-     * @return Returns a new series with each value transformed by the selector function.
+     * `select` is an alias for `map`.
+     *
+     * @param transformFn A user-defined transformation function that transforms each row to create the new series.
+     * 
+     * @return Returns a new series with each value produced by the transformation function.
      * 
      * @example
      * <pre>
@@ -446,10 +448,35 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *      return outputValue;
      * }
      *  
-     * const transformedSeries = series.select(value => transformValue(value));
+     * const transformed = series.select(value => transformValue(value));
      * </pre>
      */
-    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+    select<ToT> (transformFn: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+
+    /**
+     * Generates a new series by repeatedly calling a user-defined transformation function on each value in the original series.
+     * 
+     * This is similar to the JavaScript function `Array.map` but maps over a data series rather than an array.
+     *
+     * @param transformFn A user-defined transformation function that transforms each row to create the new series.
+     * 
+     * @return Returns a new series with each value produced by the transformation function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function transformValue (inputValue) {
+     *      const outputValue = {
+     *          // ... construct output value derived from input value ...
+     *      };
+     *
+     *      return outputValue;
+     * }
+     *  
+     * const transformed = series.map(value => transformValue(value));
+     * </pre>
+     */
+    map<ToT> (transformFn: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
 
     /**
      * Generates a new series by repeatedly calling a user-defined selector function on each row in the original series.
@@ -1529,7 +1556,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
 
     /**
      * Returns only the set of values in the series that are distinct.
-     * Provide a user-defined selector to specify criteria for determining the distinctness.
+     * Provide a user-defined t (tor to specify criteria for determining the distinctness.
      * This can be used to remove duplicate values from the series.
      *
      * @param selector Optional user-defined selector function that specifies the criteria used to make comparisons for duplicate values.
@@ -2727,11 +2754,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Generates a new series by repeatedly calling a user-defined selector function on each value in the original series.
-     *
-     * @param selector A user-defined selector function that transforms each row to create the new dataframe.
+     * Generates a new series by repeatedly calling a user-defined transfomration function on each value in the original series.
      * 
-     * @return Returns a new series with each value transformed by the selector function.
+     * `select` is an alias for `map`.
+     *
+     * @param transformFn A user-defined transformation function that transforms each row to create the new dataframe.
+     * 
+     * @return Returns a new series with each value produced by the transformation function.
      * 
      * @example
      * <pre>
@@ -2744,14 +2773,43 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      return outputValue;
      * }
      *  
-     * const transformedSeries = series.select(value => transformValue(value));
+     * const transformed = series.select(value => transformValue(value));
      * </pre>
      */
-    select<ToT> (selector: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
-        if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.select' function to be a function.");
+     select<ToT> (transformationFn: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
+        if (!isFunction(transformationFn)) throw new Error("Expected 'transformationFn' parameter to 'Series.select' to be a function.");
+
+        return this.map<ToT>(transformationFn);
+    }
+
+    /**
+     * Generates a new series by repeatedly calling a user-defined transformation function on each value in the original series.
+     * 
+     * This is similar to the JavaScript function `Array.map` but maps over a data series rather than an array.
+     *
+     * @param transformFn A user-defined transformation function that transforms each row to create the new series.
+     * 
+     * @return Returns a new series with each value produced by the transformation function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * function transformValue (inputValue) {
+     *      const outputValue = {
+     *          // ... construct output value derived from input value ...
+     *      };
+     *
+     *      return outputValue;
+     * }
+     *  
+     * const transformed = series.map(value => transformValue(value));
+     * </pre>
+     */
+     map<ToT> (transformationFn: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
+        if (!isFunction(transformationFn)) throw new Error("Expected 'transformationFn' parameter to 'Series.map' to be a function.");
 
         return new Series(() => ({
-            values: new SelectIterable(this.getContent().values, selector),
+            values: new SelectIterable(this.getContent().values, transformationFn),
             index: this.getContent().index,
         }));
     }
