@@ -1041,18 +1041,43 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
 
     /**
      * Filter the series using user-defined predicate function.
+     * 
+     * `where` is an alias for `filter`.
      *
-     * @param predicate Predicte function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
+     * 
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
      * 
      * @return Returns a new series containing only the values from the original series that matched the predicate. 
      * 
      * @example
      * <pre>
      * 
-     * const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we only have sales figures greater than 100.
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = series.where(salesFigure => salesFigure > 100); 
+     * console.log(filtered.toArray());
      * </pre>
      */
     where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+
+    /**
+     * Filter the series through a user-defined predicate function.
+     * 
+     * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
+     *
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * 
+     * @return Returns a new series containing only the values from the original series that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = series.filter(salesFigure => salesFigure > 100); 
+     * console.log(filtered.toArray());
+     * </pre>
+     */
+    filter (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Invoke a callback function for each value in the series.
@@ -3299,7 +3324,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return this.rollingWindow(period+1) // +1 to account for the last value being used.
             .select(window => {
                 const latestValue = window.last();
-                const numLowerValues = window.head(-1).where(prevMomentum => prevMomentum < latestValue).count();
+                const numLowerValues = window.head(-1).filter(prevMomentum => prevMomentum < latestValue).count();
                 const proportionRank = numLowerValues / period!;
                 return proportionRank;
             });
@@ -3645,20 +3670,49 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
     /**
      * Filter the series using user-defined predicate function.
+     * 
+     * `where` is an alias for `filter`.
      *
-     * @param predicate Predicte function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
+     * 
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
      * 
      * @return Returns a new series containing only the values from the original series that matched the predicate. 
      * 
      * @example
      * <pre>
      * 
-     * const filtered = series.where(salesFigure => salesFigure > 100); // Filter so we only have sales figures greater than 100.
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = series.where(salesFigure => salesFigure > 100); 
+     * console.log(filtered.toArray());
      * </pre>
      */
     where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.where' to be a function.");
 
-        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.where' function to be a function.");
+        return this.filter(predicate);
+    }
+
+    /**
+     * Filter the series through a user-defined predicate function.
+     * 
+     * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
+     *
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * 
+     * @return Returns a new series containing only the values from the original series that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = series.where(salesFigure => salesFigure > 100); 
+     * console.log(filtered.toArray());
+     * </pre>
+     */
+    filter (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.filter' to be a function.");
 
         return new Series(() => ({
             values: new WhereIterable(this.getContent().values, predicate),
@@ -4436,7 +4490,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         // From here: http://stackoverflow.com/questions/5275115/add-a-median-method-to-a-list
         //
         // Have to assume we are working with a number series here.
-        const numberSeries = <ISeries<IndexT, number>> <any> this.where(value => value !== null && value !== undefined);
+        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
 
         const count = numberSeries.count();
         if (count === 0) {
@@ -4548,7 +4602,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         const average = this.mean();
         let count = 0;
         let sumOfSquaredDiffs = 0;
-        const numberSeries = <ISeries<IndexT, number>> <any> this.where(value => value !== null && value !== undefined);
+        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
 
         for (const value of numberSeries) {
             count += 1;
@@ -5253,10 +5307,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         const outer = this;
-        return outer.where(outerValue => {
+        return outer.filter(outerValue => {
                 const outerKey = outerSelector!(outerValue);
                 return inner
-                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .filter(innerValue => outerKey === innerSelector!(innerValue))
                     .any();
             });
     }
@@ -5313,10 +5367,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         const outer = this;
-        return outer.where(outerValue => {
+        return outer.filter(outerValue => {
                 const outerKey = outerSelector!(outerValue);
                 return inner
-                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .filter(innerValue => outerKey === innerSelector!(innerValue))
                     .none();
             });
     }

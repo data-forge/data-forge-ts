@@ -132,7 +132,7 @@ describe('Series', () => {
             values: [100, 300, 200, 5] 
         });
         
-        var filtered = series.where(value => {
+        var filtered = series.filter(value => {
 				return value >= 100 && value < 300;
 			});
 		expect(filtered.getIndex().toArray()).to.eql([0, 2]);
