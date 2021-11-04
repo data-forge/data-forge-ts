@@ -719,6 +719,42 @@ describe('Series', () => {
 		expect(() => { series.aggregate( undefined ) }).to.throw();
 	});
 
+    it('reducing empty series with no seed results in undefined', () => {
+
+		const series = new Series();
+		const reduced = series.reduce((prev, value) => prev + value);
+		expect(reduced).to.eql(undefined);
+    });
+
+    it('reducing empty series with seed results in seed', () => {
+
+		const series = new Series();
+		const reduced = series.reduce((prev, value) => prev + value, 5);
+		expect(reduced).to.eql(5);
+    });
+
+    it('can reduce series with no seed', () => {
+
+		const series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
+		const reduced = series.reduce((prev, value) => prev + value);
+		expect(reduced).to.eql(28);
+	});
+
+	it('can reduce series with seed', () => {
+
+		const series = new Series({ index: [0, 1, 2], values: [4, 8, 16] });
+		const reduced = series.reduce((prev, value) => prev + value, 2);
+		expect(reduced).to.eql(30);
+	});
+       
+	it('throws exception if no function is passed to reduce', () => {
+
+		const series = new Series();
+		expect(() => (series.reduce as Function)()).to.throw();
+        expect(() => (series.reduce as Function)(3)).to.throw();
+        expect(() => (series.reduce as Function)(undefined)).to.throw();
+	});
+
 	it('can convert to javascript object', () => {
 
 		var series = new Series({

@@ -635,12 +635,14 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     sequentialDistinct<ToT> (selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
     
     /**
-     * Aggregate the values in the series to a single result.
+     * Reduces the values in the series to a single result.
+     *
+     * `aggregate` is similar to the `reduce` function, but the parameters are reversed. Please use the `reduce` function in preference to `aggregate`.
      *
      * @param seed Optional seed value for producing the aggregation.
-     * @param selector Function that takes the seed and then each value in the series and produces the aggregated value.
+     * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
      * 
-     * @return Returns a new value that has been aggregated from the series using the 'selector' function. 
+     * @return Returns a new value that has been reduced from the input series by passing it through the 'reducer' function.
      * 
      * @example
      * <pre>
@@ -655,10 +657,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * @example
      * <pre>
      * 
-     * const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+     * const previousSales = 500; // We'll seed the aggregation with this value.
      * const dailySales = ... daily sales figures for the past month ...
-     * const updatedTotalSalesAllTime = dailySales.aggregate(
-     *      totalSalesAllTime, 
+     * const updatedSales = dailySales.aggregate(
+     *      previousSales, 
      *      (accumulator, salesAmount) => accumulator + salesAmount
      * );
      * </pre>
@@ -672,8 +674,41 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *      TotalRevenue: series => series.sum(), 
      * });
      * </pre>
-    */
+     */
     aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
+   
+    /**
+     * Reduces the values in the series to a single result.
+     *
+     * This is the same concept as the JavaScript function `Array.reduce` but reduces a data series rather than an array.
+
+     * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
+     * @param seed Optional initial value, if not specifed the first value in the series is used as the initial value.
+     * 
+     * @return Returns a new value that has been reduced from the input series by passing it through the 'reducer' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailySales = ... daily sales figures for the past month ...
+     * const totalSalesForthisMonth = dailySales.reduce(
+     *      (accumulator, salesAmount) => accumulator + salesAmount, // Reducer function.
+     *      0  // Seed value, the starting value.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const previousSales = 500; // We'll seed the reduction with this value.
+     * const dailySales = ... daily sales figures for the past month ...
+     * const updatedSales = dailySales.reduce(
+     *      (accumulator, salesAmount) => accumulator + salesAmount,
+     *      previousSales
+     * );
+     * </pre>
+     */
+    reduce<ToT = ValueT> (reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT;
 
     /**
      * Compute the absolute range of values in each period.
@@ -3092,12 +3127,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Aggregate the values in the series to a single result.
+     * Reduces the values in the series to a single result.
+     *
+     * `aggregate` is similar to the `reduce` function, but the parameters are reversed. Please use the `reduce` function in preference to `aggregate`.
      *
      * @param seed Optional seed value for producing the aggregation.
-     * @param selector Function that takes the seed and then each value in the series and produces the aggregated value.
+     * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
      * 
-     * @return Returns a new value that has been aggregated from the series using the 'selector' function. 
+     * @return Returns a new value that has been reduced from the input series by passing it through the 'reducer' function.
      * 
      * @example
      * <pre>
@@ -3112,10 +3149,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @example
      * <pre>
      * 
-     * const totalSalesAllTime = 500; // We'll seed the aggregation with this value.
+     * const previousSales = 500; // We'll seed the aggregation with this value.
      * const dailySales = ... daily sales figures for the past month ...
-     * const updatedTotalSalesAllTime = dailySales.aggregate(
-     *      totalSalesAllTime, 
+     * const updatedSales = dailySales.aggregate(
+     *      previousSales, 
      *      (accumulator, salesAmount) => accumulator + salesAmount
      * );
      * </pre>
@@ -3129,8 +3166,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      TotalRevenue: series => series.sum(), 
      * });
      * </pre>
-    */
-   aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
+     */
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
 
         if (isFunction(seedOrSelector) && !selector) {
             return this.skip(1).aggregate(<ToT> <any> this.first(), seedOrSelector);
@@ -3148,6 +3185,56 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
     }
    
+    /**
+     * Reduces the values in the series to a single result.
+     *
+     * This is the same concept as the JavaScript function `Array.reduce` but reduces a data series rather than an array.
+
+     * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
+     * @param seed Optional initial value, if not specifed the first value in the series is used as the initial value.
+     * 
+     * @return Returns a new value that has been reduced from the input series by passing it through the 'reducer' function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailySales = ... daily sales figures for the past month ...
+     * const totalSalesForthisMonth = dailySales.reduce(
+     *      (accumulator, salesAmount) => accumulator + salesAmount, // Reducer function.
+     *      0  // Seed value, the starting value.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const previousSales = 500; // We'll seed the reduction with this value.
+     * const dailySales = ... daily sales figures for the past month ...
+     * const updatedSales = dailySales.reduce(
+     *      (accumulator, salesAmount) => accumulator + salesAmount,
+     *      previousSales
+     * );
+     * </pre>
+     */
+    reduce<ToT = ValueT> (reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT {
+        if (!isFunction(reducer)) throw new Error("Expected 'reducer' parameter to `Series.reduce` to be a function.");
+
+        let accum = <ToT> seed;
+        let series: ISeries<any, ValueT> = this;
+        if (accum === undefined) {
+            if (series.any()) {
+                accum = series.first() as any as ToT;
+                series = series.skip(1);
+            }
+        }
+
+        for (const value of series) {
+            accum = reducer(accum, value);
+        }
+
+        return accum;
+    }
+
     /**
      * Compute the absolute range of values in each period.
      * The range for each period is the absolute difference between largest (max) and smallest (min) values in that period.
@@ -4782,6 +4869,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     static range<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.range();
     }
+    
     /**
      * Get the range of values in the series.
      * 
