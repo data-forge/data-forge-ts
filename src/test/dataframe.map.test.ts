@@ -31,23 +31,23 @@ describe('DataFrame map', () => {
 		expect(modified.toArray()).to.eql([110, 310, 210, 15]);		
 	});
 
-	it('can select many - with array', function () {
+	it('can flat map - with array', function () {
 		const  dataframe = new DataFrame({ index: [0, 1], values: [10, 20] });
-		const  modified = dataframe.selectMany(value => [100, 200]);
+		const  modified = dataframe.flatMap(value => [100, 200]);
 		expect(modified.getIndex().toArray()).to.eql([0, 0, 1, 1]);
 		expect(modified.toArray()).to.eql([100, 200, 100, 200]);
 	});
 
-	it('can select many - with series', function () {
+	it('can flat map - with series', function () {
 		const  dataframe = new DataFrame({ index: [0, 1], values: [100, 300] });
-		const  modified = dataframe.selectMany(value => new DataFrame([0, 1]));
+		const  modified = dataframe.flatMap(value => new DataFrame([0, 1]));
 		expect(modified.getIndex().toArray()).to.eql([0, 0, 1, 1]);
 		expect(modified.toArray()).to.eql([0, 1, 0, 1]);
 	});
 
-	it('can select many - with data-frame', function () {
+	it('can flat map - with data-frame', function () {
 		const  dataframe = new DataFrame({ index: [0, 1], values: [100, 300] });
-		const  modified = dataframe.selectMany(value => new DataFrame([{ Value: 0 }, { Value: 1 }]));
+		const  modified = dataframe.flatMap(value => new DataFrame([{ Value: 0 }, { Value: 1 }]));
 		expect(modified.getIndex().toArray()).to.eql([0, 0, 1, 1]);
 		expect(modified.toArray()).to.eql([{ Value: 0 }, { Value: 1 }, { Value: 0 }, { Value: 1 }]);
 	});
