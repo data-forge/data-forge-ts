@@ -3581,7 +3581,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the count function for use with summarize and pivot functions.
+     * Static version of the count function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to be counted.
      * 
@@ -4404,7 +4404,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the sum function for use with summarize and pivot functions.
+     * Static version of the sum function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to be summed.
      * 
@@ -4449,7 +4449,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the average function for use with summarize and pivot functions.
+     * Static version of the average function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to be averaged.
      * 
@@ -4483,7 +4483,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the mean function for use with summarize and pivot functions.
+     * Static version of the mean function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series for which to compute the mean.
      * 
@@ -4533,7 +4533,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      }
 
     /**
-     * Static version of the median function for use with summarize and pivot functions.
+     * Static version of the median function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to find the median of.
      * 
@@ -4589,7 +4589,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the mode function for use with summarize and pivot functions.
+     * Static version of the mode function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series for which to find the mode.
      * 
@@ -4643,7 +4643,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the variiance function for use with summarize and pivot functions.
+     * Static version of the variiance function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series for which to find the variance.
      * 
@@ -4695,7 +4695,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the standard deviation function for use with summarize and pivot functions.
+     * Static version of the standard deviation function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to find the standard deviation of.
      * 
@@ -4734,7 +4734,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the min function for use with summarize and pivot functions.
+     * Static version of the min function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to find the minimum of.
      * 
@@ -4789,7 +4789,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the max function for use with summarize and pivot functions.
+     * Static version of the max function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series to find the maximum of.
      * 
@@ -4844,7 +4844,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Static version of the range function for use with summarize and pivot functions.
+     * Static version of the range function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series for which to find the range of values.
      * 
