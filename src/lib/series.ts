@@ -4469,7 +4469,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     
     /**
      * Average the values in a series and returns the result
-     * 
+     *
+     * `average` is an alias of {@link Series.mean}.
+     *  
      * @returns Returns the average of the number values in the series.
      * 
      * @example
