@@ -255,7 +255,7 @@ for (const value of series) {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#after">after</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1318</li>
+									<li>Defined in lib/series.ts:1313</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -311,14 +311,15 @@ const result = timeSeries.after(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:678</li>
+									<li>Defined in lib/series.ts:673</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Reduces the values in the series to a single result.</p>
 								</div>
-								<p><code>aggregate</code> is similar to the <code>reduce</code> function, but the parameters are reversed. Please use the <code>reduce</code> function in preference to <code>aggregate</code>.</p>
+								<p><code>aggregate</code> is similar to <a href="../classes/series.html#reduce">Series.reduce</a>, but the parameters are reversed.
+								Please use <a href="../classes/series.html#reduce">Series.reduce</a> in preference to <code>aggregate</code>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
@@ -384,7 +385,7 @@ var salesDataSummary = salesData.aggregate({
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#all">all</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1148</li>
+									<li>Defined in lib/series.ts:1143</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -426,7 +427,7 @@ const result = series.all(salesFigure => salesFigure > 100); // Returns true if 
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#amountchange">amountChange</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:794</li>
+									<li>Defined in lib/series.ts:789</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -480,7 +481,7 @@ const amountChanged = salesFigures.amountChanged(7); // Amount that sales has ch
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#amountrange">amountRange</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:729</li>
+									<li>Defined in lib/series.ts:724</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -529,7 +530,7 @@ const volatility = closingPrice.amountRange(5);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#any">any</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1174</li>
+									<li>Defined in lib/series.ts:1169</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -580,7 +581,7 @@ const result = series.any(); // Do we have any sales figures at all?
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2196</li>
+									<li>Defined in lib/series.ts:2192</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -624,7 +625,7 @@ const appendedSeries = series.appendPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#at">at</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1043</li>
+									<li>Defined in lib/series.ts:1038</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -676,14 +677,14 @@ const value = series.at(date);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#average">average</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1501</li>
+									<li>Defined in lib/series.ts:1497</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Average the values in a series and returns the result.
-									This is an alias of <code>mean</code>.</p>
+									<p>Average the values in a series and returns the result.</p>
 								</div>
+								<p><code>average</code> is an alias of <a href="../classes/series.html#mean-1">Series.mean</a>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
@@ -709,7 +710,7 @@ const averageSales = salesFigures.average();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1447</li>
+									<li>Defined in lib/series.ts:1442</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -741,7 +742,7 @@ const baked = series.bake();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#before">before</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1288</li>
+									<li>Defined in lib/series.ts:1283</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -797,7 +798,7 @@ const result = timeSeries.before(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#between">between</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1349</li>
+									<li>Defined in lib/series.ts:1344</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -859,7 +860,7 @@ const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#bucket">bucket</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2304</li>
+									<li>Defined in lib/series.ts:2300</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -942,7 +943,7 @@ const castSeries = series.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1768</li>
+									<li>Defined in lib/series.ts:1764</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1008,7 +1009,7 @@ const concatenated = a.concat(otherSeries);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#count">count</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:994</li>
+									<li>Defined in lib/series.ts:989</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1040,7 +1041,7 @@ const numValues = series.count();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#counter">counter</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1640</li>
+									<li>Defined in lib/series.ts:1636</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1084,7 +1085,7 @@ console.log(counted.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#cumsum">cumsum</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:891</li>
+									<li>Defined in lib/series.ts:886</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1108,7 +1109,7 @@ console.log(counted.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2255</li>
+									<li>Defined in lib/series.ts:2251</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1159,7 +1160,7 @@ expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2270</li>
+									<li>Defined in lib/series.ts:2266</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1193,7 +1194,7 @@ console.log(dataTypes.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2285</li>
+									<li>Defined in lib/series.ts:2281</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1227,7 +1228,7 @@ console.log(dataValues.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1676</li>
+									<li>Defined in lib/series.ts:1672</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1282,7 +1283,7 @@ const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1258</li>
+									<li>Defined in lib/series.ts:1253</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1338,7 +1339,7 @@ const result = timeSeries.endAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#except">except</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1958</li>
+									<li>Defined in lib/series.ts:1954</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1419,7 +1420,7 @@ const remainingCustomers = allCustomers.except(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2230</li>
+									<li>Defined in lib/series.ts:2226</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1484,7 +1485,7 @@ const remainingCustomers = allCustomers.except(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#filter">filter</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1115</li>
+									<li>Defined in lib/series.ts:1110</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1508,7 +1509,7 @@ console.log(filtered.toArray());
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.</p>
+										<p>Predicate function to filter values from the series. Returns true/truthy to keep elements, or false/falsy to omit elements.</p>
 									</div>
 								</li>
 							</ul>
@@ -1528,7 +1529,7 @@ console.log(filtered.toArray());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#first">first</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1007</li>
+									<li>Defined in lib/series.ts:1002</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1553,37 +1554,37 @@ const firstValue = series.first();
 					<a name="flatmap" class="tsd-anchor"></a>
 					<h3>flat<wbr>Map</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">flat<wbr>Map&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformationFn<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">flat<wbr>Map&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#flatmap">flatMap</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:543</li>
+									<li>Defined in lib/series.ts:537</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Transforms and flattens an input series, generating a new series.
-									The transfomration function is called for each value in the input series and produces an array that is flattened into the generated series.</p>
+									The transformer function is called for each value in the input series and produces an array that is then flattened into the generated series.</p>
 								</div>
 								<p>This is the same concept as the JavaScript function <code>Array.flatMap</code> but maps over a data series rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
 
-function produceOutputValues (inputValue) {
-     const outputValues = [];
+function transformer (input) {
+     const output = [];
      while (someCondition) {
-         // ... generate zero or more output values ...
-         outputValues.push(... some generated value ...);
+         // ... generate zero or more outputs from a single input ...
+         output.push(... some generated value ...);
      }
-     return outputValues;
+     return output;
 }
 
-const transformed = series.flatMap(value => produceOutputValues(value));
-console.log(transformed);
+const transformed = series.flatMap(transformer);
+console.log(transformed.toString());
 </pre>
 									</dd>
 								</dl>
@@ -1597,14 +1598,14 @@ console.log(transformed);
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>transformationFn: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>A user-defined function that transforms each value into an array that is flattened into the generated series.</p>
+										<p>A user-defined function that transforms each value into an array that is then flattened into the generated series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the series generated by calling the transformation function over each value in the input series.</p>
+							<p>Returns a new series generated by calling the transformer function over each element of the input.</p>
 						</li>
 					</ul>
 				</section>
@@ -1619,7 +1620,7 @@ console.log(transformed);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1132</li>
+									<li>Defined in lib/series.ts:1127</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1662,7 +1663,7 @@ series.forEach(value => {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#frequency">frequency</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2335</li>
+									<li>Defined in lib/series.ts:2331</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1751,7 +1752,7 @@ const index = series.getIndex();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1698</li>
+									<li>Defined in lib/series.ts:1694</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1805,7 +1806,7 @@ for (const productSalesGroup of salesByProduct) {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1728</li>
+									<li>Defined in lib/series.ts:1724</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1867,7 +1868,7 @@ for (const priceGroup of priceGroups) {
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#head">head</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1059</li>
+									<li>Defined in lib/series.ts:1054</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1909,7 +1910,7 @@ const sample = series.head(10); // Take a sample of 10 values from the start of 
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#inflate">inflate</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1474</li>
+									<li>Defined in lib/series.ts:1469</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1968,7 +1969,7 @@ const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // E
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2178</li>
+									<li>Defined in lib/series.ts:2174</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2012,7 +2013,7 @@ const insertedSeries = series.insertPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1921</li>
+									<li>Defined in lib/series.ts:1917</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2094,7 +2095,7 @@ const intersectionOfCustomerRecords = customerRecordsA.intersection(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#invert">invert</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1622</li>
+									<li>Defined in lib/series.ts:1618</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2127,7 +2128,7 @@ const inverted = series.invert();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#join">join</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1994</li>
+									<li>Defined in lib/series.ts:1990</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2215,7 +2216,7 @@ const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2035</li>
+									<li>Defined in lib/series.ts:2031</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2305,7 +2306,7 @@ const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.jo
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2076</li>
+									<li>Defined in lib/series.ts:2072</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2395,7 +2396,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2117</li>
+									<li>Defined in lib/series.ts:2113</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2485,7 +2486,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#last">last</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1020</li>
+									<li>Defined in lib/series.ts:1015</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2510,36 +2511,33 @@ const lastValue = series.last();
 					<a name="map" class="tsd-anchor"></a>
 					<h3>map</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">map&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformationFn<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">map&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#map">map</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:485</li>
+									<li>Defined in lib/series.ts:479</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Transforms an input series, generating a new series.
-									The transfomration function is called for each value in the input series and produces a new value that is output to the generated series.</p>
+									The transformer function is called for each element of the input and the collection of outputs creates the generated series.</p>
 								</div>
 								<p>This is the same concept as the JavaScript function <code>Array.map</code> but maps over a data series rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
 
-function transformValue (inputValue) {
-     const outputValue = {
-         // ... construct output value derived from input value ...
-     };
-
-     return outputValue;
+function transformer (input) {
+     const output = // ... construct output from input ...
+     return output;
 }
 
-const transformed = series.map(value => transformValue(value));
-console.log(transformed);
+const transformed = series.map(transformer);
+console.log(transformed.toString());
 </pre>
 									</dd>
 								</dl>
@@ -2553,11 +2551,14 @@ console.log(transformed);
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>transformationFn: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A user-defined transformer function that transforms each element from the input to generate the output.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the series generated by calling the transformation function over each value in the input series.</p>
+							<p>Returns a new series generated by calling the transformer function over each element of the input.</p>
 						</li>
 					</ul>
 				</section>
@@ -2572,7 +2573,7 @@ console.log(transformed);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#max">max</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1595</li>
+									<li>Defined in lib/series.ts:1591</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2604,7 +2605,7 @@ const maxSales = salesFigures.max();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#mean">mean</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1514</li>
+									<li>Defined in lib/series.ts:1510</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2636,7 +2637,7 @@ const averageSales = salesFigures.mean();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#median">median</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1528</li>
+									<li>Defined in lib/series.ts:1524</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2719,7 +2720,7 @@ const mergedSeries = series1.merge(series2, series3, etc);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#min">min</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1582</li>
+									<li>Defined in lib/series.ts:1578</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2751,7 +2752,7 @@ const minSales = salesFigures.min();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#mode">mode</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1543</li>
+									<li>Defined in lib/series.ts:1539</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2785,7 +2786,7 @@ const modeSales = salesFigures.mode();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#none">none</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1198</li>
+									<li>Defined in lib/series.ts:1193</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2834,7 +2835,7 @@ const result = series.none(); // Do we have zero sales figures?
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1811</li>
+									<li>Defined in lib/series.ts:1807</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2887,7 +2888,7 @@ const orderedSeries = series.orderBy(value => value.NestedValue);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1832</li>
+									<li>Defined in lib/series.ts:1828</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2940,7 +2941,7 @@ const orderedSeries = series.orderByDescending(value => value.NestedValue);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1407</li>
+									<li>Defined in lib/series.ts:1402</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2983,7 +2984,7 @@ const parsed = series.parseDates();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1389</li>
+									<li>Defined in lib/series.ts:1384</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3015,7 +3016,7 @@ const parsed = series.parseFloats();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1376</li>
+									<li>Defined in lib/series.ts:1371</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3047,7 +3048,7 @@ const parsed = series.parseInts();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#percentchange">percentChange</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:842</li>
+									<li>Defined in lib/series.ts:837</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3102,7 +3103,7 @@ const percentChanged = salesFigures.amountChanged(7); // Percent that sales has 
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#percentrange">percentRange</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:771</li>
+									<li>Defined in lib/series.ts:766</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3152,7 +3153,7 @@ const percentVolatility = closingPrice.percentRange(5);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#percentrank">percentRank</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:884</li>
+									<li>Defined in lib/series.ts:879</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3199,7 +3200,7 @@ const percentRank = series.percentRank(100);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#proportionchange">proportionChange</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:818</li>
+									<li>Defined in lib/series.ts:813</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3254,7 +3255,7 @@ const proportionChanged = salesFigures.amountChanged(7); // Proportion that sale
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#proportionrange">proportionRange</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:750</li>
+									<li>Defined in lib/series.ts:745</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3304,7 +3305,7 @@ const proportionVolatility = closingPrice.proportionRange(5);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#proportionrank">proportionRank</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:863</li>
+									<li>Defined in lib/series.ts:858</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3351,7 +3352,7 @@ const proportionRank = series.proportionRank(100);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#range">range</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1608</li>
+									<li>Defined in lib/series.ts:1604</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3383,7 +3384,7 @@ const range = salesFigures.range();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#reduce">reduce</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:711</li>
+									<li>Defined in lib/series.ts:706</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3484,7 +3485,7 @@ const seriesWithResetIndex = series.resetIndex();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1653</li>
+									<li>Defined in lib/series.ts:1649</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3516,7 +3517,7 @@ const reversed = series.reverse();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:589</li>
+									<li>Defined in lib/series.ts:583</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3566,7 +3567,7 @@ console.log(rollingWeeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#round">round</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2160</li>
+									<li>Defined in lib/series.ts:2156</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3608,37 +3609,34 @@ const rounded = series.round(3); // Round numbers to three decimal places.
 					<a name="select" class="tsd-anchor"></a>
 					<h3>select</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">select&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformationFn<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#select">select</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:458</li>
+									<li>Defined in lib/series.ts:455</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Transforms an input series, generating a new series.
-									The transfomration function is called for each value in the input series and produces a new value that is output to the generated series.</p>
+									The transformer function is called for each element of the input and the collection of outputs creates the generated series.</p>
 								</div>
-								<p><code>select</code> is an alias for <code>map</code>.</p>
+								<p><code>select</code> is an alias for <a href="../classes/series.html#map">Series.map</a>.</p>
 								<p>This is the same concept as the JavaScript function <code>Array.map</code> but maps over a data series rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
 
-function transformValue (inputValue) {
-     const outputValue = {
-         // ... construct output value derived from input value ...
-     };
-
-     return outputValue;
+function transformer (input) {
+     const output = // ... construct output from input ...
+     return output;
 }
 
-const transformed = series.select(value => transformValue(value));
-console.log(transformed);
+const transformed = series.select(transformer);
+console.log(transformed.toString());
 </pre>
 									</dd>
 								</dl>
@@ -3652,11 +3650,14 @@ console.log(transformed);
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>transformationFn: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A user-defined transformer function that transforms each element from the input to generate the output.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the series generated by calling the transformation function over each value in the input series.</p>
+							<p>Returns the series generated by calling the transformer function over each value in the input series.</p>
 						</li>
 					</ul>
 				</section>
@@ -3664,38 +3665,38 @@ console.log(transformed);
 					<a name="selectmany" class="tsd-anchor"></a>
 					<h3>select<wbr>Many</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">select<wbr>Many&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformationFn<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select<wbr>Many&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:515</li>
+									<li>Defined in lib/series.ts:509</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Transforms and flattens an input series, generating a new series.
-									The transfomration function is called for each value in the input series and produces an array that is flattened into the generated series.</p>
+									The transformer function is called for each value in the input series and produces an array that is then flattened into the generated series.</p>
 								</div>
-								<p><code>selectMany</code> is an alias for <code>flatMap</code>.</p>
+								<p><code>selectMany</code> is an alias for <a href="../classes/series.html#flatmap">Series.flatMap</a>.</p>
 								<p>This is the same concept as the JavaScript function <code>Array.flatMap</code> but maps over a data series rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
 
-function produceOutputValues (inputValue) {
-     const outputValues = [];
+function transformer (input) {
+     const output = [];
      while (someCondition) {
-         // ... generate zero or more output values ...
-         outputValues.push(... some generated value ...);
+         // ... generate zero or more outputs from a single input ...
+         output.push(... some generated value ...);
      }
-     return outputValues;
+     return output;
 }
 
-const transformed = series.selectMany(value => produceOutputValues(value));
-console.log(transformed);
+const transformed = series.selectMany(transformer);
+console.log(transformed.toString());
 </pre>
 									</dd>
 								</dl>
@@ -3709,14 +3710,14 @@ console.log(transformed);
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>transformationFn: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>A user-defined function that transforms each value into an array that is flattened into the generated series.</p>
+										<p>A user-defined function that transforms each value into an array that is then flattened into the generated series.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="iseries.html" class="tsd-signature-type">ISeries</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns the series generated by calling the transformation function over each value in the input series.</p>
+							<p>Returns a new series generated by calling the transformer function over each element of the input.</p>
 						</li>
 					</ul>
 				</section>
@@ -3731,7 +3732,7 @@ console.log(transformed);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:635</li>
+									<li>Defined in lib/series.ts:629</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3783,7 +3784,7 @@ const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:906</li>
+									<li>Defined in lib/series.ts:901</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3824,7 +3825,7 @@ const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original s
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:936</li>
+									<li>Defined in lib/series.ts:931</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3865,7 +3866,7 @@ const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100)
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:921</li>
+									<li>Defined in lib/series.ts:916</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3906,7 +3907,7 @@ const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100)
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1228</li>
+									<li>Defined in lib/series.ts:1223</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3962,7 +3963,7 @@ const result = timeSeries.startAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#std">std</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1569</li>
+									<li>Defined in lib/series.ts:1565</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3994,7 +3995,7 @@ const salesStdDev = salesFigures.std();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#sum">sum</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1487</li>
+									<li>Defined in lib/series.ts:1482</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4026,7 +4027,7 @@ const totalSales = salesFigures.sum();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1075</li>
+									<li>Defined in lib/series.ts:1070</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4068,7 +4069,7 @@ const sample = series.tail(12); // Take a sample of 12 values from the end of th
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#take">take</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:951</li>
+									<li>Defined in lib/series.ts:946</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4106,7 +4107,7 @@ const seriesWithRowsTaken = series.take(15); // Take only the first 15 values fr
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:981</li>
+									<li>Defined in lib/series.ts:976</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4147,7 +4148,7 @@ const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); 
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:966</li>
+									<li>Defined in lib/series.ts:961</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4187,7 +4188,7 @@ const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); 
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/series.ts:2357</li>
+									<li>Defined in lib/series.ts:2353</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4234,7 +4235,7 @@ const ordered = sales.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amou
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/series.ts:2373</li>
+									<li>Defined in lib/series.ts:2369</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4445,7 +4446,7 @@ const pairs = series.toPairs();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1363</li>
+									<li>Defined in lib/series.ts:1358</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4478,7 +4479,7 @@ console.log(series.toString());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1434</li>
+									<li>Defined in lib/series.ts:1429</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4529,7 +4530,7 @@ const result = series.toStrings("0.00");
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:2137</li>
+									<li>Defined in lib/series.ts:2133</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4570,7 +4571,7 @@ const truncated = series.truncateStrings(10); // Truncate all string values to m
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#union">union</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1884</li>
+									<li>Defined in lib/series.ts:1880</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4657,7 +4658,7 @@ const mergedCustomerRecords = customerRecordsA
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:614</li>
+									<li>Defined in lib/series.ts:608</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4720,7 +4721,7 @@ const variableWindows = series.variableWindow(rowComparer);
                 <aside class="tsd-sources">
         <p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#variance">variance</a></p>
         <ul>
-                    <li>Defined in lib/series.ts:1556</li>
+                    <li>Defined in lib/series.ts:1552</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -4753,14 +4754,14 @@ const salesVariance = salesFigures.variance();
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#where">where</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1096</li>
+									<li>Defined in lib/series.ts:1091</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Filter the series using user-defined predicate function.</p>
 								</div>
-								<p><code>where</code> is an alias for <code>filter</code>.</p>
+								<p><code>where</code> is an alias for <a href="../classes/series.html#filter">Series.filter</a>.</p>
 								<p>This is the same concept as the JavaScript function <code>Array.filter</code> but filters a data series rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
@@ -4778,7 +4779,7 @@ console.log(filtered.toArray());
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.</p>
+										<p>Predicate function to filter values from the series. Returns true/truthy to keep elements, or false/falsy to omit elements.</p>
 									</div>
 								</li>
 							</ul>
@@ -4798,7 +4799,7 @@ console.log(filtered.toArray());
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#window">window</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:570</li>
+									<li>Defined in lib/series.ts:564</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4924,7 +4925,7 @@ const indexedSeries = series.withIndex(value => value + 20);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1787</li>
+									<li>Defined in lib/series.ts:1783</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4974,7 +4975,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1788</li>
+									<li>Defined in lib/series.ts:1784</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5013,7 +5014,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1789</li>
+									<li>Defined in lib/series.ts:1785</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5061,7 +5062,7 @@ const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="iseries.html">ISeries</a>.<a href="iseries.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/series.ts:1790</li>
+									<li>Defined in lib/series.ts:1786</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>

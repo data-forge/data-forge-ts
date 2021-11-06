@@ -148,7 +148,9 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#except" class="tsd-kind-icon">except</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#expectseries" class="tsd-kind-icon">expect<wbr>Series</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#fillgaps" class="tsd-kind-icon">fill<wbr>Gaps</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#filter" class="tsd-kind-icon">filter</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#first" class="tsd-kind-icon">first</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#flatmap" class="tsd-kind-icon">flat<wbr>Map</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#foreach" class="tsd-kind-icon">for<wbr>Each</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#generateseries" class="tsd-kind-icon">generate<wbr>Series</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#getcolumnnames" class="tsd-kind-icon">get<wbr>Column<wbr>Names</a></li>
@@ -168,6 +170,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#joinouterleft" class="tsd-kind-icon">join<wbr>Outer<wbr>Left</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#joinouterright" class="tsd-kind-icon">join<wbr>Outer<wbr>Right</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#last" class="tsd-kind-icon">last</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#map" class="tsd-kind-icon">map</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#melt" class="tsd-kind-icon">melt</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#merge" class="tsd-kind-icon">merge</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#none" class="tsd-kind-icon">none</a></li>
@@ -177,6 +180,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#parsefloats" class="tsd-kind-icon">parse<wbr>Floats</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#parseints" class="tsd-kind-icon">parse<wbr>Ints</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#pivot" class="tsd-kind-icon">pivot</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#reduce" class="tsd-kind-icon">reduce</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#renameseries" class="tsd-kind-icon">rename<wbr>Series</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="dataframe.html#reorderseries" class="tsd-kind-icon">reorder<wbr>Series</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="dataframe.html#resetindex" class="tsd-kind-icon">reset<wbr>Index</a></li>
@@ -238,7 +242,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:2782</li>
+									<li>Defined in lib/dataframe.ts:2908</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -305,7 +309,7 @@ const df = new DataFrame(lazyInit);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#___iterator">__@iterator</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2884</li>
+									<li>Defined in lib/dataframe.ts:3010</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -341,7 +345,7 @@ for (const row of df) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#after">after</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4942</li>
+									<li>Defined in lib/dataframe.ts:5222</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -397,13 +401,15 @@ const result = timeSeriesDf.after(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#aggregate">aggregate</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4288</li>
+									<li>Defined in lib/dataframe.ts:4490</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Aggregate the rows in the dataframe to a single result.</p>
 								</div>
+								<p><code>aggregate</code> is similar to <a href="dataframe.html#reduce">DataFrame.reduce</a>  but the parameters are reversed.
+								Please use <a href="dataframe.html#reduce">DataFrame.reduce</a> in preference to <code>aggregate</code>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
@@ -472,7 +478,7 @@ var salesDataSummary = salesDataDf.aggregate({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#all">all</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4683</li>
+									<li>Defined in lib/dataframe.ts:4963</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -514,7 +520,7 @@ const everyoneIsNamedFred = df.all(row => row.CustomerName === "Fred"); // Check
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#any">any</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4723</li>
+									<li>Defined in lib/dataframe.ts:5003</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -565,7 +571,7 @@ const anyCustomers = df.any(); // Do we have any customers at all?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#appendpair">appendPair</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6571</li>
+									<li>Defined in lib/dataframe.ts:6851</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -609,7 +615,7 @@ const appendedDf = df.appendPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#at">at</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4555</li>
+									<li>Defined in lib/dataframe.ts:4807</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -661,7 +667,7 @@ const row = df.at(date);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#bake">bake</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5288</li>
+									<li>Defined in lib/dataframe.ts:5568</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -693,7 +699,7 @@ const baked = df.bake();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#before">before</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4901</li>
+									<li>Defined in lib/dataframe.ts:5181</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -749,7 +755,7 @@ const result = timeSeriesDf.before(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#between">between</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4983</li>
+									<li>Defined in lib/dataframe.ts:5263</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -811,7 +817,7 @@ const result = timeSeriesDf.after(new Date(2016, 5, 4), new Date(2016, 5, 22));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#bringtoback">bringToBack</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3628</li>
+									<li>Defined in lib/dataframe.ts:3754</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -856,7 +862,7 @@ const modifiedDf = df.bringToBack(["NewSecondLastColumn, ""NewLastColumn"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#bringtofront">bringToFront</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3567</li>
+									<li>Defined in lib/dataframe.ts:3693</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -901,7 +907,7 @@ const modifiedDf = df.bringToFront(["NewFirstColumn", "NewSecondColumn"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#cast">cast</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2949</li>
+									<li>Defined in lib/dataframe.ts:3075</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -940,7 +946,7 @@ const castDf = df.cast<SomeOtherType>();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#concat">concat</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5538</li>
+									<li>Defined in lib/dataframe.ts:5818</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1006,7 +1012,7 @@ const concatenatedDf = dfA.concat(otherDfs);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#count">count</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4479</li>
+									<li>Defined in lib/dataframe.ts:4731</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1038,7 +1044,7 @@ const numRows = df.count();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#defaultifempty">defaultIfEmpty</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6657</li>
+									<li>Defined in lib/dataframe.ts:6937</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1089,7 +1095,7 @@ expect(nonEmptyDataFrame.defaultIfEmpty(defaultDataFrame)).to.eql(nonEmptyDataFr
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#deflate">deflate</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4047</li>
+									<li>Defined in lib/dataframe.ts:4246</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1142,7 +1148,7 @@ const series = df.deflate(row => row.SomeColumn); // Extract a particular column
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#detecttypes">detectTypes</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6689</li>
+									<li>Defined in lib/dataframe.ts:6969</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1177,7 +1183,7 @@ console.log(dataTypes.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#detectvalues">detectValues</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6721</li>
+									<li>Defined in lib/dataframe.ts:7001</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1212,7 +1218,7 @@ console.log(dataValues.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#distinct">distinct</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5351</li>
+									<li>Defined in lib/dataframe.ts:5631</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1270,7 +1276,7 @@ const distinctCustomers = salesDf.distinct(sale => [sale.CustomerId, sale.MonthO
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#dropseries">dropSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3465</li>
+									<li>Defined in lib/dataframe.ts:3591</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1321,7 +1327,7 @@ const modifiedDf = df.dropSeries(["ColumnA", "ColumnB"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#endat">endAt</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4860</li>
+									<li>Defined in lib/dataframe.ts:5140</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1377,7 +1383,7 @@ const result = timeSeriesDf.endAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#ensureseries">ensureSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3377</li>
+									<li>Defined in lib/dataframe.ts:3503</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1469,7 +1475,7 @@ const modifiedDf = df.ensureSeries({
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#except">except</a></p>
         <ul>
-                    <li>Defined in lib/dataframe.ts:5859</li>
+                    <li>Defined in lib/dataframe.ts:6139</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1551,7 +1557,7 @@ const remainingCustomers = allCustomers.except(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#expectseries">expectSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3138</li>
+									<li>Defined in lib/dataframe.ts:3264</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1605,7 +1611,7 @@ catch (err) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#fillgaps">fillGaps</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6610</li>
+									<li>Defined in lib/dataframe.ts:6890</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1660,6 +1666,50 @@ catch (err) {
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="filter" class="tsd-anchor"></a>
+					<h3>filter</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">(</span>predicate<span class="tsd-signature-symbol">: </span><a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#filter">filter</a></p>
+								<ul>
+									<li>Defined in lib/dataframe.ts:4910</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Filter the dataframe through a user-defined predicate function.</p>
+								</div>
+								<p>This is the same concept as the JavaScript function <code>Array.filter</code> but filters a dataframe rather than an array.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+// Filter so we only have sales figures greater than 100.
+const filtered = dataframe.filter(row => row.salesFigure > 100);
+console.log(filtered.toArray());
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Predicate function to filter values from the dataframe. Returns true/truthy to keep elements, or false/falsy to omit elements.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new dataframe containing only the values from the original dataframe that matched the predicate.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="first" class="tsd-anchor"></a>
 					<h3>first</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -1670,7 +1720,7 @@ catch (err) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#first">first</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4499</li>
+									<li>Defined in lib/dataframe.ts:4751</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1691,6 +1741,65 @@ const firstRow = df.first();
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="flatmap" class="tsd-anchor"></a>
+					<h3>flat<wbr>Map</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">flat<wbr>Map&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#flatmap">flatMap</a></p>
+								<ul>
+									<li>Defined in lib/dataframe.ts:4092</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Transforms and flattens an input dataframe, generating a new dataframe.
+									The transformer function is called for each value in the input dataframe and produces an array that is then flattened into the generated dataframe.</p>
+								</div>
+								<p>This is the same concept as the JavaScript function <code>Array.flatMap</code> but maps over a dataframe rather than an array.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+function transformer (input) {
+     const output = [];
+     while (someCondition) {
+         // ... generate zero or more outputs from a single input ...
+         output.push(... some generated value ...);
+     }
+     return output;
+}
+
+const transformed = dataframe.flatMap(transformer);
+console.log(transformed.toString());
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>ToT</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A user-defined function that transforms each value into an array that is then flattened into the generated dataframe.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new dataframe generated by calling the transformer function over each element of the input.</p>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="foreach" class="tsd-anchor"></a>
 					<h3>for<wbr>Each</h3>
@@ -1702,7 +1811,7 @@ const firstRow = df.first();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#foreach">forEach</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4658</li>
+									<li>Defined in lib/dataframe.ts:4938</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1745,7 +1854,7 @@ df.forEach(row => {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#generateseries">generateSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3993</li>
+									<li>Defined in lib/dataframe.ts:4192</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1812,7 +1921,7 @@ const dfWithNewSeries = df.generateSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getcolumnnames">getColumnNames</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2899</li>
+									<li>Defined in lib/dataframe.ts:3025</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1844,7 +1953,7 @@ console.log(df.getColumnNames());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getcolumns">getColumns</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2920</li>
+									<li>Defined in lib/dataframe.ts:3046</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1882,7 +1991,7 @@ for (const column in df.getColumns()) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getindex">getIndex</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2964</li>
+									<li>Defined in lib/dataframe.ts:3090</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1914,7 +2023,7 @@ const index = df.getIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#getseries">getSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3079</li>
+									<li>Defined in lib/dataframe.ts:3205</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1960,7 +2069,7 @@ const series = df.getSeries("SomeColumn");
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:6960</li>
+									<li>Defined in lib/dataframe.ts:7240</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1985,7 +2094,7 @@ const series = df.getSeries("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#groupby">groupBy</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5382</li>
+									<li>Defined in lib/dataframe.ts:5662</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2039,7 +2148,7 @@ for (const productSalesGroup of salesByProduct) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#groupsequentialby">groupSequentialBy</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5441</li>
+									<li>Defined in lib/dataframe.ts:5721</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2101,7 +2210,7 @@ for (const priceGroup of priceGroups) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#hasseries">hasSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3107</li>
+									<li>Defined in lib/dataframe.ts:3233</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2144,7 +2253,7 @@ if (df.hasSeries("SomeColumn")) {
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#head">head</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4578</li>
+									<li>Defined in lib/dataframe.ts:4830</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2186,7 +2295,7 @@ const sample = df.head(10); // Take a sample of 10 rows from the start of the da
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#inflateseries">inflateSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4103</li>
+									<li>Defined in lib/dataframe.ts:4302</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2250,7 +2359,7 @@ const dfWithNewSeries = df.inflateSeries("SomeColumn", newColumnGenerator);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#insertpair">insertPair</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6548</li>
+									<li>Defined in lib/dataframe.ts:6828</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2294,7 +2403,7 @@ const insertedDf = df.insertPair([newIndex, newRows]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#intersection">intersection</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5799</li>
+									<li>Defined in lib/dataframe.ts:6079</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2376,7 +2485,7 @@ const intersectionOfCustomerRecords = customerRecordsA.intersection(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#join">join</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5918</li>
+									<li>Defined in lib/dataframe.ts:6198</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2464,7 +2573,7 @@ const customersWhoBoughtBothProductsDf = customerWhoBoughtProductA.join(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#joinouter">joinOuter</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5993</li>
+									<li>Defined in lib/dataframe.ts:6273</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2554,7 +2663,7 @@ const customersWhoBoughtEitherProductButNotBothDf = customerWhoBoughtProductA.jo
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#joinouterleft">joinOuterLeft</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6058</li>
+									<li>Defined in lib/dataframe.ts:6338</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2644,7 +2753,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterLeft(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#joinouterright">joinOuterRight</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6117</li>
+									<li>Defined in lib/dataframe.ts:6397</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2734,7 +2843,7 @@ const boughtJustAorAandB = customerWhoBoughtProductA.joinOuterRight(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#last">last</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4519</li>
+									<li>Defined in lib/dataframe.ts:4771</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2756,6 +2865,64 @@ const lastRow = df.last();
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="map" class="tsd-anchor"></a>
+					<h3>map</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">map&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#map">map</a></p>
+								<ul>
+									<li>Defined in lib/dataframe.ts:4020</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Transforms an input dataframe, generating a new dataframe.
+									The transformer function is called for each element of the input and the collection of outputs creates the generated datafarme.</p>
+								</div>
+								<p>This is the same concept as the JavaScript function <code>Array.map</code> but maps over a dataframe rather than an array.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+function transformer (input) {
+     const output = {
+         // ... construct output from input ...
+     };
+
+     return output;
+}
+
+const transformed = dataframe.map(transformer);
+console.log(transformed.toString());
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>ToT</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A user-defined transformer function that transforms each element from the input to generate the output.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns a new dataframe generated by calling the transformer function over each element of the input.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 					<a name="melt" class="tsd-anchor"></a>
 					<h3>melt</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
@@ -2766,7 +2933,7 @@ const lastRow = df.last();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#melt">melt</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6465</li>
+									<li>Defined in lib/dataframe.ts:6745</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2839,7 +3006,7 @@ const moltenDf = df.melt(["A", "B"], ["C", "D"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#merge">merge</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3334</li>
+									<li>Defined in lib/dataframe.ts:3460</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2889,7 +3056,7 @@ const mergedDF = df1.merge(df2, df3, etc);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#none">none</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4767</li>
+									<li>Defined in lib/dataframe.ts:5047</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2938,7 +3105,7 @@ const noCustomers = df.none(); // Do we have zero customers?
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#orderby">orderBy</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5667</li>
+									<li>Defined in lib/dataframe.ts:5947</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2986,7 +3153,7 @@ const orderedDf = salesDf.orderBy(sale => sale.Amount);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#orderbydescending">orderByDescending</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5693</li>
+									<li>Defined in lib/dataframe.ts:5973</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3034,7 +3201,7 @@ const orderedDf = salesDf.orderByDescending(sale => sale.Amount);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#parsedates">parseDates</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5111</li>
+									<li>Defined in lib/dataframe.ts:5391</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3089,7 +3256,7 @@ const parsed = df.parseDates(["MyDateColumnA", "MyDateColumnA"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#parsefloats">parseFloats</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5073</li>
+									<li>Defined in lib/dataframe.ts:5353</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3136,7 +3303,7 @@ const parsed = df.parseFloats(["MyFloatColumnA", "MyFloatColumnA"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#parseints">parseInts</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5039</li>
+									<li>Defined in lib/dataframe.ts:5319</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3182,7 +3349,7 @@ const parsed = df.parseInts(["MyIntColumnA", "MyIntColumnA"]);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:6330</li>
+									<li>Defined in lib/dataframe.ts:6610</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3303,6 +3470,75 @@ const pivottedDf = df.groupBy(row => row.PivotColumn)
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="reduce" class="tsd-anchor"></a>
+					<h3>reduce</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">reduce&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>reducer<span class="tsd-signature-symbol">: </span><a href="../index.html#aggregatefn" class="tsd-signature-type">AggregateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span>, seed<span class="tsd-signature-symbol">?: </span><a href="" class="tsd-signature-type">ToT</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ToT</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#reduce">reduce</a></p>
+								<ul>
+									<li>Defined in lib/dataframe.ts:4557</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Reduces the values in the dataframe to a single result.</p>
+								</div>
+								<p>This is the same concept as the JavaScript function <code>Array.reduce</code> but reduces a dataframe rather than an array.</p>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre>
+
+const dailyRecords = ... daily records for the past month ...
+const totalSales = dailyRecords.reduce(
+     (accumulator, row) => accumulator + row.salesAmount, // Reducer function.
+     0  // Seed value, the starting value.
+);
+</pre>
+									</dd>
+									<dt>example</dt>
+									<dd><pre>
+
+const previousSales = 500; // We'll seed the reduction with this value.
+const dailyRecords = ... daily records for the past month ...
+const updatedSales = dailyRecords.reduce(
+     (accumulator, row) => accumulator + row.salesAmount,
+     previousSales
+);
+</pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>ToT</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>reducer: <a href="../index.html#aggregatefn" class="tsd-signature-type">AggregateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Function that takes the seed and then each value in the dataframe and produces the reduced value.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> seed: <a href="" class="tsd-signature-type">ToT</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Optional initial value, if not specifed the first value in the dataframe is used as the initial value.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ToT</span></h4>
+							<p>Returns a value that has been reduced from the input dataframe by passing each element through the reducer function.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 					<a name="renameseries" class="tsd-anchor"></a>
 					<h3>rename<wbr>Series</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
@@ -3313,7 +3549,7 @@ const pivottedDf = df.groupBy(row => row.PivotColumn)
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#renameseries">renameSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3694</li>
+									<li>Defined in lib/dataframe.ts:3820</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3369,7 +3605,7 @@ const renamedDf = df.renameSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#reorderseries">reorderSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3516</li>
+									<li>Defined in lib/dataframe.ts:3642</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3416,7 +3652,7 @@ const reorderedDf = df.reorderSeries(["FirstColumn", "SecondColumn", "etc"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#resetindex">resetIndex</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3055</li>
+									<li>Defined in lib/dataframe.ts:3181</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3448,7 +3684,7 @@ const dfWithResetIndex = df.resetIndex();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#reverse">reverse</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5314</li>
+									<li>Defined in lib/dataframe.ts:5594</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3480,7 +3716,7 @@ const reversedDf = df.reverse();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#rollingwindow">rollingWindow</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4169</li>
+									<li>Defined in lib/dataframe.ts:4368</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3524,7 +3760,7 @@ console.log(rollingWeeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#round">round</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5251</li>
+									<li>Defined in lib/dataframe.ts:5531</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3566,33 +3802,37 @@ const rounded = df.round(3); // Round numbers to three decimal places.
 					<a name="select" class="tsd-anchor"></a>
 					<h3>select</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">select&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#select">select</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3857</li>
+									<li>Defined in lib/dataframe.ts:3989</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Generates a new dataframe by repeatedly calling a selector function on each row in the original dataframe.</p>
+									<p>Transforms an input dataframe, generating a new dataframe.
+									The transformer function is called for each element of the input and the collection of outputs creates the generated datafarme.</p>
 								</div>
+								<p><code>select</code> is an alias for <a href="dataframe.html#map">DataFrame.map</a>.</p>
+								<p>This is the same concept as the JavaScript function <code>Array.map</code> but maps over a dataframe rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
 
-function transformRow (inputRow) {
-     const outputRow = {
-         // ... construct output row derived from input row ...
+function transformer (input) {
+     const output = {
+         // ... construct output from input ...
      };
 
-     return outputRow;
+     return output;
 }
 
-const modifiedDf = df.select(row => transformRow(row));
+const transformed = dataframe.select(transformer);
+console.log(transformed.toString());
 </pre>
 									</dd>
 								</dl>
@@ -3606,14 +3846,14 @@ const modifiedDf = df.select(row => transformRow(row));
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector function that transforms each row to create the new dataframe.</p>
+										<p>A user-defined transformer function that transforms each element from the input to generate the output.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new dataframe that has been transformed by the selector function.</p>
+							<p>Returns a new dataframe generated by calling the transformer function over each element of the input.</p>
 						</li>
 					</ul>
 				</section>
@@ -3621,35 +3861,38 @@ const modifiedDf = df.select(row => transformRow(row));
 					<a name="selectmany" class="tsd-anchor"></a>
 					<h3>select<wbr>Many</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">select<wbr>Many&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select<wbr>Many&lt;ToT&gt;<span class="tsd-signature-symbol">(</span>transformer<span class="tsd-signature-symbol">: </span><a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#selectmany">selectMany</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3893</li>
+									<li>Defined in lib/dataframe.ts:4060</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Generates a new dataframe by repeatedly calling a selector function on each row in the original dataframe.</p>
+									<p>Transforms and flattens an input dataframe, generating a new dataframe.
+									The transformer function is called for each value in the input dataframe and produces an array that is then flattened into the generated dataframe.</p>
 								</div>
-								<p>In this case the selector function produces a collection of output rows that are flattened to create the new dataframe.</p>
+								<p><code>selectMany</code> is an alias for <a href="dataframe.html#flatmap">DataFrame.flatMap</a>.</p>
+								<p>This is the same concept as the JavaScript function <code>Array.flatMap</code> but maps over a dataframe rather than an array.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre>
 
-function produceOutputRows (inputRow) {
-     const outputRows = [];
-     while (someCondition) {     *
-         // ... generate zero or more output rows ...
-         outputRows.push(... some generated row ...);
+function transformer (input) {
+     const output = [];
+     while (someCondition) {
+         // ... generate zero or more outputs from a single input ...
+         output.push(... some generated value ...);
      }
-     return outputRows;
+     return output;
 }
 
-const modifiedDf = df.selectMany(row => produceOutputRows(row));
+const transformed = dataframe.selectMany(transformer);
+console.log(transformed.toString());
 </pre>
 									</dd>
 								</dl>
@@ -3663,14 +3906,14 @@ const modifiedDf = df.selectMany(row => produceOutputRows(row));
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>selector: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>transformer: <a href="../index.html#selectorwithindexfn" class="tsd-signature-type">SelectorWithIndexFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Selector function that transforms each row into a collection of output rows.</p>
+										<p>A user-defined function that transforms each value into an array that is then flattened into the generated dataframe.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ToT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new dataframe with rows that have been produced by the selector function.</p>
+							<p>Returns a new dataframe generated by calling the transformer function over each element of the input.</p>
 						</li>
 					</ul>
 				</section>
@@ -3685,7 +3928,7 @@ const modifiedDf = df.selectMany(row => produceOutputRows(row));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#sequentialdistinct">sequentialDistinct</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4232</li>
+									<li>Defined in lib/dataframe.ts:4431</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3734,7 +3977,7 @@ const dfWithDuplicateRowsRemoved = df.sequentialDistinct(row => row.ColumnA);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6861</li>
+									<li>Defined in lib/dataframe.ts:7141</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3773,7 +4016,7 @@ const deserializedDf = DataFrame.deserialize(deserializedJsDataStructure); // Re
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#setindex">setIndex</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:2981</li>
+									<li>Defined in lib/dataframe.ts:3107</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3820,7 +4063,7 @@ const indexedDf = df.setIndex("SomeColumn");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#skip">skip</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4337</li>
+									<li>Defined in lib/dataframe.ts:4589</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3861,7 +4104,7 @@ const dfWithRowsSkipped = df.skip(10); // Skip 10 rows in the original dataframe
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#skipuntil">skipUntil</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4390</li>
+									<li>Defined in lib/dataframe.ts:4642</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3902,7 +4145,7 @@ const dfWithRowsSkipped = df.skipUntil(row => row.CustomerName === "Fred"); // S
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#skipwhile">skipWhile</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4364</li>
+									<li>Defined in lib/dataframe.ts:4616</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3943,7 +4186,7 @@ const dfWithRowsSkipped = df.skipWhile(row => row.CustomerName === "Fred"); // S
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#startat">startAt</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4819</li>
+									<li>Defined in lib/dataframe.ts:5099</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3999,7 +4242,7 @@ const result = timeSeriesDf.startAt(new Date(2016, 5, 4));
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#subset">subset</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3421</li>
+									<li>Defined in lib/dataframe.ts:3547</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4045,12 +4288,12 @@ const subsetDf = df.subset(["ColumnA", "ColumnB"]);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#summarize">summarize</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6194</li>
+									<li>Defined in lib/dataframe.ts:6474</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Produces a summary of dataframe. A bit like the &#39;aggregate&#39; function but much simpler.</p>
+									<p>Produces a summary of dataframe.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
@@ -4131,7 +4374,7 @@ console.log(summary);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tail">tail</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4604</li>
+									<li>Defined in lib/dataframe.ts:4856</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4173,7 +4416,7 @@ const sample = df.tail(12); // Take a sample of 12 rows from the end of the data
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#take">take</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4409</li>
+									<li>Defined in lib/dataframe.ts:4661</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4211,7 +4454,7 @@ const dfWithRowsTaken = df.take(15); // Take only the first 15 rows from the ori
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#takeuntil">takeUntil</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4462</li>
+									<li>Defined in lib/dataframe.ts:4714</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4252,7 +4495,7 @@ const dfWithRowsTaken = df.takeUntil(row => row.CustomerName === "Fred"); // Tak
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#takewhile">takeWhile</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4436</li>
+									<li>Defined in lib/dataframe.ts:4688</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4293,7 +4536,7 @@ const dfWithRowsTaken = df.takeWhile(row => row.CustomerName === "Fred"); // Tak
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#toarray">toArray</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3754</li>
+									<li>Defined in lib/dataframe.ts:3880</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4325,7 +4568,7 @@ const values = df.toArray();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tocsv">toCSV</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6792</li>
+									<li>Defined in lib/dataframe.ts:7072</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4374,7 +4617,7 @@ console.log(csvData);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tohtml">toHTML</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6806</li>
+									<li>Defined in lib/dataframe.ts:7086</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4398,7 +4641,7 @@ console.log(csvData);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tojson">toJSON</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6751</li>
+									<li>Defined in lib/dataframe.ts:7031</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4431,7 +4674,7 @@ console.log(jsonData);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tojson5">toJSON5</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:6767</li>
+									<li>Defined in lib/dataframe.ts:7047</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4463,7 +4706,7 @@ console.log(jsonData);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:3803</li>
+									<li>Defined in lib/dataframe.ts:3929</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4561,7 +4804,7 @@ const someObject = df.toObject(
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#topairs">toPairs</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3776</li>
+									<li>Defined in lib/dataframe.ts:3902</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4594,7 +4837,7 @@ const pairs = df.toPairs();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#torows">toRows</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3821</li>
+									<li>Defined in lib/dataframe.ts:3947</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4625,7 +4868,7 @@ const rows = df.toRows();
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4999</li>
+									<li>Defined in lib/dataframe.ts:5279</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4658,7 +4901,7 @@ console.log(df.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#tostrings">toStrings</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5156</li>
+									<li>Defined in lib/dataframe.ts:5436</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4715,7 +4958,7 @@ const result = df.toStrings("MyFloatColumn", "0.00");
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#transformseries">transformSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3940</li>
+									<li>Defined in lib/dataframe.ts:4139</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4775,7 +5018,7 @@ const modifiedDf = df.transformSeries({
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#truncatestrings">truncateStrings</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5212</li>
+									<li>Defined in lib/dataframe.ts:5492</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4817,7 +5060,7 @@ const truncatedDf = df.truncateString(100);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#union">union</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5755</li>
+									<li>Defined in lib/dataframe.ts:6035</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4904,7 +5147,7 @@ const mergedCustomerRecords = customerRecordsA
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#variablewindow">variableWindow</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4204</li>
+									<li>Defined in lib/dataframe.ts:4403</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4967,19 +5210,24 @@ const variableWindows = df.variableWindow(rowComparer);
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#where">where</a></p>
         <ul>
-                    <li>Defined in lib/dataframe.ts:4629</li>
+                    <li>Defined in lib/dataframe.ts:4887</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
                 <div class="lead">
-                    <p>Filter the dataframe using user-defined predicate function.</p>
+                    <p>Filter the dataframe through a user-defined predicate function.</p>
 
                 </div>
+                <p><code>where</code> is an alias for <a href="dataframe.html#filter">DataFrame.filter</a>.</p>
+<p>This is the same concept as the JavaScript function <code>Array.filter</code> but filters a dataframe rather than an array.</p>
+
                 <dl class="tsd-comment-tags">
                         <dt>example</dt>
                         <dd><pre>
 
-const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we only have customers named Fred.
+// Filter so we only have sales figures greater than 100.
+const filtered = dataframe.where(row => row.salesFigure > 100);
+console.log(filtered.toArray());
 </pre>
 									</dd>
 								</dl>
@@ -4989,12 +5237,12 @@ const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we
 								<li>
 									<h5>predicate: <a href="../index.html#predicatefn" class="tsd-signature-type">PredicateFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Predicte function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.</p>
+										<p>Predicate function to filter values from the dataframe. Returns true/truthy to keep elements, or false/falsy to omit elements.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/idataframe.html" class="tsd-signature-type">IDataFrame</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexT</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ValueT</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns a new dataframe containing only the rows from the original dataframe that matched the predicate.</p>
+							<p>Returns a new dataframe containing only the values from the original dataframe that matched the predicate.</p>
 						</li>
 					</ul>
 				</section>
@@ -5009,7 +5257,7 @@ const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#window">window</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:4141</li>
+									<li>Defined in lib/dataframe.ts:4340</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5061,7 +5309,7 @@ console.log(weeklySales.toString());
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#withindex">withIndex</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3018</li>
+									<li>Defined in lib/dataframe.ts:3144</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5126,7 +5374,7 @@ const indexedDf = df.withIndex(row => row.SomeColumn + 20);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#withseries">withSeries</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:3185</li>
+									<li>Defined in lib/dataframe.ts:3311</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5223,7 +5471,7 @@ const modifiedDf = df.withSeries({
                 <aside class="tsd-sources">
         <p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#zip">zip</a></p>
         <ul>
-                    <li>Defined in lib/dataframe.ts:5643</li>
+                    <li>Defined in lib/dataframe.ts:5923</li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -5282,7 +5530,7 @@ const zippedDf = dfA.zip(dfB, produceNewRow);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5644</li>
+									<li>Defined in lib/dataframe.ts:5924</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5321,7 +5569,7 @@ const zippedDf = dfA.zip(dfB, produceNewRow);
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/idataframe.html">IDataFrame</a>.<a href="../interfaces/idataframe.html#zip">zip</a></p>
 								<ul>
-									<li>Defined in lib/dataframe.ts:5645</li>
+									<li>Defined in lib/dataframe.ts:5925</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -5377,7 +5625,7 @@ const zippedDf = dfA.zip(dfB, produceNewRow);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:5476</li>
+									<li>Defined in lib/dataframe.ts:5756</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5436,7 +5684,7 @@ const concatenatedDf = DataFrame.concat(dfs);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:6919</li>
+									<li>Defined in lib/dataframe.ts:7199</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5491,7 +5739,7 @@ const deserializedDf = DataFrame.deserialize(deserializedJsDataStructure); // Re
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:3274</li>
+									<li>Defined in lib/dataframe.ts:3400</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5545,7 +5793,7 @@ const mergedDF = DataFrame.merge([df1, df2, etc]);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/dataframe.ts:5594</li>
+									<li>Defined in lib/dataframe.ts:5874</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5714,7 +5962,13 @@ const zippedDf = DataFrame.zip([dfA, dfB], produceNewRow);
 								<a href="dataframe.html#fillgaps" class="tsd-kind-icon">fill<wbr>Gaps</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="dataframe.html#filter" class="tsd-kind-icon">filter</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="dataframe.html#first" class="tsd-kind-icon">first</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="dataframe.html#flatmap" class="tsd-kind-icon">flat<wbr>Map</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="dataframe.html#foreach" class="tsd-kind-icon">for<wbr>Each</a>
@@ -5774,6 +6028,9 @@ const zippedDf = DataFrame.zip([dfA, dfB], produceNewRow);
 								<a href="dataframe.html#last" class="tsd-kind-icon">last</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="dataframe.html#map" class="tsd-kind-icon">map</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="dataframe.html#melt" class="tsd-kind-icon">melt</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
@@ -5799,6 +6056,9 @@ const zippedDf = DataFrame.zip([dfA, dfB], produceNewRow);
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="dataframe.html#pivot" class="tsd-kind-icon">pivot</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="dataframe.html#reduce" class="tsd-kind-icon">reduce</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="dataframe.html#renameseries" class="tsd-kind-icon">rename<wbr>Series</a>
