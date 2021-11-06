@@ -749,7 +749,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * Transforms an input dataframe, generating a new dataframe.
      * The transformer function is called for each element of the input and the collection of outputs creates the generated datafarme.
      * 
-     * `select` is an alias for `map`.
+     * `select` is an alias for {@link DataFrame.map}.
      * 
      * This is the same concept as the JavaScript function `Array.map` but maps over a dataframe rather than an array.
      *
@@ -3870,7 +3870,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * Transforms an input dataframe, generating a new dataframe.
      * The transformer function is called for each element of the input and the collection of outputs creates the generated datafarme.
      * 
-     * `select` is an alias for `map`.
+     * `select` is an alias for {@link DataFrame.map}.
      * 
      * This is the same concept as the JavaScript function `Array.map` but maps over a dataframe rather than an array.
      *

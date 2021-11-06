@@ -432,7 +432,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Transforms an input series, generating a new series.
      * The transformer function is called for each element of the input and the collection of outputs creates the generated series.
      * 
-     * `select` is an alias for `map`.
+     * `select` is an alias for {@link Series.map}.
      * 
      * This is the same concept as the JavaScript function `Array.map` but maps over a data series rather than an array.
      *
@@ -482,7 +482,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * Transforms and flattens an input series, generating a new series.
      * The transfomration function is called for each value in the input series and produces an array that is flattened into the generated series.
      * 
-     * `selectMany` is an alias for `flatMap`.
+     * `selectMany` is an alias for {@link Series.flatMap}.
      * 
      * This is the same concept as the JavaScript function `Array.flatMap` but maps over a data series rather than an array.
      * 
@@ -1071,7 +1071,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Filter the series using user-defined predicate function.
      * 
-     * `where` is an alias for `filter`.
+     * `where` is an alias for {@link Series.filter}.
      *
      * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
      * 
@@ -1482,7 +1482,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
 
     /**
      * Average the values in a series and returns the result.
-     * This is an alias of `mean`.
+     * 
+     * `average` is an alias of {@link Series.mean}.
      * 
      * @returns Returns the average of the number values in the series.
      * 
@@ -2849,7 +2850,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Transforms an input series, generating a new series.
      * The transformer function is called for each element of the input and the collection of outputs creates the generated series.
      * 
-     * `select` is an alias for `map`.
+     * `select` is an alias for {@link Series.map}.
      * 
      * This is the same concept as the JavaScript function `Array.map` but maps over a data series rather than an array.
      *
@@ -2913,7 +2914,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * Transforms and flattens an input series, generating a new series.
      * The transfomration function is called for each value in the input series and produces an array that is flattened into the generated series.
      * 
-     * `selectMany` is an alias for `flatMap`.
+     * `selectMany` is an alias for {@link Series.flatMap}.
      * 
      * This is the same concept as the JavaScript function `Array.flatMap` but maps over a data series rather than an array.
      * 
@@ -3749,7 +3750,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Filter the series using user-defined predicate function.
      * 
-     * `where` is an alias for `filter`.
+     * `where` is an alias for {@link Series.filter}.
      *
      * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
      * 
