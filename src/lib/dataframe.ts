@@ -1286,19 +1286,44 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     tail (numValues: number): IDataFrame<IndexT, ValueT>;
 
     /**
-     * Filter the dataframe using user-defined predicate function.
-     *
-     * @param predicate Predicate function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
+     * Filter the dataframe through a user-defined predicate function.
      * 
-     * @return Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
+     * `where` is an alias for {@link DataFrame.filter}.
+     *
+     * This is the same concept as the JavaScript function `Array.filter` but filters a dataframe rather than an array.
+     * 
+     * @param predicate Predicate function to filter values from the dataframe. Returns true/truthy to keep elements, or false/falsy to omit elements.
+     * 
+     * @return Returns a new dataframe containing only the values from the original dataframe that matched the predicate. 
      * 
      * @example
      * <pre>
      * 
-     * const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we only have customers named Fred.
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = dataframe.where(row => row.salesFigure > 100); 
+     * console.log(filtered.toArray());
      * </pre>
      */
     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
+
+    /**
+     * Filter the dataframe through a user-defined predicate function.
+     * 
+     * This is the same concept as the JavaScript function `Array.filter` but filters a dataframe rather than an array.
+     *
+     * @param predicate Predicate function to filter values from the dataframe. Returns true/truthy to keep elements, or false/falsy to omit elements.
+     * 
+     * @return Returns a new dataframe containing only the values from the original dataframe that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = dataframe.filter(row => row.salesFigure > 100); 
+     * console.log(filtered.toArray());
+     * </pre>
+     */
+    filter (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT>;
 
     /**
      * Invoke a callback function for each row in the dataframe.
@@ -4752,21 +4777,49 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     /**
-     * Filter the dataframe using user-defined predicate function.
-     *
-     * @param predicate Predicte function to filter rows from the dataframe. Returns true/truthy to keep rows, or false/falsy to omit rows.
+     * Filter the dataframe through a user-defined predicate function.
      * 
-     * @return Returns a new dataframe containing only the rows from the original dataframe that matched the predicate. 
+     * `where` is an alias for {@link DataFrame.filter}.
+     *
+     * This is the same concept as the JavaScript function `Array.filter` but filters a dataframe rather than an array.
+     * 
+     * @param predicate Predicate function to filter values from the dataframe. Returns true/truthy to keep elements, or false/falsy to omit elements.
+     * 
+     * @return Returns a new dataframe containing only the values from the original dataframe that matched the predicate. 
      * 
      * @example
      * <pre>
      * 
-     * const filteredDf = df.where(row => row.CustomerName === "Fred"); // Filter so we only have customers named Fred.
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = dataframe.where(row => row.salesFigure > 100); 
+     * console.log(filtered.toArray());
      * </pre>
      */
-    where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+     where (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.where' to be a function.");
 
-        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.where' function to be a function.");
+        return this.filter(predicate);
+    }
+
+    /**
+     * Filter the dataframe through a user-defined predicate function.
+     * 
+     * This is the same concept as the JavaScript function `Array.filter` but filters a dataframe rather than an array.
+     *
+     * @param predicate Predicate function to filter values from the dataframe. Returns true/truthy to keep elements, or false/falsy to omit elements.
+     * 
+     * @return Returns a new dataframe containing only the values from the original dataframe that matched the predicate. 
+     * 
+     * @example
+     * <pre>
+     * 
+     * // Filter so we only have sales figures greater than 100.
+     * const filtered = dataframe.filter(row => row.salesFigure > 100); 
+     * console.log(filtered.toArray());
+     * </pre>
+     */
+    filter (predicate: PredicateFn<ValueT>): IDataFrame<IndexT, ValueT> {
+        if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'DataFrame.filter' to be a function.");
 
         return new DataFrame<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -5955,10 +6008,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         const outer = this;
-        return outer.where(outerValue => {
+        return outer.filter(outerValue => {
                 const outerKey = outerSelector!(outerValue);
                 return inner
-                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .filter(innerValue => outerKey === innerSelector!(innerValue))
                     .any();
             });
     }
@@ -6015,10 +6068,10 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         const outer = this;
-        return outer.where(outerValue => {
+        return outer.filter(outerValue => {
                 const outerKey = outerSelector!(outerValue);
                 return inner
-                    .where(innerValue => outerKey === innerSelector!(innerValue))
+                    .filter(innerValue => outerKey === innerSelector!(innerValue))
                     .none();
             });
     }

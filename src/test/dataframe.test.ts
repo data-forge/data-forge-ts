@@ -140,7 +140,7 @@ describe('DataFrame', () => {
             values: [100, 300, 200, 5] 
         });
         
-        var filtered = dataframe.where(value => {
+        var filtered = dataframe.filter(value => {
 				return value >= 100 && value < 300;
 			});
 		expect(filtered.getIndex().toArray()).to.eql([0, 2]);

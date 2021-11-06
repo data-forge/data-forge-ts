@@ -1075,7 +1075,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *
      * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
      * 
-     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep elements, or false/falsy to omit elements.
      * 
      * @return Returns a new series containing only the values from the original series that matched the predicate. 
      * 
@@ -1094,7 +1094,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * 
      * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
      *
-     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep elements, or false/falsy to omit elements.
      * 
      * @return Returns a new series containing only the values from the original series that matched the predicate. 
      * 
@@ -3748,13 +3748,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
-     * Filter the series using user-defined predicate function.
+     * Filter the series through a user-defined predicate function.
      * 
      * `where` is an alias for {@link Series.filter}.
      *
      * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
      * 
-     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep elements, or false/falsy to omit elements.
      * 
      * @return Returns a new series containing only the values from the original series that matched the predicate. 
      * 
@@ -3777,7 +3777,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * This is the same concept as the JavaScript function `Array.filter` but filters a data series rather than an array.
      *
-     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep values, or false/falsy to omit values.
+     * @param predicate Predicate function to filter values from the series. Returns true/truthy to keep elements, or false/falsy to omit elements.
      * 
      * @return Returns a new series containing only the values from the original series that matched the predicate. 
      * 
@@ -3785,18 +3785,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * <pre>
      * 
      * // Filter so we only have sales figures greater than 100.
-     * const filtered = series.where(salesFigure => salesFigure > 100); 
+     * const filtered = series.filter(salesFigure => salesFigure > 100); 
      * console.log(filtered.toArray());
      * </pre>
      */
     filter (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
-
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.filter' to be a function.");
 
-        return new Series(() => ({
-            values: new WhereIterable(this.getContent().values, predicate),
-            pairs: new WhereIterable(this.getContent().pairs, pair => predicate(pair[1]))
-        }));
+        return new Series(() => {
+            const content = this.getContent();
+            return {
+                values: new WhereIterable(this.getContent().values, predicate),
+                pairs: new WhereIterable(this.getContent().pairs, pair => predicate(pair[1]))
+            };
+        });
     }
 
     /**
