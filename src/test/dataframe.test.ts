@@ -762,6 +762,50 @@ describe('DataFrame', () => {
 		expect(agg.Column2).to.eql(6000);
 	});
     
+    it('reducing empty dataframe with no seed results in undefined', () => {
+
+		const dataframe = new DataFrame();
+		const reduced = dataframe.reduce((prev, row) => prev + row.value);
+		expect(reduced).to.eql(undefined);
+    });
+
+    it('reducing empty dataframe with seed results in seed', () => {
+
+		const dataframe = new DataFrame();
+		const reduced = dataframe.reduce((prev, row) => prev + row.value, 5);
+		expect(reduced).to.eql(5);
+    });
+
+    it('can reduce dataframe with no seed', () => {
+
+		const dataframe = new DataFrame([
+            { value: 4 },
+            { value: 8 },
+            { value: 16 },
+        ]);
+		const reduced = dataframe.reduce((prev, row) => ({ value: prev.value + row.value }));
+		expect(reduced).to.eql({ value: 28 });
+	});
+
+	it('can reduce dataframe with seed', () => {
+
+		const dataframe = new DataFrame([
+            { value: 4 },
+            { value: 8 },
+            { value: 16 },
+        ]);
+		const reduced = dataframe.reduce((prev, row) => prev + row.value, 2);
+		expect(reduced).to.eql(30);
+	});
+       
+	it('throws exception if no function is passed to reduce', () => {
+
+		const dataframe = new DataFrame();
+		expect(() => (dataframe.reduce as Function)()).to.throw();
+        expect(() => (dataframe.reduce as Function)(3)).to.throw();
+        expect(() => (dataframe.reduce as Function)(undefined)).to.throw();
+	});
+
 	it('can convert to javascript object', () => {
 
 		var dataframe = new DataFrame({

@@ -631,7 +631,8 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     /**
      * Reduces the values in the series to a single result.
      *
-     * `aggregate` is similar to the `reduce` function, but the parameters are reversed. Please use the `reduce` function in preference to `aggregate`.
+     * `aggregate` is similar to {@link Series.reduce}, but the parameters are reversed. 
+     * Please use {@link Series.reduce} in preference to `aggregate`.
      *
      * @param seed Optional seed value for producing the aggregation.
      * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
@@ -3121,7 +3122,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Reduces the values in the series to a single result.
      *
-     * `aggregate` is similar to the `reduce` function, but the parameters are reversed. Please use the `reduce` function in preference to `aggregate`.
+     * `aggregate` is similar to {@link Series.reduce}, but the parameters are reversed. 
+     * Please use {@link Series.reduce} in preference to `aggregate`.
      *
      * @param seed Optional seed value for producing the aggregation.
      * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
@@ -3185,13 +3187,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * @param reducer Function that takes the seed and then each value in the series and produces the reduced value.
      * @param seed Optional initial value, if not specifed the first value in the series is used as the initial value.
      * 
-     * @return Returns a new value that has been reduced from the input series by passing it through the 'reducer' function.
+     * @return Returns a value that has been reduced from the input series by passing each element through the reducer function.
      * 
      * @example
      * <pre>
      * 
      * const dailySales = ... daily sales figures for the past month ...
-     * const totalSalesForthisMonth = dailySales.reduce(
+     * const totalSales = dailySales.reduce(
      *      (accumulator, salesAmount) => accumulator + salesAmount, // Reducer function.
      *      0  // Seed value, the starting value.
      * );

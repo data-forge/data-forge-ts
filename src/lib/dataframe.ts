@@ -1062,6 +1062,9 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
 
     /**
      * Aggregate the rows in the dataframe to a single result.
+     * 
+     * `aggregate` is similar to {@link DataFrame.reduce}  but the parameters are reversed. 
+     * Please use {@link DataFrame.reduce} in preference to `aggregate`.
      *
      * @param seed Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregate value.
@@ -1099,8 +1102,41 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
      * });
      * </pre>
     */
-   aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT;
-    
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT | IColumnAggregateSpec, selector?: AggregateFn<ValueT, ToT>): ToT;
+
+    /**
+     * Reduces the values in the dataframe to a single result.
+     *
+     * This is the same concept as the JavaScript function `Array.reduce` but reduces a dataframe rather than an array.
+
+     * @param reducer Function that takes the seed and then each value in the dataframe and produces the reduced value.
+     * @param seed Optional initial value, if not specifed the first value in the dataframe is used as the initial value.
+     * 
+     * @return Returns a value that has been reduced from the input dataframe by passing each element through the reducer function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailyRecords = ... daily records for the past month ...
+     * const totalSales = dailyRecords.reduce(
+     *      (accumulator, row) => accumulator + row.salesAmount, // Reducer function.
+     *      0  // Seed value, the starting value.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const previousSales = 500; // We'll seed the reduction with this value.
+     * const dailyRecords = ... daily records for the past month ...
+     * const updatedSales = dailyRecords.reduce(
+     *      (accumulator, row) => accumulator + row.salesAmount,
+     *      previousSales
+     * );
+     * </pre>
+     */
+    reduce<ToT = ValueT> (reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT;
+   
     /**
      * Skip a number of rows in the dataframe.
      *
@@ -2202,7 +2238,7 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
             IDataFrame<number, ResultValueT>;
 
     /**
-     * Produces a summary of dataframe. A bit like the 'aggregate' function but much simpler.
+     * Produces a summary of dataframe.
      * 
      * @param spec Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
      * 
@@ -4412,6 +4448,9 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     /**
      * Aggregate the rows in the dataframe to a single result.
      *
+     * `aggregate` is similar to {@link DataFrame.reduce}  but the parameters are reversed. 
+     * Please use {@link DataFrame.reduce} in preference to `aggregate`.
+
      * @param seed Optional seed value for producing the aggregation.
      * @param selector Function that takes the seed and then each row in the dataframe and produces the aggregated value.
      * 
@@ -4484,6 +4523,56 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
     }
     
+    /**
+     * Reduces the values in the dataframe to a single result.
+     *
+     * This is the same concept as the JavaScript function `Array.reduce` but reduces a dataframe rather than an array.
+
+     * @param reducer Function that takes the seed and then each value in the dataframe and produces the reduced value.
+     * @param seed Optional initial value, if not specifed the first value in the dataframe is used as the initial value.
+     * 
+     * @return Returns a value that has been reduced from the input dataframe by passing each element through the reducer function.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const dailyRecords = ... daily records for the past month ...
+     * const totalSales = dailyRecords.reduce(
+     *      (accumulator, row) => accumulator + row.salesAmount, // Reducer function.
+     *      0  // Seed value, the starting value.
+     * );
+     * </pre>
+     * 
+     * @example
+     * <pre>
+     * 
+     * const previousSales = 500; // We'll seed the reduction with this value.
+     * const dailyRecords = ... daily records for the past month ...
+     * const updatedSales = dailyRecords.reduce(
+     *      (accumulator, row) => accumulator + row.salesAmount,
+     *      previousSales
+     * );
+     * </pre>
+     */
+    reduce<ToT = ValueT> (reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT {
+        if (!isFunction(reducer)) throw new Error("Expected 'reducer' parameter to `DataFrame.reduce` to be a function.");
+
+        let accum = <ToT> seed;
+        let dataframe: IDataFrame<any, ValueT> = this;
+        if (accum === undefined) {
+            if (dataframe.any()) {
+                accum = dataframe.first() as any as ToT;
+                dataframe = dataframe.skip(1);
+            }
+        }
+
+        for (const value of dataframe) {
+            accum = reducer(accum, value);
+        }
+
+        return accum;
+    }
+
     /**
      * Skip a number of rows in the dataframe.
      *
@@ -6331,7 +6420,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
-     * Produces a summary of dataframe. A bit like the 'aggregate' function but much simpler.
+     * Produces a summary of dataframe. 
      * 
      * @param spec Optional parameter that specifies which columns to aggregate and how to aggregate them. Leave this out to produce a default summary of all columns.
      * 
