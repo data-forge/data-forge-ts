@@ -432,5 +432,167 @@ describe('DataFrame constructor', () => {
 		expect(dataFrame.toRows()).to.eql([[], []]);
     });	
     
+    it("create dataframe from generator 1", () => {
+        function* gen() {
+            yield { a: 1 };
+            yield { a: 2 };
+            yield { a: 3 };
+        }
 
+        const dataframe = new DataFrame(gen());
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 1 }, { a: 2 }, { a: 3 }]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 1 }, { a: 2 }, { a: 3 }]);
+    });
+
+    it("create dataframe from generator 2", () => {
+        function* index() {
+            yield 7;
+            yield 8;
+            yield 9;
+        }
+
+        function* values() {
+            yield { a: 4 };
+            yield { a: 5 };
+            yield { a: 6 };
+        }
+
+        const dataframe = new DataFrame({
+            values: values(),
+            index: index(),
+        });
+
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+        expect(dataframe.getIndex().toArray()).to.eql([7, 8, 9]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+        expect(dataframe.getIndex().toArray()).to.eql([7, 8, 9]);
+    });
+
+    it("create dataframe from generator 3", () => {
+        function* gen(): IterableIterator<[number, any]> {
+            yield [7, { a: 4 }];
+            yield [8, { a: 5 }];
+            yield [9, { a: 6 }];
+        }
+
+        const dataframe = new DataFrame({
+            pairs: gen(),
+        });
+
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+        expect(dataframe.getIndex().toArray()).to.eql([7, 8, 9]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+        expect(dataframe.getIndex().toArray()).to.eql([7, 8, 9]);
+    });
+
+    it("create dataframe from generator 4", () => {
+        function* index() {
+            yield 7;
+            yield 8;
+            yield 9;
+        }
+
+        function* values() {
+            yield { a: 4 };
+            yield { a: 5 };
+            yield { a: 6 };
+        }
+
+        const dataframe = new DataFrame(() => ({
+            values: values(),
+            index: index(),
+        }));
+
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+        expect(dataframe.getIndex().toArray()).to.eql([7, 8, 9]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+        expect(dataframe.getIndex().toArray()).to.eql([7, 8, 9]);
+    });
+
+    it("create dataframe from generator 5", () => {
+        function* rows() {
+            yield [4];
+            yield [5];
+            yield [6];
+        }
+
+        function* cols() {
+            yield "a";
+        }
+
+        const dataframe = new DataFrame({
+            rows: rows(),
+            columnNames: cols(),
+        });
+
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+    });
+
+    it("create dataframe from generator 6", () => {
+        function* values() {
+            yield 4;
+            yield 5;
+            yield 6;
+        }
+
+        function* cols() {
+            yield {
+                name: "a",
+                series: values(), 
+            };
+        }
+
+        const dataframe = new DataFrame({
+            columns: cols(),
+        });
+
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+    });
+
+    it("create dataframe from generator 7", () => {
+        function* values() {
+            yield 4;
+            yield 5;
+            yield 6;
+        }
+
+        const dataframe = new DataFrame({
+            columns: {
+                a: values(),
+            },
+        });
+
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(dataframe.getColumnNames()).to.eql(["a"]);
+        expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+    });
 });

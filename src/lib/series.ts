@@ -27,9 +27,10 @@ import moment from "dayjs";
 // @ts-ignore
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 moment.extend(customParseFormat);
-import { toMap, isArray, isFunction, isNumber, isString, isDate } from './utils';
+import { toMap, isArray, isFunction, isNumber, isString, isDate, isObject } from './utils';
 import { range, replicate } from '..';
 import numeral from 'numeral';
+import { CachedIteratorIterable } from './iterables/cached-iterator-iterable';
 
 /**
  * Used to configure a series.
@@ -39,26 +40,26 @@ export interface ISeriesConfig<IndexT, ValueT> {
      * Values to put in the dataframe.
      * This should be array or iterable of JavaScript values.
      */
-    values?: Iterable<ValueT>,
+    values?: Iterator<ValueT> | Iterable<ValueT>;
 
     /***
      * The index for the serires.
      * If omitted the index will default to a 0-based index.
      */
-    index?: Iterable<IndexT>,
+    index?: Iterator<IndexT> | Iterable<IndexT>;
 
     /**
      * Array or iterable of index,value pairs to put in the series.
      * If index and values are not separately specified they can be extracted
      * from the pairs.
      */
-    pairs?: Iterable<[IndexT, ValueT]>
+    pairs?: Iterator<[IndexT, ValueT]> | Iterable<[IndexT, ValueT]>;
 
     /***
      * Set to true when the series has been baked into memory
      * and does not need to be lazily evaluated.
      */
-    baked?: boolean,
+    baked?: boolean;
 }
 
 /**
@@ -2408,9 +2409,16 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     private static readonly defaultEmptyIterable = new EmptyIterable();
 
     //
-    // Initialise series content from an array of values.
+    // Initialise a series from an iterator (or generator object).
     //
-    private static initFromArray<IndexT, ValueT>(arr: Iterable<ValueT>): ISeriesContent<IndexT, ValueT> {
+    private static initFromIterator<IndexT, ValueT>(iterator: Iterator<ValueT>): ISeriesContent<IndexT, ValueT> {
+        return Series.initFromIterable<IndexT, ValueT>(new CachedIteratorIterable(iterator));
+    }
+
+    //
+    // Initialise series content from an iterable of values.
+    //
+    private static initFromIterable<IndexT, ValueT>(arr: Iterable<ValueT>): ISeriesContent<IndexT, ValueT> {
         return {
             index: Series.defaultCountIterable,
             values: arr,
@@ -2432,13 +2440,25 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     //
+    // Returns true if the input is an iterator.
+    //
+    private static isIterator(input: any): boolean {
+        return isObject(input) && isFunction(input.next);
+    }
+
+    //
+    // Returns true if the input is an iterable.
+    //
+    private static isIterable(input: any): boolean {
+        return isArray(input) || 
+               (isObject(input) && isFunction(input[Symbol.iterator]));
+    }
+
+    //
     // Check that a value is an interable.
     //
-    private static checkIterable<T>(input: T[] | Iterable<T>, fieldName: string): void {
-        if (isArray(input)) {
-            // Ok
-        }
-        else if (isFunction(input[Symbol.iterator])) {
+    private static checkIterable<T>(input: any, fieldName: string): void {
+        if (Series.isIterable(input)) {
             // Assume it's an iterable.
             // Ok
         }
@@ -2459,13 +2479,23 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         let isBaked = false;
 
         if (config.pairs) {
-            Series.checkIterable<[IndexT, ValueT]>(config.pairs, "pairs");
-            pairs = config.pairs;
+            if (Series.isIterator(config.pairs)) {
+                pairs = new CachedIteratorIterable(config.pairs as Iterator<[IndexT, ValueT]>);
+            }
+            else {
+                Series.checkIterable<[IndexT, ValueT]>(config.pairs, "pairs");
+                pairs = config.pairs as Iterable<[IndexT, ValueT]>;
+            }
         }
 
         if (config.index) {
-            Series.checkIterable<IndexT>(config.index, "index")
-            index = config.index;
+            if (Series.isIterator(config.index)) {
+                index = new CachedIteratorIterable(config.index as Iterator<IndexT>);
+            }
+            else {
+                Series.checkIterable<IndexT>(config.index, "index")
+                index = config.index as Iterable<IndexT>;
+            }
         }
         else if (pairs) {
             index = new ExtractElementIterable(pairs, 0);
@@ -2475,8 +2505,13 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         if (config.values) {
-            Series.checkIterable<ValueT>(config.values, "values");
-            values = config.values;
+            if (Series.isIterator(config.values)) {
+                values = new CachedIteratorIterable(config.values as Iterator<ValueT>);
+            }
+            else {
+                Series.checkIterable<ValueT>(config.values, "values");
+                values = config.values as Iterable<ValueT>;
+            }
         }
         else if (pairs) {
             values = new ExtractElementIterable(pairs, 1);
@@ -2537,14 +2572,16 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const series = new Series(lazyInit);
      * </pre>
      */
-    constructor(config?: Iterable<ValueT> | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
+    constructor(config?: Iterator<ValueT> | Iterable<ValueT> | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
         if (config) {
             if (isFunction(config)) {
                 this.configFn = config;
             }
-            else if (isArray(config) || 
-                     isFunction((config as any)[Symbol.iterator])) {
-                this.content = Series.initFromArray(config as Iterable<ValueT>);
+            else if (Series.isIterator(config)) {
+                this.content = Series.initFromIterator(config as Iterator<ValueT>);
+            }
+            else if (Series.isIterable(config)) {
+                this.content = Series.initFromIterable(config as Iterable<ValueT>);
             }
             else {
                 this.content = Series.initFromConfig(config as ISeriesConfig<IndexT, ValueT>);

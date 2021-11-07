@@ -6,6 +6,7 @@ import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series constructor', () => {
 
+
     it('create series from array of values', ()  => {
         expect(new Series([10, 20, 30]).toArray()).to.eql([10, 20, 30]);        
     });
@@ -218,5 +219,78 @@ describe('Series constructor', () => {
         expect(series.getIndex().toArray()).to.eql([15, 16, 17]); // Different values!
         expect(series.toPairs()).to.eql([[100, 10], [200, 20], [300, 30]]);
         expect(series.toArray()).to.eql([5, 4, 6]); // Different values! A hack to test.
+    });
+
+    it("create series from generator 1", () => {
+        function* gen(): IterableIterator<number> {
+            yield 1;
+            yield 2;
+            yield 3;
+        }
+
+        const series = new Series(gen());
+        expect(series.toArray()).to.eql([1, 2, 3]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(series.toArray()).to.eql([1, 2, 3]); 
+    });
+
+    it("create series from generator 2", () => {
+        function* gen(start: number): IterableIterator<number> {
+            yield start+0;
+            yield start+1;
+            yield start+2;
+        }
+
+        const series = new Series({
+            values: gen(4),
+            index: gen(7),
+        });
+
+        expect(series.toArray()).to.eql([4, 5, 6]);
+        expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(series.toArray()).to.eql([4, 5, 6]);
+        expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
+    });
+
+    it("create series from generator 3", () => {
+        function* gen(): IterableIterator<[number, number]> {
+            yield [7, 4];
+            yield [8, 5];
+            yield [9, 6];
+        }
+
+        const series = new Series({
+            pairs: gen(),
+        });
+
+        expect(series.toArray()).to.eql([4, 5, 6]);
+        expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(series.toArray()).to.eql([4, 5, 6]);
+        expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
+    });
+
+    it("create series from generator 4", () => {
+        function* gen(start: number): IterableIterator<number> {
+            yield start+0;
+            yield start+1;
+            yield start+2;
+        }
+
+        const series = new Series(() => ({
+            values: gen(4),
+            index: gen(7),
+        }));
+
+        expect(series.toArray()).to.eql([4, 5, 6]);
+        expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
+
+        // Expectations again to make sure lazy eval can work again.
+        expect(series.toArray()).to.eql([4, 5, 6]);
+        expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
     });
 });

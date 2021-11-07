@@ -35,12 +35,13 @@ import JSON5 from 'json5';
 
 // @ts-ignore
 import PapaParse from 'papaparse';
+import { CachedIteratorIterable } from './iterables/cached-iterator-iterable';
 
 /** 
  * An object whose fields specify the data for named columns.
  */
 export interface IColumnSpec {
-    [index: string]: Iterable<any> | ISeries<any, any>,
+    [index: string]: Iterator<any> | Iterable<any> | ISeries<any, any>,
 }
 
 /**
@@ -106,27 +107,27 @@ export interface IDataFrameConfig<IndexT, ValueT> {
      * This should be array or iterable of JavaScript objects.
      * Each element in the array contains fields that match the columns of the dataframe.
      */
-    values?: Iterable<ValueT>,
+    values?: Iterator<ValueT> | Iterable<ValueT>;
 
     /**
      * CSV style rows to put in the dataframe.
      * An array of arrays. Each element in the top level array is a row of data.
      * Each row of data contains field values in column order.
      */
-    rows?: Iterable<any[]>,
+    rows?: Iterator<any[]> | Iterable<any[]>;
 
     /***
      * The index for the dataframe.
      * If omitted the index will default to a 0-based index.
      */
-    index?: Iterable<IndexT>,
+    index?: Iterator<IndexT> | Iterable<IndexT>;
 
     /**
      * Array or iterable of index,value pairs to put in the dataframe.
      * If index and values are not separately specified they can be extracted
      * from the pairs.
      */
-    pairs?: Iterable<[IndexT, ValueT]>,
+    pairs?: Iterator<[IndexT, ValueT]> | Iterable<[IndexT, ValueT]>;
 
     /**
      * Array or iterable of column names that are in the dataframe.
@@ -135,13 +136,13 @@ export interface IDataFrameConfig<IndexT, ValueT> {
      * If this is omitted column names will automatically be determined
      * from the fields of the first row/value in the dataframe.
      */
-    columnNames?: Iterable<string>,
+    columnNames?: Iterator<string> | Iterable<string>;
 
     /***
      * Set to true when the dataframe has been baked into memory
      * and does not need to be lazily evaluated.
      */
-    baked?: boolean,
+    baked?: boolean;
 
     /**
      * Set to true to consider all rows/values in the dataframe when
@@ -149,19 +150,18 @@ export interface IDataFrameConfig<IndexT, ValueT> {
      * You should use this if you have irregular fields in the objects that
      * make up the rows/values of the dataframe.
      */
-    considerAllRows?: boolean,
+    considerAllRows?: boolean;
 
     /**
      * Explicitly specify data for named columns to put in the dataframe.
      */
-    columns?: Iterable<IColumnConfig> | IColumnSpec,
+    columns?: Iterator<IColumnConfig> | Iterable<IColumnConfig> | IColumnSpec;
 
     /**
      * Explicitly set this value if you want columnNames to be caseSensitive.
      * Default behaviour is to treat column names as case insensitive
      */
-
-    caseSensitive?: boolean,
+    caseSensitive?: boolean;
 }
 
 /** 
@@ -2715,9 +2715,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     private static readonly defaultEmptyIterable = new EmptyIterable();
     
     //
+    // Initialise a series from an iterator (or generator object).
+    //
+    private static initFromIterator<IndexT, ValueT>(iterator: Iterator<ValueT>): IDataFrameContent<IndexT, ValueT> {
+        return DataFrame.initFromIterable<IndexT, ValueT>(new CachedIteratorIterable(iterator));
+    }
+
+    //
     // Initialise dataframe content from an iterable of values.
     //
-    private static initFromArray<IndexT, ValueT>(arr: Iterable<ValueT>): IDataFrameContent<IndexT, ValueT> {
+    private static initFromIterable<IndexT, ValueT>(arr: Iterable<ValueT>): IDataFrameContent<IndexT, ValueT> {
         const firstResult = arr[Symbol.iterator]().next();
         const columnNames = !firstResult.done ? Object.keys(firstResult.value) : [];
         return {
@@ -2789,13 +2796,25 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }
 
     //
+    // Returns true if the input is an iterator.
+    //
+    private static isIterator(input: any): boolean {
+        return isObject(input) && isFunction(input.next);
+    }
+
+    //
+    // Returns true if the input is an iterable.
+    //
+    private static isIterable(input: any): boolean {
+        return isArray(input) || 
+               (isObject(input) && isFunction(input[Symbol.iterator]));
+    }
+
+    //
     // Check that a value is an interable.
     //
-    private static checkIterable<T>(input: T[] | Iterable<T>, fieldName: string): void {
-        if (isArray(input)) {
-            // Ok
-        }
-        else if (isFunction(input[Symbol.iterator])) {
+    private static checkIterable<T>(input: any, fieldName: string): void {
+        if (DataFrame.isIterable(input)) {
             // Assume it's an iterable.
             // Ok
         }
@@ -2817,16 +2836,23 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         let columnNames: Iterable<string>;
 
         if (config.pairs) {
-            DataFrame.checkIterable<[IndexT, ValueT]>(config.pairs, "pairs");
-            pairs = config.pairs;
+            if (DataFrame.isIterator(config.pairs)) {
+                pairs = new CachedIteratorIterable(config.pairs as Iterator<[IndexT, ValueT]>);
+            }
+            else {
+                DataFrame.checkIterable<[IndexT, ValueT]>(config.pairs, "pairs");
+                pairs = config.pairs as Iterable<[IndexT, ValueT]>;
+            }
         }
         
         if (config.columns) {
             let columnsConfig: any = config.columns;
 
-            if (isArray(columnsConfig) ||
-                isFunction((columnsConfig as any)[Symbol.iterator])) {
+            if (DataFrame.isIterator(columnsConfig)) {
+                columnsConfig = new CachedIteratorIterable(columnsConfig as Iterator<IColumnConfig>);
+            }
 
+            if (DataFrame.isIterable(columnsConfig)) {
                 const iterableColumnsConfig = columnsConfig as Iterable<IColumnConfig>;
                 columnNames = Array.from(iterableColumnsConfig).map(column => column.name);
                 columnsConfig = toMap(iterableColumnsConfig, column => column.name, column => column.series);
@@ -2839,15 +2865,28 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             const columnIterables: any[] = [];
             for (const columnName of columnNames) {
-                DataFrame.checkIterable(columnsConfig[columnName], columnName);
-                columnIterables.push(columnsConfig[columnName]);
+                let columnConfig = columnsConfig[columnName];
+                if (DataFrame.isIterator(columnConfig)) {
+                    columnConfig = new CachedIteratorIterable(columnConfig as Iterator<any>);
+                }
+                else {
+                    DataFrame.checkIterable(columnConfig, columnName);
+                }
+                columnIterables.push(columnConfig);
             }
 
             values = new CsvRowsIterable(columnNames, new MultiIterable(columnIterables));
         }
         else {
             if (config.columnNames) {
-                columnNames = this.initColumnNames(config.columnNames, config.caseSensitive);
+                if (DataFrame.isIterator(config.columnNames)) {
+                    columnNames = new CachedIteratorIterable(config.columnNames as Iterator<string>);
+                }
+                else {
+                    columnNames = config.columnNames as Iterable<string>;
+                }
+
+                columnNames = this.initColumnNames(columnNames, config.caseSensitive);
             }
 
             if (config.rows) {
@@ -2855,12 +2894,26 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                     columnNames = new SelectIterable(new CountIterable(), c => "Column." + c.toString());
                 }
 
-                DataFrame.checkIterable<any[][]>(config.rows, 'rows')
-                values = new CsvRowsIterable(columnNames!, config.rows); // Convert data from rows to columns.
+                let rows: Iterable<any>
+                if (DataFrame.isIterator(config.rows)) {
+                    rows = new CachedIteratorIterable(config.rows as Iterator<any>);
+                }
+                else {
+                    DataFrame.checkIterable<any[][]>(config.rows, 'rows')
+                    rows = config.rows as Iterable<any>;
+                }
+                    
+                values = new CsvRowsIterable(columnNames!, rows); // Convert data from rows to columns.
             }
             else if (config.values) {
-                DataFrame.checkIterable<ValueT>(config.values, 'values')
-                values = config.values;
+                if (DataFrame.isIterator(config.values)) {
+                    values = new CachedIteratorIterable(config.values as Iterator<ValueT>);
+                }
+                else {
+                    DataFrame.checkIterable<ValueT>(config.values, "values");
+                    values = config.values as Iterable<ValueT>;
+                }
+
                 if (!config.columnNames) {
                     columnNames = new ColumnNamesIterable(values, config.considerAllRows || false);
                 }
@@ -2880,8 +2933,13 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         }
 
         if (config.index) {
-            DataFrame.checkIterable<IndexT>(config.index, 'index');
-            index = config.index;
+            if (DataFrame.isIterator(config.index)) {
+                index = new CachedIteratorIterable(config.index as Iterator<IndexT>);
+            }
+            else {
+                DataFrame.checkIterable<IndexT>(config.index, 'index');
+                index = config.index as Iterable<IndexT>;
+            }
         }
         else if (pairs) {
             index = new ExtractElementIterable(pairs, 0);
@@ -2943,14 +3001,16 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const df = new DataFrame(lazyInit);
      * </pre>
      */
-    constructor(config?: Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
+    constructor(config?: Iterator<ValueT> | Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
         if (config) {
             if (isFunction(config)) {
                 this.configFn = config;
             }
-            else if (isArray(config) || 
-                     isFunction((config as any)[Symbol.iterator])) {
-                this.content = DataFrame.initFromArray(config as Iterable<ValueT>);
+            else if (DataFrame.isIterator(config)) {
+                this.content = DataFrame.initFromIterator(config as Iterator<ValueT>);
+            }
+            else if (DataFrame.isIterable(config)) {
+                this.content = DataFrame.initFromIterable(config as Iterable<ValueT>);
             }
             else {
                 this.content = DataFrame.initFromConfig(config as IDataFrameConfig<IndexT, ValueT>);
