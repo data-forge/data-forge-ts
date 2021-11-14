@@ -246,4 +246,12 @@ describe('Series stats', () => {
         expect(series.mean()).to.eql(5);
         expect(series.std()).to.eql(2);
     }); 
+
+    //
+    // Derived from Statistics (9th Edition) by Witte & Witte. P 83. Chapter 4.
+    //
+    it('realistic test for standard deviation', () => {
+        const x = [13, 10, 11, 7, 9, 11, 9];
+        expect(new Series(x).std()).to.be.closeTo(1.77, 0.01);
+    });
 });
