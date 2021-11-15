@@ -1566,6 +1566,32 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     std (): number;
 
     /**
+     * Get the (sample) variance of number values in the series. 
+     * 
+     * @returns Returns the (sample) variance of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesVariance = salesFigures.variance();
+     * </pre>
+     */
+    sampleVariance (): number;
+
+    /**
+     * Get the (sample) standard deviation of number values in the series. 
+     * 
+     * @returns Returns the (sample) standard deviation of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesStdDev = salesFigures.sampleStd();
+     * </pre>
+     */
+    sampleStd (): number;
+
+    /**
      * Get the min value in the series.
      * 
      * @returns Returns the minimum of the number values in the series.
@@ -4685,12 +4711,37 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         return entries[0][0];
     }
 
+    //
+    // Gets the sum of squares for the series (and the count).
+    //
+    private sumOfSquares (): [number, number] {
+
+        if (this.none()) {
+            return [0, 1];
+        }
+
+        const average = this.mean();
+        let sumOfSquaredDiffs = 0;
+        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+        
+        let count = 0;
+        for (const value of numberSeries) {
+            count += 1;
+            const numberValue = value as any as number;
+            const diffFromMean = numberValue - average; // Assume input series are numbers.
+            const diffFromMeanSqr = diffFromMean * diffFromMean;
+            sumOfSquaredDiffs += diffFromMeanSqr;
+        }
+
+        return [sumOfSquaredDiffs, count];
+    }
+
     /**
-     * Static version of the variiance function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
+     * Static version of the (population) variance function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
-     * @param series Input series for which to find the variance.
+     * @param series Input series for which to find the (population) variance.
      * 
-     * @returns Returns the variance of the values in the series.
+     * @returns Returns the (population) variance of the values in the series.
      * 
      * @example
      * <pre>
@@ -4705,9 +4756,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Get the variance of number values in the series. 
+     * Get the (population) variance of number values in the series. 
      * 
-     * @returns Returns the variance of the values in the series.
+     * @returns Returns the (population) variance of the values in the series.
      * 
      * @example
      * <pre>
@@ -4721,28 +4772,16 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return 0;
         }
 
-        const average = this.mean();
-        let count = 0;
-        let sumOfSquaredDiffs = 0;
-        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
-
-        for (const value of numberSeries) {
-            count += 1;
-            const numberValue = value as any as number;
-            const diffFromMean = numberValue - average; // Assume input series are numbers.
-            const diffFromMeanSqr = diffFromMean * diffFromMean;
-            sumOfSquaredDiffs += diffFromMeanSqr
-        }
-
+        const [sumOfSquaredDiffs, count] = this.sumOfSquares()
         return sumOfSquaredDiffs / count;
     }
 
     /**
-     * Static version of the standard deviation function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
+     * Static version of the (population) standard deviation function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
-     * @param series Input series to find the standard deviation of.
+     * @param series Input series for which to find the (population) standard deviation.
      * 
-     * @returns Returns the standard deviation of the values in the series.
+     * @returns Returns the (population) standard deviation of the values in the series.
      * 
      * @example
      * <pre>
@@ -4757,9 +4796,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
     
     /**
-     * Get the standard deviation of number values in the series. 
+     * Get the (population) standard deviation of number values in the series. 
      * 
-     * @returns Returns the standard deviation of the values in the series.
+     * @returns Returns the (population) standard deviation of the values in the series.
      * 
      * @example
      * <pre>
@@ -4774,6 +4813,85 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return Math.sqrt(this.variance());
+    }
+
+    /**
+     * Static version of the (sample) variance function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
+     * 
+     * @param series Input series for which to find the (sample) variance.
+     * 
+     * @returns Returns the (sample) variance of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      InputColumn: Series.sampleVariance,
+     * });
+     * </pre>
+     */
+     static sampleVariance<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.sampleVariance();
+    }
+    
+    /**
+     * Get the (sample) variance of number values in the series. 
+     * 
+     * @returns Returns the (sample) variance of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesVariance = salesFigures.variance();
+     * </pre>
+     */
+     sampleVariance (): number {
+
+        if (this.none()) {
+            return 0;
+        }
+
+        const [sumOfSquaredDiffs, count] = this.sumOfSquares()
+        return sumOfSquaredDiffs / (count - 1);
+    }
+
+    /**
+     * Static version of the (sample) standard deviation function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
+     * 
+     * @param series Input series for which to find the (sample) standard deviation.
+     * 
+     * @returns Returns the (sample) standard deviation of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const summary = dataFrame.summarize({
+     *      InputColumn: Series.sampleStd,
+     * });
+     * </pre>
+     */
+    static sampleStd<IndexT = any> (series: ISeries<IndexT, number>): number {
+        return series.sampleStd();
+    }
+    
+    /**
+     * Get the (sample) standard deviation of number values in the series. 
+     * 
+     * @returns Returns the (sample) standard deviation of the values in the series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const salesStdDev = salesFigures.sampleStd();
+     * </pre>
+     */
+    sampleStd (): number {
+
+        if (this.none()) {
+            return 0;
+        }
+
+        return Math.sqrt(this.sampleVariance());
     }
 
     /**

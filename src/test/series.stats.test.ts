@@ -196,7 +196,7 @@ describe('Series stats', () => {
         expect(counted.getIndex().toArray()).to.eql(range(10, 13).toArray());
     });
 
-    it('variance of empty series is zero', ()=> {
+    it('population variance of empty series is zero', ()=> {
         
         const series = new Series<number, number>();
         expect(series.variance()).to.eql(0);
@@ -220,7 +220,7 @@ describe('Series stats', () => {
         expect(series.variance()).to.eql(4);
     }); 
 
-    it('standard deviation of empty series is zero', ()=> {
+    it('population standard deviation of empty series is zero', ()=> {
         
         const series = new Series<number, number>([]);
         expect(series.std()).to.eql(0);
@@ -250,8 +250,28 @@ describe('Series stats', () => {
     //
     // Derived from Statistics (9th Edition) by Witte & Witte. P 83. Chapter 4.
     //
-    it('realistic test for standard deviation', () => {
+    it('realistic test for population standard deviation', () => {
         const x = [13, 10, 11, 7, 9, 11, 9];
         expect(new Series(x).std()).to.be.closeTo(1.77, 0.01);
+    });
+
+    it('sample variance of empty series is zero', ()=> {
+        
+        const series = new Series<number, number>();
+        expect(series.sampleVariance()).to.eql(0);
+    });
+
+    it('sample standard deviation of empty series is zero', ()=> {
+        
+        const series = new Series<number, number>([]);
+        expect(series.sampleStd()).to.eql(0);
+    });
+
+    //
+    // Derived from Statistics (9th Edition) by Witte & Witte. P 83. Chapter 4.
+    //
+    it('realistic test for sample standard deviation', () => {
+        const x = [7, 3, 1, 0, 4];
+        expect(new Series(x).sampleStd()).to.be.closeTo(2.74, 0.01);
     });
 });
