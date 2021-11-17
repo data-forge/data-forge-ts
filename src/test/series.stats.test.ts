@@ -274,4 +274,32 @@ describe('Series stats', () => {
         const x = [7, 3, 1, 0, 4];
         expect(new Series(x).sampleStd()).to.be.closeTo(2.74, 0.01);
     });
+
+    it("can compute z scores", () => {
+        const series = new Series([1, 2, 3]);
+        expect(series.standardize().toArray()).to.eql([ -1.224744871391589, 0, 1.224744871391589 ]);
+    });
+
+    it("standardizing an empty series produces an empty series", () => {
+        expect(new Series().standardize().toArray()).to.eql([]);    
+    });
+
+    it('standardize throws for series with no variability', () => {
+        const series = new Series([2, 2, 2]);
+        expect(() => series.standardize()).to.throw();
+    });
+
+    it("can compute z scores - sample", () => {
+        const series = new Series([1, 2, 3]);
+        expect(series.sampleStandardize().toArray()).to.eql([ -1, 0, 1 ]);
+    });
+
+    it("standardizing an empty series produces an empty series - sample", () => {
+        expect(new Series().sampleStandardize().toArray()).to.eql([]);    
+    });
+
+    it('standardize throws for series with no variability - sample', () => {
+        const series = new Series([2, 2, 2]);
+        expect(() => series.sampleStandardize()).to.throw();
+    });
 });

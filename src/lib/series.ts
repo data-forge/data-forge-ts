@@ -1566,6 +1566,20 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     std (): number;
 
     /**
+     * Standardize a series of numbers by converting each "standard deviations from the mean".
+     * This converts the input series to Z scores using the population standard deviation.
+     * 
+     * @returns A new series containing Z scores computed from the input series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const standardizedSeries = series.standardize();
+     * </pre>
+     */
+    standardize (): ISeries<IndexT, number>;
+
+    /**
      * Get the (sample) variance of number values in the series. 
      * 
      * @returns Returns the (sample) variance of the values in the series.
@@ -1590,6 +1604,20 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * </pre>
      */
     sampleStd (): number;
+
+    /**
+     * Standardize a series of numbers by converting each "standard deviations from the mean".
+     * This converts the input series to Z scores using the sample standard deviation.
+     * 
+     * @returns A new series containing Z scores computed from the input series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const standardizedSeries = series.sampleStandardize();
+     * </pre>
+     */
+    sampleStandardize (): ISeries<IndexT, number>;
 
     /**
      * Get the min value in the series.
@@ -4816,6 +4844,38 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     }
 
     /**
+     * Standardize a series of numbers by converting each "standard deviations from the mean".
+     * This converts the input series to Z scores using the population standard deviation.
+     * 
+     * @returns A new series containing Z scores computed from the input series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const standardizedSeries = series.standardize();
+     * </pre>
+     */
+    standardize (): ISeries<IndexT, number> {
+        
+        if (this.none()) {
+            // There are no values in the input series.
+            return new Series<IndexT, number>();
+        }
+
+        const mean = this.mean();
+        const std = this.std();
+        if (std === 0) {
+            throw new Error(`Can't standardize a series that has no variation.`);
+        }
+
+        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+        return numberSeries.map(value => {
+            const zScore = (value - mean) / std;
+            return zScore;
+        });
+    }
+
+    /**
      * Static version of the (sample) variance function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
      * @param series Input series for which to find the (sample) variance.
@@ -4892,6 +4952,38 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
 
         return Math.sqrt(this.sampleVariance());
+    }
+
+    /**
+     * Standardize a series of numbers by converting each "standard deviations from the mean".
+     * This converts the input series to Z scores using the sample standard deviation.
+     * 
+     * @returns A new series containing Z scores computed from the input series.
+     * 
+     * @example
+     * <pre>
+     * 
+     * const standardizedSeries = series.sampleStandardize();
+     * </pre>
+     */
+    sampleStandardize (): ISeries<IndexT, number> {
+        
+        if (this.none()) {
+            // There are no values in the input series.
+            return new Series<IndexT, number>();
+        }
+
+        const mean = this.mean();
+        const std = this.sampleStd();
+        if (std === 0) {
+            throw new Error(`Can't standardize a series that has no variation.`);
+        }
+
+        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+        return numberSeries.map(value => {
+            const zScore = (value - mean) / std;
+            return zScore;
+        });
     }
 
     /**
