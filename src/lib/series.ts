@@ -4299,6 +4299,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return undefined;
         }
         else {
+            let number = Number(value);
+	        if (number) value = new Date(number).toLocaleString();
             if (!isString(value)) throw new Error("Called Series.parseFloats, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
 
             if (value.length === 0) {
