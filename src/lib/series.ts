@@ -4334,6 +4334,8 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return undefined;
         }
         else {
+	    let timestamp = Number(value);
+	    if (timestamp) value = new Date(timestamp).toLocaleString();	
             if (!isString(value)) throw new Error("Called Series.parseDates, expected all values in the series to be strings, instead found a '" + typeof(value) + "' at index " + valueIndex);
 
             if (value.length === 0) {
