@@ -361,7 +361,7 @@ const df = new DataFrame({
      values: [10, 20, 30, 40],
 });
 
-const lastHalf = df.before(1);
+const lastHalf = df.after(1);
 expect(lastHalf.toArray()).to.eql([30, 40]);
 </pre>
 									</dd>
