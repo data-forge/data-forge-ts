@@ -834,6 +834,23 @@ describe('DataFrame series', () => {
 		]);
     });
 
+    it('case sensitivity is propagated through reorder', () => {
+
+        const df = new DataFrame({
+            columnNames: ['col_a', 'Col_A'],
+            rows: [[1, 1]],
+            caseSensitive: true,
+        });
+
+        expect(df.getColumnNames()).to.eql([ 'col_a', 'Col_A' ]);
+    
+        const reordered1 = df.reorderSeries([ 'col_a', 'Col_A' ]);
+        expect(reordered1.getColumnNames()).to.eql([ 'col_a', 'Col_A' ]);
+
+        const reordered2 = df.reorderSeries([ 'Col_A',  'col_a' ]);
+        expect(reordered2.getColumnNames()).to.eql([ 'Col_A', 'col_a' ]);
+    });
+
 	it('can rename single column', () => {
 
 		var df = new DataFrame({

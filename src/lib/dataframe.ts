@@ -2673,12 +2673,40 @@ export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> e
 // Represents the contents of a dataframe.
 //
 interface IDataFrameContent<IndexT, ValueT> {
+
+     /***
+      * Iterates the index for the dataframe.
+      */
     index: Iterable<IndexT>;
+
+    /**
+     * Iterates values for each row in the dataframe.
+     */
     values: Iterable<ValueT>;
+
+    /**
+     * Iterates the index/value pairs in the dataframe.
+     */
     pairs: Iterable<[IndexT, ValueT]>;
 
+    /**
+      * Array or iterable of column names that are in the dataframe.
+      * The order matters. This arrays specifies the ordering of columns which
+      * is important when rendering tables or writing out CSV data files.
+      */
     columnNames: string[] | Iterable<string>,
+ 
+    /***
+      * Set to true when the dataframe has been baked into memory
+      * and does not need to be lazily evaluated.
+      */
     isBaked: boolean,
+
+    /**
+     * Set to true to make column names be case sensitive.
+     * Default behaviour is to treat column names as case insensitive.
+     */
+    isCaseSensitive: boolean;
 }
 
 /**
@@ -2733,6 +2761,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             pairs: new MultiIterable([DataFrame.defaultCountIterable, arr]),
             isBaked: true,
             columnNames: columnNames,
+            isCaseSensitive: false,
         };
     }
 
@@ -2746,6 +2775,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             pairs: DataFrame.defaultEmptyIterable,
             isBaked: true,
             columnNames: [],
+            isCaseSensitive: false,
         };
     }
 
@@ -2854,12 +2884,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             if (DataFrame.isIterable(columnsConfig)) {
                 const iterableColumnsConfig = columnsConfig as Iterable<IColumnConfig>;
+                console.log("11");
                 columnNames = Array.from(iterableColumnsConfig).map(column => column.name);
                 columnsConfig = toMap(iterableColumnsConfig, column => column.name, column => column.series);
             }
             else {
                 if (!isObject(columnsConfig)) throw new Error("Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
 
+                console.log("22");
                 columnNames = Object.keys(columnsConfig);
             }
 
@@ -2962,6 +2994,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             pairs: pairs,
             isBaked: isBaked,
             columnNames: columnNames!,
+            isCaseSensitive: config.caseSensitive || false,
         };
     }
 
@@ -3729,6 +3762,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
                     return [pair[0], <NewValueT> output];
                 }),
+                caseSensitive: content.isCaseSensitive,
             };
         });
     }   
