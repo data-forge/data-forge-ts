@@ -2462,6 +2462,11 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     appendPair (pair: [IndexT, ValueT]): IDataFrame<IndexT, ValueT>;
 
     /**
+     * Removes rows from the dataframe by index.
+     */
+    remove(index: IndexT): IDataFrame<IndexT, ValueT>;
+
+    /**
      * Fill gaps in a dataframe.
      *
      * @param comparer User-defined comparer function that is passed pairA and pairB, two consecutive rows, return truthy if there is a gap between the rows, or falsey if there is no gap.
@@ -6947,6 +6952,20 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'DataFrame.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
 
         return this.concat(new DataFrame<IndexT, ValueT>({ pairs: [pair] }));
+    }
+
+    /**
+     * Removes rows from the dataframe by index.
+     */
+    remove(index: IndexT): IDataFrame<IndexT, ValueT> {
+
+        return new DataFrame<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                columnNames: content.columnNames,
+                pairs: new WhereIterable(content.pairs, pair => pair[0] !== index),
+            };
+        });
     }
 
     /**

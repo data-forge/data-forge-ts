@@ -925,6 +925,19 @@ describe('Series', () => {
 		]);
 	});
 
+    it("can remove values by index", () => {
+
+		const series = new Series({
+			index:  [1,  2, 3],
+			values: [10, 11, 12],
+		});
+		const modified = series.remove(2);
+		expect(modified.toPairs()).to.eql([
+			[1, 10],
+			[3, 12],
+		]);
+    });
+
 	it('can fill gaps in series - fill forward', () => {
 
 		var seriesWithGaps = new Series({

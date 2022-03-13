@@ -1002,6 +1002,19 @@ describe('DataFrame', () => {
 		]);
 	});
 
+    it("can remove rows by index", () => {
+
+		const dataframe = new DataFrame({
+			index:  [1,  2, 3],
+			values: [10, 11, 12],
+		});
+		const modified = dataframe.remove(2);
+		expect(modified.toPairs()).to.eql([
+			[1, 10],
+			[3, 12],
+		]);
+    });
+
 	it('can fill gaps in dataframe - fill forward', () => {
 
 		var dfWithGaps = new DataFrame({

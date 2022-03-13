@@ -2247,6 +2247,11 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
 
     /**
+     * Removes values from the series by index.
+     */
+    remove(index: IndexT): ISeries<IndexT, ValueT>;
+    
+    /**
      * Fill gaps in a series.
      *
      * @param comparer User-defined comparer function that is passed pairA and pairB, two consecutive values, return truthy if there is a gap between the value, or falsey if there is no gap.
@@ -6077,6 +6082,19 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'Series.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
 
         return this.concat(new Series<IndexT, ValueT>({ pairs: [pair] }));
+    }
+
+    /**
+     * Removes values from the series by index.
+     */
+     remove(index: IndexT): ISeries<IndexT, ValueT> {
+
+        return new Series<IndexT, ValueT>(() => {
+            const content = this.getContent();
+            return {
+                pairs: new WhereIterable(content.pairs, pair => pair[0] !== index),
+            };
+        });
     }
 
     /**
