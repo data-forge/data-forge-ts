@@ -3,6 +3,7 @@ import 'mocha';
 import { Index } from '../lib/index';
 import { Series } from '../lib/series';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
+import { DataFrame } from '..';
 
 describe('Series constructor', () => {
 
@@ -292,5 +293,40 @@ describe('Series constructor', () => {
         // Expectations again to make sure lazy eval can work again.
         expect(series.toArray()).to.eql([4, 5, 6]);
         expect(series.getIndex().toArray()).to.eql([7, 8, 9]);
+    });
+
+    it("can create series from other series", () => {
+
+        const series = new Series(["A", "B", "C"]);
+        const otherSeries = new Series(series);
+        expect(otherSeries.toArray()).to.eql(series.toArray());
+    });
+
+    it("creating series from other series preserves index", () => {
+
+        const series = new Series({
+            index: [10, 9, 8],
+            values: ["A", "B", "C"],
+        });
+        const otherSeries = new Series(series);
+        expect(otherSeries.toPairs()).to.eql(series.toPairs());
+
+    });
+
+    it("can create series from dataframe", () => {
+
+        const df = new DataFrame([ { a: 1 }, { a: 2 }, { a: 3 }]);
+        const series = new Series(df);
+        expect(series.toArray()).to.eql(df.toArray());
+    });
+
+    it("creating series from dataframe preserves index", () => {
+
+        const df = new DataFrame({
+            index: [10, 9, 8],
+            values: [ { a: 1 }, { a: 2 }, { a: 3 }]
+        });
+        const series = new Series(df);
+        expect(series.toPairs()).to.eql(df.toPairs());
     });
 });

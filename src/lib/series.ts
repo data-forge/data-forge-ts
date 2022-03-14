@@ -2433,14 +2433,27 @@ export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> exte
 // Represents the contents of a series.
 //
 interface ISeriesContent<IndexT, ValueT> {
+
+    /***
+     * Iterates the index for the series.
+     */
     index: Iterable<IndexT>;
+
+    /**
+     * Iterates values for each item in the series.
+     */
     values: Iterable<ValueT>;
+
+    /**
+     * Iterates the index/value pairs in the series.
+     */
     pairs: Iterable<[IndexT, ValueT]>;
 
-    //
-    // Records if a series is baked into memory.
-    //
-    isBaked: boolean;
+    /***
+      * Set to true when the dataframe has been baked into memory
+      * and does not need to be lazily evaluated.
+      */
+     isBaked: boolean;
 }
 
 /**
@@ -2633,6 +2646,20 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     constructor(config?: Iterator<ValueT> | Iterable<ValueT> | ISeriesConfig<IndexT, ValueT> | SeriesConfigFn<IndexT, ValueT>) {
         if (config) {
+            const configAsAny = config as any;
+            if (configAsAny.getTypeCode !== undefined) {
+                const typeCode = configAsAny.getTypeCode();
+                if (typeCode === "dataframe" || typeCode === "series") {
+                    if (configAsAny.content !== undefined) {
+                        this.content = configAsAny.content;
+                    }
+                    else {
+                        this.configFn = configAsAny.configFn;
+                    }
+                    return;
+                }
+            }
+
             if (isFunction(config)) {
                 this.configFn = config;
             }

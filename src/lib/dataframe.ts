@@ -2679,9 +2679,9 @@ export interface IOrderedDataFrame<IndexT = number, ValueT = any, SortT = any> e
 //
 interface IDataFrameContent<IndexT, ValueT> {
 
-     /***
-      * Iterates the index for the dataframe.
-      */
+    /***
+     * Iterates the index for the dataframe.
+     */
     index: Iterable<IndexT>;
 
     /**
@@ -3039,8 +3039,22 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      * const df = new DataFrame(lazyInit);
      * </pre>
      */
-    constructor(config?: Iterator<ValueT> | Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT>) {
+    constructor(config?: Iterator<ValueT> | Iterable<ValueT> | IDataFrameConfig<IndexT, ValueT> | DataFrameConfigFn<IndexT, ValueT> | IDataFrame | ISeries) {
         if (config) {
+            const configAsAny = config as any;
+            if (configAsAny.getTypeCode !== undefined) {
+                const typeCode = configAsAny.getTypeCode();
+                if (typeCode === "dataframe" || typeCode === "series") {
+                    if (configAsAny.content !== undefined) {
+                        this.content = configAsAny.content;
+                    }
+                    else {
+                        this.configFn = configAsAny.configFn;
+                    }
+                    return;
+                }
+            }
+            
             if (isFunction(config)) {
                 this.configFn = config;
             }

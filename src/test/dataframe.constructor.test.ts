@@ -3,6 +3,7 @@ import 'mocha';
 import { Index } from '../lib/index';
 import { DataFrame } from '../lib/dataframe';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
+import { Series } from '../lib/series';
 
 describe('DataFrame constructor', () => {
 
@@ -594,5 +595,53 @@ describe('DataFrame constructor', () => {
         // Expectations again to make sure lazy eval can work again.
         expect(dataframe.getColumnNames()).to.eql(["a"]);
         expect(dataframe.toArray()).to.eql([{ a: 4 }, { a: 5 }, { a: 6 }]);
+    });
+
+    it("can create dataframe from other dataframe", () => {
+
+        const df = new DataFrame([ { a: 1 }, { a: 2 }, { a: 3 }]);
+        const otherDf = new DataFrame(df);
+        expect(otherDf.toArray()).to.eql(df.toArray());
+    });
+
+    it("creating dataframe from other dataframe preserves index", () => {
+
+        const df = new DataFrame({
+            index: [10, 9, 8],
+            values: [ { a: 1 }, { a: 2 }, { a: 3 }]
+        });        
+        const otherDf = new DataFrame(df);
+        expect(otherDf.toPairs()).to.eql(df.toPairs());
+    });
+
+    it("creating dataframe from other dataframe preserves column order", () => {
+
+        const columnNames = ['abc', '123'];
+        const df = new DataFrame({
+            columnNames: columnNames,
+            rows: [['a', '1']]
+        });
+
+        const otherDf = new DataFrame(df);
+
+        expect(df.getColumnNames()).to.eql(columnNames);
+        expect(otherDf.getColumnNames()).to.eql(columnNames);
+    });
+
+    it("can create dataframe from series", () => {
+
+        const series = new Series([ { a: 1 }, { a: 2 }, { a: 3 }]);
+        const df = new DataFrame(series);
+        expect(df.toArray()).to.eql(series.toArray());
+    });
+
+    it("creating dataframe from series preserves index", () => {
+
+        const series = new Series({
+            index: [10, 9, 8],
+            values: [ { a: 1 }, { a: 2 }, { a: 3 }]
+        });
+        const df = new DataFrame(series);
+        expect(df.toPairs()).to.eql(series.toPairs());
     });
 });
