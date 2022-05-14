@@ -163,6 +163,6 @@ Please reach and tell me what you are doing with Data-Forge or how you'd like to
 
 ## Support the developer 
 
-<a target="_blank" href="http://www.codecapers.com.au/#support-my-work">Click here to **support the developer.**</a>
+<a target="_blank" href="http://www.codecapers.com.au/about#support-my-work">Click here to **support the developer.**</a>
 
 
