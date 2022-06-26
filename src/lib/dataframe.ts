@@ -2889,14 +2889,12 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
             if (DataFrame.isIterable(columnsConfig)) {
                 const iterableColumnsConfig = columnsConfig as Iterable<IColumnConfig>;
-                console.log("11");
                 columnNames = Array.from(iterableColumnsConfig).map(column => column.name);
                 columnsConfig = toMap(iterableColumnsConfig, column => column.name, column => column.series);
             }
             else {
                 if (!isObject(columnsConfig)) throw new Error("Expected 'columns' member of 'config' parameter to DataFrame constructor to be an object with fields that define columns.");
 
-                console.log("22");
                 columnNames = Object.keys(columnsConfig);
             }
 
