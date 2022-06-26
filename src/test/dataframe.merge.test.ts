@@ -290,6 +290,56 @@ describe('DataFrame merge', () => {
             [6],
         ]);
     });
+
+    it('merged dataframe is case insensitive when inputs are case insensitive', () => {      
+
+        const df1 = new DataFrame({
+            columnNames: ['Name'],
+            caseSensitive: false,
+        });
+
+        const df2 = new DataFrame({
+            columnNames: ['name'],
+            caseSensitive: false,
+        });
+
+        const merged = df1.merge(df2);
+        expect(merged.isCaseSensitive()).to.eql(false);
+        expect(merged.getColumnNames()).to.eql(["Name.1", "name.2"]);
+    });
+
+    it('merged dataframe is case sensitive if first input is case sensitive', () => {      
+
+        const df1 = new DataFrame({
+            columnNames: ['Name'],
+            caseSensitive: true,
+        });
+
+        const df2 = new DataFrame({
+            columnNames: ['name'],
+            caseSensitive: false,
+        });
+
+        const merged = df1.merge(df2);
+        expect(merged.isCaseSensitive()).to.eql(true);
+        expect(merged.getColumnNames()).to.eql(["Name", "name"]);
+    });
     
+    it('merged dataframe is case sensitive if second input is case sensitive', () => {      
+
+        const df1 = new DataFrame({
+            columnNames: ['Name'],
+            caseSensitive: false,
+        });
+
+        const df2 = new DataFrame({
+            columnNames: ['name'],
+            caseSensitive: true,
+        });
+
+        const merged = df1.merge(df2);
+        expect(merged.isCaseSensitive()).to.eql(true);
+        expect(merged.getColumnNames()).to.eql(["Name", "name"]);
+    });
 
 });

@@ -330,6 +330,13 @@ export interface IDataFrame<IndexT = number, ValueT = any> extends Iterable<Valu
     getColumns (): ISeries<number, IColumn>;
 
     /**
+     * Returns true if the dataframe is case sensitive or false if case insensitive.
+     * 
+     * @return true if the dataframe is case sensitive, otherwise false.
+     */
+    isCaseSensitive (): boolean;
+
+    /**
      * Cast the value of the dataframe to a new type.
      * This operation has no effect but to retype the r9ws that the dataframe contains.
      * 
@@ -3171,6 +3178,15 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     }    
 
     /**
+     * Returns true if the dataframe is case sensitive or false if case insensitive.
+     * 
+     * @return true if the dataframe is case sensitive, otherwise false.
+     */
+    isCaseSensitive (): boolean {
+        return this.getContent().isCaseSensitive;
+    }
+
+    /**
      * Cast the value of the dataframe to a new type.
      * This operation has no effect but to retype the value that the dataframe contains.
      * 
@@ -3509,8 +3525,14 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
      */
     static merge<MergedValueT = any, IndexT = any, ValueT = any>(dataFrames: Iterable<IDataFrame<IndexT, ValueT>>): IDataFrame<IndexT, MergedValueT> {
 
+        let resultIsCaseSensitive = false;
+
         const rowMap = new Map<IndexT, any>();
         for (const dataFrame of dataFrames) {
+            if (dataFrame.isCaseSensitive()) {
+                resultIsCaseSensitive = true;
+            }
+
             for (const pair of dataFrame.toPairs()) {
                 const index = pair[0];
                 if (!rowMap.has(index)) {
@@ -3544,6 +3566,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
         return new DataFrame<IndexT, MergedValueT>({
             columnNames: newColumnNames,
             pairs: mergedPairs as [IndexT, MergedValueT][],
+            caseSensitive: resultIsCaseSensitive,
         });
     }  
 
