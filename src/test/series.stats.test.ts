@@ -4,7 +4,13 @@ import { range, Series, Index } from '../index';
 import { ArrayIterable } from '../lib/iterables/array-iterable';
 
 describe('Series stats', () => {
-    
+
+    it('sum throws for series of strings', () => {
+
+        const series = new Series(["3", "4"]);
+        expect(() => series.sum()).to.throw();
+    });
+
 	it('sum of empty series is zero', () => {
 
 		var series = new Series();
@@ -97,13 +103,6 @@ describe('Series stats', () => {
         expect(mode).to.eql(1);
     });
 
-    it('mode can handle different types', () => {
-
-        const series = new Series([1, 2, "hello", 3, "hello"]);
-        const mode = series.mode();
-        expect(mode).to.eql("hello");
-    });
-
     it('mode returns undefined for empty data set', () => {
 
         const series = new Series();
@@ -175,13 +174,13 @@ describe('Series stats', () => {
     it('invert ignores nulls', () => {
 
         var series = new Series([5, null, -1]);
-		expect(Array.from(series.invert())).to.eql([-5, null, 1]); // Using Array.from because toArray strips nulls and undefines!
+		expect(Array.from(series.invert())).to.eql([-5, 1]); // Using Array.from because toArray strips nulls and undefines!
     });
 
     it('invert ignores undefineds', () => {
 
 		var series = new Series([5, undefined, -1]);
-		expect(Array.from(series.invert())).to.eql([-5, undefined, 1]); // Using Array.from because toArray strips nulls and undefines!
+		expect(Array.from(series.invert())).to.eql([-5, 1]); // Using Array.from because toArray strips nulls and undefines!
     });
 
     it('can count up positive values', () => {

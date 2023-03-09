@@ -4530,6 +4530,24 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         }
     }
 
+    //
+    // For functions that work with a number series convert this series to a number series.
+    // Throws an error if anything other than a number is found.
+    //
+    private asNumberSeries(): ISeries<IndexT, number> {
+        //
+        // From here: http://stackoverflow.com/questions/5275115/add-a-median-method-to-a-list
+        //
+        // Have to assume we are working with a number series here.
+        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+
+        if (numberSeries.any(value => typeof(value) !== "number")) {
+            throw new Error(`Expected series to contain only numbers, you should parse this series or filter out non-number values.`);
+        }
+
+        return numberSeries;
+    }
+
     /**
      * Static version of the sum function for use with {@link DataFrame.summarize} and {@link DataFrame.pivot} functions.
      * 
@@ -4562,14 +4580,15 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     sum (): number {
 
+        const numberSeries = this.asNumberSeries();
+        if (numberSeries.none()) {
+            return 0;
+        }
+
         let total = 0;
 
-        for (const value of this) {
-            if (value === null || value === undefined) {
-                continue; // Skip empty values.
-            }
-
-            total += value as any as number; // Assumes this is a number series.
+        for (const value of numberSeries) {
+            total += value;
         }
 
         return total;
@@ -4642,16 +4661,18 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      */
      mean (): number {
+
+        const numberSeries = this.asNumberSeries();
+        if (numberSeries.none()) {
+            return 0;
+        }
+
         let total = 0;
         let count = 0;
 
-        for (const value of this) {
-            if (value === null || value === undefined) {
-                continue; // Skip empty values.
-            }
-
+        for (const value of numberSeries) {
             count += 1;
-            total += value as any as number; // Assumes this is a number series.
+            total += value;
         }
 
         if (count === 0) {
@@ -4694,12 +4715,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     median (): number {
 
-        //
-        // From here: http://stackoverflow.com/questions/5275115/add-a-median-method-to-a-list
-        //
-        // Have to assume we are working with a number series here.
-        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
-
+        const numberSeries = this.asNumberSeries();
         const count = numberSeries.count();
         if (count === 0) {
             return 0;
@@ -4751,13 +4767,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     mode (): any {
 
-        if (this.none()) {
+        const numberSeries = this.asNumberSeries();
+        if (numberSeries.none()) {
             return undefined;
         }
 
         const lookup = new Map<any, number>();
 
-        for (const value of this) {
+        for (const value of numberSeries) {
             if (lookup.has(value))  {
                 lookup.set(value, lookup.get(value)! + 1);
             }
@@ -4782,7 +4799,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         const average = this.mean();
         let sumOfSquaredDiffs = 0;
-        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+        const numberSeries = this.asNumberSeries();
         
         let count = 0;
         for (const value of numberSeries) {
@@ -4832,7 +4849,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return 0;
         }
 
-        const [sumOfSquaredDiffs, count] = this.sumOfSquares()
+        const [sumOfSquaredDiffs, count] = this.sumOfSquares();
         return sumOfSquaredDiffs / count;
     }
 
@@ -4900,7 +4917,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             throw new Error(`Can't standardize a series that has no variation.`);
         }
 
-        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+        const numberSeries = this.asNumberSeries();
         return numberSeries.map(value => {
             const zScore = (value - mean) / std;
             return zScore;
@@ -4943,7 +4960,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             return 0;
         }
 
-        const [sumOfSquaredDiffs, count] = this.sumOfSquares()
+        const [sumOfSquaredDiffs, count] = this.sumOfSquares();
         return sumOfSquaredDiffs / (count - 1);
     }
 
@@ -5011,7 +5028,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             throw new Error(`Can't standardize a series that has no variation.`);
         }
 
-        const numberSeries = <ISeries<IndexT, number>> <any> this.filter(value => value !== null && value !== undefined);
+        const numberSeries = this.asNumberSeries();
         return numberSeries.map(value => {
             const zScore = (value - mean) / std;
             return zScore;
@@ -5052,17 +5069,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         let min: number | undefined;
 
-        for (const value of this) {
-            if (value === null || value === undefined) {
-                continue; // Skip empty values.
-            }
-
-            const numberValue = value as any as number; // Have to assume we are working with a number series here.;
+        for (const value of this.asNumberSeries()) {
             if (min === undefined) {
-                min = numberValue;
+                min = value;
             }
             else {
-                min = Math.min(min, numberValue);
+                min = Math.min(min, value);
             }
         }
 
@@ -5107,17 +5119,12 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
 
         let max: number | undefined;
 
-        for (const value of this) {
-            if (value === null || value === undefined) {
-                continue; // Skip empty values.
-            }
-
-            const numberValue = value as any as number; // Have to assume we are working with a number series here.
+        for (const value of this.asNumberSeries()) {
             if (max === undefined) {
-                max = numberValue;
+                max = value;
             }
             else {
-                max = Math.max(max, numberValue);
+                max = Math.max(max, value);
             }
         }
 
@@ -5176,13 +5183,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     invert (): ISeries<IndexT, number> {
         return this
+            .asNumberSeries()
             .select(value => {
-                if (value === null || value === undefined) {
-                    return value;
-                }
-                else {
-                    return -(value as any as number); // Assume input is a number series.
-                }
+                return -value;
             }); 
     }
 
