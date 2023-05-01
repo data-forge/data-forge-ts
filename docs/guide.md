@@ -581,6 +581,12 @@ const df = new dataForge.DataFrame(someConfig).setIndex("Column3").dropSeries("C
 
 Note an index is required for certain operations like `join` and `withSeries`.
 
+To reset the dataframe's index to the default zero-based index, you can use `resetIndex`.
+
+```javascript
+const reindexedDf = df.resetIndex();
+```
+
 ## Working with CSV files
 
 **WARNING:** You must have [Data-Forge FS](https://github.com/data-forge/data-forge-fs) installed to use the file system functions. This uses the NodeJS `fs` module, so reading and writing files can't work in the browser which has no access to the local file system. Only try this under Node.js!
@@ -1328,6 +1334,17 @@ You can also concatenate by passing an array of series or dataframes to the glob
 
 ```javascript
 const concatenated = dataForge.DataFrame.concat([df1, df2, df3, df4, etc]);
+```
+
+Note that the new index is a concatenation of the indices of the input dataframes and can contain duplicate values - especially when concatenating dataframes with zero-based indices. Performing operations on such a dataframe might lead to unexpected results. 
+
+To avoid duplicate index values when concatenating dataframes with zero-based indices, use `resetIndex` after concatenating.
+
+```javascript
+const df1 = // ... a dataframe with a zero-based index ...
+const df2 = // ... another dataframe with a zero-based index ...
+
+const concatenated = df1.concat(df2).resetIndex();
 ```
 
 ## Merge
