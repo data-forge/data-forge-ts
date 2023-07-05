@@ -344,25 +344,33 @@ describe('DataFrame merge', () => {
 
     it('can merge dataframes indexed by date', () => {
 
-        const d1 = moment("2018/01/02", "YYYY/MM/DD").toDate();
-        const d2 = moment("2018/02/02", "YYYY/MM/DD").toDate();
-        const d3 = moment("2018/03/02", "YYYY/MM/DD").toDate();
+        const index1 = [
+            moment("2018/01/02", "YYYY/MM/DD").toDate(),
+            moment("2018/02/02", "YYYY/MM/DD").toDate(),
+            moment("2018/03/02", "YYYY/MM/DD").toDate(),
+        ];
+
+        const index2 = [
+            moment("2018/01/02", "YYYY/MM/DD").toDate(),
+            moment("2018/02/02", "YYYY/MM/DD").toDate(),
+            moment("2018/03/02", "YYYY/MM/DD").toDate(),
+        ];
 
         var dataFrame1 = new DataFrame({
             columnNames: ["A"],
-            index: [d1, d2, d3],
+            index: index1,
             rows: [[1], [2], [3]],
         });
 
 		var dataFrame2 = new DataFrame({
             columnNames: ["A"],
-            index: [d1, d2, d3],
+            index: index2,
             rows: [[4], [5], [6]],
         });
 
         const merged = DataFrame.merge([dataFrame1, dataFrame2]);
         expect(merged.getColumnNames()).to.eql(["A",]);
-        expect(merged.getIndex().toArray()).to.eql([d1, d2, d3])
+        expect(merged.getIndex().toArray()).to.eql(index1)
         expect(merged.toRows()).to.eql([
             [4],
             [5],

@@ -149,25 +149,40 @@ describe('Series merge', () => {
     });
 
     it('merged indicies are sorted in ascending order - dates', () => {
-        const d1 = moment("2018/01/02", "YYYY/MM/DD").toDate();
-        const d2 = moment("2018/02/02", "YYYY/MM/DD").toDate();
-        const d3 = moment("2018/03/02", "YYYY/MM/DD").toDate();
+        const index1 = [
+            moment("2018/03/02", "YYYY/MM/DD").toDate(),
+            moment("2018/01/02", "YYYY/MM/DD").toDate(),
+            moment("2018/02/02", "YYYY/MM/DD").toDate(),
+        ];
 
-		const series1 = new Series({
-            index: [d3, d1, d2],
+        const index2 = [
+            moment("2018/01/02", "YYYY/MM/DD").toDate(),
+            moment("2018/03/02", "YYYY/MM/DD").toDate(),
+            moment("2018/02/02", "YYYY/MM/DD").toDate(),
+        ];
+
+        const series1 = new Series({
+            index: index1,
             values: [5, 1, 3],
         });
 		const series2 = new Series({
-            index: [d1, d3, d2],
+            index: index2,
             values: [1, 5, 3],
         });
 
+        const expectedIndex = [
+            moment("2018/01/02", "YYYY/MM/DD").toDate(),
+            moment("2018/02/02", "YYYY/MM/DD").toDate(),
+            moment("2018/03/02", "YYYY/MM/DD").toDate(),
+        ];
+
         const merged = Series.merge([series1, series2]);
-		expect(merged.toPairs()).to.eql([
-            [d1, [1, 1]],
-			[d2, [3, 3]],
-            [d3, [5, 5]],
-		]);
+        expect(merged.getIndex().toArray()).to.eql(expectedIndex);
+		expect(merged.toArray()).to.eql([
+            [1, 1],
+			[3, 3],
+            [5, 5],
+        ]);
     });
 
 	it('can merge empty series', () => {

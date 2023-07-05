@@ -2842,24 +2842,24 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      */
     static merge<MergedValueT = any, IndexT = any>(series: Iterable<ISeries<IndexT, any>>): ISeries<IndexT, MergedValueT[]> {
 
-        const rowMap = new Map<IndexT, any[]>();
+        const rowMap = new Map<string, { index: IndexT, values: any[]}>();
         const numSeries = Array.from(series).length; //TODO: Be nice not to have to do this.
         let seriesIndex = 0;
         for (const workingSeries of series) {
             for (const pair of workingSeries.toPairs()) {
-                const index = pair[0];
+                const index = pair[0].toString();
                 if (!rowMap.has(index)) {
-                    rowMap.set(index, new Array(numSeries));
+                    rowMap.set(index, { index: pair[0], values: new Array(numSeries) });
                 }
 
-                rowMap.get(index)![seriesIndex] = pair[1];
+                rowMap.get(index)!.values[seriesIndex] = pair[1];
             }
 
             ++seriesIndex;
         }
 
-        const mergedPairs = Array.from(rowMap.keys())
-            .map(index => [index, rowMap.get(index)] as [IndexT, MergedValueT[]]);
+        const mergedPairs = Array.from(rowMap.values())
+            .map(row => [row.index, row.values]);
 
         mergedPairs.sort((a, b) => { // Sort by index, ascending.
             if (a[0] === b[0]) {
@@ -2874,7 +2874,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
         });
 
         return new Series<IndexT, MergedValueT[]>({
-            pairs: mergedPairs,
+            pairs: mergedPairs as [IndexT, MergedValueT[]][],
         });
     }
 

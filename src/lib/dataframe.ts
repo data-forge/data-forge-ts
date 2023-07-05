@@ -3527,20 +3527,28 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
 
         let resultIsCaseSensitive = false;
 
-        const rowMap = new Map<IndexT, any>();
+        const rowMap = new Map<string, { index: IndexT, value: any }>();
         for (const dataFrame of dataFrames) {
             if (dataFrame.isCaseSensitive()) {
                 resultIsCaseSensitive = true;
             }
 
             for (const pair of dataFrame.toPairs()) {
-                const index = pair[0];
+                const index = pair[0].toString();
                 if (!rowMap.has(index)) {
-                    const clone = Object.assign({}, pair[1]);
-                    rowMap.set(index, clone);
+                    rowMap.set(index, { index: pair[0], value: pair[1] });
                 }
                 else {
-                    rowMap.set(index, Object.assign(rowMap.get(index), pair[1]));
+                    const row = rowMap.get(index);
+                    const clone = { 
+                        index: pair[0], 
+                        value: Object.assign(
+                            {}, 
+                            row!.value, 
+                            pair[1]
+                        ),
+                    };
+                    rowMap.set(index, clone);
                 }
             }
         }
@@ -3549,7 +3557,8 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             .map(dataFrame => dataFrame.getColumnNames())
             .reduce((prev, next) => prev.concat(next), []);
         const newColumnNames =  makeDistinct(allColumnNames);
-        const mergedPairs = Array.from(rowMap.keys()).map(index => [index, rowMap.get(index)]);
+        const mergedPairs = Array.from(rowMap.values())
+            .map(row => [row.index, row.value]);
 
         mergedPairs.sort((a, b) => { // Sort by index, ascending.
             if (a[0] === b[0]) {
