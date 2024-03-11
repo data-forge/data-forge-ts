@@ -394,7 +394,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     * const values = series.toArray();
     * </pre>
     */
-    toArray(): ValueT[];
+    toArray(options?: { includeNulls?: boolean }): ValueT[];
 
     /**
      * Retreive the index, values pairs from the series as an array.
