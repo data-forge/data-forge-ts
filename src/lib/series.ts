@@ -286,7 +286,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * }
      * </pre>
      */
-    [Symbol.iterator](): Iterator<ValueT>;
+    [Symbol.iterator] (): Iterator<ValueT>;
 
     /**
      * Cast the value of the series to a new type.
@@ -300,7 +300,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const castSeries = series.cast<SomeOtherType>();
      * </pre>
      */
-    cast<NewValueT>(): ISeries<IndexT, NewValueT>;
+    cast<NewValueT> (): ISeries<IndexT, NewValueT>;
 
     /**
      * Get the index for the series.
@@ -313,7 +313,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const index = series.getIndex();
      * </pre>
      */
-    getIndex(): IIndex<IndexT>;
+    getIndex (): IIndex<IndexT>;
 
     /**
      * Apply a new {@link Index} to the series.
@@ -346,7 +346,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const indexedSeries = series.withIndex(value => value + 20);
      * </pre>
      */
-    withIndex<NewIndexT>(newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT>;
+    withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT>;
 
     /**
      * Resets the {@link Index} of the series back to the default zero-based sequential integer index.
@@ -359,7 +359,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithResetIndex = series.resetIndex();
      * </pre>
      */
-    resetIndex(): ISeries<number, ValueT>;
+    resetIndex (): ISeries<number, ValueT>;
 
     /**
       * Merge one or more series into this series.
@@ -381,7 +381,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
       * const mergedSeries = series1.merge(series2, series3, etc);
       * </pre>
       */
-    merge<MergedValueT = any>(...args: any[]): ISeries<IndexT, MergedValueT[]>;
+    merge<MergedValueT = any> (...args: any[]): ISeries<IndexT, MergedValueT[]>;
 
     /**
     * Extract values from the series as an array.
@@ -394,7 +394,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     * const values = series.toArray();
     * </pre>
     */
-    toArray(options?: { includeNulls?: boolean }): ValueT[];
+    toArray (options?: { includeNulls?: boolean }): ValueT[];
 
     /**
      * Retreive the index, values pairs from the series as an array.
@@ -408,7 +408,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const pairs = series.toPairs();
      * </pre>
      */
-    toPairs(): ([IndexT, ValueT])[];
+    toPairs (): ([IndexT, ValueT])[];
 
     /**
      * Convert the series to a JavaScript object.
@@ -427,7 +427,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * );
      * </pre>
      */
-    toObject<KeyT = any, FieldT = any, OutT = any>(keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
+    toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT;
 
     /**
      * Transforms an input series, generating a new series.
@@ -453,7 +453,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(transformed.toString());
      * </pre>
      */
-    select<ToT>(transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+    select<ToT> (transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
 
     /**
      * Transforms an input series, generating a new series.
@@ -477,7 +477,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(transformed.toString());
      * </pre>
      */
-    map<ToT>(transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
+    map<ToT> (transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT>;
 
     /**
      * Transforms and flattens an input series, generating a new series.
@@ -507,7 +507,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(transformed.toString());
      * </pre>
      */
-    selectMany<ToT>(transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
+    selectMany<ToT> (transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
 
     /**
      * Transforms and flattens an input series, generating a new series.
@@ -535,7 +535,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(transformed.toString());
      * </pre>
      */
-    flatMap<ToT>(transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
+    flatMap<ToT> (transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT>;
 
     /**
      * Partition a series into a {@link Series} of *data windows*. 
@@ -562,7 +562,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(weeklySales.toString());
      * </pre>
      */
-    window(period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>>;
+    window (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>>;
 
     /** 
      * Partition a series into a new series of *rolling data windows*. 
@@ -581,7 +581,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(rollingWeeklySales.toString());
      * </pre>
      */
-    rollingWindow(period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>>;
+    rollingWindow (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>>;
 
     /**
      * Partition a series into a new series of variable-length *data windows* 
@@ -606,7 +606,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * 
      * const variableWindows = series.variableWindow(rowComparer);
      */
-    variableWindow(comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>>;
+    variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
      * Eliminates adjacent duplicate values.
@@ -627,7 +627,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.someNestedField);
      * </pre>
      */
-    sequentialDistinct<ToT>(selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
+    sequentialDistinct<ToT> (selector: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
 
     /**
      * Reduces the values in the series to a single result.
@@ -671,7 +671,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * });
      * </pre>
      */
-    aggregate<ToT = ValueT>(seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT;
 
     /**
      * Reduces the values in the series to a single result.
@@ -704,7 +704,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * );
      * </pre>
      */
-    reduce<ToT = ValueT>(reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT;
+    reduce<ToT = ValueT> (reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT;
 
     /**
      * Compute the absolute range of values in each period.
@@ -722,7 +722,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const volatility = closingPrice.amountRange(5);
      * </pre>
      */
-    amountRange(period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
+    amountRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the range of values in each period in proportion to the latest value.
@@ -743,7 +743,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const proportionVolatility = closingPrice.proportionRange(5);
      * </pre>
      */
-    proportionRange(period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
+    proportionRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the range of values in each period in proportion to the latest value.
@@ -764,7 +764,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const percentVolatility = closingPrice.percentRange(5);
      * </pre>
      */
-    percentRange(period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
+    percentRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the amount of change between pairs or sets of values in the series.
@@ -787,7 +787,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
      * </pre>
      */
-    amountChange(period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
+    amountChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the proportion change between pairs or sets of values in the series.
@@ -811,7 +811,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
      * </pre>
      */
-    proportionChange(period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
+    proportionChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * Compute the percentage change between pairs or sets of values in the series.
@@ -835,7 +835,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
      * </pre>
      */
-    percentChange(period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
+    percentChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number>;
 
     /**
      * For each period, compute the proportion of values that are less than the last value in the period.
@@ -856,7 +856,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const proportionRank = series.proportionRank(100);
      * </pre>
      */
-    proportionRank(period?: number): ISeries<IndexT, number>;
+    proportionRank (period?: number): ISeries<IndexT, number>;
 
     /**
      * For each period, compute the percent of values that are less than the last value in the period.
@@ -877,14 +877,14 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const percentRank = series.percentRank(100);
      * </pre>
      */
-    percentRank(period?: number): ISeries<IndexT, number>;
+    percentRank (period?: number): ISeries<IndexT, number>;
 
     /**
      * Generates a cumulative sum across a series.
      * 
      * @returns Returns a new series that is the cumulative sum of values across the input series.
      */
-    cumsum(): ISeries<IndexT, number>;
+    cumsum (): ISeries<IndexT, number>;
 
     /**
      * Skip a number of values in the series.
@@ -899,7 +899,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original series.
      * </pre>
      */
-    skip(numValues: number): ISeries<IndexT, ValueT>;
+    skip (numValues: number): ISeries<IndexT, ValueT>;
 
     /**
      * Skips values in the series while a condition evaluates to true or truthy.
@@ -914,7 +914,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100); // Skip initial sales figure that are less than 100.
      * </pre>
      */
-    skipWhile(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    skipWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Skips values in the series untils a condition evaluates to true or truthy.
@@ -929,7 +929,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100); // Skip initial sales figures unitl we see one greater than 100.
      * </pre>
      */
-    skipUntil(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    skipUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Take a number of  values from the series.
@@ -944,7 +944,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithRowsTaken = series.take(15); // Take only the first 15 values from the original series.
      * </pre>
      */
-    take(numRows: number): ISeries<IndexT, ValueT>;
+    take (numRows: number): ISeries<IndexT, ValueT>;
 
     /**
      * Takes values from the series while a condition evaluates to true or truthy.
@@ -959,7 +959,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); // Take only initial sales figures that are greater than 100.
      * </pre>
      */
-    takeWhile(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    takeWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Takes values from the series until a condition evaluates to true or truthy.
@@ -974,7 +974,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); // Take all initial sales figures until we see one that is greater than 100.
      * </pre>
      */
-    takeUntil(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    takeUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Count the number of values in the seriese
@@ -987,7 +987,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const numValues = series.count();
      * </pre>
      */
-    count(): number;
+    count (): number;
 
     /**
      * Get the first value of the series.
@@ -1000,7 +1000,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const firstValue = series.first();
      * </pre>
      */
-    first(): ValueT;
+    first (): ValueT;
 
     /**
      * Get the last value of the series.
@@ -1013,7 +1013,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const lastValue = series.last();
      * </pre>
      */
-    last(): ValueT;
+    last (): ValueT;
 
     /**
      * Get the value, if there is one, with the specified index.
@@ -1036,7 +1036,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const value = series.at(date); 
      * </pre>
      */
-    at(index: IndexT): ValueT | undefined;
+    at (index: IndexT): ValueT | undefined;
 
     /** 
      * Get X value from the start of the series.
@@ -1052,7 +1052,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const sample = series.head(10); // Take a sample of 10 values from the start of the series.
      * </pre>
      */
-    head(numValues: number): ISeries<IndexT, ValueT>;
+    head (numValues: number): ISeries<IndexT, ValueT>;
 
     /** 
      * Get X values from the end of the series.
@@ -1068,7 +1068,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const sample = series.tail(12); // Take a sample of 12 values from the end of the series.
      * </pre>
      */
-    tail(numValues: number): ISeries<IndexT, ValueT>;
+    tail (numValues: number): ISeries<IndexT, ValueT>;
 
     /**
      * Filter the series using user-defined predicate function.
@@ -1089,7 +1089,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(filtered.toArray());
      * </pre>
      */
-    where(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Filter the series through a user-defined predicate function.
@@ -1108,7 +1108,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(filtered.toArray());
      * </pre>
      */
-    filter(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
+    filter (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Invoke a callback function for each value in the series.
@@ -1125,7 +1125,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * });
      * </pre>
      */
-    forEach(callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT>;
+    forEach (callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Evaluates a predicate function for every value in the series to determine 
@@ -1141,7 +1141,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = series.all(salesFigure => salesFigure > 100); // Returns true if all sales figures are greater than 100.
      * </pre>
      */
-    all(predicate: PredicateFn<ValueT>): boolean;
+    all (predicate: PredicateFn<ValueT>): boolean;
 
     /**
      * Evaluates a predicate function for every value in the series to determine 
@@ -1167,7 +1167,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = series.any(); // Do we have any sales figures at all?
      * </pre>
      */
-    any(predicate?: PredicateFn<ValueT>): boolean;
+    any (predicate?: PredicateFn<ValueT>): boolean;
 
     /**
      * Evaluates a predicate function for every value in the series to determine 
@@ -1191,7 +1191,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = series.none(); // Do we have zero sales figures?
      * </pre>
      */
-    none(predicate?: PredicateFn<ValueT>): boolean;
+    none (predicate?: PredicateFn<ValueT>): boolean;
 
     /**
      * Gets a new series containing all values starting at or after the specified index value.
@@ -1221,7 +1221,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = timeSeries.startAt(new Date(2016, 5, 4)); 
      * </pre>
      */
-    startAt(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    startAt (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
      * Gets a new series containing all values up until and including the specified index value (inclusive).
@@ -1251,7 +1251,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = timeSeries.endAt(new Date(2016, 5, 4)); 
      * </pre>
      */
-    endAt(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    endAt (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
      * Gets a new series containing all values up to the specified index value (exclusive).
@@ -1281,7 +1281,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = timeSeries.before(new Date(2016, 5, 4)); 
      * </pre>
      */
-    before(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    before (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
      * Gets a new series containing all values after the specified index value (exclusive).
@@ -1311,7 +1311,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = timeSeries.after(new Date(2016, 5, 4)); 
      * </pre>
      */
-    after(indexValue: IndexT): ISeries<IndexT, ValueT>;
+    after (indexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /**
      * Gets a new series containing all values between the specified index values (inclusive).
@@ -1342,7 +1342,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
      * </pre>
      */
-    between(startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT>;
+    between (startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT>;
 
     /** 
      * Format the series for display as a string.
@@ -1356,7 +1356,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(series.toString());
      * </pre>
      */
-    toString(): string;
+    toString (): string;
 
     /**
      * Parse a series with string values and convert it to a series with int values.
@@ -1369,7 +1369,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const parsed = series.parseInts();
      * </pre>
      */
-    parseInts(): ISeries<IndexT, number>;
+    parseInts (): ISeries<IndexT, number>;
 
     /**
      * Parse a series with string values and convert it to a series with float values.
@@ -1382,7 +1382,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const parsed = series.parseFloats();
      * </pre>
      */
-    parseFloats(): ISeries<IndexT, number>;
+    parseFloats (): ISeries<IndexT, number>;
 
     /**
      * Parse a series with string values and convert it to a series with date values.
@@ -1400,7 +1400,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const parsed = series.parseDates();
      * </pre>
      */
-    parseDates(formatString?: string): ISeries<IndexT, Date>;
+    parseDates (formatString?: string): ISeries<IndexT, Date>;
 
     /**
      * Convert a series of values of different types to a series containing string values.
@@ -1427,7 +1427,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const result = series.toStrings("0.00");
      * </pre>
      */
-    toStrings(formatString?: string): ISeries<IndexT, string>;
+    toStrings (formatString?: string): ISeries<IndexT, string>;
 
     /**
      * Forces lazy evaluation to complete and 'bakes' the series into memory.
@@ -1440,7 +1440,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const baked = series.bake();
      * </pre>
      */
-    bake(): ISeries<IndexT, ValueT>;
+    bake (): ISeries<IndexT, ValueT>;
 
     /** 
      * Converts (inflates) a series to a {@link DataFrame}.
@@ -1467,7 +1467,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // Extract a nested value and produce a dataframe from it.
      * </pre>
      */
-    inflate<ToT = ValueT>(selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
+    inflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT>;
 
     /**
      * Sum the values in a series and returns the result.
@@ -1480,7 +1480,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const totalSales = salesFigures.sum();
      * </pre>
      */
-    sum(): number;
+    sum (): number;
 
     /**
      * Average the values in a series and returns the result.
@@ -1495,7 +1495,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const averageSales = salesFigures.average();
      * </pre>
      */
-    average(): number;
+    average (): number;
 
     /**
      * Computes and returns the mean value of a set of values.
@@ -1508,7 +1508,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const averageSales = salesFigures.mean();
      * </pre>
      */
-    mean(): number;
+    mean (): number;
 
     /**
      * Get the median value in the series. 
@@ -1522,7 +1522,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const medianSales = salesFigures.median();
      * </pre>
      */
-    median(): number;
+    median (): number;
 
     /**
      * Get the mode of the values in the series. 
@@ -1537,7 +1537,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const modeSales = salesFigures.mode();
      * </pre>
      */
-    mode(): any;
+    mode (): any;
 
     /**
      * Get the variance of number values in the series. 
@@ -1550,7 +1550,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const salesVariance = salesFigures.variance();
      * </pre>
      */
-    variance(): number;
+    variance (): number;
 
     /**
      * Get the standard deviation of number values in the series. 
@@ -1563,7 +1563,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const salesStdDev = salesFigures.std();
      * </pre>
      */
-    std(): number;
+    std (): number;
 
     /**
      * Standardize a series of numbers by converting each "standard deviations from the mean".
@@ -1577,7 +1577,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const standardizedSeries = series.standardize();
      * </pre>
      */
-    standardize(): ISeries<IndexT, number>;
+    standardize (): ISeries<IndexT, number>;
 
     /**
      * Get the (sample) variance of number values in the series. 
@@ -1590,7 +1590,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const salesVariance = salesFigures.variance();
      * </pre>
      */
-    sampleVariance(): number;
+    sampleVariance (): number;
 
     /**
      * Get the (sample) standard deviation of number values in the series. 
@@ -1603,7 +1603,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const salesStdDev = salesFigures.sampleStd();
      * </pre>
      */
-    sampleStd(): number;
+    sampleStd (): number;
 
     /**
      * Standardize a series of numbers by converting each "standard deviations from the mean".
@@ -1617,7 +1617,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const standardizedSeries = series.sampleStandardize();
      * </pre>
      */
-    sampleStandardize(): ISeries<IndexT, number>;
+    sampleStandardize (): ISeries<IndexT, number>;
 
     /**
      * Get the min value in the series.
@@ -1630,7 +1630,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const minSales = salesFigures.min();
      * </pre>
      */
-    min(): number;
+    min (): number;
 
     /**
      * Get the max value in the series.
@@ -1643,7 +1643,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const maxSales = salesFigures.max();
      * </pre>
      */
-    max(): number;
+    max (): number;
 
     /**
      * Get the range of values in the series.
@@ -1656,7 +1656,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const range = salesFigures.range();
      * </pre>
      */
-    range(): number;
+    range (): number;
 
     /**
      * Invert the sign of every number value in the series.
@@ -1670,7 +1670,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const inverted = series.invert();
      * </pre>
      */
-    invert(): ISeries<IndexT, number>;
+    invert (): ISeries<IndexT, number>;
 
     /**
      * Counts the number of sequential values where the predicate evaluates to truthy.
@@ -1688,7 +1688,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(counted.toString());
      * </pre>
      */
-    counter(predicate: PredicateFn<ValueT>): ISeries<IndexT, number>;
+    counter (predicate: PredicateFn<ValueT>): ISeries<IndexT, number>;
 
     /** 
      * Gets a new series in reverse order.
@@ -1701,7 +1701,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const reversed = series.reverse();
      * </pre>
      */
-    reverse(): ISeries<IndexT, ValueT>;
+    reverse (): ISeries<IndexT, ValueT>;
 
     /**
      * Returns only the set of values in the series that are distinct.
@@ -1724,7 +1724,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump values into buckets of 10.
      * </pre>
      */
-    distinct<ToT>(selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
+    distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT>;
 
     /**
      * Collects values in the series into a new series of groups according to a user-defined selector function.
@@ -1746,7 +1746,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * }
      * </pre>
      */
-    groupBy<GroupT>(selector: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
+    groupBy<GroupT> (selector: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
      * Collects values in the series into a new series of groups based on if the values are the same or according to a user-defined selector function.
@@ -1776,7 +1776,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * }
      * </pre>
      */
-    groupSequentialBy<GroupT>(selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
+    groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>>;
 
     /**
      * Concatenate multiple other series onto this series.
@@ -1816,7 +1816,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const concatenated = a.concat(otherSeries);
      * </pre>
      */
-    concat(...series: (ISeries<IndexT, ValueT>[] | ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT>;
+    concat (...series: (ISeries<IndexT, ValueT>[] | ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT>;
 
     /**
     * Zip together multiple series to create a new series.
@@ -1835,10 +1835,10 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
     * const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
     * </pre>
     */
-    zip<Index2T, Value2T, ResultT>(s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT>): ISeries<IndexT, ResultT>;
-    zip<Index2T, Value2T, Index3T, Value3T, ResultT>(s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
-    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT>(s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, s4: ISeries<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
-    zip<ResultT>(...args: any[]): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, ResultT> (s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT>): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, ResultT> (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT> (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, s4: ISeries<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
+    zip<ResultT> (...args: any[]): ISeries<IndexT, ResultT>;
 
     /**
      * Sorts the series in ascending order by a value defined by the user-defined selector function. 
@@ -1859,7 +1859,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const orderedSeries = series.orderBy(value => value.NestedValue); 
      * </pre>
      */
-    orderBy<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 
     /**
      * Sorts the series in descending order by a value defined by the user-defined selector function. 
@@ -1880,7 +1880,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const orderedSeries = series.orderByDescending(value => value.NestedValue); 
      * </pre>
      */
-    orderByDescending<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 
     /**
      * Creates a new series by merging two input dataframes.
@@ -1932,7 +1932,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * </pre>
      * 
      */
-    union<KeyT = ValueT>(
+    union<KeyT = ValueT> (
         other: ISeries<IndexT, ValueT>,
         selector?: SelectorFn<ValueT, KeyT>):
         ISeries<IndexT, ValueT>;
@@ -1969,7 +1969,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * );
      * </pre>     
      */
-    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT>(
+    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerSelector?: SelectorFn<ValueT, KeyT>,
         innerSelector?: SelectorFn<InnerValueT, KeyT>):
@@ -2006,7 +2006,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * );
      * </pre>
      */
-    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT>(
+    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerSelector?: SelectorFn<ValueT, KeyT>,
         innerSelector?: SelectorFn<InnerValueT, KeyT>):
@@ -2042,7 +2042,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
       *      );
       * </pre>
       */
-    join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -2083,7 +2083,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *      );
      * </pre>
      */
-    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -2124,7 +2124,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *      );
      * </pre>
      */
-    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -2165,7 +2165,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *      );
      * </pre>
      */
-    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -2185,7 +2185,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const truncated = series.truncateStrings(10); // Truncate all string values to max length of 10 characters.
      * </pre>
      */
-    truncateStrings(maxLength: number): ISeries<IndexT, ValueT>;
+    truncateStrings (maxLength: number): ISeries<IndexT, ValueT>;
 
     /**
      * Produces a new series with all number values rounded to the specified number of places.
@@ -2208,7 +2208,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const rounded = series.round(3); // Round numbers to three decimal places.
      * </pre>
      */
-    round(numDecimalPlaces?: number): ISeries<IndexT, ValueT>;
+    round (numDecimalPlaces?: number): ISeries<IndexT, ValueT>;
 
     /**
      * Insert a pair at the start of the series.
@@ -2226,7 +2226,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const insertedSeries = series.insertPair([newIndex, newRows]);
      * </pre>
      */
-    insertPair(pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
+    insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
 
     /**
      * Append a pair to the end of a series.
@@ -2244,12 +2244,12 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * const appendedSeries = series.appendPair([newIndex, newRows]);
      * </pre>
      */
-    appendPair(pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
+    appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT>;
 
     /**
      * Removes values from the series by index.
      */
-    remove(index: IndexT): ISeries<IndexT, ValueT>;
+    remove (index: IndexT): ISeries<IndexT, ValueT>;
 
     /**
      * Fill gaps in a series.
@@ -2283,7 +2283,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      *  var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
      * </pre>
      */
-    fillGaps(comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT>;
+    fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT>;
 
     /**
      * Returns the specified default series if the input series is empty. 
@@ -2308,7 +2308,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
      * </pre>
      */
-    defaultIfEmpty(defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT>;
+    defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT>;
 
     /**
      * Detect the the frequency of the types of the values in the series.
@@ -2323,7 +2323,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(dataTypes.toString());
      * </pre>
      */
-    detectTypes(): IDataFrame<number, ITypeFrequency>;
+    detectTypes (): IDataFrame<number, ITypeFrequency>;
 
     /**
      * Detect the frequency of the values in the series.
@@ -2338,7 +2338,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(dataValues.toString());
      * </pre>
      */
-    detectValues(): IDataFrame<number, IValueFrequency>;
+    detectValues (): IDataFrame<number, IValueFrequency>;
 
     /**
      * Organise all values in the series into the specified number of buckets.
@@ -2357,7 +2357,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(buckets.toString());
      * </pre>
      */
-    bucket(numBuckets: number): IDataFrame<IndexT, IBucket>;
+    bucket (numBuckets: number): IDataFrame<IndexT, IBucket>;
 
     /**
      * Counts frequencies in the series to produce a frequency table.
@@ -2388,7 +2388,7 @@ export interface ISeries<IndexT = number, ValueT = any> extends Iterable<ValueT>
      * console.log(frequencyTable.toArray());
      * </pre>
      */
-    frequency(options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry>;
+    frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry>;
 }
 
 /**
@@ -2410,7 +2410,7 @@ export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> exte
      * const ordered = sales.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amount);
      * </pre>
      */
-    thenBy<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 
     /** 
      * Applys additional sorting (descending) to an already sorted series.
@@ -2426,7 +2426,7 @@ export interface IOrderedSeries<IndexT = number, ValueT = any, SortT = any> exte
      * const ordered = sales.orderBy(sale => sale.SalesPerson).thenByDescending(sale => sale.Amount);
      * </pre>
      */
-    thenByDescending<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
+    thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT>;
 }
 
 //
@@ -2483,14 +2483,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Initialise a series from an iterator (or generator object).
     //
-    private static initFromIterator<IndexT, ValueT>(iterator: Iterator<ValueT>): ISeriesContent<IndexT, ValueT> {
+    private static initFromIterator<IndexT, ValueT> (iterator: Iterator<ValueT>): ISeriesContent<IndexT, ValueT> {
         return Series.initFromIterable<IndexT, ValueT>(new CachedIteratorIterable(iterator));
     }
 
     //
     // Initialise series content from an iterable of values.
     //
-    private static initFromIterable<IndexT, ValueT>(arr: Iterable<ValueT>): ISeriesContent<IndexT, ValueT> {
+    private static initFromIterable<IndexT, ValueT> (arr: Iterable<ValueT>): ISeriesContent<IndexT, ValueT> {
         return {
             index: Series.defaultCountIterable,
             values: arr,
@@ -2502,7 +2502,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Initialise an empty series.
     //
-    private static initEmpty<IndexT, ValueT>(): ISeriesContent<IndexT, ValueT> {
+    private static initEmpty<IndexT, ValueT> (): ISeriesContent<IndexT, ValueT> {
         return {
             index: Series.defaultEmptyIterable,
             values: Series.defaultEmptyIterable,
@@ -2514,14 +2514,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Returns true if the input is an iterator.
     //
-    private static isIterator(input: any): boolean {
+    private static isIterator (input: any): boolean {
         return isObject(input) && isFunction(input.next);
     }
 
     //
     // Returns true if the input is an iterable.
     //
-    private static isIterable(input: any): boolean {
+    private static isIterable (input: any): boolean {
         return isArray(input) ||
             (isObject(input) && isFunction(input[Symbol.iterator]));
     }
@@ -2529,7 +2529,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Check that a value is an interable.
     //
-    private static checkIterable<T>(input: any, fieldName: string): void {
+    private static checkIterable<T> (input: any, fieldName: string): void {
         if (Series.isIterable(input)) {
             // Assume it's an iterable.
             // Ok
@@ -2543,7 +2543,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Initialise series content from a config object.
     //
-    private static initFromConfig<IndexT, ValueT>(config: ISeriesConfig<IndexT, ValueT>): ISeriesContent<IndexT, ValueT> {
+    private static initFromConfig<IndexT, ValueT> (config: ISeriesConfig<IndexT, ValueT>): ISeriesContent<IndexT, ValueT> {
 
         let index: Iterable<IndexT>;
         let values: Iterable<ValueT>;
@@ -2681,7 +2681,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Ensure the series content has been initialised.
     //
-    private lazyInit() {
+    private lazyInit () {
         if (this.content === null && this.configFn !== null) {
             this.content = Series.initFromConfig(this.configFn());
         }
@@ -2690,7 +2690,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Ensure the series content is lazy initalised and return it.
     //
-    private getContent(): ISeriesContent<IndexT, ValueT> {
+    private getContent (): ISeriesContent<IndexT, ValueT> {
         this.lazyInit();
         return this.content!;
     }
@@ -2698,7 +2698,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     // 
     // Lazy builds content index, does basic hash lookup.
     //
-    private getRowByIndex(index: IndexT): ValueT | undefined {
+    private getRowByIndex (index: IndexT): ValueT | undefined {
         if (!this.indexedContent) {
             this.indexedContent = new Map<any, ValueT>();
             for (const pair of this.getContent().pairs) {
@@ -2724,7 +2724,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * }
      * </pre>
      */
-    [Symbol.iterator](): Iterator<ValueT> {
+    [Symbol.iterator] (): Iterator<ValueT> {
         return this.getContent().values[Symbol.iterator]();
     }
 
@@ -2740,7 +2740,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const castSeries = series.cast<SomeOtherType>();
      * </pre>
      */
-    cast<NewValueT>(): ISeries<IndexT, NewValueT> {
+    cast<NewValueT> (): ISeries<IndexT, NewValueT> {
         return this as any as ISeries<IndexT, NewValueT>;
     }
 
@@ -2755,7 +2755,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const index = series.getIndex();
      * </pre>
      */
-    getIndex(): IIndex<IndexT> {
+    getIndex (): IIndex<IndexT> {
         return new Index<IndexT>(() => ({ values: this.getContent().index }));
     }
 
@@ -2790,7 +2790,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const indexedSeries = series.withIndex(value => value + 20);
      * </pre>
      */
-    withIndex<NewIndexT>(newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT> {
+    withIndex<NewIndexT> (newIndex: Iterable<NewIndexT> | SelectorFn<ValueT, NewIndexT>): ISeries<NewIndexT, ValueT> {
 
         if (isFunction(newIndex)) {
             return new Series<NewIndexT, ValueT>(() => ({
@@ -2819,7 +2819,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithResetIndex = series.resetIndex();
      * </pre>
      */
-    resetIndex(): ISeries<number, ValueT> {
+    resetIndex (): ISeries<number, ValueT> {
         return new Series<number, ValueT>(() => ({
             values: this.getContent().values // Just strip the index.
         }));
@@ -2840,7 +2840,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const mergedSeries = Series.merge([series1, series2, etc]);
      * </pre>
      */
-    static merge<MergedValueT = any, IndexT = any>(series: Iterable<ISeries<IndexT, any>>): ISeries<IndexT, MergedValueT[]> {
+    static merge<MergedValueT = any, IndexT = any> (series: Iterable<ISeries<IndexT, any>>): ISeries<IndexT, MergedValueT[]> {
 
         const rowMap = new Map<string, { index: IndexT, values: any[] }>();
         const numSeries = Array.from(series).length; //TODO: Be nice not to have to do this.
@@ -2898,7 +2898,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
       * const mergedSeries = series1.merge(series2, series3, etc);
       * </pre>
       */
-    merge<MergedValueT = any>(...args: any[]): ISeries<IndexT, MergedValueT[]> {
+    merge<MergedValueT = any> (...args: any[]): ISeries<IndexT, MergedValueT[]> {
         return Series.merge<MergedValueT, IndexT>([this].concat(args));
     }
 
@@ -2913,7 +2913,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     * const values = series.toArray();
     * </pre>
     */
-    toArray(options?: { includeNulls?: boolean }): any[] {
+    toArray (options?: { includeNulls?: boolean }): any[] {
         const values = [];
         for (const value of this.getContent().values) {
             if (options && options.includeNulls && value !== undefined) {
@@ -2937,7 +2937,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const pairs = series.toPairs();
      * </pre>
      */
-    toPairs(): ([IndexT, ValueT])[] {
+    toPairs (): ([IndexT, ValueT])[] {
         const pairs = [];
         for (const pair of this.getContent().pairs) {
             if (pair[1] !== undefined && pair[1] !== null) {
@@ -2964,7 +2964,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * );
      * </pre>
      */
-    toObject<KeyT = any, FieldT = any, OutT = any>(keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
+    toObject<KeyT = any, FieldT = any, OutT = any> (keySelector: (value: ValueT) => KeyT, valueSelector: (value: ValueT) => FieldT): OutT {
 
         if (!isFunction(keySelector)) throw new Error("Expected 'keySelector' parameter to Series.toObject to be a function.");
         if (!isFunction(valueSelector)) throw new Error("Expected 'valueSelector' parameter to Series.toObject to be a function.");
@@ -2996,7 +2996,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(transformed.toString());
      * </pre>
      */
-    select<ToT>(transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
+    select<ToT> (transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
         if (!isFunction(transformer)) throw new Error("Expected 'transformer' parameter to 'Series.select' to be a function.");
 
         return this.map<ToT>(transformer);
@@ -3024,7 +3024,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(transformed.toString());
      * </pre>
      */
-    map<ToT>(transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
+    map<ToT> (transformer: SelectorWithIndexFn<ValueT, ToT>): ISeries<IndexT, ToT> {
         if (!isFunction(transformer)) throw new Error("Expected 'transformer' parameter to 'Series.map' to be a function.");
 
         return new Series(() => {
@@ -3064,7 +3064,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(transformed.toString());
      * </pre>
      */
-    selectMany<ToT>(transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
+    selectMany<ToT> (transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
         if (!isFunction(transformer)) throw new Error("Expected 'transformer' parameter to 'Series.selectMany' to be a function.");
 
         return this.flatMap<ToT>(transformer);
@@ -3096,7 +3096,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(transformed.toString());
      * </pre>
      */
-    flatMap<ToT>(transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
+    flatMap<ToT> (transformer: SelectorWithIndexFn<ValueT, Iterable<ToT>>): ISeries<IndexT, ToT> {
         if (!isFunction(transformer)) throw new Error("Expected 'transformer' parameter to 'Series.flatMap' to be a function.");
 
         return new Series(() => ({
@@ -3141,7 +3141,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(weeklySales.toString());
      * </pre>
      */
-    window(period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>> {
+    window (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>> {
 
         if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'Series.window' to be a number.");
 
@@ -3167,7 +3167,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(rollingWeeklySales.toString());
      * </pre>
      */
-    rollingWindow(period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>> {
+    rollingWindow (period: number, whichIndex?: WhichIndex): ISeries<IndexT, ISeries<IndexT, ValueT>> {
 
         if (!isNumber(period)) throw new Error("Expected 'period' parameter to 'Series.rollingWindow' to be a number.");
 
@@ -3199,7 +3199,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * const variableWindows = series.variableWindow(rowComparer);
      */
-    variableWindow(comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
+    variableWindow (comparer: ComparerFn<ValueT, ValueT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
         if (!isFunction(comparer)) throw new Error("Expected 'comparer' parameter to 'Series.variableWindow' to be a function.")
 
@@ -3227,7 +3227,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithDuplicateRowsRemoved = series.sequentialDistinct(value => value.someNestedField);
      * </pre>
      */
-    sequentialDistinct<ToT = ValueT>(selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
+    sequentialDistinct<ToT = ValueT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
 
         if (selector) {
             if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.sequentialDistinct' to be a selector function that determines the value to compare for duplicates.")
@@ -3286,7 +3286,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    aggregate<ToT = ValueT>(seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
+    aggregate<ToT = ValueT> (seedOrSelector: AggregateFn<ValueT, ToT> | ToT, selector?: AggregateFn<ValueT, ToT>): ToT {
 
         if (isFunction(seedOrSelector) && !selector) {
             return this.skip(1).aggregate(<ToT><any>this.first(), seedOrSelector);
@@ -3335,7 +3335,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * );
      * </pre>
      */
-    reduce<ToT = ValueT>(reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT {
+    reduce<ToT = ValueT> (reducer: AggregateFn<ValueT, ToT>, seed?: ToT): ToT {
         if (!isFunction(reducer)) throw new Error("Expected 'reducer' parameter to `Series.reduce` to be a function.");
 
         let accum = <ToT>seed;
@@ -3369,7 +3369,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const volatility = closingPrice.amountRange(5);
      * </pre>
      */
-    amountRange(period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+    amountRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>><any>this) // Have to assume this is a number series.
             .rollingWindow(period, whichIndex)
             .select(window => window.max() - window.min());
@@ -3393,7 +3393,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const proportionVolatility = closingPrice.proportionRange(5);
      * </pre>
      */
-    proportionRange(period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+    proportionRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>><any>this) // Have to assume this is a number series.
             .rollingWindow(period, whichIndex)
             .select(window => (window.max() - window.min()) / window.last());
@@ -3417,7 +3417,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const percentVolatility = closingPrice.percentRange(5);
      * </pre>
      */
-    percentRange(period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+    percentRange (period: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return this.proportionRange(period, whichIndex).select(v => v * 100);
     }
 
@@ -3441,7 +3441,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const amountChanged = salesFigures.amountChanged(7); // Amount that sales has changed, week to week.
      * </pre>
      */
-    amountChange(period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+    amountChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>><any>this) // Have to assume this is a number series.
             .rollingWindow(period === undefined ? 2 : period, whichIndex)
             .select(window => window.last() - window.first());
@@ -3468,7 +3468,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const proportionChanged = salesFigures.amountChanged(7); // Proportion that sales has changed, week to week.
      * </pre>
      */
-    proportionChange(period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+    proportionChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return (<ISeries<IndexT, number>><any>this) // Have to assume this is a number series.
             .rollingWindow(period === undefined ? 2 : period, whichIndex)
             .select(window => (window.last() - window.first()) / window.first());
@@ -3495,7 +3495,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const percentChanged = salesFigures.amountChanged(7); // Percent that sales has changed, week to week.
      * </pre>
      */
-    percentChange(period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
+    percentChange (period?: number, whichIndex?: WhichIndex): ISeries<IndexT, number> {
         return this.proportionChange(period, whichIndex).select(v => v * 100);
     }
 
@@ -3518,7 +3518,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const proportionRank = series.proportionRank(100);
      * </pre>
      */
-    proportionRank(period?: number): ISeries<IndexT, number> {
+    proportionRank (period?: number): ISeries<IndexT, number> {
         if (period === undefined) {
             period = 2;
         }
@@ -3555,7 +3555,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const percentRank = series.percentRank(100);
      * </pre>
      */
-    percentRank(period?: number): ISeries<IndexT, number> {
+    percentRank (period?: number): ISeries<IndexT, number> {
         if (period === undefined) {
             period = 2;
         }
@@ -3572,7 +3572,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * @returns Returns a new series that is the cumulative sum of values across the input series.
      */
-    cumsum(): ISeries<IndexT, number> {
+    cumsum (): ISeries<IndexT, number> {
         return new Series<IndexT, number>(() => {
             let working = 0;
             const pairs: any[][] = this.toPairs();
@@ -3594,7 +3594,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithRowsSkipped = series.skip(10); // Skip 10 rows in the original series.
      * </pre>
      */
-    skip(numValues: number): ISeries<IndexT, ValueT> {
+    skip (numValues: number): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => ({
             values: new SkipIterable(this.getContent().values, numValues),
             index: new SkipIterable(this.getContent().index, numValues),
@@ -3615,7 +3615,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithRowsSkipped = series.skipWhile(salesFigure => salesFigure > 100); // Skip initial sales figure that are less than 100.
      * </pre>
      */
-    skipWhile(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+    skipWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.skipWhile' function to be a predicate function that returns true/false.");
 
         return new Series<IndexT, ValueT>(() => ({
@@ -3637,7 +3637,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithRowsSkipped = series.skipUntil(salesFigure => salesFigure > 100); // Skip initial sales figures unitl we see one greater than 100.
      * </pre>
      */
-    skipUntil(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+    skipUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.skipUntil' function to be a predicate function that returns true/false.");
 
         return this.skipWhile(value => !predicate(value));
@@ -3656,7 +3656,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithRowsTaken = series.take(15); // Take only the first 15 values from the original series.
      * </pre>
      */
-    take(numRows: number): ISeries<IndexT, ValueT> {
+    take (numRows: number): ISeries<IndexT, ValueT> {
         if (!isNumber(numRows)) throw new Error("Expected 'numRows' parameter to 'Series.take' function to be a number.");
 
         return new Series(() => ({
@@ -3679,7 +3679,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithRowsTaken = series.takeWhile(salesFigure => salesFigure > 100); // Take only initial sales figures that are greater than 100.
      * </pre>
      */
-    takeWhile(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+    takeWhile (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.takeWhile' function to be a predicate function that returns true/false.");
 
         return new Series(() => ({
@@ -3701,7 +3701,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const seriesWithRowsTaken = series.takeUntil(salesFigure => salesFigure > 100); // Take all initial sales figures until we see one that is greater than 100.
      * </pre>
      */
-    takeUntil(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+    takeUntil (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.takeUntil' function to be a predicate function that returns true/false.");
 
         return this.takeWhile(value => !predicate(value));
@@ -3722,7 +3722,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static count<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static count<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.count();
     }
 
@@ -3737,7 +3737,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const numValues = series.count();
      * </pre>
      */
-    count(): number {
+    count (): number {
 
         let total = 0;
         for (const value of this.getContent().values) {
@@ -3757,7 +3757,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const firstValue = series.first();
      * </pre>
      */
-    first(): ValueT {
+    first (): ValueT {
 
         for (const value of this) {
             return value; // Only need the first value.
@@ -3777,7 +3777,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const lastValue = series.last();
      * </pre>
      */
-    last(): ValueT {
+    last (): ValueT {
 
         let lastValue = null;
 
@@ -3813,7 +3813,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const value = series.at(date); 
      * </pre>
      */
-    at(index: IndexT): ValueT | undefined {
+    at (index: IndexT): ValueT | undefined {
 
         if (this.none()) {
             return undefined;
@@ -3836,7 +3836,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const sample = series.head(10); // Take a sample of 10 values from the start of the series.
      * </pre>
      */
-    head(numValues: number): ISeries<IndexT, ValueT> {
+    head (numValues: number): ISeries<IndexT, ValueT> {
 
         if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'Series.head' function to be a number.");
 
@@ -3862,7 +3862,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const sample = series.tail(12); // Take a sample of 12 values from the end of the series.
      * </pre>
      */
-    tail(numValues: number): ISeries<IndexT, ValueT> {
+    tail (numValues: number): ISeries<IndexT, ValueT> {
 
         if (!isNumber(numValues)) throw new Error("Expected 'numValues' parameter to 'Series.tail' function to be a number.");
 
@@ -3893,7 +3893,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(filtered.toArray());
      * </pre>
      */
-    where(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+    where (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.where' to be a function.");
 
         return this.filter(predicate);
@@ -3916,7 +3916,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(filtered.toArray());
      * </pre>
      */
-    filter(predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
+    filter (predicate: PredicateFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.filter' to be a function.");
 
         return new Series(() => {
@@ -3943,7 +3943,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    forEach(callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT> {
+    forEach (callback: CallbackFn<ValueT>): ISeries<IndexT, ValueT> {
         if (!isFunction(callback)) throw new Error("Expected 'callback' parameter to 'Series.forEach' to be a function.");
 
         let index = 0;
@@ -3968,7 +3968,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = series.all(salesFigure => salesFigure > 100); // Returns true if all sales figures are greater than 100.
      * </pre>
      */
-    all(predicate: PredicateFn<ValueT>): boolean {
+    all (predicate: PredicateFn<ValueT>): boolean {
         if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.all' to be a function.")
 
         let count = 0;
@@ -4008,7 +4008,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = series.any(); // Do we have any sales figures at all?
      * </pre>
      */
-    any(predicate?: PredicateFn<ValueT>): boolean {
+    any (predicate?: PredicateFn<ValueT>): boolean {
         if (predicate) {
             if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.any' to be a function.")
         }
@@ -4052,7 +4052,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = series.none(); // Do we have zero sales figures?
      * </pre>
      */
-    none(predicate?: PredicateFn<ValueT>): boolean {
+    none (predicate?: PredicateFn<ValueT>): boolean {
 
         if (predicate) {
             if (!isFunction(predicate)) throw new Error("Expected 'predicate' parameter to 'Series.none' to be a function.")
@@ -4103,7 +4103,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = timeSeries.startAt(new Date(2016, 5, 4)); 
      * </pre>
      */
-    startAt(indexValue: IndexT): ISeries<IndexT, ValueT> {
+    startAt (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
             const lessThan = this.getIndex().getLessThan();
             return {
@@ -4141,7 +4141,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = timeSeries.endAt(new Date(2016, 5, 4)); 
      * </pre>
      */
-    endAt(indexValue: IndexT): ISeries<IndexT, ValueT> {
+    endAt (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
             const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
             return {
@@ -4179,7 +4179,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = timeSeries.before(new Date(2016, 5, 4)); 
      * </pre>
      */
-    before(indexValue: IndexT): ISeries<IndexT, ValueT> {
+    before (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
             const lessThan = this.getIndex().getLessThan();
             return {
@@ -4217,7 +4217,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = timeSeries.after(new Date(2016, 5, 4)); 
      * </pre>
      */
-    after(indexValue: IndexT): ISeries<IndexT, ValueT> {
+    after (indexValue: IndexT): ISeries<IndexT, ValueT> {
         return new Series<IndexT, ValueT>(() => {
             const lessThanOrEqualTo = this.getIndex().getLessThanOrEqualTo();
             return {
@@ -4256,7 +4256,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = timeSeries.after(new Date(2016, 5, 4), new Date(2016, 5, 22)); 
      * </pre>
      */
-    between(startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT> {
+    between (startIndexValue: IndexT, endIndexValue: IndexT): ISeries<IndexT, ValueT> {
         return this.startAt(startIndexValue).endAt(endIndexValue);
     }
 
@@ -4272,7 +4272,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(series.toString());
      * </pre>
      */
-    toString(): string {
+    toString (): string {
 
         const header = ["__index__", "__value__"];
         const rows = this.toPairs();
@@ -4293,7 +4293,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Helper function to parse a string to an int.
     //
-    static parseInt(value: any | undefined | null, valueIndex: number): number | undefined {
+    static parseInt (value: any | undefined | null, valueIndex: number): number | undefined {
         if (value === undefined || value === null) {
             return undefined;
         }
@@ -4321,14 +4321,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const parsed = series.parseInts();
      * </pre>
      */
-    parseInts(): ISeries<IndexT, number> {
+    parseInts (): ISeries<IndexT, number> {
         return <ISeries<IndexT, number>>this.select(Series.parseInt);
     }
 
     //
     // Helper function to parse a string to a float.
     //
-    static parseFloat(value: any | undefined | null, valueIndex: number): number | undefined {
+    static parseFloat (value: any | undefined | null, valueIndex: number): number | undefined {
         if (value === undefined || value === null) {
             return undefined;
         }
@@ -4354,14 +4354,14 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const parsed = series.parseFloats();
      * </pre>
      */
-    parseFloats(): ISeries<IndexT, number> {
+    parseFloats (): ISeries<IndexT, number> {
         return <ISeries<IndexT, number>>this.select(Series.parseFloat);
     }
 
     //
     // Helper function to parse a string to a date.
     //
-    static parseDate(value: any | undefined | null, valueIndex: number, formatString?: string): Date | undefined {
+    static parseDate (value: any | undefined | null, valueIndex: number, formatString?: string): Date | undefined {
         if (value === undefined || value === null) {
             return undefined;
         }
@@ -4392,7 +4392,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const parsed = series.parseDates();
      * </pre>
      */
-    parseDates(formatString?: string): ISeries<IndexT, Date> {
+    parseDates (formatString?: string): ISeries<IndexT, Date> {
 
         if (formatString) {
             if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to Series.parseDates to be a string (if specified).");
@@ -4404,7 +4404,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Helper function to convert a value to a string.
     //
-    static toString(value: any | undefined | null, formatString?: string): string | undefined | null {
+    static toString (value: any | undefined | null, formatString?: string): string | undefined | null {
         if (value === undefined) {
             return undefined;
         }
@@ -4447,7 +4447,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const result = series.toStrings("0.00");
      * </pre>
      */
-    toStrings(formatString?: string): ISeries<IndexT, string> {
+    toStrings (formatString?: string): ISeries<IndexT, string> {
 
         if (formatString) {
             if (!isString(formatString)) throw new Error("Expected optional 'formatString' parameter to Series.toStrings to be a string (if specified).");
@@ -4467,7 +4467,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const baked = series.bake();
      * </pre>
      */
-    bake(): ISeries<IndexT, ValueT> {
+    bake (): ISeries<IndexT, ValueT> {
 
         if (this.getContent().isBaked) {
             // Already baked.
@@ -4506,7 +4506,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const dataframe = series.inflate(value => { AColumn:  value.NestedValue }); // Extract a nested value and produce a dataframe from it.
      * </pre>
      */
-    inflate<ToT = ValueT>(selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
+    inflate<ToT = ValueT> (selector?: SelectorWithIndexFn<ValueT, ToT>): IDataFrame<IndexT, ToT> {
 
         if (selector) {
             if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to Series.inflate to be a selector function.");
@@ -4536,7 +4536,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     // For functions that work with a number series convert this series to a number series.
     // Throws an error if anything other than a number is found.
     //
-    private asNumberSeries(): ISeries<IndexT, number> {
+    private asNumberSeries (): ISeries<IndexT, number> {
         //
         // From here: http://stackoverflow.com/questions/5275115/add-a-median-method-to-a-list
         //
@@ -4565,7 +4565,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static sum<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static sum<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.sum();
     }
 
@@ -4580,7 +4580,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const totalSales = salesFigures.sum();
      * </pre>
      */
-    sum(): number {
+    sum (): number {
 
         const numberSeries = this.asNumberSeries();
         if (numberSeries.none()) {
@@ -4611,7 +4611,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static average<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static average<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.average();
     }
 
@@ -4628,7 +4628,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const averageSales = salesFigures.average();
      * </pre>
      */
-    average(): number {
+    average (): number {
         return this.mean();
     }
 
@@ -4647,7 +4647,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static mean<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static mean<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.mean();
     }
 
@@ -4662,7 +4662,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const averageSales = salesFigures.mean();
      * </pre>
      */
-    mean(): number {
+    mean (): number {
 
         const numberSeries = this.asNumberSeries();
         if (numberSeries.none()) {
@@ -4699,7 +4699,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static median<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static median<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.median();
     }
 
@@ -4715,7 +4715,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const medianSales = salesFigures.median();
      * </pre>
      */
-    median(): number {
+    median (): number {
 
         const numberSeries = this.asNumberSeries();
         const count = numberSeries.count();
@@ -4750,7 +4750,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static mode<IndexT = any>(series: ISeries<IndexT, any>): any {
+    static mode<IndexT = any> (series: ISeries<IndexT, any>): any {
         return series.mode();
     }
 
@@ -4767,7 +4767,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const modeSales = salesFigures.mode();
      * </pre>
      */
-    mode(): any {
+    mode (): any {
 
         const numberSeries = this.asNumberSeries();
         if (numberSeries.none()) {
@@ -4793,7 +4793,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     //
     // Gets the sum of squares for the series (and the count).
     //
-    private sumOfSquares(): [number, number] {
+    private sumOfSquares (): [number, number] {
 
         if (this.none()) {
             return [0, 1];
@@ -4830,7 +4830,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static variance<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static variance<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.variance();
     }
 
@@ -4845,7 +4845,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const salesVariance = salesFigures.variance();
      * </pre>
      */
-    variance(): number {
+    variance (): number {
 
         if (this.none()) {
             return 0;
@@ -4870,7 +4870,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static std<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static std<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.std();
     }
 
@@ -4885,7 +4885,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const salesStdDev = salesFigures.std();
      * </pre>
      */
-    std(): number {
+    std (): number {
 
         if (this.none()) {
             return 0;
@@ -4906,7 +4906,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const standardizedSeries = series.standardize();
      * </pre>
      */
-    standardize(): ISeries<IndexT, number> {
+    standardize (): ISeries<IndexT, number> {
 
         if (this.none()) {
             // There are no values in the input series.
@@ -4941,7 +4941,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static sampleVariance<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static sampleVariance<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.sampleVariance();
     }
 
@@ -4956,7 +4956,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const salesVariance = salesFigures.variance();
      * </pre>
      */
-    sampleVariance(): number {
+    sampleVariance (): number {
 
         if (this.none()) {
             return 0;
@@ -4981,7 +4981,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static sampleStd<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static sampleStd<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.sampleStd();
     }
 
@@ -4996,7 +4996,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const salesStdDev = salesFigures.sampleStd();
      * </pre>
      */
-    sampleStd(): number {
+    sampleStd (): number {
 
         if (this.none()) {
             return 0;
@@ -5017,7 +5017,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const standardizedSeries = series.sampleStandardize();
      * </pre>
      */
-    sampleStandardize(): ISeries<IndexT, number> {
+    sampleStandardize (): ISeries<IndexT, number> {
 
         if (this.none()) {
             // There are no values in the input series.
@@ -5052,7 +5052,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static min<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static min<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.min();
     }
 
@@ -5067,7 +5067,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const minSales = salesFigures.min();
      * </pre>
      */
-    min(): number {
+    min (): number {
 
         let min: number | undefined;
 
@@ -5102,7 +5102,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static max<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static max<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.max();
     }
 
@@ -5117,7 +5117,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const maxSales = salesFigures.max();
      * </pre>
      */
-    max(): number {
+    max (): number {
 
         let max: number | undefined;
 
@@ -5152,7 +5152,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * });
      * </pre>
      */
-    static range<IndexT = any>(series: ISeries<IndexT, number>): number {
+    static range<IndexT = any> (series: ISeries<IndexT, number>): number {
         return series.range();
     }
 
@@ -5167,7 +5167,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const range = salesFigures.range();
      * </pre>
      */
-    range(): number {
+    range (): number {
         return this.max() - this.min();
     }
 
@@ -5183,7 +5183,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const inverted = series.invert();
      * </pre>
      */
-    invert(): ISeries<IndexT, number> {
+    invert (): ISeries<IndexT, number> {
         return this
             .asNumberSeries()
             .select(value => {
@@ -5207,7 +5207,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(counted.toString());
      * </pre>
      */
-    counter(predicate: PredicateFn<ValueT>): ISeries<IndexT, number> {
+    counter (predicate: PredicateFn<ValueT>): ISeries<IndexT, number> {
         return this.groupSequentialBy(predicate)
             .selectMany((group, i) => {
                 if (predicate(group.first())) {
@@ -5238,7 +5238,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const reversed = series.reverse();
      * </pre>
      */
-    reverse(): ISeries<IndexT, ValueT> {
+    reverse (): ISeries<IndexT, ValueT> {
 
         return new Series<IndexT, ValueT>(() => ({
             values: new ReverseIterable(this.getContent().values),
@@ -5268,7 +5268,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const bucketedValues = series.distinct(value => Math.floor(value / 10)); // Lump values into buckets of 10.
      * </pre>
      */
-    distinct<ToT>(selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
+    distinct<ToT> (selector?: SelectorFn<ValueT, ToT>): ISeries<IndexT, ValueT> {
 
         return new Series<IndexT, ValueT>(() => ({
             values: new DistinctIterable<ValueT, ToT>(this.getContent().values, selector),
@@ -5296,7 +5296,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * }
      * </pre>
      */
-    groupBy<GroupT>(selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
+    groupBy<GroupT> (selector: SelectorWithIndexFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
         if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.groupBy' to be a selector function that determines the value to group the series by.");
 
@@ -5355,7 +5355,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * }
      * </pre>
      */
-    groupSequentialBy<GroupT>(selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
+    groupSequentialBy<GroupT> (selector?: SelectorFn<ValueT, GroupT>): ISeries<number, ISeries<IndexT, ValueT>> {
 
         if (selector) {
             if (!isFunction(selector)) throw new Error("Expected 'selector' parameter to 'Series.groupSequentialBy' to be a selector function that determines the value to group the series by.")
@@ -5374,7 +5374,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * @returns Returns a single series concatenated from multiple input series. 
      */
-    static concat<IndexT = any, ValueT = any>(series: ISeries<IndexT, ValueT>[]): ISeries<IndexT, ValueT> {
+    static concat<IndexT = any, ValueT = any> (series: ISeries<IndexT, ValueT>[]): ISeries<IndexT, ValueT> {
         if (!isArray(series)) throw new Error("Expected 'series' parameter to 'Series.concat' to be an array of series.");
 
         return new Series(() => {
@@ -5425,7 +5425,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const concatenated = a.concat(otherSeries);
      * </pre>
      */
-    concat(...series: (ISeries<IndexT, ValueT>[] | ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT> {
+    concat (...series: (ISeries<IndexT, ValueT>[] | ISeries<IndexT, ValueT>)[]): ISeries<IndexT, ValueT> {
         const concatInput: ISeries<IndexT, ValueT>[] = [this];
 
         for (const input of series) {
@@ -5451,7 +5451,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     * 
     * @returns Returns a single series zipped from multiple input series. 
     */
-    static zip<IndexT = any, ValueT = any, ResultT = any>(series: Iterable<ISeries<IndexT, ValueT>>, zipper: ZipNFn<ValueT, ResultT>): ISeries<IndexT, ResultT> {
+    static zip<IndexT = any, ValueT = any, ResultT = any> (series: Iterable<ISeries<IndexT, ValueT>>, zipper: ZipNFn<ValueT, ResultT>): ISeries<IndexT, ResultT> {
 
         const input = Array.from(series);
 
@@ -5492,10 +5492,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     * const zipped = a.zip(b (valueA, valueB) => valueA + valueB);
     * </pre>
     */
-    zip<Index2T, Value2T, ResultT>(s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT>): ISeries<IndexT, ResultT>;
-    zip<Index2T, Value2T, Index3T, Value3T, ResultT>(s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
-    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT>(s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, s4: ISeries<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
-    zip<ResultT>(...args: any[]): ISeries<IndexT, ResultT> {
+    zip<Index2T, Value2T, ResultT> (s2: ISeries<Index2T, Value2T>, zipper: Zip2Fn<ValueT, Value2T, ResultT>): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, ResultT> (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
+    zip<Index2T, Value2T, Index3T, Value3T, Index4T, Value4T, ResultT> (s2: ISeries<Index2T, Value2T>, s3: ISeries<Index3T, Value3T>, s4: ISeries<Index4T, Value4T>, zipper: Zip3Fn<ValueT, Value2T, Value3T, ResultT>): ISeries<IndexT, ResultT>;
+    zip<ResultT> (...args: any[]): ISeries<IndexT, ResultT> {
 
         const selector: Function = args[args.length - 1];
         const input: ISeries<IndexT, any>[] = [this].concat(args.slice(0, args.length - 1));
@@ -5521,7 +5521,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const orderedSeries = series.orderBy(value => value.NestedValue); 
      * </pre>
      */
-    orderBy<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+    orderBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         const content = this.getContent();
         return new OrderedSeries<IndexT, ValueT, SortT>({
             values: content.values,
@@ -5551,7 +5551,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const orderedSeries = series.orderByDescending(value => value.NestedValue); 
      * </pre>
      */
-    orderByDescending<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+    orderByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         const content = this.getContent();
         return new OrderedSeries<IndexT, ValueT, SortT>({
             values: content.values,
@@ -5612,7 +5612,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * </pre>
      * 
      */
-    union<KeyT = ValueT>(
+    union<KeyT = ValueT> (
         other: ISeries<IndexT, ValueT>,
         selector?: SelectorFn<ValueT, KeyT>):
         ISeries<IndexT, ValueT> {
@@ -5656,7 +5656,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * );
      * </pre>     
      */
-    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT>(
+    intersection<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerSelector?: SelectorFn<ValueT, KeyT>,
         innerSelector?: SelectorFn<InnerValueT, KeyT>):
@@ -5716,7 +5716,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * );
      * </pre>
      */
-    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT>(
+    except<InnerIndexT = IndexT, InnerValueT = ValueT, KeyT = ValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerSelector?: SelectorFn<ValueT, KeyT>,
         innerSelector?: SelectorFn<InnerValueT, KeyT>):
@@ -5775,7 +5775,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
       *      );
       * </pre>
       */
-    join<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    join<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -5850,7 +5850,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      );
      * </pre>
      */
-    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    joinOuter<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -5915,7 +5915,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      );
      * </pre>
      */
-    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    joinOuterLeft<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -5974,7 +5974,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *      );
      * </pre>
      */
-    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT>(
+    joinOuterRight<KeyT, InnerIndexT, InnerValueT, ResultValueT> (
         inner: ISeries<InnerIndexT, InnerValueT>,
         outerKeySelector: SelectorFn<ValueT, KeyT>,
         innerKeySelector: SelectorFn<InnerValueT, KeyT>,
@@ -6012,7 +6012,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const truncated = series.truncateStrings(10); // Truncate all string values to max length of 10 characters.
      * </pre>
      */
-    truncateStrings(maxLength: number): ISeries<IndexT, ValueT> {
+    truncateStrings (maxLength: number): ISeries<IndexT, ValueT> {
 
         if (!isNumber(maxLength)) {
             throw new Error("Expected 'maxLength' parameter to 'Series.truncateStrings' to be a number.");
@@ -6050,7 +6050,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const rounded = series.round(3); // Round numbers to three decimal places.
      * </pre>
      */
-    round(numDecimalPlaces?: number): ISeries<IndexT, ValueT> {
+    round (numDecimalPlaces?: number): ISeries<IndexT, ValueT> {
 
         if (numDecimalPlaces !== undefined) {
             if (!isNumber(numDecimalPlaces)) {
@@ -6086,7 +6086,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const insertedSeries = series.insertPair([newIndex, newRows]);
      * </pre>
      */
-    insertPair(pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
+    insertPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
         if (!isArray(pair)) throw new Error("Expected 'pair' parameter to 'Series.insertPair' to be an array.");
         if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'Series.insertPair' to be an array with two elements. The first element is the index, the second is the value.");
 
@@ -6109,7 +6109,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * const appendedSeries = series.appendPair([newIndex, newRows]);
      * </pre>
      */
-    appendPair(pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
+    appendPair (pair: [IndexT, ValueT]): ISeries<IndexT, ValueT> {
         if (!isArray(pair)) throw new Error("Expected 'pair' parameter to 'Series.appendPair' to be an array.");
         if (pair.length !== 2) throw new Error("Expected 'pair' parameter to 'Series.appendPair' to be an array with two elements. The first element is the index, the second is the value.");
 
@@ -6119,7 +6119,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
     /**
      * Removes values from the series by index.
      */
-    remove(index: IndexT): ISeries<IndexT, ValueT> {
+    remove (index: IndexT): ISeries<IndexT, ValueT> {
 
         return new Series<IndexT, ValueT>(() => {
             const content = this.getContent();
@@ -6161,7 +6161,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      *  var sequenceWithoutGaps = sequenceWithGaps.fillGaps(gapExists, gapFiller);
      * </pre>
      */
-    fillGaps(comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT> {
+    fillGaps (comparer: ComparerFn<[IndexT, ValueT], [IndexT, ValueT]>, generator: GapFillFn<[IndexT, ValueT], [IndexT, ValueT]>): ISeries<IndexT, ValueT> {
         if (!isFunction(comparer)) throw new Error("Expected 'comparer' parameter to 'Series.fillGaps' to be a comparer function that compares two values and returns a boolean.")
         if (!isFunction(generator)) throw new Error("Expected 'generator' parameter to 'Series.fillGaps' to be a generator function that takes two values and returns an array of generated pairs to span the gap.")
 
@@ -6207,7 +6207,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * expect(nonEmptySeries.defaultIfEmpty(defaultSeries)).to.eql(nonEmptySeries);
      * </pre>
      */
-    defaultIfEmpty(defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT> {
+    defaultIfEmpty (defaultSequence: ValueT[] | ISeries<IndexT, ValueT>): ISeries<IndexT, ValueT> {
 
         if (this.none()) {
             if (defaultSequence instanceof Series) {
@@ -6238,7 +6238,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(dataTypes.toString());
      * </pre>
      */
-    detectTypes(): IDataFrame<number, ITypeFrequency> {
+    detectTypes (): IDataFrame<number, ITypeFrequency> {
 
         return new DataFrame<number, ITypeFrequency>(() => {
             const totalValues = this.count();
@@ -6290,7 +6290,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(dataValues.toString());
      * </pre>
      */
-    detectValues(): IDataFrame<number, IValueFrequency> {
+    detectValues (): IDataFrame<number, IValueFrequency> {
 
         return new DataFrame<number, IValueFrequency>(() => {
             const totalValues = this.count();
@@ -6338,7 +6338,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(buckets.toString());
      * </pre>
      */
-    bucket(numBuckets: number): IDataFrame<IndexT, IBucket> {
+    bucket (numBuckets: number): IDataFrame<IndexT, IBucket> {
 
         console.warn(`Series.bucket is deprecated and will be removed in the future.`);
 
@@ -6398,7 +6398,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * console.log(frequencyTable.toArray());
      * </pre>
      */
-    frequency(options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry> {
+    frequency (options?: IFrequencyTableOptions): IDataFrame<number, IFrequencyTableEntry> {
 
         if (this.none()) {
             return new DataFrame();
@@ -6549,7 +6549,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
      * 
      * @return Returns the string "series".
      */
-    getTypeCode(): string {
+    getTypeCode (): string {
         return "series";
     }
 }
@@ -6602,14 +6602,14 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
     //
     // Helper function to create a sort spec.
     //
-    private static makeSortSpec(sortLevel: number, selector: SortSelectorFn, direction: Direction): ISortSpec {
+    private static makeSortSpec (sortLevel: number, selector: SortSelectorFn, direction: Direction): ISortSpec {
         return { sortLevel: sortLevel, selector: selector, direction: direction };
     }
 
     //
     // Helper function to make a sort selector for pairs, this captures the parent correct when generating the closure.
     //
-    private static makePairsSelector(selector: SortSelectorFn): SortSelectorFn {
+    private static makePairsSelector (selector: SortSelectorFn): SortSelectorFn {
         return (pair: any, index: number) => selector(pair[1], index);
     }
 
@@ -6660,7 +6660,7 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
      * const ordered = sales.orderBy(sale => sale.SalesPerson).thenBy(sale => sale.Amount);
      * </pre>
      */
-    thenBy<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+    thenBy<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         return new OrderedSeries<IndexT, ValueT, SortT>({
             values: this.config.values,
             pairs: this.config.pairs,
@@ -6684,7 +6684,7 @@ class OrderedSeries<IndexT = number, ValueT = any, SortT = any>
      * const ordered = sales.orderBy(sale => sale.SalesPerson).thenByDescending(sale => sale.Amount);
      * </pre>
      */
-    thenByDescending<SortT>(selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
+    thenByDescending<SortT> (selector: SelectorWithIndexFn<ValueT, SortT>): IOrderedSeries<IndexT, ValueT, SortT> {
         return new OrderedSeries<IndexT, ValueT, SortT>({
             values: this.config.values,
             pairs: this.config.pairs,
