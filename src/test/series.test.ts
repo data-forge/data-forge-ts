@@ -83,6 +83,29 @@ describe('Series', () => {
         expect(series.toArray()).to.eql([10, 20]);
     });
 
+	it('Series.toArray({includeNulls: true}) does not strip null values', () => {
+
+		var series = new Series([10, null, 20, null]);
+		expect(series.toArray({ includeNulls: true })).to.eql([10, null, 20, null]);
+	});
+
+	it('Series.toArray({includeNulls: true}) strips undefined values', () => {
+
+		var series = new Series([10, undefined, 20, undefined]);
+		expect(series.toArray({ includeNulls: true })).to.eql([10, 20]);
+	});
+
+	it('Series.toArray({includeNulls: false}) strips null values', () => {
+
+		var series = new Series([10, null, 20, null]);
+		expect(series.toArray({ includeNulls: false })).to.eql([10, 20]);
+	});
+
+	it('Series.toArray({includeNulls: false}) strips undefined values', () => {
+
+		var series = new Series([10, undefined, 20, undefined]);
+		expect(series.toArray({ includeNulls: false })).to.eql([10, 20]);
+	});
 
     it('Series.toPairs strips undefined values', () => {
 
