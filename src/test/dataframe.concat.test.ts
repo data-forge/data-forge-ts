@@ -173,4 +173,37 @@ describe('DataFrame concat', () => {
             [undefined, undefined, 6],
         ]);
     });
+
+    it('should preserve original values after concat and generateSeries', () => {
+        const df1 = new DataFrame({ columnNames: ["Name", "Id"], rows: [["Row 1", 1]] });
+        const df2 = new DataFrame({ columnNames: ["Name", "Id"], rows: [["Row 2", 2]] });
+
+        const concatenated = df1
+            .concat(df2)
+            .resetIndex(); // NOTE: Resetting the index is important here, otherwise we'll have to to rows with index 0.
+
+        expect(concatenated.toArray(), "Check initial state").to.eql([
+            { Name: "Row 1", Id: 1 },
+            { Name: "Row 2", Id: 2 }
+        ]);
+
+        // Generate a new series
+        const generated = concatenated.generateSeries({
+            NewId: row => row.Id
+        });
+
+        expect(generated.toArray(), "Check that the original values are preserved").to.eql([
+            { Name: "Row 1", Id: 1, NewId: 1 },
+            { Name: "Row 2", Id: 2, NewId: 2 }
+        ]);
+
+        expect(concatenated.toArray(), "Check that the original concatenated dataframe is unchanged").to.eql([
+            { Name: "Row 1", Id: 1 },
+            { Name: "Row 2", Id: 2 }
+        ]);
+
+        expect(df1.toArray(), "Check that the original dataframe df1 is unchanged").to.eql([{ Name: "Row 1", Id: 1 }]);
+        expect(df2.toArray(), "Check that the original dataframe df2 is unchanged").to.eql([{ Name: "Row 2", Id: 2 }]);
+    });
+
 });
