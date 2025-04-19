@@ -2,35 +2,11 @@
 
 This is the guide to using Data-Forge.
 
-<a target="_blank" href="https://www.data-forge-notebook.com/"><img align="right" src="../images/support2.png"></a>
-
 Data-Forge is a open-source toolkit for data transformation and analysis in JavaScript and TypeScript. This guide will help you dive deeper into Data-Forge and equip you with skills to build more complex data processing pipelines.
 
-This document is a constant work in progress. If you notice any problems [please log an issue](https://github.com/data-forge/data-forge-ts/issues/new). 
+This document is a constant work in progress. If you notice any problems [please log an issue](https://github.com/data-forge/data-forge-ts/issues/new).
 
-Please also consider forking this repo, then add or update this document based on your own experimentation or experience with Data-Forge and then submit a pull-request. I'm happy to accept contributions to both code and documentation! 
-
-You can also read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
-<a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
-
-For other resources and documentation please [visit the home page](http://data-forge-js.com/) or view [the repo's main README](https://github.com/data-forge/data-forge-ts).
-
-<a 
-    href="https://github.com/sponsors/ashleydavis"
-    target="_blank"
-    >
-    Sponsor my open-source work
-</a>
-and receive a free licence for 
-<a 
-    href="https://www.data-forge-notebook.com/"
-    target="_blank"
-    >
-    Data-Forge Notebook
-</a>.
-
-
-Happy data wrangling!
+Please also consider forking this repo, then add or update this document based on your own experimentation or experience with Data-Forge and then submit a pull-request. I'm happy to accept contributions to both code and documentation!
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -151,7 +127,7 @@ The aims of this project:
 - To be able to visualize data (see [Data-Forge Plot](https://www.npmjs.com/package/data-forge-plot))
 - To be able to work with massive data files (although it's not quite there yet - want to add streaming in the future).
 
-## Driving Principles 
+## Driving Principles
 
 The principles that drive decision making and tradeoffs:
 
@@ -175,7 +151,7 @@ General implementation goals:
 
 ## NodeJS installation and setup
 
-Install via [NPM](https://en.wikipedia.org/wiki/Npm_(software)): 
+Install via [NPM](https://en.wikipedia.org/wiki/Npm_(software)):
 
 	npm install --save data-forge
 
@@ -213,7 +189,7 @@ Or in TypeScript:
 import 'data-forge-fs';
 ```
 
-The file system module auguments the core Data-Forge API and adds readFile and writeFile function to support access to data files under Node.js. 
+The file system module auguments the core Data-Forge API and adds readFile and writeFile function to support access to data files under Node.js.
 
 To visualize data, also install [Data-Forge Plot](https://www.npmjs.com/package/data-forge-plot):
 
@@ -281,7 +257,7 @@ function (param1, param2) {
 
 You will notice in all examples here that multiple functions are often chained together using the Data-Forge fluent API.
 
-Data-Forge supports only [immutable](https://en.wikipedia.org/wiki/Immutable_object) operations. Each operation returns a new immutable dataframe or series. No *in place* operations are supported (one of the things I found confusing about *Pandas*). 
+Data-Forge supports only [immutable](https://en.wikipedia.org/wiki/Immutable_object) operations. Each operation returns a new immutable dataframe or series. No *in place* operations are supported (one of the things I found confusing about *Pandas*).
 
 This is why, in the following example, the final dataframe is always captured after all operations have been applied:
 
@@ -326,7 +302,7 @@ const df = new dataForge.DataFrame(config)
     .bake();
 ```
 
-# Basic Usage 
+# Basic Usage
 
 ## Getting data in
 
@@ -334,7 +310,7 @@ const df = new dataForge.DataFrame(config)
 
 A *dataframe* represents a sequence of tabular data. That is to say that it contains multiple named *series*, or *columns* of data. You can think of it like a JavaScript array but with extra operations and support for columns. I like to think of a dataframe as a *spreadsheet in memory*.
 
-The `DataFrame` constructor is passed a *config* object that specifies the initial contents of the dataframe and additional options. 
+The `DataFrame` constructor is passed a *config* object that specifies the initial contents of the dataframe and additional options.
 
 Create a data frame from column names and rows:
 
@@ -475,7 +451,7 @@ const rows = df.toRows();
 To get back index and value pairs:
 
 ```javascript
-const pairs = df.toPairs(); 
+const pairs = df.toPairs();
 ```
 
 Because a dataframe is also an *iterable* you can iterate it using `for...of`:
@@ -505,7 +481,7 @@ const values = series.toArray();
 To get back index and value pairs:
 
 ```javascript
-const pairs = series.toPairs(); 
+const pairs = series.toPairs();
 ```
 
 A series can also be iterated:
@@ -563,7 +539,7 @@ const dataFrameWithNewIndex = df.withIndex([1, 2, 3, ...]);
 
 Most likely when using a dataframe you will want to promote an existing column to an index:
 
-```javascript 
+```javascript
 const df = new dataForge.DataFrame(someConfig).setIndex("Column3");
 ```
 
@@ -717,7 +693,7 @@ df.toCSV(options)
 The options object is passed directly to [PapaParse.unparse](https://www.papaparse.com/docs#unparse), please see [PapaParse docs for additional options](https://www.papaparse.com/docs#unparse-config-default).
 
 
-## Working with JSON files 
+## Working with JSON files
 
 **WARNING:** You must have [Data-Forge FS](https://github.com/data-forge/data-forge-fs) installed to use the file system functions. This uses the NodeJS `fs` module, so reading and writing files can't work in the browser which has no access to the local file system. Only try this under Node.js!
 
@@ -753,7 +729,7 @@ async function myAsyncFunction() {
 }
 ```
 
-### Writing JSON files 
+### Writing JSON files
 
 #### Synchronous version
 
@@ -811,7 +787,7 @@ const stringSeries = new dataForge.Series(["15", "16"]);
 assert.isString(stringSeries.first());
 
 const parsedSeries = stringSeries.parseInts();
-assert.isNumber(parsedSeries.first()); 
+assert.isNumber(parsedSeries.first());
 ```
 
 To call these functions on a dataframe you must pass in the name of the column that is to be parsed, for example say you load from a CSV (which loads in string data) and want to parse a particular column:
@@ -824,7 +800,7 @@ const parsedDataFrame = stringDataFrame.parseInts("Column1");
 assert.isNumber(parsedDataFrame.first().Column1);
 ```
 
-For each of these functions you can also specify an array of column names to be parsed:	 
+For each of these functions you can also specify an array of column names to be parsed:
 
 ```javascript
 const parsedDataFrame = stringDataFrame.parseInts(["Column1", "Column2"]);
@@ -839,11 +815,11 @@ const stringDataFrame = dataForge.fromCSV("Column1\n2016-09-25\n2016-10-25");
 const parsedDataFrame = stringDataFrame.parseDates("Column1", "YYYY-MM-DD");
 ```
 
-Data-Forge uses [Moment.js](http://momentjs.com/) under the hood, please see its docs for valid formatting syntax. 
+Data-Forge uses [Moment.js](http://momentjs.com/) under the hood, please see its docs for valid formatting syntax.
 
 ## Automatic column parsing
 
-When parsing columns using CSV we can have values parsed automatically depending on what type they appear to be. 
+When parsing columns using CSV we can have values parsed automatically depending on what type they appear to be.
 
 ```javascript
 const df = dataForge.readFileSync("some-csv-file.csv").parseCSV({ dynamicTyping: true });
@@ -852,7 +828,7 @@ assert.isNumber(df.first().SomeNumberColumn);
 
 Please note that this will parse numbers and booleans, but it won't parse dates.
 
-## Stringifying column values 
+## Stringifying column values
 
 When you are saving out data in a text format or displaying data on screen you will often want to transform values in specific columns to particular types. For numbers this happens automatically, but this is essential when formatting dates for output, for example:
 
@@ -861,10 +837,10 @@ const df = ...
 assert.instanceof(df.first().Column1, Date);
 
 const stringifiedDataFrame = df.toStrings("Column1", "YYYY-MM-DD");
-assert.isString(stringifiedDataFrame.first().Column1); 
+assert.isString(stringifiedDataFrame.first().Column1);
 ```
 
-Data-Forge uses [Moment.js](http://momentjs.com/) under the hood, please see its docs for valid formatting syntax. 
+Data-Forge uses [Moment.js](http://momentjs.com/) under the hood, please see its docs for valid formatting syntax.
 
 # Working with data
 
@@ -874,7 +850,7 @@ Values can be extracted from a dataframe in several ways.
 
 NOTE: the following functions cause lazy evaluation to complete (like the *toArray* function in LINQ). This can be performance intensive.
 
-To extract rows as arrays of data (ordered by column): 
+To extract rows as arrays of data (ordered by column):
 
 ```javascript
 const arrayOfArrays = df.toRows();
@@ -895,7 +871,7 @@ const arrayOfPairs = df.toPairs();
 A new dataframe can also be created from the values *between* a pair of indicies:
 
 ```javascript
-const startIndex = // ... starting row index to include in subset. 
+const startIndex = // ... starting row index to include in subset.
 const endIndex = // ... ending row index to include in subset.
 const subset = df.between(startIndex, endIndex);
 ```
@@ -907,7 +883,7 @@ Invoke a callback for each row in a dataframe using `forEach`:
 ```javascript
 df.forEach(row => {
     // Callback function invoked for each row.
-}); 
+});
 ```
 
 Because dataframe is implemented as an *iterable* we can also use `for..of`:
@@ -950,13 +926,13 @@ const sortedColumnsSubject = df.getColumns()
 Extract a named series from the dataframe:
 
 ```javascript
-const series = df.getSeries('MyColumn'); 
+const series = df.getSeries('MyColumn');
 ```
 
 Or to avoid magic strings:
 
 ```javascript
-const series = df.deflate(row => row.MyColumn); 
+const series = df.deflate(row => row.MyColumn);
 ```
 
 Extract a series and compute a new series from it:
@@ -975,7 +951,7 @@ const subset = df.subset(["Some-Column", "Some-Other-Column"]);
 
 NOTE: the follow functions cause lazy evaluation to complete (like the *toArray* function in LINQ). This can be performance intensive.
 
-Extract the values from the series as an array:   
+Extract the values from the series as an array:
 
 ```javascript
 const arrayOfValues = series.toArray();
@@ -992,7 +968,7 @@ Invoke a callback for each value in the series using `forEach`:
 ```javascript
 series.forEach(value => {
     // Callback function invoked for each value.
-}); 
+});
 ```
 
 Series is also implemented as an *iterable* so we can use `for..of`:
@@ -1076,7 +1052,7 @@ const newDf = df.generateSeries({
 
 ```javascript
 const newDf = df.withSeries({
-    SomeExistingColumn: 
+    SomeExistingColumn:
         df => df.deflate(row => row.SomeExistingColumn)
             .select(value => transformValue(value)
 });
@@ -1124,10 +1100,10 @@ const row = df.at(10); // Get a row at index 10.
 This also works when the index is a different type, eg a time-series index:
 
 ```javascript
-const row = df.at(new Date(2016, 5, 22)); 
+const row = df.at(new Date(2016, 5, 22));
 ```
 
-The `at` function also works for a series. 
+The `at` function also works for a series.
 
 # Data exploration and visualization
 
@@ -1141,14 +1117,14 @@ Use the LINQ functions `skip` and `take` to preview a subset of the data (more o
 
 ```javascript
 // Skip 10 rows, take 20 rows, print the result.
-console.log(df.skip(10).take(20).toString()); 
+console.log(df.skip(10).take(20).toString());
 ```
 
-Or more conveniently: 
+Or more conveniently:
 
 ```javascript
 // Get a range of rows starting at row index 10 and ending at (but not including) row index 20.
-console.log(df.between(10, 20).toString()); 
+console.log(df.between(10, 20).toString());
 ```
 
 Use the `head` function to view the rows at the start of a series or dataframe:
@@ -1167,7 +1143,7 @@ As you explore a data set you may want to understand what data types you are wor
 
 ```javascript
 // Create a data frame with details of the types from the source data frame.
-const typesDf = df.detectTypes(); 
+const typesDf = df.detectTypes();
 console.log(typesDf.toString());
 ```
 
@@ -1183,11 +1159,11 @@ For example, here is the output with some stock market data:
     5                 number  100        Volume
     6                 number  100        Adj Close
 
-You also probably want to understand the composition of values in the dataframe. This can be done using `detectValues` that examines the values and reports on their frequency: 
+You also probably want to understand the composition of values in the dataframe. This can be done using `detectValues` that examines the values and reports on their frequency:
 
 ```javascript
 // Create a data frame with the information on the frequency of values from the source data frame.
-const valuesDf = df.detectValues(); 
+const valuesDf = df.detectValues();
 console.log(valuesDf.toString());
 ```
 
@@ -1224,7 +1200,7 @@ const transformedDataFrame = df.select(row => {
 });
 ```
 
-This produces an entirely new immutable dataframe. However the new dataframe has the same index as the source dataframe, so both can be merged back together, if required. 
+This produces an entirely new immutable dataframe. However the new dataframe has the same index as the source dataframe, so both can be merged back together, if required.
 
 Note that the powerful `selectMany` function is also available and works the same as LINQ's SelectMany.
 
@@ -1275,7 +1251,7 @@ There are multiple ways to extract a subset of data from a series or dataframe.
 At the most basic `skip` and `take` allow a specified number of values to be skipped or taken.
 
 ```javascript
-const subset = series.skip(10).take(15); 
+const subset = series.skip(10).take(15);
 ```
 
 `head` and `tail` are handy functions that can extract X elements at the start or end of the sequence:
@@ -1292,15 +1268,15 @@ A bit more advanced are `skipWhile`, `takeWhile`, `skipUntil` and `takeUntil`. T
 const subset = series.skipWhile(row => somePredicate(row));
 ```
 
-More sophisticated again are `startAt`, `endAt`, `after`, `before` and `between`. These functions intelligently filter values based on the index. Note that your index must already be sorted to use these functions. 
+More sophisticated again are `startAt`, `endAt`, `after`, `before` and `between`. These functions intelligently filter values based on the index. Note that your index must already be sorted to use these functions.
 
-`startAt` retreives all values starting at a particular index. 
+`startAt` retreives all values starting at a particular index.
 
-`endAt` retreives all values ending at a particular index (inclusive). 
+`endAt` retreives all values ending at a particular index (inclusive).
 
-`after` retreives all values after a particluar index (exclusive). 
+`after` retreives all values after a particluar index (exclusive).
 
-`before` retreives all values before a particular index (exclusive). 
+`before` retreives all values before a particular index (exclusive).
 
 Finally `between` retreives all values between two indicies (inclusive).
 
@@ -1327,16 +1303,16 @@ Or an array may be used:
 
 ```javascript
 const toConcat = [df2, df3, df4, etc];
-const concatenated = df1.concat(toConcat); 
+const concatenated = df1.concat(toConcat);
 ```
 
-You can also concatenate by passing an array of series or dataframes to the global data-forge functions `Series.concat` or `DataFrame.concat`: 
+You can also concatenate by passing an array of series or dataframes to the global data-forge functions `Series.concat` or `DataFrame.concat`:
 
 ```javascript
 const concatenated = dataForge.DataFrame.concat([df1, df2, df3, df4, etc]);
 ```
 
-Note that the new index is a concatenation of the indices of the input dataframes and can contain duplicate values - especially when concatenating dataframes with zero-based indices. Performing operations on such a dataframe might lead to unexpected results. 
+Note that the new index is a concatenation of the indices of the input dataframes and can contain duplicate values - especially when concatenating dataframes with zero-based indices. Performing operations on such a dataframe might lead to unexpected results.
 
 To avoid duplicate index values when concatenating dataframes with zero-based indices, use `resetIndex` after concatenating.
 
@@ -1442,7 +1418,7 @@ const df_merged = df_new.join(
 
 ## Zip
 
-Series and dataframes can be *zipped* together in the same was in LINQ. 
+Series and dataframes can be *zipped* together in the same was in LINQ.
 
 One or more additional series or dataframes can be passed to the `zip` function. You must provide a selector that combines the values from each series or dataframe:
 
@@ -1452,7 +1428,7 @@ const zipped = df1.zip(df2, df3, (df1_row, df2_row) => mergeRows(df1_row, df2_ro
 
 # Collapsing unique values
 
-## Distinct values  
+## Distinct values
 
 The `distinct` function for `Series` and `DataFrame` works very much like [LINQ Distinct](http://www.dotnetperls.com/distinct).
 
@@ -1462,7 +1438,7 @@ The dataframe version of this function must be supplied a *selector* that select
 const distinctDf = df.distinct(row => row.SomeColumn); // Compare 'SomeColumn' for distinct values.
 ```
 
-The result is a `DataFrame` with duplicate rows removed. The first index for each group of duplicates is preserved. 
+The result is a `DataFrame` with duplicate rows removed. The first index for each group of duplicates is preserved.
 
 The series version of this function takes no parameters:
 
@@ -1480,13 +1456,13 @@ The resulting series or dataFrame has duplicate values or rows removed, but only
 
 # Groups and windows
 
-Data-Forge provides various methods for grouping data. All of these methods return a series of *windows*. Each window is a series or dataFrame containing grouped data. 
+Data-Forge provides various methods for grouping data. All of these methods return a series of *windows*. Each window is a series or dataFrame containing grouped data.
 
 Use any of the [data transformation](#transformation) or [aggregation](#summarization-and-aggregation) functions to transform a series of windows into something else.
 
 ## Group
 
-The `groupBy` function groups series or dataFrame based on the output of the user-defined *selector*. This works in the same way as [LINQ GroupBy](http://www.dotnetperls.com/groupby). 
+The `groupBy` function groups series or dataFrame based on the output of the user-defined *selector*. This works in the same way as [LINQ GroupBy](http://www.dotnetperls.com/groupby).
 
 For example, grouping a dataframe with sales data by client:
 
@@ -1514,11 +1490,11 @@ const outputSeries = series.groupSequentialBy(value => {
 });
 ```
 
-## Window 
+## Window
 
-The `window` function groups a `Series` or `DataFrame` into equally sized batches. The *window* passes over the series or dataframe *batch-by-batch*, taking the first N rows for the first window, then the second N rows for the next window and so on. 
+The `window` function groups a `Series` or `DataFrame` into equally sized batches. The *window* passes over the series or dataframe *batch-by-batch*, taking the first N rows for the first window, then the second N rows for the next window and so on.
 
-The output is a series of data windows. Each window contains the values or rows for that group.  
+The output is a series of data windows. Each window contains the values or rows for that group.
 
 ```javascript
 const windowSize = 5; // Looking at 5 rows at a times.
@@ -1537,7 +1513,7 @@ const weeklySales = salesData.window(7) // Group into lots of 7 (for 7 days).
         return [                    // Return index and value.
             window.lastIndex(),     // Week ending.
             window.sum()            // Total the amount sold during the week.
-        ]; 
+        ];
     })
     .withIndex(pair => pair[0]) // Promote index.
     .select(pair => pair[1]); // Restore values.
@@ -1553,7 +1529,7 @@ const weeklySales = salesData.window(7).select(window => window.sum());
 
 ## Rolling window
 
-The `rollingWindow` function groups a `Series` or `DataFrame` into batches, this function differs from `window` in that it *rolls* the *window* across the sequence *value-by-value* rather than batch-by-batch. 
+The `rollingWindow` function groups a `Series` or `DataFrame` into batches, this function differs from `window` in that it *rolls* the *window* across the sequence *value-by-value* rather than batch-by-batch.
 
 The `percentChange` function that is included in Data-Forge is probably the simplest example use of `rollingWindow`. It computes a new series with the percentage increase of each subsquent value in the original series.
 
@@ -1589,7 +1565,7 @@ An example:
 ```javascript
 const outputSeries = series.variableWindow((a, b) => {
     return // ... compare a and b for equality, return true if they are equal ...
-}; 
+};
 ```
 
 # Summarization and Aggregation
@@ -1616,7 +1592,7 @@ Another good example is averaging a series where the first element in the series
 const average = series
     .skip(1)
     .average(
-        series.first(), // The seed 
+        series.first(), // The seed
         (prevValue, nextValue) => (prevValue + nextValue) / 2
     );
 ```
@@ -1646,7 +1622,7 @@ const seed = {
 };
 const summary = salesData
     .skip(1)
-    .aggregate(seed, 
+    .aggregate(seed,
         (agg, row) => {
             return {
                 TotalSales: agg.TotalSales + 1,
@@ -1670,7 +1646,7 @@ const summary = df.summarize();
 console.log(summary);
 ```
 
-We can add parameters to restrict which columns are summarized and how their values are aggregated. 
+We can add parameters to restrict which columns are summarized and how their values are aggregated.
 
 Summarize a single column as follows:
 
@@ -1906,7 +1882,7 @@ const gapExists = (pairA, pairB) => {
 
 // Generator function that produces new rows to fill the game.
 const gapFiller = (pairA, pairB) => {
-    // Create an array of index, value pairs that fill the gaps between pairA and pairB.        
+    // Create an array of index, value pairs that fill the gaps between pairA and pairB.
     return [
         newPair1,
         newPair2,
@@ -1945,9 +1921,9 @@ const gapFiller = (pairA, pairB) => {
     for (let entryIndex = 0; entryIndex < numEntries; ++entryIndex) {
         newEntries.push([
             moment(pairA[0]).add(entryIndex + 1, 'days').toDate(), // New index
-            startValue // New value, copy the start value forward to fill the gaps. 
+            startValue // New value, copy the start value forward to fill the gaps.
         ]);
-    }	
+    }
 
     return newEntries;
 }
@@ -2008,8 +1984,8 @@ request({
         return request({
             method: 'POST',
             uri: "http://some-host/another/rest/api",
-            body: { 
-                data: output.toArray() 
+            body: {
+                data: output.toArray()
             },
             json: true,
         });
@@ -2030,7 +2006,7 @@ request({
 
 ## Working with HTTP in the browser
 
-This example depends on the [jQuery](http://jquery.com/) [get function](https://api.jquery.com/jquery.get/). 
+This example depends on the [jQuery](http://jquery.com/) [get function](https://api.jquery.com/jquery.get/).
 
 **Include in HTML**
 
@@ -2091,7 +2067,7 @@ const url = "http://somewhere.com/rest/api";
 $http.get(url)
     .then(function (data) {
         const df = new dataForge.DataFrame(data);
-        // ... work with the data frame ...			
+        // ... work with the data frame ...
     })
     .catch(function (err) {
         // ... handle error ...

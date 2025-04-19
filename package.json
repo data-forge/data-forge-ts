@@ -1,6 +1,6 @@
 {
   "name": "data-forge",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "description": "JavaScript data transformation and analysis toolkit inspired by Pandas and LINQ.",
   "module": "dist/esm/index.esm.js",
   "main": "build/index.js",
@@ -30,7 +30,6 @@
     "pr": "npm run pack:rollup",
     "pack:rollup": "rollup -c",
     "bundle-typedefs": "dts-bundle --name data-forge --main build/index.d.ts --baseDir = build --out ../dist/node/index.d.ts",
-    "postinstall": "node postinstall.js || echo \"ignore\"",
     "lint": "npx eslint src/ --ext .js,.jsx,.ts,.tsx --quiet"
   },
   "repository": {

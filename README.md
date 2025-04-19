@@ -5,11 +5,6 @@ The JavaScript data transformation and analysis toolkit inspired by Pandas and L
 *Implemented* in TypeScript.<br>
 *Used* in JavaScript ES5+ or TypeScript.
 
-To learn more about Data-Forge [visit the home page](http://data-forge-js.com/).
-
-Read about <a target="_blank" href="http://js4ds.org/#s:dataforge">Data-Forge for data science</a> in the book 
-<a target="_blank" href="http://js4ds.org">JavaScript for Data Science</a>.
-
 Love this? Please star this repo and [click here to support my work](https://www.codecapers.com.au/about#support-my-work)
 
 [![Build Status](https://travis-ci.org/data-forge/data-forge-ts.svg?branch=master)](https://travis-ci.org/data-forge/data-forge-ts)
@@ -148,9 +143,7 @@ Fork it, make a change, submit a pull request. Want to chat? See my contact deta
 
 ## Resources
 
-- [The Data Wrangler](http://www.the-data-wrangler.com/)
 - [Data Wrangling with JavaScript](http://bit.ly/2t2cJu2)
-- [Data-Forge Notebook](http://www.data-forge-notebook.com/)
 
 ## Contact
 
