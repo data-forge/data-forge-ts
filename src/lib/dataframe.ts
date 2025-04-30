@@ -2766,7 +2766,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     //
     private static initFromIterable<IndexT, ValueT>(arr: Iterable<ValueT>): IDataFrameContent<IndexT, ValueT> {
         const firstResult = arr[Symbol.iterator]().next();
-        const columnNames = !firstResult.done ? Object.keys(firstResult.value) : [];
+        const columnNames = !firstResult.done ? Object.keys(firstResult.value as any) : [];
         return {
             index: DataFrame.defaultCountIterable,
             values: arr,
@@ -3534,7 +3534,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
             }
 
             for (const pair of dataFrame.toPairs()) {
-                const index = pair[0].toString();
+                const index = (pair[0] as any).toString();
                 if (!rowMap.has(index)) {
                     rowMap.set(index, { index: pair[0], value: pair[1] });
                 }
@@ -4020,7 +4020,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
     * const values = df.toArray();
     * </pre>
     */
-    toArray (): any[] {
+    toArray (): ValueT[] {
         const values = [];
         for (const value of this.getContent().values) {
             if (value !== undefined && value !== null) {
@@ -7318,7 +7318,7 @@ export class DataFrame<IndexT = number, ValueT = any> implements IDataFrame<Inde
                 }
 
                 for (const row of rows) {
-                    row[column.name] = moment(row[column.name]).toISOString(); // Manually serialize date value.
+                    (row as any)[column.name] = moment((row as any)[column.name]).toISOString(); // Manually serialize date value.
                 }
             }
         }
