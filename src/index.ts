@@ -5,8 +5,7 @@ import { ArrayIterable } from './lib/iterables/array-iterable';
 import { CsvRowsIterable } from './lib/iterables/csv-rows-iterable';
 import { Series, ISeries } from '.';
 import { DataFrame, IDataFrame } from '.';
-import { isString, isObject, isArray, isNumber } from './lib/utils';
-import { isFunction } from 'util';
+import { isString, isObject, isArray, isNumber, isFunction } from './lib/utils';
 import JSON5 from 'json5';
 // @ts-ignore
 import moment from "dayjs";
