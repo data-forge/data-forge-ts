@@ -98,7 +98,7 @@ A *comparer* method is used to compare to values for equality. It returns true (
 An example:
 
 	var myComparer = (row1, row2) => {
-		return row1.ClientName === row.ClientName; // Row comparison based on client name.
+		return row1.ClientName === row2.ClientName; // Row comparison based on client name.
 	}; 
 
 ## Generator
