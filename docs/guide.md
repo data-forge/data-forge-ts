@@ -1035,7 +1035,7 @@ Again note that it is only the new dataframe that includes the modified column.
 ```javascript
 const newDf = df.withSeries({
     SomeNewColumn: df => df.select(row => row.InputColumn1 + row.InputColumn2)
-);
+});
 ```
 
 This same thing can be done more slighlty conveniently with the `generateSeries` function:
@@ -1054,7 +1054,7 @@ const newDf = df.generateSeries({
 const newDf = df.withSeries({
     SomeExistingColumn:
         df => df.deflate(row => row.SomeExistingColumn)
-            .select(value => transformValue(value)
+            .select(value => transformValue(value))
 });
 ```
 
@@ -1123,7 +1123,7 @@ console.log(df.skip(10).take(20).toString());
 Or more conveniently:
 
 ```javascript
-// Get a range of rows starting at row index 10 and ending at (but not including) row index 20.
+// Get a range of rows starting at row index 10 and ending at row index 20 (inclusive).
 console.log(df.between(10, 20).toString());
 ```
 
@@ -1586,15 +1586,16 @@ Fortunately (as with LINQ) there is actually a `sum` function (among other helpe
 const sum = series.sum();
 ```
 
-Another good example is averaging a series where the first element in the series is used as the *seed*:
+Another example sums a non-empty series using its first element as the *seed*, then computes the average:
 
 ```javascript
-const average = series
+const sum = series
     .skip(1)
-    .average(
+    .aggregate(
         series.first(), // The seed
-        (prevValue, nextValue) => (prevValue + nextValue) / 2
+        (prevValue, nextValue) => prevValue + nextValue
     );
+const average = sum / series.count();
 ```
 
 This can be simplified by building on `sum`:
@@ -1616,8 +1617,8 @@ A dataframe can be aggregated in the same way, for example summarizing sales dat
 ```javascript
 const salesData = // ... today's sales, including Price and Revenue ...
 const seed = {
-    TotalSales: 0,
-    AveragePrice: salesData.first().AveragePrice,
+    TotalSales: 1,
+    AveragePrice: salesData.first().Price,
     TotalRevenue: salesData.first().Revenue,
 };
 const summary = salesData
@@ -1626,7 +1627,7 @@ const summary = salesData
         (agg, row) => {
             return {
                 TotalSales: agg.TotalSales + 1,
-                AveragePrice: (agg.AveragePrice + row.Price) / 2,
+                AveragePrice: (agg.AveragePrice * agg.TotalSales + row.Price) / (agg.TotalSales + 1),
                 TotalRevenue: agg.TotalRevenue + row.Revenue,
             };
         }
