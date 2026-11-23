@@ -6410,7 +6410,7 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             const captureValues = options && options.captureValues || false;
 
             let min = Number.MAX_VALUE;
-            let max = Number.MIN_VALUE;
+            let max = -Number.MAX_VALUE; // Number.MIN_VALUE is the smallest positive number.
             let numValues = 0;
 
             //
@@ -6443,18 +6443,16 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             const range = upper - lower;
             let numGroups: number;
             if (interval !== undefined) {
-                numGroups = Math.ceil(range / interval);
+                numGroups = Math.max(Math.ceil(range / interval), 1);
+            }
+            else if (range > 0) {
+                numGroups = Math.max(Math.min(numValues, 10), 2);
+                interval = range / (numGroups-1); 
             }
             else {
-                numGroups = 10;
-            }
-            
-            if (numValues < numGroups) {
-                numGroups = numValues;
-            }
-
-            if (interval === undefined) {
-                interval = range / (numGroups-1); 
+                // All values are the same.
+                numGroups = 1;
+                interval = 0;
             }
 
             const groups = new Array<IFrequencyTableEntry>(numGroups);
@@ -6509,7 +6507,10 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
                     group = afterGroup; // Value is more than the body of the data set.
                 }
                 else {
-                    const groupIndex = Math.floor((value - lower) / interval);
+                    // The last group includes the upper boundary.
+                    const groupIndex = interval > 0
+                        ? Math.min(Math.floor((value - lower) / interval), numGroups-1)
+                        : 0;
                     group = groups[groupIndex]; // Value is within the body of the data set.
                 }
                 group.count += 1;
