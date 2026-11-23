@@ -172,4 +172,11 @@ describe('Series.frequency', () => {
             { lower: 5, upper: 7, count: 3, proportion: 1, cumulative: 1 },
         ]);
     });
+
+    it('throws when the interval is not a positive number', () => {
+        const series = new Series([ 1, 2, 3 ]);
+        for (const interval of [ 0, -1, NaN ]) {
+            expect(() => series.frequency({ interval }).toArray()).to.throw(/'interval' option/);
+        }
+    });
 });

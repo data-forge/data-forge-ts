@@ -6443,6 +6443,9 @@ export class Series<IndexT = number, ValueT = any> implements ISeries<IndexT, Va
             const range = upper - lower;
             let numGroups: number;
             if (interval !== undefined) {
+                if (!(interval > 0) || !isFinite(range / interval)) {
+                    throw new Error("Expected 'interval' option to 'Series.frequency' to be a positive number.");
+                }
                 numGroups = Math.max(Math.ceil(range / interval), 1);
             }
             else if (range > 0) {
