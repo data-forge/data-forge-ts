@@ -127,4 +127,56 @@ describe('Series.frequency', () => {
         ]);
     });
   
+
+    it('can create frequency table for negative values', () => {
+        const series = new Series([ -10, -7, -4 ]);
+        expect(series.frequency().toArray()).to.eql([
+            { lower: -10, upper: -7, count: 1, proportion: 1 / 3, cumulative: 1 / 3 },
+            { lower: -7, upper: -4, count: 1, proportion: 1 / 3, cumulative: 2 / 3 },
+            { lower: -4, upper: -1, count: 1, proportion: 1 / 3, cumulative: 1 },
+        ]);
+    });
+
+    it('last group includes a value on the upper boundary', () => {
+        const series = new Series([ 37, 45, 60, 90, 114 ]);
+        const frequencyTable = series.frequency({ lower: 40, upper: 90, interval: 10 });
+        expect(frequencyTable.getSeries('count').toArray()).to.eql([ 1, 1, 0, 1, 0, 1, 1 ]);
+    });
+
+    it('last group includes the maximum when the interval divides the range', () => {
+        const series = new Series([ 0, 10, 20, 30 ]);
+        expect(series.frequency({ interval: 10 }).toArray()).to.eql([
+            { lower: 0, upper: 10, count: 1, proportion: 0.25, cumulative: 0.25 },
+            { lower: 10, upper: 20, count: 1, proportion: 0.25, cumulative: 0.5 },
+            { lower: 20, upper: 30, count: 2, proportion: 0.5, cumulative: 1 },
+        ]);
+    });
+
+    it('can have more groups than values when the interval is set', () => {
+        const series = new Series([ 0, 45 ]);
+        const frequencyTable = series.frequency({ interval: 10 });
+        expect(frequencyTable.getSeries('count').toArray()).to.eql([ 1, 0, 0, 0, 1 ]);
+    });
+
+    it('can create frequency table for a single value', () => {
+        expect(new Series([ 5 ]).frequency().toArray()).to.eql([
+            { lower: 5, upper: 5, count: 1, proportion: 1, cumulative: 1 },
+        ]);
+    });
+
+    it('can create frequency table for equal values', () => {
+        expect(new Series([ 5, 5, 5 ]).frequency().toArray()).to.eql([
+            { lower: 5, upper: 5, count: 3, proportion: 1, cumulative: 1 },
+        ]);
+        expect(new Series([ 5, 5, 5 ]).frequency({ interval: 2 }).toArray()).to.eql([
+            { lower: 5, upper: 7, count: 3, proportion: 1, cumulative: 1 },
+        ]);
+    });
+
+    it('throws when the interval is not a positive number', () => {
+        const series = new Series([ 1, 2, 3 ]);
+        for (const interval of [ 0, -1, NaN ]) {
+            expect(() => series.frequency({ interval }).toArray()).to.throw(/'interval' option/);
+        }
+    });
 });
